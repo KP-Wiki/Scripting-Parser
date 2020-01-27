@@ -88,13 +88,13 @@ var
   Form1: TForm1;
 
   //String functions
-  function StrIndexOf(aStr, aSubStr: String): Integer;
-  function StrLastIndexOf(aStr, aSubStr: String): Integer;
-  function StrSubstring(aStr: String; aFrom, aLength: Integer): String; overload;
-  function StrSubstring(aStr: String; aFrom: Integer): String; overload;
-  function StrContains(aStr, aSubStr: String): Boolean;
-  function StrTrimRight(aStr: String; aCharsToTrim: TKMCharArray): String;
-  function StrSplit(aStr, aDelimiters: String): TStrings;
+  function StrIndexOf(const aStr, aSubStr: String): Integer;
+  function StrLastIndexOf(const aStr, aSubStr: String): Integer;
+  function StrSubstring(const aStr: String; aFrom, aLength: Integer): String; overload;
+  function StrSubstring(const aStr: String; aFrom: Integer): String; overload;
+  function StrContains(const aStr, aSubStr: String): Boolean;
+  function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
+  function StrSplit(const aStr, aDelimiters: String): TStrings;
 
 implementation
 {$R *.dfm}
@@ -103,8 +103,9 @@ implementation
 {String functions
 These function are replacements for String functions introduced after XE2 (XE5 probably)
 Names are the same as in new Delphi versions, but with 'Str' prefix
+We keep them here to support pre-XE5 compilation
 }
-function StrIndexOf(aStr, aSubStr: String): Integer;
+function StrIndexOf(const aStr, aSubStr: String): Integer;
 begin
   //Todo refactor:
   //@Krom: Why not just replace StrIndexOf with Pos everywhere in code?
@@ -112,7 +113,7 @@ begin
 end;
 
 
-function StrLastIndexOf(aStr, aSubStr: String): Integer;
+function StrLastIndexOf(const aStr, aSubStr: String): Integer;
 var I: Integer;
 begin
   Result := -1;
@@ -122,7 +123,7 @@ begin
 end;
 
 
-function StrSubstring(aStr: String; aFrom: Integer): String;
+function StrSubstring(const aStr: String; aFrom: Integer): String;
 begin
   //Todo refactor:
   //@Krom: Why not just replace StrSubstring with RightStr everywhere in code?
@@ -130,7 +131,7 @@ begin
 end;
 
 
-function StrSubstring(aStr: String; aFrom, aLength: Integer): String;
+function StrSubstring(const aStr: String; aFrom, aLength: Integer): String;
 begin
   //Todo refactor:
   //@Krom: Why not just replace StrSubstring with Copy everywhere in code?
@@ -138,7 +139,7 @@ begin
 end;
 
 
-function StrContains(aStr, aSubStr: String): Boolean;
+function StrContains(const aStr, aSubStr: String): Boolean;
 begin
   //Todo refactor:
   //@Krom: Why not just replace StrContains with Pos() <> 0 everywhere in code?
@@ -146,7 +147,7 @@ begin
 end;
 
 
-function StrTrimRight(aStr: String; aCharsToTrim: TKMCharArray): String;
+function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
 var Found: Boolean;
     I, J: Integer;
 begin
@@ -168,7 +169,7 @@ begin
 end;
 
 
-function StrSplit(aStr, aDelimiters: String): TStrings;
+function StrSplit(const aStr, aDelimiters: String): TStrings;
 var StrArray: TStringDynArray;
     I: Integer;
 begin

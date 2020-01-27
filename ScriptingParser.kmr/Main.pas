@@ -1,8 +1,8 @@
 unit Main;
 interface
 uses
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils, Types,
-  Classes, StdCtrls, StrUtils, INIFiles, Vcl.ComCtrls, Shlwapi;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils,
+  Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls, Shlwapi;
 
 type
   TKMCharArray = TArray<Char>;
@@ -104,6 +104,11 @@ implementation
 {$R *.dfm}
 
 
+{String functions
+These function are replacements for String functions introduced after XE2 (XE5 probably)
+Names are the same as in new Delphi versions, but with 'Str' prefix
+We keep them here to support pre-XE5 compilation
+}
 function StrIndexOf(const aStr, aSubStr: String): Integer;
 begin
   //Todo refactor:
@@ -198,6 +203,8 @@ begin
     aStrings.Add(StrArray[I]);
 end;
 
+
+{ TForm1 }
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   btnKMR.Click;
@@ -421,12 +428,7 @@ begin
     for i := 0 to SourceTxt.Count - 1 do
     begin
       // Reset old values
-      res.Version     := '';
-      res.Name        := '';
-      res.Description := '';
-      res.Parameters  := '';
-      res.Return      := '';
-      res.ReturnDesc  := '';
+      res := default(TCommandInfo);
       iPlus := 0;
       descrTxt.Clear;
 
@@ -524,6 +526,7 @@ begin
   end;
 end;
 
+
 function DoSort(List: TStringList; Index1, Index2: Integer): Integer;
 var
   A, B: string;
@@ -535,6 +538,7 @@ begin
   B := Copy(B, PosEx('| ', B, 2) + 2, 40);
   Result := CompareText(A, B);
 end;
+
 
 procedure TForm1.btnGenerateClick(Sender: TObject);
 
