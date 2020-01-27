@@ -94,8 +94,7 @@ var
   //String functions
   function StrIndexOf(const aStr, aSubStr: String): Integer;
   function StrLastIndexOf(const aStr, aSubStr: String): Integer;
-  function StrSubstring(const aStr: String; aFrom, aLength: Integer): String; overload;
-  function StrSubstring(const aStr: String; aFrom: Integer): String; overload;
+  function StrSubstring(const aStr: String; aFrom: Integer): String;
   function StrContains(const aStr, aSubStr: String): Boolean;
   function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
   procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
@@ -136,14 +135,6 @@ begin
 end;
 
 
-function StrSubstring(const aStr: String; aFrom, aLength: Integer): String;
-begin
-  //Todo refactor:
-  //@Krom: Why not just replace StrSubstring with Copy everywhere in code?
-  Result := Copy(aStr, aFrom + 1, aLength);
-end;
-
-
 function StrContains(const aStr, aSubStr: String): Boolean;
 begin
   //Todo refactor:
@@ -173,26 +164,6 @@ begin
   Result := Copy(aStr, 1, I);
 end;
 
-
-function StrTrimChar(const Str: String; Ch: Char): string;
-var
-  S, E: Integer;
-begin
-  S := 1;
-  while (S <= Length(Str)) and (Str[S] = Ch) do Inc(S);
-  E := Length(Str);
-  while (E >= 1) and (Str[E] = Ch) do Dec(E);
-  SetString(Result, PChar(@Str[S]), E - S + 1);
-end;
-
-
-procedure StringSplit(const Str: string; Delimiter: Char; ListOfStrings: TStrings) ;
-begin
-   ListOfStrings.Clear;
-   ListOfStrings.Delimiter       := Delimiter;
-   ListOfStrings.StrictDelimiter := True;
-   ListOfStrings.DelimitedText   := Str;
-end;
 
 procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
 var

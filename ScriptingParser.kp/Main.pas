@@ -90,8 +90,7 @@ var
   //String functions
   function StrIndexOf(const aStr, aSubStr: String): Integer;
   function StrLastIndexOf(const aStr, aSubStr: String): Integer;
-  function StrSubstring(const aStr: String; aFrom, aLength: Integer): String; overload;
-  function StrSubstring(const aStr: String; aFrom: Integer): String; overload;
+  function StrSubstring(const aStr: String; aFrom: Integer): String;
   function StrContains(const aStr, aSubStr: String): Boolean;
   function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
   procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
@@ -129,14 +128,6 @@ begin
   //Todo refactor:
   //@Krom: Why not just replace StrSubstring with RightStr everywhere in code?
   Result := Copy(aStr, aFrom + 1, Length(aStr));
-end;
-
-
-function StrSubstring(const aStr: String; aFrom, aLength: Integer): String;
-begin
-  //Todo refactor:
-  //@Krom: Why not just replace StrSubstring with Copy everywhere in code?
-  Result := Copy(aStr, aFrom + 1, aLength);
 end;
 
 
