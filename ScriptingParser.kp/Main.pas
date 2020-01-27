@@ -94,7 +94,8 @@ var
   function StrSubstring(const aStr: String; aFrom: Integer): String; overload;
   function StrContains(const aStr, aSubStr: String): Boolean;
   function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
-  function StrSplit(const aStr, aDelimiters: String): TStrings;
+  procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
+
 
 implementation
 {$R *.dfm}
@@ -169,18 +170,14 @@ begin
 end;
 
 
-function StrSplit(const aStr, aDelimiters: String): TStrings;
-var StrArray: TStringDynArray;
-    I: Integer;
+procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
+var
+  StrArray: TStringDynArray;
+  I: Integer;
 begin
-  //Todo refactor:
-  //@Krom: It's bad practice to create object (TStringList) inside and return it as parent class (TStrings).
-  //Do we really need it this way? Better to pass TStringList from outside in a parameter.
-
   StrArray := SplitString(aStr, aDelimiters);
-  Result := TStringList.Create;
   for I := Low(StrArray) to High(StrArray) do
-    Result.Add(StrArray[I]);
+    aStrings.Add(StrArray[I]);
 end;
 
 
@@ -243,7 +240,7 @@ begin
     // If not set to -1 it skips the first variable
     nextType := -1;
 
-    listTokens.AddStrings(StrSplit(aString, ' '));
+    StrSplit(aString, ' ', listTokens);
 
     // Re-combine type arrays
     for i := 0 to listTokens.Count - 1 do

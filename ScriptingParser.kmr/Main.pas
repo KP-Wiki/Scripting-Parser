@@ -98,7 +98,7 @@ var
   function StrSubstring(const aStr: String; aFrom: Integer): String; overload;
   function StrContains(const aStr, aSubStr: String): Boolean;
   function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
-  procedure StrSplit(const aStr, aDelimiters: String; var aStrings: TStringList);
+  procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
 
 
 implementation
@@ -194,7 +194,7 @@ begin
    ListOfStrings.DelimitedText   := Str;
 end;
 
-procedure StrSplit(const aStr, aDelimiters: String; var aStrings: TStringList);
+procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
 var
   StrArray: TStringDynArray;
   I: Integer;
