@@ -186,7 +186,7 @@ end;
 { TForm1 }
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  Button1.Click;
+  btnKMR.Click;
 end;
 
 

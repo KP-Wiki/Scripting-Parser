@@ -200,7 +200,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  Button1.Click;
+  btnKMR.Click;
   fListActions := TStringList.Create;
   flistEvents := TStringList.Create;
   flistStates := TStringList.Create;
