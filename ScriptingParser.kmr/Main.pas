@@ -533,36 +533,37 @@ procedure TForm1.GenerateWiki;
     tmpList: TStringList;
     Path: String;
   begin
+    if not FileExists(aInputFile) then Exit;
+
     tmpList := TStringList.Create;
-    if FileExists(aInputFile) then
+
+    aResultList.Clear;
+    tmpList.Clear;
+    ParseText(aInputFile, tmpList, aHasReturn);
+    tmpList.CustomSort(DoSort);
+
+    if FileExists(aHeaderFile) then
+      aResultList.LoadFromFile(aHeaderFile);
+
+    if aHasReturn then
     begin
-      aResultList.Clear;
-      tmpList.Clear;
-      ParseText(aInputFile, tmpList, aHasReturn);
-      tmpList.CustomSort(DoSort);
-
-      if FileExists(aHeaderFile) then
-        aResultList.LoadFromFile(aHeaderFile);
-
-      if aHasReturn then
-      begin
-        aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types | Returns |');
-        aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
-      end else begin
-        aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types |');
-        aResultList.Add('| ------- | ------------------------------------ | -------------- |');
-      end;
-
-      aResultList.AddStrings(tmpList);
-
-      if aOutputFile <> '' then
-      begin
-        Path := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
-        if not DirectoryExists(ExtractFileDir(Path)) then
-          ForceDirectories(ExtractFileDir(Path));
-        aResultList.SaveToFile(aOutputFile);
-      end;
+      aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types | Returns |');
+      aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
+    end else begin
+      aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types |');
+      aResultList.Add('| ------- | ------------------------------------ | -------------- |');
     end;
+
+    aResultList.AddStrings(tmpList);
+
+    if aOutputFile <> '' then
+    begin
+      Path := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+      if not DirectoryExists(ExtractFileDir(Path)) then
+        ForceDirectories(ExtractFileDir(Path));
+      aResultList.SaveToFile(aOutputFile);
+    end;
+
     FreeAndNil(tmpList);
   end;
 
