@@ -23,8 +23,8 @@ type
     edtOutputFileEvents: TEdit;
     edtOutputFileStates: TEdit;
     btnGenerateWiki: TButton;
-    Button1: TButton;
-    Button2: TButton;
+    btnKMR: TButton;
+    btnKP: TButton;
     Label7: TLabel;
     edtOutputFileUtils: TEdit;
     edtUtilsFile: TEdit;
@@ -34,8 +34,8 @@ type
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
     procedure edtOnTextChange(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure btnKMRClick(Sender: TObject);
+    procedure btnKPClick(Sender: TObject);
     procedure btnGenerateXMLClick(Sender: TObject);
   private
     fSettingsPath: string;
@@ -545,7 +545,7 @@ begin
 end;
 
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.btnKMRClick(Sender: TObject);
 begin
   // KaM
   fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.kmr.ini';
@@ -553,7 +553,7 @@ begin
 end;
 
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btnKPClick(Sender: TObject);
 begin
   // KP
   fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.kp.ini';

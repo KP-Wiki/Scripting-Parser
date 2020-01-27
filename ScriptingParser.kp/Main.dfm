@@ -170,23 +170,23 @@ object Form1: TForm1
       OnChange = edtOnTextChange
     end
   end
-  object Button1: TButton
-    Left = 696
+  object btnKMR: TButton
+    Left = 688
     Top = 16
-    Width = 25
+    Width = 33
     Height = 25
-    Caption = '1'
+    Caption = 'KMR'
     TabOrder = 2
-    OnClick = Button1Click
+    OnClick = btnKMRClick
   end
-  object Button2: TButton
+  object btnKP: TButton
     Left = 720
     Top = 16
-    Width = 25
+    Width = 33
     Height = 25
-    Caption = '2'
+    Caption = 'KP'
     TabOrder = 3
-    OnClick = Button2Click
+    OnClick = btnKPClick
   end
   object btnGenerateWiki: TButton
     Left = 687

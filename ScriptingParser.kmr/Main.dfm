@@ -20,23 +20,23 @@ object Form1: TForm1
     648)
   PixelsPerInch = 96
   TextHeight = 13
-  object Button1: TButton
-    Left = 728
+  object btnKMR: TButton
+    Left = 720
     Top = 16
-    Width = 25
+    Width = 33
     Height = 25
-    Caption = '1'
+    Caption = 'KMR'
     TabOrder = 0
-    OnClick = Button1Click
+    OnClick = btnKMRClick
   end
-  object Button2: TButton
+  object btnKP: TButton
     Left = 752
     Top = 16
-    Width = 25
+    Width = 33
     Height = 25
-    Caption = '2'
+    Caption = 'KP'
     TabOrder = 1
-    OnClick = Button2Click
+    OnClick = btnKPClick
   end
   object btnGenerate: TButton
     Left = 711
