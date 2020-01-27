@@ -179,11 +179,12 @@ end;
 { TForm1 }
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  btnKMR.Click;
   fListActions := TStringList.Create;
   flistEvents := TStringList.Create;
   flistStates := TStringList.Create;
   flistUtils := TStringList.Create;
+
+  btnKMR.Click;
 end;
 
 
