@@ -56,7 +56,7 @@ object Form1: TForm1
     TabOrder = 2
     OnClick = btnGenerateClick
   end
-  object GroupBox1: TGroupBox
+  object gbSettings: TGroupBox
     Left = 8
     Top = 8
     Width = 697
@@ -177,45 +177,45 @@ object Form1: TForm1
       TabOrder = 3
       OnChange = edtOnTextChange
     end
-  end
-  object edtHeaderFileActions: TEdit
-    Left = 319
-    Top = 40
-    Width = 175
-    Height = 21
-    TabOrder = 4
-    OnChange = edtOnTextChange
-  end
-  object edtHeaderFileEvents: TEdit
-    Left = 319
-    Top = 67
-    Width = 175
-    Height = 21
-    TabOrder = 5
-    OnChange = edtOnTextChange
-  end
-  object edtHeaderFileStates: TEdit
-    Left = 319
-    Top = 94
-    Width = 175
-    Height = 21
-    TabOrder = 6
-    OnChange = edtOnTextChange
-  end
-  object edtHeaderFileUtils: TEdit
-    Left = 319
-    Top = 121
-    Width = 175
-    Height = 21
-    TabOrder = 7
-    OnChange = edtOnTextChange
+    object edtHeaderFileActions: TEdit
+      Left = 311
+      Top = 32
+      Width = 175
+      Height = 21
+      TabOrder = 8
+      OnChange = edtOnTextChange
+    end
+    object edtHeaderFileEvents: TEdit
+      Left = 311
+      Top = 59
+      Width = 175
+      Height = 21
+      TabOrder = 9
+      OnChange = edtOnTextChange
+    end
+    object edtHeaderFileStates: TEdit
+      Left = 311
+      Top = 86
+      Width = 175
+      Height = 21
+      TabOrder = 10
+      OnChange = edtOnTextChange
+    end
+    object edtHeaderFileUtils: TEdit
+      Left = 311
+      Top = 113
+      Width = 175
+      Height = 21
+      TabOrder = 11
+      OnChange = edtOnTextChange
+    end
   end
   object TabControl1: TTabControl
     Left = 8
     Top = 159
     Width = 802
     Height = 481
-    TabOrder = 8
+    TabOrder = 4
     Tabs.Strings = (
       'Actions'
       'Events'

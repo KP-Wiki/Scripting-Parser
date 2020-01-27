@@ -8,10 +8,7 @@ type
   TKMCharArray = TArray<Char>;
 
   TForm1 = class(TForm)
-    btnGenerate: TButton;
-    btnKMR: TButton;
-    btnKP: TButton;
-    GroupBox1: TGroupBox;
+    gbSettings: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -31,6 +28,9 @@ type
     edtHeaderFileStates: TEdit;
     edtHeaderFileUtils: TEdit;
     Label6: TLabel;
+    btnKMR: TButton;
+    btnKP: TButton;
+    btnGenerate: TButton;
     TabControl1: TTabControl;
     txtParserOutput: TMemo;
     procedure FormCreate(Sender: TObject);

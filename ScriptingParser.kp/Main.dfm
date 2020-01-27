@@ -30,7 +30,7 @@ object Form1: TForm1
     TabOrder = 0
     OnKeyPress = txtParserOutputKeyPress
   end
-  object GroupBox1: TGroupBox
+  object gbSettings: TGroupBox
     Left = 8
     Top = 8
     Width = 673

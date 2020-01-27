@@ -8,28 +8,28 @@ type
   TKMCharArray = TArray<Char>;
 
   TForm1 = class(TForm)
-    GroupBox1: TGroupBox;
+    gbSettings: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
-    txtParserOutput: TMemo;
     edtActionsFile: TEdit;
     edtEventsFile: TEdit;
     edtStatesFile: TEdit;
     edtOutputFileActions: TEdit;
     edtOutputFileEvents: TEdit;
     edtOutputFileStates: TEdit;
-    btnGenerateWiki: TButton;
-    btnKMR: TButton;
-    btnKP: TButton;
     Label7: TLabel;
     edtOutputFileUtils: TEdit;
     edtUtilsFile: TEdit;
     Label8: TLabel;
+    btnKMR: TButton;
+    btnKP: TButton;
+    btnGenerateWiki: TButton;
     btnGenerateXML: TButton;
+    txtParserOutput: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
