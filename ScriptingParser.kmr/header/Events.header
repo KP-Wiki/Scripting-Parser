@@ -1,0 +1,42 @@
+#### Events
+
+Events are written in a form **procedure EVENT_NAME(EVENT_PARAMETERS);** like so:
+```pascal
+    procedure OnHouseBuilt(aHouseID: Integer);
+    begin
+      // code
+    end;
+```
+
+#### Custom event handlers
+Sometimes we want to make it possible to handle some event in the different procedures. It could be usefull, when we want to make script, which could be easily included into some other script with minimum efforts, as much simple as possible. 
+
+Let's say in our includable script we want to do some stuff, when house is built, then we must have `OnHouseBuild` procedure. But then there could be an error, if main script (where our script is included) will have same `OnHouseBuild` procedure. 
+That is why we want to have some other procedure, that will be invoked in our script. That could be archived with custom directive `{$EVENT}`
+```pascal
+    {$EVENT event_name:event_handler_procedure_name}
+```
+where
+* **event_name** - name of the event, made with `evt` prefix, f.e. `evtHouseBuilt`
+* **event_handler_procedure_name** - name of the procedure, which will be invoked on that event
+
+For example:
+```pascal
+    {$EVENT evtHouseBuilt:MyCustomOnHouseBuilt}
+
+    procedure MyCustomOnHouseBuilt(aHouseID: Integer);
+    begin
+      // code
+    end;
+```
+
+When event happens all event handlers are invoked one after another. Default event handler (f.e. `OnHouseBuilt`) is always invoked first. Other custom event handlers invoked in order of declaration by `{$EVENT}` directive.
+
+***
+
+Other scripts functions:
+* [Mission Scripts Dynamic Actions](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicActions)
+* [Mission Scripts Dynamic States](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicStates)
+* [Mission Scripts Dynamic Utils](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicUtils)
+<br />
+
