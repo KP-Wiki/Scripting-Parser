@@ -30,11 +30,11 @@ type
     Label6: TLabel;
     btnKMR: TButton;
     btnKP: TButton;
-    btnGenerate: TButton;
+    btnGenerateWiki: TButton;
     TabControl1: TTabControl;
     txtParserOutput: TMemo;
     procedure FormCreate(Sender: TObject);
-    procedure btnGenerateClick(Sender: TObject);
+    procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
     procedure edtOnTextChange(Sender: TObject);
     procedure btnKMRClick(Sender: TObject);
@@ -48,6 +48,7 @@ type
     procedure ParseText(aFile: string; aList: TStringList; aHasReturn: Boolean);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
     procedure Reinit;
+    procedure GenerateWiki;
   end;
 
   TParamHolder = record
@@ -540,7 +541,13 @@ begin
 end;
 
 
-procedure TForm1.btnGenerateClick(Sender: TObject);
+procedure TForm1.btnGenerateWikiClick(Sender: TObject);
+begin
+  GenerateWiki;
+end;
+
+
+procedure TForm1.GenerateWiki;
 
   procedure ParseList(aName: String; aResultList: TStringList; aInputFile,aHeaderFile,aOutputFile: String; aHasReturn: Boolean = True);
   var

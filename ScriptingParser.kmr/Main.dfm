@@ -38,13 +38,13 @@ object Form1: TForm1
     TabOrder = 1
     OnClick = btnKPClick
   end
-  object btnGenerate: TButton
+  object btnGenerateWiki: TButton
     Left = 711
     Top = 80
     Width = 99
     Height = 73
     Anchors = [akTop, akRight]
-    Caption = 'Generate'
+    Caption = 'Generate Wiki'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
@@ -54,7 +54,8 @@ object Form1: TForm1
     ParentShowHint = False
     ShowHint = False
     TabOrder = 2
-    OnClick = btnGenerateClick
+    WordWrap = True
+    OnClick = btnGenerateWikiClick
   end
   object gbSettings: TGroupBox
     Left = 8
