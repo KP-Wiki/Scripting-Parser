@@ -1,10 +1,12 @@
 unit Main;
 interface
 uses
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils, Types,
   Classes, StdCtrls, StrUtils, INIFiles, Vcl.ComCtrls, Shlwapi;
 
 type
+  TKMCharArray = TArray<Char>;
+
   TForm1 = class(TForm)
     btnGenerate: TButton;
     Button1: TButton;
@@ -88,11 +90,113 @@ const
 var
   Form1: TForm1;
 
+  //String functions
+  function StrIndexOf(const aStr, aSubStr: String): Integer;
+  function StrLastIndexOf(const aStr, aSubStr: String): Integer;
+  function StrSubstring(const aStr: String; aFrom, aLength: Integer): String; overload;
+  function StrSubstring(const aStr: String; aFrom: Integer): String; overload;
+  function StrContains(const aStr, aSubStr: String): Boolean;
+  function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
+  procedure StrSplit(const aStr, aDelimiters: String; var aStrings: TStringList);
+
+
 implementation
 {$R *.dfm}
-uses
-  KM_CommonUtils, KM_CommonTypes;
 
+
+function StrIndexOf(const aStr, aSubStr: String): Integer;
+begin
+  //Todo refactor:
+  //@Krom: Why not just replace StrIndexOf with Pos everywhere in code?
+  Result := AnsiPos(aSubStr, aStr) - 1;
+end;
+
+
+function StrLastIndexOf(const aStr, aSubStr: String): Integer;
+var I: Integer;
+begin
+  Result := -1;
+  for I := 1 to Length(aStr) do
+    if AnsiPos(aSubStr, StrSubstring(aStr, I-1)) <> 0 then
+      Result := I - 1;
+end;
+
+
+function StrSubstring(const aStr: String; aFrom: Integer): String;
+begin
+  //Todo refactor:
+  //@Krom: Why not just replace StrSubstring with RightStr everywhere in code?
+  Result := Copy(aStr, aFrom + 1, Length(aStr));
+end;
+
+
+function StrSubstring(const aStr: String; aFrom, aLength: Integer): String;
+begin
+  //Todo refactor:
+  //@Krom: Why not just replace StrSubstring with Copy everywhere in code?
+  Result := Copy(aStr, aFrom + 1, aLength);
+end;
+
+
+function StrContains(const aStr, aSubStr: String): Boolean;
+begin
+  //Todo refactor:
+  //@Krom: Why not just replace StrContains with Pos() <> 0 everywhere in code?
+  Result := StrIndexOf(aStr, aSubStr) <> -1;
+end;
+
+
+function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
+var Found: Boolean;
+    I, J: Integer;
+begin
+  for I := Length(aStr) downto 1 do
+  begin
+    Found := False;
+    for J := Low(aCharsToTrim) to High(aCharsToTrim) do
+    begin
+      if aStr[I] = aCharsToTrim[J] then
+      begin
+        Found := True;
+        Break;
+      end;
+    end;
+    if not Found then
+      Break;
+  end;
+  Result := Copy(aStr, 1, I);
+end;
+
+
+function StrTrimChar(const Str: String; Ch: Char): string;
+var
+  S, E: Integer;
+begin
+  S := 1;
+  while (S <= Length(Str)) and (Str[S] = Ch) do Inc(S);
+  E := Length(Str);
+  while (E >= 1) and (Str[E] = Ch) do Dec(E);
+  SetString(Result, PChar(@Str[S]), E - S + 1);
+end;
+
+
+procedure StringSplit(const Str: string; Delimiter: Char; ListOfStrings: TStrings) ;
+begin
+   ListOfStrings.Clear;
+   ListOfStrings.Delimiter       := Delimiter;
+   ListOfStrings.StrictDelimiter := True;
+   ListOfStrings.DelimitedText   := Str;
+end;
+
+procedure StrSplit(const aStr, aDelimiters: String; var aStrings: TStringList);
+var
+  StrArray: TStringDynArray;
+  I: Integer;
+begin
+  StrArray := SplitString(aStr, aDelimiters);
+  for I := Low(StrArray) to High(StrArray) do
+    aStrings.Add(StrArray[I]);
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
