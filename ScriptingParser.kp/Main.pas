@@ -249,7 +249,9 @@ begin
         paramList.Add(StrTrimRight(listTokens[i] + ' ' + listTokens[nextType - 1] + ' ' + listTokens[nextType], charArr));
       end else
         // Skip unused stuff
-        if not ((SameText(listTokens[i], 'of')) or (SameText(listTokens[i], 'const')) or (i = nextType)) then
+        if not ((SameText(listTokens[i], 'of'))
+        or (SameText(listTokens[i], 'const'))
+        or (i = nextType)) then
           paramList.Add(listTokens[i]);
     end;
 
@@ -279,13 +281,13 @@ begin
     // Add line-breaks
     for i := High(paramHolder) downto 0 do
     begin
-      Result := Result + paramHolder[i].Name + ': ' + paramHolder[i].varType + ';';
+      Result := Result + '**' + paramHolder[i].Name + '**: ' + paramHolder[i].varType + ';';
 
       // Add micro descriptions to the parameters and remove them from the stringlist.
       for j := aDescriptions.Count - 1 downto 0 do
         if StartsStr(paramHolder[i].Name, aDescriptions[j]) then
         begin
-          Result := Result + ' // ' + StrSubstring(aDescriptions[j], StrIndexOf(aDescriptions[j], ':') + 2);
+          Result := Result + ' //_' + StrSubstring(aDescriptions[j], StrIndexOf(aDescriptions[j], ':') + 2) + '_';
           aDescriptions.Delete(j);
           Break;
         end;

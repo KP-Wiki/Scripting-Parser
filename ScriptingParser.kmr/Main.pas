@@ -437,7 +437,9 @@ begin
           end;
 
         // Skip empty or "faulty" lines
-        while not (StartsStr('procedure', sourceTxt[i+iPlus]) or StartsStr('function', sourceTxt[i+iPlus])) do
+        while
+          not StartsStr('procedure', sourceTxt[i+iPlus])
+          and not StartsStr('function', sourceTxt[i+iPlus]) do
           Inc(iPlus);
 
         // Format procedures
