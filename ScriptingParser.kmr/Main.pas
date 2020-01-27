@@ -44,10 +44,11 @@ type
   private
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fSettingsPath: string;
-    fSafeToWrite: Boolean;
+    fUpdating: Boolean;
     procedure ParseText(aFile: string; aList: TStringList; aHasReturn: Boolean);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
-    procedure Reinit;
+    procedure LoadSettings;
+    procedure SaveSettings;
     procedure GenerateWiki;
   end;
 
@@ -197,11 +198,13 @@ begin
 end;
 
 
-procedure TForm1.Reinit;
+procedure TForm1.LoadSettings;
 var
   ini: TINIFile;
 begin
   ini := TINIFile.Create(fSettingsPath);
+
+  fUpdating := True;
 
   if not FileExists(fSettingsPath) then
   begin
@@ -234,7 +237,10 @@ begin
 
   FreeAndNil(ini);
 
-  fSafeToWrite := True;
+  fUpdating := False;
+
+  if not FileExists(fSettingsPath) then
+    SaveSettings;
 end;
 
 
@@ -247,7 +253,6 @@ begin
     2: txtParserOutput.Lines.AddStrings(fListStates);
     3: txtParserOutput.Lines.AddStrings(fListUtils);
   end;
-
 end;
 
 {
@@ -583,7 +588,7 @@ procedure TForm1.btnKMRClick(Sender: TObject);
 begin
   // KaM
   fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.kmr.ini';
-  Reinit;
+  LoadSettings;
 end;
 
 
@@ -591,16 +596,22 @@ procedure TForm1.btnKPClick(Sender: TObject);
 begin
   // KP
   fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.kp.ini';
-  Reinit;
+  LoadSettings;
 end;
 
 
 procedure TForm1.edtOnTextChange(Sender: TObject);
+begin
+  if fUpdating then Exit;
+
+  SaveSettings;
+end;
+
+
+procedure TForm1.SaveSettings;
 var
   ini: TINIFile;
 begin
-  if not fSafeToWrite then Exit;
-
   ini := TINIFile.Create(fSettingsPath);
 
   ini.WriteString('INPUT',  'Actions', edtActionsFile.Text);
