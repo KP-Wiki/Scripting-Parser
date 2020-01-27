@@ -2,7 +2,7 @@ unit Main;
 interface
 uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils,
-  Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls, Shlwapi;
+  Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls;
 
 type
   TKMCharArray = TArray<Char>;
@@ -542,14 +542,6 @@ end;
 
 procedure TForm1.btnGenerateClick(Sender: TObject);
 
-  function RelToAbs(const RelPath, BasePath: string): string;
-  var
-    Dst: array[0..200-1] of char;
-  begin
-    PathCanonicalize(@Dst[0], PChar(IncludeTrailingBackslash(BasePath) + RelPath));
-    result := Dst;
-  end;
-
   procedure ParseList(aName: String; aResultList: TStringList; aInputFile,aHeaderFile,aOutputFile: String; aHasReturn: Boolean = True);
   var
     tmpList: TStringList;
@@ -579,7 +571,7 @@ procedure TForm1.btnGenerateClick(Sender: TObject);
 
       if aOutputFile <> '' then
       begin
-        Path := RelToAbs(aOutputFile, ExtractFilePath(ParamStr(0)));
+        Path := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
         if not DirectoryExists(ExtractFileDir(Path)) then
           ForceDirectories(ExtractFileDir(Path));
         aResultList.SaveToFile(aOutputFile);
