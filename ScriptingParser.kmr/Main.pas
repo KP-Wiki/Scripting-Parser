@@ -66,8 +66,10 @@ type
   end;
 
 const
+  VAR_TYPE_COUNT = 42;
+
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
-  VAR_TYPE_NAME: array[0..41] of string = (
+  VAR_TYPE_NAME: array[0..VAR_TYPE_COUNT-1] of string = (
     'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
     'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
     'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType', 'TKMGroupOrder',
@@ -78,7 +80,7 @@ const
     'TKMPoint','TByteSet', 'TIntegerArray', 'TAnsiStringArray' // Werewolf types
   );
 
-  VAR_TYPE_ALIAS: array[0..41] of string = (
+  VAR_TYPE_ALIAS: array[0..VAR_TYPE_COUNT-1] of string = (
     'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
     'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
     'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType', 'TKMGroupOrder',
