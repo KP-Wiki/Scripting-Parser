@@ -1,0 +1,178 @@
+#### States
+
+All states parameters are numeric and get mapped to unit/house types according to default tables used in DAT scripts.
+
+States are queried in a form **States.STATE_NAME(STATE_PARAMETERS)** like so:
+```pascal
+    if States.StatPlayerCount > 5 then
+      UnitCnt := States.StatUnitCount(1);
+```
+Also there is a short name for States: just **S**, so you could use it as
+```pascal
+  UnitCnt := S.StatUnitCount(1); //Get 1st player units count and store it in variable UnitCnt
+```
+
+***
+
+Other scripts functions:
+* [Mission Scripts Dynamic Events](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicEvents)
+* [Mission Scripts Dynamic Actions](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicActions)
+* [Mission Scripts Dynamic Utils](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicUtils)
+<br />
+
+| Ver<br>sion | State Description | Parameters<br>and types | Returns |
+| ------- | ------------------------------------ | -------------- | ------- |
+| 7000+ | AIArmyType<sub><br/>Gets AI army type</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>TKMArmyType</sub> |
+| 7000+ | AIAutoAttackRange<sub><br/>Gets AI auto attack range.<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer</sub> |
+| 7000+ | AIAutoBuild<sub><br/>Gets whether the AI should build and manage his own village<br/>Returns False if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | AIAutoDefence<sub><br/>Gets whether the AI should position his soldiers automatically<br/>Returns False if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | AIAutoRepair<sub><br/>Gets whether the AI should automatically repair damaged buildings<br/>Returns False if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | AIDefendAllies<sub><br/>Gets whether AI should defend units and houses of allies as if they were its own<br/>Returns False if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | AIEquipRate<sub><br/>Gets the warriors equip rate for AI.<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte; <br> **aType**: Byte; //_type: 0 - leather, 1 - iron_</sub> | <sub>Integer</sub> |
+| 7000+ | AIGroupsFormationGet<sub><br/>Gets the formation the AI uses for defence positions for specified player and group type<br/>GroupType: 0 = Melee, 1 = AntiHorse, 2 = Ranged, 3 = Mounted<br/>group count and columns are returned in aCount and aColumns variables</sub> | <sub>**aPlayer**: Byte; <br> **aType**: Byte; <br> **out aCount**: Integer; <br> **out aColumns**: Integer;</sub> | <sub></sub> |
+| 7000+ | AIRecruitDelay<sub><br/>Gets the number of ticks before the specified AI will start training recruits<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer</sub> |
+| 7000+ | AIRecruitLimit<sub><br/>Gets the number of recruits the AI will keep in each barracks<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer</sub> |
+| 7000+ | AISerfsPerHouse<sub><br/>Gets the number of serfs the AI will train per house.<br/>Can be a decimal (0.25 for 1 serf per 4 houses)<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Single</sub> |
+| 7000+ | AISoldiersLimit<sub><br/>Gets the maximum number of soldiers the AI will train, or -1 for unlimited<br/>Returns -2 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer</sub> |
+| 7000+ | AIStartPosition<sub><br/>Gets the AI start position which is used for targeting AI attacks<br/>Returns (-1;-1) if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>TKMPoint</sub> |
+| 7000+ | AIWorkerLimit<sub><br/>Gets the maximum number of laborers the AI will train<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer</sub> |
+| 6216 | ClosestGroup<sub><br/>Returns the group of the specified player and group type that is closest to the specified coordinates,<br/>or -1 if no such group was found.<br/>If the group type is -1 any group type will be accepted</sub> | <sub>**aPlayer**: Integer; <br> **X**: Integer; <br> **Y**: Integer; <br> **aGroupType**: Integer;</sub> | <sub>Integer //Group ID</sub> |
+| 6216 | ClosestGroupMultipleTypes<sub><br/>Returns the group of the specified player and group types that is closest to the specified coordinates,<br/>or -1 if no such group was found.<br/>The group types is a "set of Byte", for example [1,3]</sub> | <sub>**aPlayer**: Integer; <br> **X**: Integer; <br> **Y**: Integer; <br> **aGroupTypes**: set of Byte; //_Set of group types_</sub> | <sub>Integer //Group ID</sub> |
+| 6216 | ClosestHouse<sub><br/>Returns the house of the specified player and house type that is closest to the specified coordinates,<br/>or -1 if no such house was found.<br/>If the house type is -1 any house type will be accepted</sub> | <sub>**aPlayer**: Integer; <br> **X**: Integer; <br> **Y**: Integer; <br> **aHouseType**: Integer;</sub> | <sub>Integer //House ID</sub> |
+| 6216 | ClosestHouseMultipleTypes<sub><br/>Returns the house of the specified player and house types that is closest to the specified coordinates,<br/>or -1 if no such house was found.<br/>The house types is a "set of Byte", for example [11,13,21]</sub> | <sub>**aPlayer**: Integer; <br> **X**: Integer; <br> **Y**: Integer; <br> **aHouseTypes**: set of Byte; //_Set of house types_</sub> | <sub>Integer //House ID</sub> |
+| 6216 | ClosestUnit<sub><br/>Returns the unit of the specified player and unit type that is closest to the specified coordinates,<br/>or -1 if no such unit was found.<br/>If the unit type is -1 any unit type will be accepted</sub> | <sub>**aPlayer**: Integer; <br> **X**: Integer; <br> **Y**: Integer; <br> **aUnitType**: Integer;</sub> | <sub>Integer //Unit ID</sub> |
+| 6216 | ClosestUnitMultipleTypes<sub><br/>Returns the unit of the specified player and unit types that is closest to the specified coordinates,<br/>or -1 if no such unit was found.<br/>The unit types is a "set of Byte", for example [0,9]</sub> | <sub>**aPlayer**: Integer; <br> **X**: Integer; <br> **Y**: Integer; <br> **aUnitTypes**: set of Byte; //_Set of unit types_</sub> | <sub>Integer //Unit ID</sub> |
+| 6602 | ConnectedByRoad<sub><br/>Check if two tiles are connected by walkable road</sub> | <sub>**X1**: Integer; //_left coordinate_ <br> **Y1**: Integer; //_top coordinate_ <br> **X2**: Integer; //_right coordinate_ <br> **Y2**: Integer; //_bottom coordinate_</sub> | <sub>Boolean //Connected</sub> |
+| 6602 | ConnectedByWalking<sub><br/>Check if two tiles are connected by a walkable route</sub> | <sub>**X1**: Integer; //_Left coordinate_ <br> **Y1**: Integer; //_Top coordinate_ <br> **X2**: Integer; //_Right coordinate_ <br> **Y2**: Integer; //_Bottom coordinate_</sub> | <sub>Boolean //Connected</sub> |
+| 5097 | FogRevealed<sub><br/>Check if a tile is revealed in fog of war for a player</sub> | <sub>**aPlayer**: Byte; <br> **aX**: Word; <br> **aY**: Word;</sub> | <sub>Boolean //Revealed</sub> |
+| 5057 | GameTime<sub><br/>Get the number of game ticks since mission start</sub> | <sub></sub> | <sub>Cardinal //Ticks (~10 per second)</sub> |
+| 7000+ | GroupAssignedToDefencePosition<sub><br/>Returns true if target Group is assigned to the Defence Position at coordinates X, Y</sub> | <sub>**aGroupID**: Integer; <br> **X**: Integer; <br> **Y**: Integer;</sub> | <sub>Boolean //Group assigned to Defence position</sub> |
+| 5057 | GroupAt<sub><br/>Returns the ID of the group of the unit on the specified tile or -1 if no group exists there</sub> | <sub>**aX**: Word; <br> **aY**: Word;</sub> | <sub>Integer //Group ID</sub> |
+| 5272 | GroupColumnCount<sub><br/>Returns the number of columns (units per row) of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Column count</sub> |
+| 5057 | GroupDead<sub><br/>Returns true if the group is dead (all members dead or joined other groups)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean //Dead</sub> |
+| 6523 | GroupIdle<sub><br/>Returns true if specified group is idle (has no orders/action)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean //Idle</sub> |
+| 7000+ | GroupInFight<sub><br/>Returns true if specified group is in fight</sub> | <sub>**aGroupID**: Integer; <br> **aCountCitizens**: Boolean; //_CountCitizens - including fights with citizens_</sub> | <sub>Boolean //InFight</sub> |
+| 5057 | GroupMember<sub><br/>Returns the unit ID of the specified group member.<br/>Member 0 will be the flag holder, 1...GroupMemberCount-1 will be the other members<br/>(0 <= MemberIndex <= GroupMemberCount-1)</sub> | <sub>**aGroupID**: Integer; <br> **aMemberIndex**: Integer;</sub> | <sub>Integer //Unit ID</sub> |
+| 5057 | GroupMemberCount<sub><br/>Returns the total number of members of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Member count</sub> |
+| 7000+ | GroupOrder<sub><br/>Returns current order of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>TKMGroupOrder //TKMGroupOrder</sub> |
+| 5057 | GroupOwner<sub><br/>Returns the owner of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Player ID</sub> |
+| 5932 | GroupType<sub><br/>Returns the type of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Group type</sub> |
+| 10940 | HouseAllowAllyToView<sub><br/>Return if specified house is allowed to be viewed by his allies</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| 5057 | HouseAt<sub><br/>Returns the ID of the house at the specified location or -1 if no house exists there</sub> | <sub>**aX**: Word; <br> **aY**: Word;</sub> | <sub>Integer //House ID</sub> |
+| 6516 | HouseBarracksRallyPointX<sub><br/>Returns X coordinate of Rally Point of specified barracks or 0 if BarracksID is invalid</sub> | <sub>**aBarracks**: Integer;</sub> | <sub>Integer //X coordinate</sub> |
+| 6516 | HouseBarracksRallyPointY<sub><br/>Returns Y coordinate of Rally Point of specified barracks or 0 if BarracksID is invalid</sub> | <sub>**aBarracks**: Integer;</sub> | <sub>Integer //Y coordinate</sub> |
+| 6285 | HouseBuildingProgress<sub><br/>Returns building progress of the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Word //Building progress</sub> |
+| 5993 | HouseCanReachResources<sub><br/>Returns true if the specified house can reach the resources that it mines (coal, stone, fish, etc.)</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Reachable</sub> |
+| 5057 | HouseDamage<sub><br/>Returns the damage of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //House damage</sub> |
+| 5057 | HouseDeliveryBlocked<sub><br/>Returns true if the specified house has delivery disabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Blocked</sub> |
+| 7000+ | HouseDeliveryMode<sub><br/>Returns delivery mode ID, where<br/>ID = 0 delivery blocked<br/>ID = 1 delivery allowed<br/>ID = 2 take ware out allowed<br/>if no house was found then ID = 1 is returned</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Blocked</sub> |
+| 5057 | HouseDestroyed<sub><br/>Returns true if the house is destroyed</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Destroyed</sub> |
+| 7000+ | HouseFlagPoint<sub><br/>Returns House Flag Point of specified house or KMPoint(0,0) if aHouseId is invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMPoint //Flag Point</sub> |
+| 5057 | HouseHasOccupant<sub><br/>Returns true if the specified house currently has an occupant</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Has occupant</sub> |
+| 5345 | HouseIsComplete<sub><br/>Returns true if the specified house is fully built</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| 5057 | HouseOwner<sub><br/>Returns the owner of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Player ID</sub> |
+| 7000+ | HousePosition<sub><br/>Returns the Entrance Point of the specified house or (-1;-1) point if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMPoint //TKMPoint</sub> |
+| 5057 | HousePositionX<sub><br/>Returns the X coordinate of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //X coordinate</sub> |
+| 5057 | HousePositionY<sub><br/>Returns the Y coordinate of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Y coordinate</sub> |
+| 5057 | HouseRepair<sub><br/>Returns true if the specified house has repair enabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Repair enabled</sub> |
+| 5057 | HouseResourceAmount<sub><br/>Returns the amount of the specified resource in the specified house</sub> | <sub>**aHouseID**: Integer; <br> **aResource**: Integer;</sub> | <sub>Integer //Number of resources</sub> |
+| 5165 | HouseSchoolQueue<sub><br/>Returns the unit type in the specified slot of the school queue.<br/>Slot 0 is the unit currently training, slots 1..5 are the queue.</sub> | <sub>**aHouseID**: Integer; <br> **QueueIndex**: Integer; //_Queue index (0..5)_</sub> | <sub>Integer //Unit type</sub> |
+| 6510 | HouseSiteIsDigged<sub><br/>Returns true if specified WIP house area is digged</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Digged</sub> |
+| 7000+ | HouseTownHallMaxGold<sub><br/>Returns Max amount of gold which is possible to deliver into the TownHall<br/>or -1 if TownHall house was not found</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Max gold for specified TownHall</sub> |
+| 5057 | HouseType<sub><br/>Returns the type of the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //House type</sub> |
+| 6284 | HouseTypeMaxHealth<sub><br/>Returns max health of the specified house type</sub> | <sub>**aHouseType**: Integer;</sub> | <sub>Word //Max health</sub> |
+| 6001 | HouseTypeName<sub><br/>Returns the the translated name of the specified house type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup which is<br/>decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aHouseType**: Byte;</sub> | <sub>AnsiString //House type name</sub> |
+| 5345 | HouseTypeToOccupantType<sub><br/>Returns the type of unit that should occupy the specified type of house, or -1 if no unit should occupy it.</sub> | <sub>**aHouseType**: Integer;</sub> | <sub>Integer //Unit type</sub> |
+| 6220 | HouseUnlocked<sub><br/>Returns true if the specified player can build the specified house type (unlocked and allowed).</sub> | <sub>**aPlayer**: Word; <br> **aHouseType**: Word;</sub> | <sub>Boolean //House unlocked</sub> |
+| 5099 | HouseWareBlocked<sub><br/>Returns true if the specified ware in the specified storehouse or barracks is blocked</sub> | <sub>**aHouseID**: Integer; <br> **aWareType**: Integer;</sub> | <sub>Boolean //Ware blocked</sub> |
+| 5165 | HouseWeaponsOrdered<sub><br/>Returns the number of the specified weapon ordered to be produced in the specified house</sub> | <sub>**aHouseID**: Integer; <br> **aWareType**: Integer;</sub> | <sub>Integer //Number of ordered weapons</sub> |
+| 5099 | HouseWoodcutterChopOnly<sub><br/>Returns true if the specified woodcutter's hut is on chop-only mode</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Chop-only</sub> |
+| 7000+ | HouseWoodcutterMode<sub><br/>Returns woodcutter mode value for the specified woodcutter's hut<br/>Possible values for woodcutter mode are:<br/>0 - Chop And Plant<br/>1 - Chop only<br/>2 - Plant only</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //woodcutter mode as Integer value</sub> |
+| 5345 | IsFieldAt<sub><br/>Returns true if the specified player has a corn field at the specified location.<br/>If player index is -1 it will return true if any player has a corn field at the specified tile</sub> | <sub>**aPlayer**: Shortint; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is field</sub> |
+| 7000+ | IsFieldPlanAt<sub><br/>Returns true if the specified player has a field plan (ftCorn) at the specified location.<br/>If aPlayer index is -1 it will return true if any player has field plan at the specified location.<br/>If Corn (Field) Plan found then aPlayer will contain its player id</sub> | <sub>**var aPlayer**: Integer; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is field plan found</sub> |
+| 7000+ | IsHousePlanAt<sub><br/>Returns true if the specified player has a house plan of the specified type at the specified location.<br/>If aPlayer index is -1 it will return true if any player has house plan of the specified type at the specified location.<br/>If aHouseType is htNone it will return if the specified player has a house plan of the any type at the specified location.<br/>If aPlayer index is -1 and aHouseType is htNone it will return if any player has a house plan of the any type at the specified location.<br/>If house plan found then after execution aPlayer will contain its player id and aHouseType its type</sub> | <sub>**var aPlayer**: Integer; <br> **var aHouseType**: TKMHouseType; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is house plan found</sub> |
+| 7000+ | IsMissionBlockFullMapPreview<sub><br/>Returns if full map preview is blocked for current mission</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsMissionBlockPeacetime<sub><br/>Returns if peacetime is locked for current mission</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsMissionBlockTeamSelection<sub><br/>Returns if team selection is locked for current mission</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsMissionBuildType<sub><br/>Returns if mission is build type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsMissionCoopType<sub><br/>Returns if mission is cooperative type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsMissionFightType<sub><br/>Returns if mission is fight type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsMissionPlayableAsSP<sub><br/>Returns if mission is playable as Singleplayer map</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsMissionSpecialType<sub><br/>Returns if mission is special type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | IsPlanAt<sub><br/>Returns true if the specified player has a field plan of the specified type at the specified location.<br/>If aPlayer index is -1 it will return true if any player has plan of the specified type at the specified location.<br/>If aFieldType is ftNone it will return if the specified player has a field plan of the any type (ftCorn, ftRoad, ftWine) at the specified location.<br/>If aPlayer index is -1 and aFieldType is ftNone it will return if any player has a field plan of the any type (ftCorn, ftRoad, ftWine) at the specified location.<br/>If Plan found then aPlayer will contain its player id and aFieldType its type</sub> | <sub>**var aPlayer**: Integer; <br> **var aFieldType**: TKMFieldType; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is plan found</sub> |
+| 5345 | IsRoadAt<sub><br/>Returns true if the specified player has a road at the specified location.<br/>If player index is -1 it will return true if any player has a road at the specified tile</sub> | <sub>**aPlayer**: Shortint; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is road</sub> |
+| 7000+ | IsRoadPlanAt<sub><br/>Returns true if the specified player has a field plan (ftRoad) at the specified location.<br/>If aPlayer index is -1 it will return true if any player has road plan at the specified location.<br/>If Road plan found then aPlayer will contain its player id</sub> | <sub>**var aPlayer**: Integer; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is road plan found</sub> |
+| 5345 | IsWinefieldAt<sub><br/>Returns true if the specified player has a winefield at the specified location.<br/>If player index is -1 it will return true if any player has a winefield at the specified tile</sub> | <sub>**aPlayer**: Shortint; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is winefield</sub> |
+| 7000+ | IsWinefieldPlanAt<sub><br/>Returns true if the specified player has a field plan (ftWine) at the specified location.<br/>If aPlayer index is -1 it will return true if any player has winefield plan at the specified location.<br/>If Winefield Plan found then aPlayer will contain its player id</sub> | <sub>**var aPlayer**: Integer; <br> **X**: Word; <br> **Y**: Word;</sub> | <sub>Boolean //Is winefield plan found</sub> |
+| 6216 | KaMRandom<sub><br/>Returns a random single (float) such that: 0 <= Number < 1.0</sub> | <sub></sub> | <sub>Single //Decimal number 0.0 to 1.0</sub> |
+| 6216 | KaMRandomI<sub><br/>Returns a random integer such that: 0 <= Number</sub> | <sub>**aMax:Integer**: ;</sub> | <sub>Integer //Number 0 to aMax</sub> |
+| 6611 | LocationCount<sub><br/>Returns the number of player locations available on the map (including AIs),<br/>regardless of whether the location was taken in multiplayer (use PlayerEnabled to check if a location is being used)</sub> | <sub></sub> | <sub>Integer //Number of locations</sub> |
+| 6613 | MapHeight<sub><br/>Returns the height of the map</sub> | <sub></sub> | <sub>Integer //Height</sub> |
+| 6587 | MapTileHeight<sub><br/>Returns the height of the terrain at the top left corner (vertex) of the tile at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br> **Y**: Integer;</sub> | <sub>Integer //Height (0..100)</sub> |
+| 6587 | MapTileObject<sub><br/>Returns the terrain object ID on the tile at the specified XY coordinates.<br/>Object IDs can be seen in the map editor on the objects tab.<br/>Object 61 is "block walking".<br/>If there is no object on the tile, the result will be 255.</sub> | <sub>**X**: Integer; <br> **Y**: Integer;</sub> | <sub>Integer //Object type (0..255)</sub> |
+| 7000+ | MapTilePassability<sub><br/>Returns true if specified tile has requested passability.</sub> | <sub>**X**: Integer; <br> **Y**: Integer; <br> **aPassability**: Byte; //_passability index as listed in KM_Defaults (starts from 0)_</sub> | <sub>Boolean //true or false</sub> |
+| 6587 | MapTileRotation<sub><br/>Returns the rotation of the tile at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br> **Y**: Integer;</sub> | <sub>Integer //Rotation (0..3)</sub> |
+| 6587 | MapTileType<sub><br/>Returns the tile type ID of the tile at the specified XY coordinates.<br/>Tile IDs can be seen by hovering over the tiles on the terrain tiles tab in the map editor.</sub> | <sub>**X**: Integer; <br> **Y**: Integer;</sub> | <sub>Integer //Tile type (0..255)</sub> |
+| 6613 | MapWidth<sub><br/>Returns the width of the map</sub> | <sub></sub> | <sub>Integer //Width</sub> |
+| 6287 | MarketFromWare<sub><br/>Returns type of FromWare in specified market, or -1 if no ware is selected</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>Integer //Ware type</sub> |
+| 6217 | MarketLossFactor<sub><br/>Returns the factor of resources lost during market trading,<br/>used to calculate the TradeRatio (see explanation in MarketValue).<br/>This value is constant within one KaM Remake release, but may change in future KaM Remake releases</sub> | <sub></sub> | <sub>Single //Loss factor</sub> |
+| 6287 | MarketOrderAmount<sub><br/>Returns trade order amount in specified market</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>Integer //Order amount</sub> |
+| 6287 | MarketToWare<sub><br/>Returns type of ToWare in specified market, or -1 if no ware is selected</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>Integer //Ware type</sub> |
+| 6216 | MarketValue<sub><br/>Returns the relative market value of the specified resource type,<br/>which is a rough indication of the cost to produce that resource.<br/>These values are constant within one KaM Remake release, but may change in future KaM Remake releases.<br/>The TradeRatio is calculated as: MarketLossFactor * MarketValue(To) / (MarketValue(From).<br/>If the TradeRatio is >= 1, then the number of From resources required to receive 1 To resource is: Round(TradeRatio).<br/>If the trade ratio is < 1 then the number of To resources received for trading 1 From resource is: Round(1 / TradeRatio)</sub> | <sub>**aRes**: Integer;</sub> | <sub>Single //Value</sub> |
+| 7000+ | MissionAuthor<sub><br/>Returns mission author</sub> | <sub></sub> | <sub>UnicodeString</sub> |
+| 7000+ | MissionBigDesc<sub><br/>Returns mission big description</sub> | <sub></sub> | <sub>UnicodeString</sub> |
+| 7000+ | MissionBigDescLibx<sub><br/>Returns mission big description Libx ID</sub> | <sub></sub> | <sub>Integer</sub> |
+| 7000+ | MissionDifficulty<sub><br/>Returns mission difficulty for current game</sub> | <sub></sub> | <sub>TKMMissionDifficulty</sub> |
+| 7000+ | MissionDifficultyLevels<sub><br/>Returns allowed mission difficulty levels</sub> | <sub></sub> | <sub>TKMMissionDifficultySet</sub> |
+| 7000+ | MissionSmallDesc<sub><br/>Returns mission small description</sub> | <sub></sub> | <sub>UnicodeString</sub> |
+| 7000+ | MissionSmallDescLibx<sub><br/>Returns mission small description Libx ID</sub> | <sub></sub> | <sub>Integer</sub> |
+| 5057 | PeaceTime<sub><br/>Length of peacetime in ticks (multiplayer)</sub> | <sub></sub> | <sub>Cardinal //Ticks (~10 per second)</sub> |
+| 5057 | PlayerAllianceCheck<sub><br/>Check how player 1 feels towards player 2 (order matters).<br/>Returns true for ally, false for enemy</sub> | <sub>**aPlayer1**: Byte; <br> **aPlayer2**: Byte;</sub> | <sub>Boolean //Allied</sub> |
+| 4758 | PlayerColorText<sub><br/>Get players color as text in hex format</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>AnsiString //Player color</sub> |
+| 5057 | PlayerDefeated<sub><br/>See if player was defeated</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean //Defeated</sub> |
+| 5057 | PlayerEnabled<sub><br/>Will be false if nobody selected that location in multiplayer</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean //Enabled</sub> |
+| 5209 | PlayerGetAllGroups<sub><br/>Returns an array with IDs for all the groups of the specified player</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>array of Integer //Array of group IDs</sub> |
+| 5209 | PlayerGetAllHouses<sub><br/>Returns an array with IDs for all the houses of the specified player</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>array of Integer //Array of house IDs</sub> |
+| 5165 | PlayerGetAllUnits<sub><br/>Returns an array with IDs for all the units of the specified player</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>array of Integer //Array of unit IDs</sub> |
+| 5927 | PlayerIsAI<sub><br/>Wherever player is controlled by AI</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean //Player is AI</sub> |
+| 5057 | PlayerName<sub><br/>Get name of player as a string (for multiplayer)</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>AnsiString //Player name</sub> |
+| 4545 | PlayerVictorious<sub><br/>See if player is victorious</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean //Victorious</sub> |
+| 5345 | PlayerWareDistribution<sub><br/>Returns the ware distribution for the specified resource, house and player</sub> | <sub>**aPlayer**: Byte; <br> **aWareType**: Byte; <br> **aHouseType**: Byte;</sub> | <sub>Byte //Ware distribution [0..5]</sub> |
+| 6323 | StatAIDefencePositionsCount<sub><br/>How many defence positions AI player has.<br/>Useful for scripts like "if not enough positions and too much groups then add a new position"</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Defence position count</sub> |
+| 5057 | StatArmyCount<sub><br/>How many military units player has</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Army count</sub> |
+| 5057 | StatCitizenCount<sub><br/>How many citizen player has</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Citizen count</sub> |
+| 6328 | StatHouseMultipleTypesCount<sub><br/>Returns number of specified house types for specified player.</sub> | <sub>**aPlayer**: Byte; <br> **aTypes**: set of Byte; //_House types eg. [11, 13, 21]_</sub> | <sub>Integer //Total number of houses</sub> |
+| 5057 | StatHouseTypeCount<sub><br/>Returns the total number of the specified house type for the specified player.</sub> | <sub>**aPlayer**: Byte; <br> **aHouseType**: Byte;</sub> | <sub>Integer //Number of houses</sub> |
+| 6313 | StatHouseTypePlansCount<sub><br/>Specified house type plans count</sub> | <sub>**aPlayer**: Byte; <br> **aHouseType**: Byte;</sub> | <sub>Integer //Number of plans</sub> |
+| 5057 | StatPlayerCount<sub><br/>How many active players there are.</sub> | <sub></sub> | <sub>Integer //Number of players</sub> |
+| 5057 | StatResourceProducedCount<sub><br/>Returns the number of the specified resource produced by the specified player</sub> | <sub>**aPlayer**: Byte; <br> **aResType**: Byte;</sub> | <sub>Integer //Number of produced resources</sub> |
+| 6331 | StatResourceProducedMultipleTypesCount<sub><br/>Returns the number of the specified resource types produced by the specified player.</sub> | <sub>**aPlayer**: Byte; <br> **aTypes**: set of Byte; //_Set of ware types eg. [8, 10, 13, 27] for food_</sub> | <sub>Integer //Number of produced resources</sub> |
+| 4289 | StatUnitCount<sub><br/>Returns the number of units of the specified player</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Number of units</sub> |
+| 5057 | StatUnitKilledCount<sub><br/>Returns the number of the specified unit killed by the specified player</sub> | <sub>**aPlayer**: Byte; <br> **aUnitType**: Byte;</sub> | <sub>Integer //Number of killed units</sub> |
+| 6331 | StatUnitKilledMultipleTypesCount<sub><br/>Returns the number of the specified unit types killed by the specified player.</sub> | <sub>**aPlayer**: Byte; <br> **aTypes**: set of Byte;</sub> | <sub>Integer //Set of unit types eg. [0, 5, 13]</sub> |
+| 5057 | StatUnitLostCount<sub><br/>Returns the number of the specified unit lost by the specified player</sub> | <sub>**aPlayer**: Byte; <br> **aUnitType**: Byte;</sub> | <sub>Integer //Number of lost units</sub> |
+| 6331 | StatUnitLostMultipleTypesCount<sub><br/>Returns the number of the specified unit types lost by the specified player.</sub> | <sub>**aPlayer**: Byte; <br> **aTypes**: set of Byte; //_Set of unit types eg. [0, 5, 13]_</sub> | <sub>Integer //Number of lost units</sub> |
+| 6328 | StatUnitMultipleTypesCount<sub><br/>Returns number of specified unit types for specified player.</sub> | <sub>**aPlayer**: Byte; <br> **aTypes**: set of Byte; //_Set of unit types eg. [0, 5, 13]_</sub> | <sub>Integer //Total number of  units</sub> |
+| 5057 | StatUnitTypeCount<sub><br/>Returns number of specified unit type for specified player</sub> | <sub>**aPlayer**: Byte; <br> **aUnitType**: Byte;</sub> | <sub>Integer //Number of units</sub> |
+| 5057 | UnitAt<sub><br/>Returns the ID of the unit on the specified tile or -1 if no unit exists there</sub> | <sub>**aX**: Word; <br> **aY**: Word;</sub> | <sub>Integer //Unit ID</sub> |
+| 5057 | UnitCarrying<sub><br/>Returns the ware a serf is carrying, or -1 if the unit is not a serf or is not carrying anything</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Ware type</sub> |
+| 5057 | UnitDead<sub><br/>Returns true if the unit is dead</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //Dead</sub> |
+| 5165 | UnitDirection<sub><br/>Returns the direction the specified unit is facing</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Direction (0..7)</sub> |
+| 7000+ | UnitDismissable<sub><br/>Returns the 'Dismissable' status of specified unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //is unit dismissable</sub> |
+| 5997 | UnitHome<sub><br/>Returns the ID of the house which is the home of the specified unit or -1 if the unit does not have a home</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //House ID</sub> |
+| 7000+ | UnitHPCurrent<sub><br/>Returns current hitpoints for specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //HitPoints</sub> |
+| 7000+ | UnitHPInvulnerable<sub><br/>See if unit is invulnerable</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //true or false</sub> |
+| 7000+ | UnitHPMax<sub><br/>Returns max hitpoints for specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //HitPoints</sub> |
+| 5057 | UnitHunger<sub><br/>Returns the hunger level of the specified unit as number of ticks until death or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Hunger level</sub> |
+| 6523 | UnitIdle<sub><br/>Returns true if specified unit is idle (has no orders/action)</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //Idle</sub> |
+| 5057 | UnitLowHunger<sub><br/>Gives the hunger level when a unit will try to eat in ticks until death</sub> | <sub></sub> | <sub>Integer //Hunger in ticks</sub> |
+| 5057 | UnitMaxHunger<sub><br/>Gives the maximum hunger level a unit can have in ticks until death</sub> | <sub></sub> | <sub>Integer //Hunger in ticks</sub> |
+| 5057 | UnitOwner<sub><br/>Returns the owner of the specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Player ID</sub> |
+| 7000+ | UnitPosition<sub><br/>Returns the TKMPoint with coordinates of the specified unit or (-1;-1) point if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMPoint //TKMPoint</sub> |
+| 5057 | UnitPositionX<sub><br/>Returns the X coordinate of the specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //X coordinate</sub> |
+| 5057 | UnitPositionY<sub><br/>Returns the Y coordinate of the specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Y coordinate</sub> |
+| 5057 | UnitsGroup<sub><br/>Returns the group that the specified unit (warrior) belongs to or -1 if it does not belong to a group</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Group ID</sub> |
+| 5057 | UnitType<sub><br/>Returns the type of the specified unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Unit type</sub> |
+| 6001 | UnitTypeName<sub><br/>Returns the the translated name of the specified unit type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup<br/>which is decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aUnitType**: Byte;</sub> | <sub>AnsiString //Unit type name</sub> |
+| 6001 | WareTypeName<sub><br/>Returns the the translated name of the specified ware type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup<br/>which is decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aWareType**: Byte;</sub> | <sub>AnsiString //Ware type name</sub> |
+| 7000+ | WarriorInFight<sub><br/>Returns true if specified warrior is in fight</sub> | <sub>**aUnitID**: Integer; <br> **aCountCitizens**: Boolean; //_CountCitizens - including fights with citizens_</sub> | <sub>Boolean //InFight</sub> |
