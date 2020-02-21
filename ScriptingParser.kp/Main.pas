@@ -69,7 +69,7 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 34;
+  VAR_TYPE_COUNT = 44;
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
   VAR_TYPE_NAME: array[0..VAR_TYPE_COUNT-1] of string = (
@@ -79,13 +79,16 @@ const
     // Custom types
     'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
     // KMR
+    'TKMArmyType', 'TKMGroupOrder',
+    'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
+    'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
     // KP
-    'TKMObjectiveStatus', 'TKMObjectiveType',
-    'TKMHouseFace',
+    'TKMHouseFace', 'TKMObjectiveStatus', 'TKMObjectiveType',
     // Werewolf types
     'TByteSet', 'TIntegerArray', 'TAnsiStringArray',
     'TKMHouse', 'TKMUnit', 'TKMUnitGroup',
     // KMR
+    'TKMHandID', 'array of TKMHandID',
     // KP
     'TKMEntity', 'TKMHandIndex', 'array of TKMHandIndex'
   );
@@ -97,13 +100,16 @@ const
     // Custom types
     'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
     // KMR
+    'TKMArmyType', 'TKMGroupOrder',
+    'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
+    'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
     // KP
-    'TKMObjectiveStatus', 'TKMObjectiveType',
-    'TKMHouseFace',
+    'TKMHouseFace', 'TKMObjectiveStatus', 'TKMObjectiveType',
     // Werewolf types
     'set of Byte', 'array of Integer', 'array of AnsiString',
     'Integer', 'Integer', 'Integer',
     // KMR
+    'Integer', 'array of Integer',
     // KP
     'Integer', 'Integer', 'array of Integer'
   );

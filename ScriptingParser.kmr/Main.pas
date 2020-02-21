@@ -66,7 +66,7 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 42;
+  VAR_TYPE_COUNT = 45;
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
   VAR_TYPE_NAME: array[0..VAR_TYPE_COUNT-1] of string = (
@@ -76,19 +76,18 @@ const
     // Custom types
     'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
     // KMR
+    'TKMArmyType', 'TKMGroupOrder',
     'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
     'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
-    'TKMArmyType',
-    'TKMGroupOrder',
     // KP
-    'TKMObjectiveStatus', 'TKMObjectiveType',
-    'TKMHouseFace',
+    'TKMHouseFace', 'TKMObjectiveStatus', 'TKMObjectiveType',
     // Werewolf types
     'TByteSet', 'TIntegerArray', 'TAnsiStringArray',
     'TKMHouse', 'TKMUnit', 'TKMUnitGroup',
     // KMR
-    'TKMHandID', 'array of TKMHandID'
+    'TKMHandID', 'array of TKMHandID',
     // KP
+    'TKMEntity', 'TKMHandIndex', 'array of TKMHandIndex'
   );
 
   VAR_TYPE_ALIAS: array[0..VAR_TYPE_COUNT-1] of string = (
@@ -98,19 +97,18 @@ const
     // Custom types
     'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
     // KMR
+    'TKMArmyType', 'TKMGroupOrder',
     'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
     'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
-    'TKMArmyType',
-    'TKMGroupOrder',
     // KP
-    'TKMObjectiveStatus', 'TKMObjectiveType',
-    'TKMHouseFace',
+    'TKMHouseFace', 'TKMObjectiveStatus', 'TKMObjectiveType',
     // Werewolf types
     'set of Byte', 'array of Integer', 'array of AnsiString',
     'Integer', 'Integer', 'Integer',
     // KMR
-    'Integer', 'array of Integer'
+    'Integer', 'array of Integer',
     // KP
+    'Integer', 'Integer', 'array of Integer'
   );
 
 var
