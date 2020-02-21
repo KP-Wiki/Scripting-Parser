@@ -4,12 +4,12 @@ All states parameters are numeric and get mapped to unit/house types according t
 
 States are queried in a form **States.STATE_NAME(STATE_PARAMETERS)** like so:
 ```pascal
-    if States.PlayerCount > 5 then
-      A := States.UnitCount(1);
+    if States.StatPlayerCount > 5 then
+      UnitCnt := States.StatUnitCount(1);
 ```
-Also there is a short name for Actions: just **S**, so you could use it as
+Also there is a short name for States: just **S**, so you could use it as
 ```pascal
-  A := S.UnitCount(1); //Defeat 1st player
+  UnitCnt := S.StatUnitCount(1); //Get 1st player units count and store it in variable UnitCnt
 ```
 
 ***

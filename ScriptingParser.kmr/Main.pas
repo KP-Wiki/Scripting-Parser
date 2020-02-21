@@ -294,7 +294,7 @@ begin
           paramList.Add(listTokens[i]);
     end;
 
-    //Check for 'out' and 'var' variables modifiers (they are in paramList now
+    //Check for 'out' and 'var' variables modifiers (they are in paramList now)
     nextVarModifier := '';
     for i := 0 to paramList.Count - 1 do
     begin
