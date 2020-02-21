@@ -329,9 +329,9 @@ begin
     lastType := '';
     for i := paramList.Count - 1 downto 0 do
     begin
-      if paramList[i] = '' then //skip empty params (f.e. modifiers)
+      if paramList[i] = '' then // Skip empty params (f.e. modifiers "var" or "out")
         Continue;
-      
+
       // See if this token is a Type
       isParam := True;
       for K := 0 to High(VAR_TYPE_NAME) do
