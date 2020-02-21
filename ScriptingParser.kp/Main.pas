@@ -368,7 +368,7 @@ begin
         end;
 
       if i <> 0 then
-        Result := Result + ' <br> ';
+        Result := Result + ' <br/> ';
     end;
   finally
     FreeAndNil(listTokens);
@@ -479,7 +479,7 @@ begin
           res.Description := res.Description + ' ' + descrTxt[j];
 
         // Now we have all the parts and can combine them however we like
-        aList.Add('| ' + res.Version + ' | ' + res.Name + '<br><sub>' + res.Description + '</sub>' +
+        aList.Add('| ' + res.Version + ' | ' + res.Name + '<br/><sub>' + res.Description + '</sub>' +
                   ' | <sub>' + res.Parameters + '</sub>' +
                   IfThen(aHasReturn, ' | <sub>' + res.Return + IfThen(res.ReturnDesc <> '', ' // ' + res.ReturnDesc) + '</sub>') +
                   ' |');
@@ -532,10 +532,10 @@ procedure TForm1.GenerateWiki;
 
     if aHasReturn then
     begin
-      aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types | Returns |');
+      aResultList.Add('| Ver<br/>sion | ' + aName + ' Description | Parameters<br/>and types | Returns |');
       aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
     end else begin
-      aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types |');
+      aResultList.Add('| Ver<br/>sion | ' + aName + ' Description | Parameters<br/>and types |');
       aResultList.Add('| ------- | ------------------------------------ | -------------- |');
     end;
 

@@ -365,7 +365,7 @@ begin
         end;
 
       if i <> 0 then
-        Result := Result + ' <br> ';
+        Result := Result + ' <br/> ';
     end;
   finally
     FreeAndNil(listTokens);
@@ -473,7 +473,7 @@ begin
 
         // Now we can assemble Description, after we have detected and removed parameters descriptions from it
         for j := 0 to descrTxt.Count - 1 do
-          // We don't need <br> after </pre> since </pre> has an automatic visual "br" after it
+          // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
           if (j > 0) and (RightStr(descrTxt[j-1],6) = '</pre>') then
             res.Description := res.Description + descrTxt[j]
           else
@@ -534,10 +534,10 @@ procedure TForm1.GenerateWiki;
 
     if aHasReturn then
     begin
-      aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types | Returns |');
+      aResultList.Add('| Ver<br/>sion | ' + aName + ' Description | Parameters<br/>and types | Returns |');
       aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
     end else begin
-      aResultList.Add('| Ver<br>sion | ' + aName + ' Description | Parameters<br>and types |');
+      aResultList.Add('| Ver<br/>sion | ' + aName + ' Description | Parameters<br/>and types |');
       aResultList.Add('| ------- | ------------------------------------ | -------------- |');
     end;
 
