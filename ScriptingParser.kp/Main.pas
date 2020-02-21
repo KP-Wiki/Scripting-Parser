@@ -79,8 +79,10 @@ const
     'THouseType', 'TWareType', 'TFieldType', 'TUnitType',
     'TKMObjectiveStatus', 'TKMObjectiveType',
     'TKMHouseFace',
-    'TKMEntity', 'TKMHouse', 'TKMUnit', 'TKMUnitGroup', 'TKMHandIndex', 'array of TKMHandIndex', // Werewolf types
-    'TByteSet', 'TIntegerArray', 'TAnsiStringArray' // Werewolf types
+    // Werewolf types
+    'TKMEntity', 'TKMHouse', 'TKMUnit', 'TKMUnitGroup',
+    'TKMHandIndex', 'array of TKMHandIndex',
+    'TByteSet', 'TIntegerArray', 'TAnsiStringArray'
   );
 
   VAR_TYPE_ALIAS: array[0..VAR_TYPE_COUNT-1] of string = (
@@ -90,8 +92,10 @@ const
     'THouseType', 'TWareType', 'TFieldType', 'TUnitType',
     'TKMObjectiveStatus', 'TKMObjectiveType',
     'TKMHouseFace',
-    'Integer', 'Integer', 'Integer', 'Integer', 'Integer', 'array of Integer', // Werewolf types
-    'set of Byte', 'array of Integer', 'array of AnsiString' // Werewolf types
+    // Werewolf types
+    'Integer', 'Integer', 'Integer', 'Integer',
+    'Integer', 'array of Integer', 
+    'set of Byte', 'array of Integer', 'array of AnsiString'
   );
 
 var

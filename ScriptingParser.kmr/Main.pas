@@ -72,23 +72,33 @@ const
   VAR_TYPE_NAME: array[0..VAR_TYPE_COUNT-1] of string = (
     'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
     'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
-    'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType', 'TKMGroupOrder',
-    'TKMObjectiveStatus', 'TKMObjectiveType', 'TKMArmyType',
-    'TKMHouseFace', 'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
+    'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
+    'TKMGroupOrder',
+    'TKMObjectiveStatus', 'TKMObjectiveType',
+    'TKMArmyType',
+    'TKMHouseFace',
+    'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
     'array of TKMTerrainTileBrief','TKMAudioFormat','TKMAIAttackTarget',
-    'TKMHouse', 'TKMUnit', 'TKMUnitGroup', 'TKMHandID', 'array of TKMHandID', // Werewolf types
-    'TKMPoint','TByteSet', 'TIntegerArray', 'TAnsiStringArray' // Werewolf types
+    // Werewolf types
+    'TKMHouse', 'TKMUnit', 'TKMUnitGroup',
+    'TKMHandID', 'array of TKMHandID',
+    'TKMPoint','TByteSet', 'TIntegerArray', 'TAnsiStringArray'
   );
 
   VAR_TYPE_ALIAS: array[0..VAR_TYPE_COUNT-1] of string = (
     'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
     'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
-    'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType', 'TKMGroupOrder',
-    'TKMObjectiveStatus', 'TKMObjectiveType', 'TKMArmyType',
-    'TKMHouseFace', 'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
+    'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
+    'TKMGroupOrder',
+    'TKMObjectiveStatus', 'TKMObjectiveType',
+    'TKMArmyType',
+    'TKMHouseFace',
+    'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
     'array of TKMTerrainTileBrief','TKMAudioFormat','TKMAIAttackTarget',
-    'Integer', 'Integer', 'Integer', 'Integer', 'array of Integer', // Werewolf types
-    'TKMPoint','set of Byte', 'array of Integer', 'array of AnsiString' // Werewolf types
+    // Werewolf types
+    'Integer', 'Integer', 'Integer',
+    'Integer', 'array of Integer',
+    'TKMPoint','set of Byte', 'array of Integer', 'array of AnsiString'
   );
 
 var
