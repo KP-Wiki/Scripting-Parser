@@ -236,10 +236,10 @@ begin
   edtHeaderFileEvents.Text  := ini.ReadString('HEADER', 'Events',  'header\Events.header');
   edtHeaderFileStates.Text  := ini.ReadString('HEADER', 'States',  'header\States.header');
   edtHeaderFileUtils.Text   := ini.ReadString('HEADER', 'Utils',   'header\Utils.header');
-  edtOutputFileActions.Text := ini.ReadString('OUTPUT', 'Actions', 'wiki\Actions.wiki');
-  edtOutputFileEvents.Text  := ini.ReadString('OUTPUT', 'Events',  'wiki\Events.wiki');
-  edtOutputFileStates.Text  := ini.ReadString('OUTPUT', 'States',  'wiki\States.wiki');
-  edtOutputFileUtils.Text   := ini.ReadString('OUTPUT', 'Utils',   'wiki\Utils.wiki');
+  edtOutputFileActions.Text := ini.ReadString('OUTPUT', 'Actions', 'Actions.wiki');
+  edtOutputFileEvents.Text  := ini.ReadString('OUTPUT', 'Events',  'Events.wiki');
+  edtOutputFileStates.Text  := ini.ReadString('OUTPUT', 'States',  'States.wiki');
+  edtOutputFileUtils.Text   := ini.ReadString('OUTPUT', 'Utils',   'Utils.wiki');
 
   FreeAndNil(ini);
 
