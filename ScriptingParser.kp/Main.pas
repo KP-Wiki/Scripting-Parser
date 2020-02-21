@@ -40,7 +40,9 @@ type
     procedure btnKMRClick(Sender: TObject);
     procedure btnKPClick(Sender: TObject);
     procedure btnGenerateXMLClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
+    fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fSettingsPath: string;
     fUpdating: Boolean;
     procedure ParseText(aFile: string; aList: TStringList; aHasReturn: Boolean);
@@ -180,7 +182,21 @@ end;
 { TForm1 }
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  fListActions := TStringList.Create;
+  fListEvents := TStringList.Create;
+  fListStates := TStringList.Create;
+  fListUtils := TStringList.Create;
+
   btnKMR.Click;
+end;
+
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(fListActions);
+  FreeAndNil(fListEvents);
+  FreeAndNil(fListStates);
+  FreeAndNil(fListUtils);
 end;
 
 
@@ -447,79 +463,72 @@ end;
 
 
 procedure TForm1.GenerateWiki;
-var
-  listActions, listEvents, listStates: TStringList;
 begin
   txtParserOutput.Lines.Clear;
 
+  fListActions.Clear;
+  fListEvents.Clear;
+  fListStates.Clear;
+  fListUtils.Clear;
+
   if FileExists(edtActionsFile.Text) then
   begin
-    listActions := TStringList.Create;
+    ParseText(edtActionsFile.Text, fListActions, True);
+    fListActions.CustomSort(DoSort);
 
-    ParseText(edtActionsFile.Text, listActions, True);
-    listActions.CustomSort(DoSort);
+    fListActions.Insert(0, '####Actions' + sLineBreak);
+    fListActions.Insert(1, '| Ver<br>sion | Action Description | Parameters<br>and types | Returns |');
+    fListActions.Insert(2, '| ------- | --------------- | -------------------- | ------- |');
 
-    listActions.Insert(0, '####Actions' + sLineBreak);
-    listActions.Insert(1, '| Ver<br>sion | Action Description | Parameters<br>and types | Returns |');
-    listActions.Insert(2, '| ------- | --------------- | -------------------- | ------- |');
-
-    txtParserOutput.Lines.AddStrings(listActions);
+    txtParserOutput.Lines.AddStrings(fListActions);
 
     if edtOutputFileActions.Text <> '' then
-      listActions.SaveToFile(edtOutputFileActions.Text);
-    FreeAndNil(listActions);
+      fListActions.SaveToFile(edtOutputFileActions.Text);
   end;
 
   if FileExists(edtEventsFile.Text) then
   begin
-    listEvents := TStringList.Create;
+    ParseText(edtEventsFile.Text, fListEvents, False);
+    fListEvents.CustomSort(DoSort);
 
-    ParseText(edtEventsFile.Text, listEvents, False);
-    listEvents.CustomSort(DoSort);
+    fListEvents.Insert(0, '####Events' + sLineBreak);
+    fListEvents.Insert(1, '| Ver<br>sion | Event Description | Parameters<br>and types |');
+    fListEvents.Insert(2, '| ------- | --------------- | -------------------- |');
 
-    listEvents.Insert(0, '####Events' + sLineBreak);
-    listEvents.Insert(1, '| Ver<br>sion | Event Description | Parameters<br>and types |');
-    listEvents.Insert(2, '| ------- | --------------- | -------------------- |');
-
-    txtParserOutput.Lines.AddStrings(listEvents);
+    txtParserOutput.Lines.AddStrings(fListEvents);
 
     if edtOutputFileEvents.Text <> '' then
-      listEvents.SaveToFile(edtOutputFileEvents.Text);
-    FreeAndNil(listEvents);
+      fListEvents.SaveToFile(edtOutputFileEvents.Text);
   end;
 
   if FileExists(edtStatesFile.Text) then
   begin
-    listStates := TStringList.Create;
-    ParseText(edtStatesFile.Text, listStates, True);
-    listStates.CustomSort(DoSort);
+    ParseText(edtStatesFile.Text, fListStates, True);
+    fListStates.CustomSort(DoSort);
 
-    listStates.Insert(0, '####States' + sLineBreak);
-    listStates.Insert(1, '| Ver<br>sion | State Description | Parameters<br>and types | Returns |');
-    listStates.Insert(2, '| ------- | --------------- | -------------------- | ------- |');
+    fListStates.Insert(0, '####States' + sLineBreak);
+    fListStates.Insert(1, '| Ver<br>sion | State Description | Parameters<br>and types | Returns |');
+    fListStates.Insert(2, '| ------- | --------------- | -------------------- | ------- |');
 
-    txtParserOutput.Lines.AddStrings(listStates);
+    txtParserOutput.Lines.AddStrings(fListStates);
 
     if edtOutputFileStates.Text <> '' then
-      listStates.SaveToFile(edtOutputFileStates.Text);
-    FreeAndNil(listStates);
+      fListStates.SaveToFile(edtOutputFileStates.Text);
   end;
 
   if FileExists(edtUtilsFile.Text) then
   begin
-    listStates := TStringList.Create;
-    ParseText(edtUtilsFile.Text, listStates, True);
-    listStates.CustomSort(DoSort);
+    ParseText(edtUtilsFile.Text, fListUtils, True);
+    fListUtils.CustomSort(DoSort);
 
-    listStates.Insert(0, '####Utils' + sLineBreak);
-    listStates.Insert(1, '| Ver<br>sion | Utility function<br>Description | Parameters<br>and types | Returns |');
-    listStates.Insert(2, '| ------- | --------------- | -------------------- | ------- |');
+    fListUtils.Insert(0, '####Utils' + sLineBreak);
+    fListUtils.Insert(1, '| Ver<br>sion | Utility function<br>Description | Parameters<br>and types | Returns |');
+    fListUtils.Insert(2, '| ------- | --------------- | -------------------- | ------- |');
 
-    txtParserOutput.Lines.AddStrings(listStates);
+    txtParserOutput.Lines.AddStrings(fListUtils);
 
     if edtOutputFileUtils.Text <> '' then
-      listStates.SaveToFile(edtOutputFileUtils.Text);
-    FreeAndNil(listStates);
+      fListUtils.SaveToFile(edtOutputFileUtils.Text);
   end;
 end;
 
