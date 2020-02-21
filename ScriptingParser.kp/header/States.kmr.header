@@ -1,0 +1,22 @@
+#### States
+
+All states parameters are numeric and get mapped to unit/house types according to default tables used in DAT scripts.
+
+States are queried in a form **States.STATE_NAME(STATE_PARAMETERS)** like so:
+```pascal
+    if States.StatPlayerCount > 5 then
+      UnitCnt := States.StatUnitCount(1);
+```
+Also there is a short name for States: just **S**, so you could use it as
+```pascal
+  UnitCnt := S.StatUnitCount(1); //Get 1st player units count and store it in variable UnitCnt
+```
+
+***
+
+Other scripts functions:
+* [Mission Scripts Dynamic Events](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicEvents)
+* [Mission Scripts Dynamic Actions](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicActions)
+* [Mission Scripts Dynamic Utils](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicUtils)
+<br />
+
