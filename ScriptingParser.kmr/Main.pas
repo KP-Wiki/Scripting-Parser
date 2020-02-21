@@ -473,8 +473,9 @@ begin
 
         // Now we can assemble Description, after we have detected and removed parameters descriptions from it
         for j := 0 to descrTxt.Count - 1 do
+          // We don't need <br> after </pre> since </pre> has an automatic visual "br" after it
           if (j > 0) and (RightStr(descrTxt[j-1],6) = '</pre>') then
-            res.Description := res.Description + descrTxt[j] // No new line at the end of <pre> block
+            res.Description := res.Description + descrTxt[j]
           else
             res.Description := res.Description + '<br/>' + descrTxt[j];
 
