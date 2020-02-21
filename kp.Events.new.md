@@ -1,7 +1,7 @@
 ####Events
 
 | Ver<br>sion | Event Description | Parameters<br>and types |
-| ------- | --------------- | -------------------- |
+| ------- | ------------------------------------ | -------------- |
 | 8250 | OnCampaignMenu<br><sub> A campaign menu has been opened. Campaign-only action!</sub> | <sub></sub> |
 | - | OnHouseBuilt<br><sub> A house has finished construction</sub> | <sub>**aHouse**: Integer;</sub> |
 | 7820 | OnHouseDamaged<br><sub> A house got damaged</sub> | <sub>**aHouse**: Integer; <br> **aAttacker**: Integer; //_Attacker - UID of the attacked, can be a house, a unit or noone (e.g. if damage was applied from script)_</sub> |

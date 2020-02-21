@@ -1,7 +1,7 @@
 ####States
 
 | Ver<br>sion | State Description | Parameters<br>and types | Returns |
-| ------- | --------------- | -------------------- | ------- |
+| ------- | ------------------------------------ | -------------- | ------- |
 | 7969 | EntityType<br><sub> Get the entity type by its UID (0 - unknown or none, 1 - Unit, 2 - House, 3 - UnitGroup, 4 - Stockpile)</sub> | <sub>**aEntityID**: Integer;</sub> | <sub>Integer</sub> |
 | - | FogRevealed<br><sub> See if tile is revealed (known or live)</sub> | <sub>**aPlayer**: Integer; <br> **aX**: Word; <br> **aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | GameTime<br><sub> Deprecated. Please use the time provided by OnTick event</sub> | <sub></sub> | <sub>Cardinal</sub> |

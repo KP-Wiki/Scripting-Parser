@@ -11,8 +11,6 @@ type
     btnKMR: TButton;
     btnKP: TButton;
     btnGenerateWiki: TButton;
-    TabControl1: TTabControl;
-    txtParserOutput: TMemo;
     gbSettings: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
@@ -33,6 +31,8 @@ type
     edtHeaderFileEvents: TEdit;
     edtHeaderFileStates: TEdit;
     edtHeaderFileUtils: TEdit;
+    TabControl1: TTabControl;
+    txtParserOutput: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);

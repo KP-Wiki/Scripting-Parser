@@ -20,24 +20,13 @@ object Form1: TForm1
     648)
   PixelsPerInch = 96
   TextHeight = 13
-  object txtParserOutput: TMemo
-    Left = 0
-    Top = 176
-    Width = 818
-    Height = 472
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    ReadOnly = True
-    ScrollBars = ssVertical
-    TabOrder = 0
-    OnKeyPress = txtParserOutputKeyPress
-  end
   object btnKMR: TButton
     Left = 720
     Top = 16
     Width = 33
     Height = 25
     Caption = 'KMR'
-    TabOrder = 1
+    TabOrder = 0
     OnClick = btnKMRClick
   end
   object btnKP: TButton
@@ -46,7 +35,7 @@ object Form1: TForm1
     Width = 33
     Height = 25
     Caption = 'KP'
-    TabOrder = 2
+    TabOrder = 1
     OnClick = btnKPClick
   end
   object btnGenerateWiki: TButton
@@ -64,7 +53,7 @@ object Form1: TForm1
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 3
+    TabOrder = 2
     WordWrap = True
     OnClick = btnGenerateWikiClick
   end
@@ -83,7 +72,7 @@ object Form1: TForm1
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 4
+    TabOrder = 3
     WordWrap = True
     OnClick = btnGenerateXMLClick
   end
@@ -94,7 +83,7 @@ object Form1: TForm1
     Height = 145
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Settings '
-    TabOrder = 5
+    TabOrder = 4
     object Label1: TLabel
       Left = 11
       Top = 35
@@ -239,6 +228,34 @@ object Form1: TForm1
       Height = 21
       TabOrder = 11
       OnChange = edtOnTextChange
+    end
+  end
+  object TabControl1: TTabControl
+    Left = 8
+    Top = 159
+    Width = 802
+    Height = 481
+    TabOrder = 5
+    Tabs.Strings = (
+      'Actions'
+      'Events'
+      'States'
+      'Utils')
+    TabIndex = 0
+    OnChange = TabControl1Change
+    DesignSize = (
+      802
+      481)
+    object txtParserOutput: TMemo
+      Left = 3
+      Top = 27
+      Width = 790
+      Height = 451
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      ReadOnly = True
+      ScrollBars = ssVertical
+      TabOrder = 0
+      OnKeyPress = txtParserOutputKeyPress
     end
   end
 end
