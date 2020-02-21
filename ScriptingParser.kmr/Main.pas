@@ -76,13 +76,13 @@ const
     // Custom types
     'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
     // KMR
-    // KP
-    'TKMGroupOrder',
-    'TKMObjectiveStatus', 'TKMObjectiveType',
-    'TKMArmyType',
-    'TKMHouseFace',
     'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
     'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
+    'TKMArmyType',
+    'TKMGroupOrder',
+    // KP
+    'TKMObjectiveStatus', 'TKMObjectiveType',
+    'TKMHouseFace',
     // Werewolf types
     'TByteSet', 'TIntegerArray', 'TAnsiStringArray',
     'TKMHouse', 'TKMUnit', 'TKMUnitGroup',
@@ -98,13 +98,13 @@ const
     // Custom types
     'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
     // KMR
-    // KP
-    'TKMGroupOrder',
-    'TKMObjectiveStatus', 'TKMObjectiveType',
-    'TKMArmyType',
-    'TKMHouseFace',
     'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
     'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
+    'TKMArmyType',
+    'TKMGroupOrder',
+    // KP
+    'TKMObjectiveStatus', 'TKMObjectiveType',
+    'TKMHouseFace',
     // Werewolf types
     'set of Byte', 'array of Integer', 'array of AnsiString',
     'Integer', 'Integer', 'Integer',
