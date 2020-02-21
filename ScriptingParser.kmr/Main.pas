@@ -8,11 +8,19 @@ type
   TKMCharArray = TArray<Char>;
 
   TForm1 = class(TForm)
+    btnKMR: TButton;
+    btnKP: TButton;
+    btnGenerateWiki: TButton;
+    TabControl1: TTabControl;
+    txtParserOutput: TMemo;
     gbSettings: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label8: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
     edtActionsFile: TEdit;
     edtEventsFile: TEdit;
     edtStatesFile: TEdit;
@@ -21,18 +29,10 @@ type
     edtOutputFileStates: TEdit;
     edtOutputFileUtils: TEdit;
     edtUtilsFile: TEdit;
-    Label4: TLabel;
-    Label5: TLabel;
     edtHeaderFileActions: TEdit;
     edtHeaderFileEvents: TEdit;
     edtHeaderFileStates: TEdit;
     edtHeaderFileUtils: TEdit;
-    Label6: TLabel;
-    btnKMR: TButton;
-    btnKP: TButton;
-    btnGenerateWiki: TButton;
-    TabControl1: TTabControl;
-    txtParserOutput: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
@@ -183,9 +183,9 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   fListActions := TStringList.Create;
-  flistEvents := TStringList.Create;
-  flistStates := TStringList.Create;
-  flistUtils := TStringList.Create;
+  fListEvents := TStringList.Create;
+  fListStates := TStringList.Create;
+  fListUtils := TStringList.Create;
 
   btnKMR.Click;
 end;
@@ -194,9 +194,9 @@ end;
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fListActions);
-  FreeAndNil(flistEvents);
-  FreeAndNil(flistStates);
-  FreeAndNil(flistUtils);
+  FreeAndNil(fListEvents);
+  FreeAndNil(fListStates);
+  FreeAndNil(fListUtils);
 end;
 
 
@@ -208,34 +208,18 @@ begin
 
   fUpdating := True;
 
-  if not FileExists(fSettingsPath) then
-  begin
-    ini.WriteString('INPUT',  'Actions', '..\..\src\scripting\KM_ScriptingActions.pas');
-    ini.WriteString('INPUT',  'Events',  '..\..\src\scripting\KM_ScriptingEvents.pas');
-    ini.WriteString('INPUT',  'States',  '..\..\src\scripting\KM_ScriptingStates.pas');
-    ini.WriteString('INPUT',  'Utils',  '..\..\src\scripting\KM_ScriptingUtils.pas');
-    ini.WriteString('HEADER', 'Actions', 'header\Actions.header');
-    ini.WriteString('HEADER', 'Events',  'header\Events.header');
-    ini.WriteString('HEADER', 'States',  'header\States.header');
-    ini.WriteString('HEADER', 'Utils',   'header\Utils.header');
-    ini.WriteString('OUTPUT', 'Actions', 'wiki\Actions.wiki');
-    ini.WriteString('OUTPUT', 'Events',  'wiki\Events.wiki');
-    ini.WriteString('OUTPUT', 'States',  'wiki\States.wiki');
-    ini.WriteString('OUTPUT', 'Utils',   'wiki\Utils.wiki');
-  end;
-
-  edtActionsFile.Text       := ini.ReadString('INPUT',  'Actions', '');
-  edtEventsFile.Text        := ini.ReadString('INPUT',  'Events',  '');
-  edtStatesFile.Text        := ini.ReadString('INPUT',  'States',  '');
-  edtUtilsFile.Text         := ini.ReadString('INPUT',  'Utils',   '');
-  edtHeaderFileActions.Text := ini.ReadString('HEADER', 'Actions', '');
-  edtHeaderFileEvents.Text  := ini.ReadString('HEADER', 'Events',  '');
-  edtHeaderFileStates.Text  := ini.ReadString('HEADER', 'States',  '');
-  edtHeaderFileUtils.Text   := ini.ReadString('HEADER', 'Utils',   '');
-  edtOutputFileActions.Text := ini.ReadString('OUTPUT', 'Actions', '');
-  edtOutputFileEvents.Text  := ini.ReadString('OUTPUT', 'Events',  '');
-  edtOutputFileStates.Text  := ini.ReadString('OUTPUT', 'States',  '');
-  edtOutputFileUtils.Text   := ini.ReadString('OUTPUT', 'Utils',   '');
+  edtActionsFile.Text       := ini.ReadString('INPUT',  'Actions', '..\..\src\scripting\KM_ScriptingActions.pas');
+  edtEventsFile.Text        := ini.ReadString('INPUT',  'Events',  '..\..\src\scripting\KM_ScriptingEvents.pas');
+  edtStatesFile.Text        := ini.ReadString('INPUT',  'States',  '..\..\src\scripting\KM_ScriptingStates.pas');
+  edtUtilsFile.Text         := ini.ReadString('INPUT',  'Utils',   '..\..\src\scripting\KM_ScriptingUtils.pas');
+  edtHeaderFileActions.Text := ini.ReadString('HEADER', 'Actions', 'header\Actions.header');
+  edtHeaderFileEvents.Text  := ini.ReadString('HEADER', 'Events',  'header\Events.header');
+  edtHeaderFileStates.Text  := ini.ReadString('HEADER', 'States',  'header\States.header');
+  edtHeaderFileUtils.Text   := ini.ReadString('HEADER', 'Utils',   'header\Utils.header');
+  edtOutputFileActions.Text := ini.ReadString('OUTPUT', 'Actions', 'wiki\Actions.wiki');
+  edtOutputFileEvents.Text  := ini.ReadString('OUTPUT', 'Events',  'wiki\Events.wiki');
+  edtOutputFileStates.Text  := ini.ReadString('OUTPUT', 'States',  'wiki\States.wiki');
+  edtOutputFileUtils.Text   := ini.ReadString('OUTPUT', 'Utils',   'wiki\Utils.wiki');
 
   FreeAndNil(ini);
 

@@ -57,6 +57,34 @@ object Form1: TForm1
     WordWrap = True
     OnClick = btnGenerateWikiClick
   end
+  object TabControl1: TTabControl
+    Left = 8
+    Top = 159
+    Width = 802
+    Height = 481
+    TabOrder = 3
+    Tabs.Strings = (
+      'Actions'
+      'Events'
+      'States'
+      'Utils')
+    TabIndex = 0
+    OnChange = TabControl1Change
+    DesignSize = (
+      802
+      481)
+    object txtParserOutput: TMemo
+      Left = 3
+      Top = 27
+      Width = 790
+      Height = 451
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      ReadOnly = True
+      ScrollBars = ssVertical
+      TabOrder = 0
+      OnKeyPress = txtParserOutputKeyPress
+    end
+  end
   object gbSettings: TGroupBox
     Left = 8
     Top = 8
@@ -64,7 +92,7 @@ object Form1: TForm1
     Height = 145
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Settings '
-    TabOrder = 3
+    TabOrder = 4
     object Label1: TLabel
       Left = 11
       Top = 35
@@ -209,34 +237,6 @@ object Form1: TForm1
       Height = 21
       TabOrder = 11
       OnChange = edtOnTextChange
-    end
-  end
-  object TabControl1: TTabControl
-    Left = 8
-    Top = 159
-    Width = 802
-    Height = 481
-    TabOrder = 4
-    Tabs.Strings = (
-      'Actions'
-      'Events'
-      'States'
-      'Utils')
-    TabIndex = 0
-    OnChange = TabControl1Change
-    DesignSize = (
-      802
-      481)
-    object txtParserOutput: TMemo
-      Left = 3
-      Top = 27
-      Width = 790
-      Height = 451
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      ReadOnly = True
-      ScrollBars = ssVertical
-      TabOrder = 0
-      OnKeyPress = txtParserOutputKeyPress
     end
   end
 end
