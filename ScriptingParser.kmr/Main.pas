@@ -70,35 +70,47 @@ const
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
   VAR_TYPE_NAME: array[0..VAR_TYPE_COUNT-1] of string = (
+    // Simple types
     'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
     'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
-    'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
+    // Custom types
+    'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
+    // KMR
+    // KP
     'TKMGroupOrder',
     'TKMObjectiveStatus', 'TKMObjectiveType',
     'TKMArmyType',
     'TKMHouseFace',
     'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
-    'array of TKMTerrainTileBrief','TKMAudioFormat','TKMAIAttackTarget',
+    'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
     // Werewolf types
+    'TByteSet', 'TIntegerArray', 'TAnsiStringArray',
     'TKMHouse', 'TKMUnit', 'TKMUnitGroup',
-    'TKMHandID', 'array of TKMHandID',
-    'TKMPoint','TByteSet', 'TIntegerArray', 'TAnsiStringArray'
+    // KMR
+    'TKMHandID', 'array of TKMHandID'
+    // KP
   );
 
   VAR_TYPE_ALIAS: array[0..VAR_TYPE_COUNT-1] of string = (
+    // Simple types
     'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
     'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
-    'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
+    // Custom types
+    'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
+    // KMR
+    // KP
     'TKMGroupOrder',
     'TKMObjectiveStatus', 'TKMObjectiveType',
     'TKMArmyType',
     'TKMHouseFace',
     'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
-    'array of TKMTerrainTileBrief','TKMAudioFormat','TKMAIAttackTarget',
+    'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
     // Werewolf types
+    'set of Byte', 'array of Integer', 'array of AnsiString',
     'Integer', 'Integer', 'Integer',
-    'Integer', 'array of Integer',
-    'TKMPoint','set of Byte', 'array of Integer', 'array of AnsiString'
+    // KMR
+    'Integer', 'array of Integer'
+    // KP
   );
 
 var
