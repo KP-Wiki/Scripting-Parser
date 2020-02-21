@@ -65,50 +65,39 @@ type
     ReturnDesc: string;
   end;
 
+  TKMTypeInfo = record
+    Name: string;
+    Alias: string;
+  end;
+
 const
   VAR_TYPE_COUNT = 45;
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
-  VAR_TYPE_NAME: array[0..VAR_TYPE_COUNT-1] of string = (
+  VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
     // Simple types
-    'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
-    'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
+    (Name: 'Byte'),       (Name: 'Shortint'),   (Name: 'Smallint'),   (Name: 'Word'),
+    (Name: 'Integer'),    (Name: 'Cardinal'),   (Name: 'Single'),     (Name: 'Extended'),
+    (Name: 'Boolean'),    (Name: 'AnsiString'), (Name: 'String'),
+    (Name: 'array of const'),      (Name: 'array of Boolean'),
+    (Name: 'array of String'),     (Name: 'array of AnsiString'),
+    (Name: 'array of Integer'),    (Name: 'array of Single'),
+    (Name: 'array of Extended'),
     // Custom types
-    'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
+    (Name: 'TKMHouseType'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
     // KMR
-    'TKMArmyType', 'TKMGroupOrder',
-    'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
-    'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
+    (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'),
+    (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),
+    (Name: 'array of TKMTerrainTileBrief'), (Name: 'TKMAudioFormat'), (Name: 'TKMAIAttackTarget'),
     // KP
-    'TKMHouseFace', 'TKMObjectiveStatus', 'TKMObjectiveType',
+    (Name: 'TKMHouseFace'), (Name: 'TKMObjectiveStatus'), (Name: 'TKMObjectiveType'),
     // Werewolf types
-    'TByteSet', 'TIntegerArray', 'TAnsiStringArray',
-    'TKMHouse', 'TKMUnit', 'TKMUnitGroup',
+    (Name: 'TByteSet'; Alias: 'set of Byte'), (Name: 'TIntegerArray'; Alias: 'array of Integer'), (Name: 'TAnsiStringArray'; Alias: 'array of AnsiString'),
+    (Name: 'TKMHouse'; Alias: 'Integer'), (Name: 'TKMUnit'; Alias: 'Integer'), (Name: 'TKMUnitGroup'; Alias: 'Integer'),
     // KMR
-    'TKMHandID', 'array of TKMHandID',
+    (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
     // KP
-    'TKMEntity', 'TKMHandIndex', 'array of TKMHandIndex'
-  );
-
-  VAR_TYPE_ALIAS: array[0..VAR_TYPE_COUNT-1] of string = (
-    // Simple types
-    'Byte', 'Shortint', 'Smallint', 'Word', 'Integer', 'Cardinal', 'Single', 'Extended', 'Boolean', 'AnsiString', 'String',
-    'array of const', 'array of Boolean', 'array of String', 'array of AnsiString', 'array of Integer', 'array of Single', 'array of Extended',
-    // Custom types
-    'TKMPoint', 'TKMHouseType', 'TKMWareType', 'TKMFieldType', 'TKMUnitType',
-    // KMR
-    'TKMArmyType', 'TKMGroupOrder',
-    'TKMTerrainTileBrief', 'TKMMissionDifficulty', 'TKMMissionDifficultySet',
-    'array of TKMTerrainTileBrief', 'TKMAudioFormat', 'TKMAIAttackTarget',
-    // KP
-    'TKMHouseFace', 'TKMObjectiveStatus', 'TKMObjectiveType',
-    // Werewolf types
-    'set of Byte', 'array of Integer', 'array of AnsiString',
-    'Integer', 'Integer', 'Integer',
-    // KMR
-    'Integer', 'array of Integer',
-    // KP
-    'Integer', 'Integer', 'array of Integer'
+    (Name: 'TKMEntity'; Alias: 'Integer'), (Name: 'TKMHandIndex'; Alias: 'Integer'), (Name: 'array of TKMHandIndex'; Alias: 'array of Integer')
   );
 
 var
@@ -331,8 +320,8 @@ begin
 
       //Update var names until first type found
       if isParam then
-        for K := 0 to High(VAR_TYPE_NAME) do
-          if SameText(VAR_TYPE_NAME[K], paramList[i]) then
+        for K := 0 to High(VAR_TYPE_INFO) do
+          if SameText(VAR_TYPE_INFO[K].Name, paramList[i]) then
           begin
             nextVarModifier := '';
             isParam := False;
@@ -354,10 +343,10 @@ begin
 
       // See if this token is a Type
       isParam := True;
-      for K := 0 to High(VAR_TYPE_NAME) do
-        if SameText(VAR_TYPE_NAME[K], paramList[i]) then
+      for K := 0 to High(VAR_TYPE_INFO) do
+        if SameText(VAR_TYPE_INFO[K].Name, paramList[i]) then
         begin
-          lastType := VAR_TYPE_ALIAS[K];
+          lastType := IfThen(VAR_TYPE_INFO[K].Alias <> '', VAR_TYPE_INFO[K].Alias, VAR_TYPE_INFO[K].Name);
           isParam := False;
           Break;
         end;
