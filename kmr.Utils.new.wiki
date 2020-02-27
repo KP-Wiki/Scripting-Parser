@@ -36,6 +36,7 @@ Other scripts functions:
 | 7000+ | ArrayRemoveIndexI<sub><br/>Removes element on specified index in specified array of integer.<br/>Integer array should be declared as TIntegerArray instead of array of integer.</sub> | <sub>**aIndex**: Integer; <br/> **aArray**: array of Integer;</sub> | <sub>array of Integer</sub> |
 | 7000+ | ArrayRemoveIndexS<sub><br/>Removes element on specified index in specified array of string.<br/>String array should be declared as TAnsiStringArray instead of array of AnsiString.</sub> | <sub>**aIndex**: Integer; <br/> **aArray**: array of AnsiString;</sub> | <sub>TAnsiStringArray</sub> |
 | 7000+ | BoolToStr<sub><br/>Return string representation of Boolean value: 'True' or 'False'</sub> | <sub>**aBool**: Boolean;</sub> | <sub>AnsiString</sub> |
+| 10940 | ColorBrightness<sub><br/>Get Color Brightness from HEX BGR color</sub> | <sub>**aHexColor**: String;</sub> | <sub>Single //Color Brightness OR -1 if aHexColor not equal to HEX BGR</sub> |
 | 7000+ | EnsureRangeI<sub><br/>Returns the closest to aValue integer that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Integer; <br/> **aMin**: Integer; <br/> **aMax**: Integer;</sub> | <sub>Integer</sub> |
 | 7000+ | EnsureRangeS<sub><br/>Returns the closest to aValue single number that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin**: Single; <br/> **aMax**: Single;</sub> | <sub>Single</sub> |
 | 7000+ | Format<sub><br/>Wrapper for pascal Format function<br/>Formats aFormatting string with specified aData array of parameters</sub> | <sub>**aFormatting**: String; <br/> **aData**: array of const;</sub> | <sub>string</sub> |
@@ -56,9 +57,12 @@ Other scripts functions:
 | 7000+ | MinInArrayS<sub><br/>Returns min number of array elements</sub> | <sub>**aArray**: array of Single;</sub> | <sub>Single</sub> |
 | 7000+ | MinS<sub><br/>Returns min number of two specified</sub> | <sub>**A**: Single; <br/> **B**: Single;</sub> | <sub>Single</sub> |
 | 7000+ | Power<sub><br/>Exponentation, base 'Base' raised to power 'Exp'.<br/>F.e. Power(3, 2) = 3^2 = 9<br/>Returns base "Base" raised to power "Exp"</sub> | <sub>**aBase**: Extended; <br/> **aExp**: Extended;</sub> | <sub>Extended</sub> |
+| 10940 | RGBDecToBGRHex<sub><br/>Converts RGB to HEX BGR color<br/>Example<br/>VAR := RGBDecToBGRHex(255, 255, 0);<br/>The result of the VAR will be 00FFFF</sub> | <sub>**aR**: Byte; <br/> **aG**: Byte; <br/> **aB**: Byte;</sub> | <sub>AnsiString //HEX BGR Color</sub> |
+| 10940 | RGBToBGRHex<sub><br/>Converts HEX RGB to HEX BGR color<br/>Example<br/>VAR := RGBToBGRHex('#FFFF00');<br/>The result of the VAR will be 00FFFF</sub> | <sub>**aHexColor**: String;</sub> | <sub>AnsiString //HEX BGR Color or '' if aHexColor not equal to HEX RGB</sub> |
 | 7000+ | RoundToDown<sub><br/>Rounds specified single number aValue to nearest multiple of specified base aBase. Rounding down. F.e. RoundToDown(11.7, 5) = 10</sub> | <sub>**aValue**: Single; <br/> **aBase**: Integer;</sub> | <sub>Integer</sub> |
 | 7000+ | RoundToUp<sub><br/>Rounds specified single number aValue to nearest multiple of specified base aBase. Rounding up. F.e. RoundToUp(11.7, 5) = 15</sub> | <sub>**aValue**: Single; <br/> **aBase**: Integer;</sub> | <sub>Integer</sub> |
 | 7000+ | Sqr<sub><br/>Returns A^2 = A*A</sub> | <sub>**A**: Extended;</sub> | <sub>Extended</sub> |
 | 7000+ | SumI<sub><br/>Returns sum of the elements of requested array</sub> | <sub>**aArray**: array of Integer;</sub> | <sub>Integer</sub> |
 | 7000+ | SumS<sub><br/>Returns sum of the elements of requested array</sub> | <sub>**aArray**: array of Single;</sub> | <sub>Single</sub> |
 | 7000+ | TimeToString<sub><br/>Converts game ticks count into string: HH:MM:SS<br/>Can be used for scripted timers</sub> | <sub>**aTicks**: Integer;</sub> | <sub>AnsiString</sub> |
+| 10940 | TimeToTick<sub><br/>Converts Time in game ticks</sub> | <sub>**aHours**: Integer; <br/> **aMinutes**: Integer; <br/> **aSeconds**: Integer;</sub> | <sub>Cardinal //game ticks</sub> |

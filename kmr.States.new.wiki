@@ -128,7 +128,8 @@ Other scripts functions:
 | 7000+ | MissionSmallDescLibx<sub><br/>Returns mission small description Libx ID</sub> | <sub></sub> | <sub>Integer</sub> |
 | 5057 | PeaceTime<sub><br/>Length of peacetime in ticks (multiplayer)</sub> | <sub></sub> | <sub>Cardinal //Ticks (~10 per second)</sub> |
 | 5057 | PlayerAllianceCheck<sub><br/>Check how player 1 feels towards player 2 (order matters).<br/>Returns true for ally, false for enemy</sub> | <sub>**aPlayer1**: Byte; <br/> **aPlayer2**: Byte;</sub> | <sub>Boolean //Allied</sub> |
-| 4758 | PlayerColorText<sub><br/>Get players color as text in hex format</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>AnsiString //Player color</sub> |
+| 10940 | PlayerColorFlag<sub><br/>Get players color in hex format</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>AnsiString //Player color</sub> |
+| 4758 | PlayerColorText<sub><br/>Get players color as text in hex format</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>AnsiString //Player color as text</sub> |
 | 5057 | PlayerDefeated<sub><br/>See if player was defeated</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean //Defeated</sub> |
 | 5057 | PlayerEnabled<sub><br/>Will be false if nobody selected that location in multiplayer</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Boolean //Enabled</sub> |
 | 5209 | PlayerGetAllGroups<sub><br/>Returns an array with IDs for all the groups of the specified player</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>array of Integer //Array of group IDs</sub> |
@@ -141,6 +142,7 @@ Other scripts functions:
 | 6323 | StatAIDefencePositionsCount<sub><br/>How many defence positions AI player has.<br/>Useful for scripts like "if not enough positions and too much groups then add a new position"</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Defence position count</sub> |
 | 5057 | StatArmyCount<sub><br/>How many military units player has</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Army count</sub> |
 | 5057 | StatCitizenCount<sub><br/>How many citizen player has</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Citizen count</sub> |
+| 10940 | StatHouseCount<sub><br/>Returns the number of houses of the specified player</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer //Number of houses</sub> |
 | 6328 | StatHouseMultipleTypesCount<sub><br/>Returns number of specified house types for specified player.</sub> | <sub>**aPlayer**: Byte; <br/> **aTypes**: set of Byte; //_House types eg. [11, 13, 21]_</sub> | <sub>Integer //Total number of houses</sub> |
 | 5057 | StatHouseTypeCount<sub><br/>Returns the total number of the specified house type for the specified player.</sub> | <sub>**aPlayer**: Byte; <br/> **aHouseType**: Byte;</sub> | <sub>Integer //Number of houses</sub> |
 | 6313 | StatHouseTypePlansCount<sub><br/>Specified house type plans count</sub> | <sub>**aPlayer**: Byte; <br/> **aHouseType**: Byte;</sub> | <sub>Integer //Number of plans</sub> |
