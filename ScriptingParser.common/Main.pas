@@ -5,8 +5,6 @@ uses
   Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls;
 
 type
-  TKMCharArray = TArray<Char>;
-
   TForm1 = class(TForm)
     btnKMR: TButton;
     btnKP: TButton;
@@ -144,25 +142,18 @@ begin
 end;
 
 
-function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
-var Found: Boolean;
-    I, J: Integer;
+function StrTrimRightSeparators(const aStr: String): String;
+var
+  I, K: Integer;
 begin
+  K := 0;
   for I := Length(aStr) downto 1 do
+  if not (aStr[I] in [',', ':', ';']) then
   begin
-    Found := False;
-    for J := Low(aCharsToTrim) to High(aCharsToTrim) do
-    begin
-      if aStr[I] = aCharsToTrim[J] then
-      begin
-        Found := True;
-        Break;
-      end;
-    end;
-    if not Found then
-      Break;
+    K := I;
+    Break;
   end;
-  Result := Copy(aStr, 1, I);
+  Result := Copy(aStr, 1, K);
 end;
 
 
@@ -252,7 +243,6 @@ var
   listTokens, paramList, typeList: TStringList;
   paramHolder: array of TParamHolder;
   lastType: string;
-  charArr: TKMCharArray;
   nextVarModifier: String;
 begin
   Result := '';
@@ -270,17 +260,13 @@ begin
     // Re-combine type arrays
     for i := 0 to listTokens.Count - 1 do
     begin
-      SetLength(charArr, 3);
-      charArr[0] := ',';
-      charArr[1] := ':';
-      charArr[2] := ';';
-      listTokens[i] := StrTrimRight(listTokens[i], charArr);
+      listTokens[i] := StrTrimRightSeparators(listTokens[i]);
 
       if SameText(listTokens[i], 'array') then
       begin
         nextType := i + 2;
         // For some reason this kept giving 'array of Integer;' hence the trim
-        paramList.Add(StrTrimRight(listTokens[i] + ' ' + listTokens[nextType - 1] + ' ' + listTokens[nextType], charArr));
+        paramList.Add(StrTrimRightSeparators(listTokens[i] + ' ' + listTokens[nextType - 1] + ' ' + listTokens[nextType]));
       end else
         // Skip unused stuff
         if not ((SameText(listTokens[i], 'of'))
@@ -377,7 +363,6 @@ var
   restStr: string;
   sourceTxt, descrTxt: TStringList;
   res: TCommandInfo;
-  charArr: TKMCharArray;
 begin
   sourceTxt := TStringList.Create;
   descrTxt  := TStringList.Create;
@@ -460,9 +445,7 @@ begin
             res.Name := ReplaceStr(restStr, 'Func', 'On');
           end;
 
-          SetLength(charArr, 1);
-          charArr[0] := ';';
-          restStr  := StrTrimRight(StrSubstring(sourceTxt[i+iPlus], StrLastIndexOf(sourceTxt[i+iPlus], ':') + 2), charArr);
+          restStr  := StrTrimRightSeparators(StrSubstring(sourceTxt[i+iPlus], StrLastIndexOf(sourceTxt[i+iPlus], ':') + 2));
           res.Return  := IfThen(SameText(restStr, 'TIntegerArray'), 'array of Integer', restStr);
         end;
 
