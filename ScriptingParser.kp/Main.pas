@@ -74,7 +74,7 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 44;
+  VAR_TYPE_COUNT = 45;
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
@@ -87,7 +87,7 @@ const
     (Name: 'array of Integer'),    (Name: 'array of Single'),
     (Name: 'array of Extended'),
     // Custom types
-    (Name: 'TKMHouseType'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
+    (Name: 'TKMPoint'), (Name: 'TKMHouseType'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
     // KMR
     (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'),
     (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),

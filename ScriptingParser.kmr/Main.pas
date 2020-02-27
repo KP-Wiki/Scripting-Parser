@@ -84,7 +84,7 @@ const
     (Name: 'array of Integer'),    (Name: 'array of Single'),
     (Name: 'array of Extended'),
     // Custom types
-    (Name: 'TKMHouseType'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
+    (Name: 'TKMPoint'), (Name: 'TKMHouseType'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
     // KMR
     (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'),
     (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),
