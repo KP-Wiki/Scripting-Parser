@@ -386,7 +386,7 @@ begin
       // Before anything it should start with "//* Version:"
       if StartsStr('//* Version:', slSourceText[i]) then
       begin
-        restStr := Trim(StrSubstring(slSourceText[i], StrIndexOf(slSourceText[i], ':') + 2));
+        restStr := Trim(StrSubstring(slSourceText[i], Pos(':', slSourceText[i]) + 1));
         res.Version := IfThen(restStr = '', '-', restStr);
         Inc(iPlus);
         srcLine := slSourceText[i+iPlus];
@@ -397,9 +397,9 @@ begin
         begin
           // Handle Result description separately to keep the output clean.
           if StartsStr('//* Result:', srcLine) then
-            res.ReturnDesc := StrSubstring(srcLine, StrIndexOf(srcLine, ':') + 2)
+            res.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
           else
-            descrTxt.Add(StrSubstring(srcLine, StrIndexOf(srcLine, '*') + 2));
+            descrTxt.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
           Inc(iPlus);
           srcLine := slSourceText[i+iPlus];
         end;
