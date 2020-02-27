@@ -122,7 +122,7 @@ function StrIndexOf(const aStr, aSubStr: String): Integer;
 begin
   //Todo refactor:
   //@Krom: Why not just replace StrIndexOf with Pos everywhere in code?
-  Result := AnsiPos(aSubStr, aStr) - 1;
+  Result := Pos(aSubStr, aStr) - 1;
 end;
 
 
