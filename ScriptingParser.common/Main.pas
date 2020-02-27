@@ -57,13 +57,18 @@ type
     Name, varType: string;
   end;
 
-  TCommandInfo = record
-    Version: string;
+  // Complete command info
+  TCommandInfo = class
+  public
+    Version: string; // Version in which command was added/changed
     Name: string;
     Description: string;
-    Parameters: string;
-    Return: string;
-    ReturnDesc: string;
+    Parameters: string; // Parameters parsed from declaration
+    Return: string; // Result type
+    ReturnDesc: string; // Result comment
+    Details: TStringList; // Command description and parameters commants
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   TKMTypeInfo = record
@@ -165,6 +170,23 @@ begin
   StrArray := SplitString(aStr, aDelimiters);
   for I := Low(StrArray) to High(StrArray) do
     aStrings.Add(StrArray[I]);
+end;
+
+
+{ TCommandInfo }
+constructor TCommandInfo.Create;
+begin
+  inherited;
+
+  Details := TStringList.Create;
+end;
+
+
+destructor TCommandInfo.Destroy;
+begin
+  FreeAndNil(Details);
+
+  inherited;
 end;
 
 
@@ -361,21 +383,19 @@ procedure TForm1.ParseText(aFile: string; aList: TStringList; aHasReturn: Boolea
 var
   i, j, iPlus: Integer;
   restStr: string;
-  slSourceText, descrTxt: TStringList;
+  slSourceText: TStringList;
   srcLine: string;
-  res: TCommandInfo;
+  ci: TCommandInfo;
 begin
   slSourceText := TStringList.Create;
-  descrTxt  := TStringList.Create;
   try
     slSourceText.LoadFromFile(aFile);
 
     for i := 0 to slSourceText.Count - 1 do
     begin
-      // Reset old values
-      res := default(TCommandInfo);
+      // Create new command to fill
+      ci := TCommandInfo.Create;
       iPlus := 0;
-      descrTxt.Clear;
 
       //* Version: 1234
       //* Large description of the method, optional
@@ -387,7 +407,7 @@ begin
       if StartsStr('//* Version:', slSourceText[i]) then
       begin
         restStr := Trim(StrSubstring(slSourceText[i], Pos(':', slSourceText[i]) + 1));
-        res.Version := IfThen(restStr = '', '-', restStr);
+        ci.Version := IfThen(restStr = '', '-', restStr);
         Inc(iPlus);
         srcLine := slSourceText[i+iPlus];
 
@@ -397,9 +417,9 @@ begin
         begin
           // Handle Result description separately to keep the output clean.
           if StartsStr('//* Result:', srcLine) then
-            res.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
+            ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
           else
-            descrTxt.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
+            ci.Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
           Inc(iPlus);
           srcLine := slSourceText[i+iPlus];
         end;
@@ -419,15 +439,15 @@ begin
           begin
             restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
                             StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
-            res.Name := ReplaceStr(restStr, 'Proc', 'On');
-            res.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
+            ci.Name := ReplaceStr(restStr, 'Proc', 'On');
+            ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
                                                                    StrIndexOf(srcLine, ')') - (
-                                                                   StrIndexOf(srcLine, '(') + 1)), descrTxt);
+                                                                   StrIndexOf(srcLine, '(') + 1)), ci.Details);
           end else
           begin
             restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
                             StrIndexOf(srcLine, ';') - (StrIndexOf(srcLine, '.') + 1));
-            res.Name := ReplaceStr(restStr, 'Proc', 'On');
+            ci.Name := ReplaceStr(restStr, 'Proc', 'On');
           end;
         end;
 
@@ -438,40 +458,41 @@ begin
           begin
             restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
                             StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
-            res.Name := ReplaceStr(restStr, 'Func', 'On');
-            res.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
+            ci.Name := ReplaceStr(restStr, 'Func', 'On');
+            ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
                                                                    StrIndexOf(srcLine, ')') - (
-                                                                   StrIndexOf(srcLine, '(') + 1)), descrTxt);
+                                                                   StrIndexOf(srcLine, '(') + 1)), ci.Details);
           end else
           begin
             restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
                             StrIndexOf(srcLine, ':') - (StrIndexOf(srcLine, '.') + 1));
-            res.Name := ReplaceStr(restStr, 'Func', 'On');
+            ci.Name := ReplaceStr(restStr, 'Func', 'On');
           end;
 
           restStr  := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-          res.Return  := IfThen(SameText(restStr, 'TIntegerArray'), 'array of Integer', restStr);
+          ci.Return  := IfThen(SameText(restStr, 'TIntegerArray'), 'array of Integer', restStr);
         end;
 
         // Now we can assemble Description, after we have detected and removed parameters descriptions from it
-        for j := 0 to descrTxt.Count - 1 do
+        for j := 0 to ci.Details.Count - 1 do
           // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-          if (j > 0) and (RightStr(descrTxt[j-1],6) = '</pre>') then
-            res.Description := res.Description + descrTxt[j]
+          if (j > 0) and (RightStr(ci.Details[j-1], 6) = '</pre>') then
+            ci.Description := ci.Description + ci.Details[j]
           else
-            res.Description := res.Description + '<br/>' + descrTxt[j];
+            ci.Description := ci.Description + '<br/>' + ci.Details[j];
 
 
         // Now we have all the parts and can combine them however we like
-        aList.Add('| ' + res.Version + ' | ' + res.Name + '<sub>' + res.Description + '</sub>' +
-                  ' | <sub>' + res.Parameters + '</sub>' +
-                  IfThen(aHasReturn, ' | <sub>' + res.Return + IfThen(res.ReturnDesc <> '', ' //' + res.ReturnDesc) + '</sub>') +
+        aList.Add('| ' + ci.Version + ' | ' + ci.Name + '<sub>' + ci.Description + '</sub>' +
+                  ' | <sub>' + ci.Parameters + '</sub>' +
+                  IfThen(aHasReturn, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
                   ' |');
       end;
+
+      FreeAndNil(ci);
     end;
   finally
     FreeAndNil(slSourceText);
-    FreeAndNil(descrTxt);
   end;
 end;
 
