@@ -362,7 +362,7 @@ begin
       for j := aDescriptions.Count - 1 downto 0 do
         if StartsStr(paramHolder[i].Name, aDescriptions[j]) then
         begin
-          Result := Result + ' //_' + StrSubstring(aDescriptions[j], StrIndexOf(aDescriptions[j], ':') + 2) + '_';
+          Result := Result + ' //_' + StrSubstring(aDescriptions[j], Pos(':', aDescriptions[j]) + 1) + '_';
           aDescriptions.Delete(j);
           Break;
         end;
