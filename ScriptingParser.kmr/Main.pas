@@ -11,6 +11,7 @@ type
     btnKMR: TButton;
     btnKP: TButton;
     btnGenerateWiki: TButton;
+    btnGenerateXML: TButton;
     gbSettings: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
@@ -39,6 +40,7 @@ type
     procedure edtOnTextChange(Sender: TObject);
     procedure btnKMRClick(Sender: TObject);
     procedure btnKPClick(Sender: TObject);
+    procedure btnGenerateXMLClick(Sender: TObject);
     procedure TabControl1Change(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -50,6 +52,7 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure GenerateWiki;
+    procedure GenerateXML;
   end;
 
   TParamHolder = record
@@ -570,6 +573,18 @@ begin
   ParseList('Utility function<br/>', fListUtils, edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text);
 
   TabControl1Change(nil);
+end;
+
+
+procedure TForm1.btnGenerateXMLClick(Sender: TObject);
+begin
+  GenerateXML;
+end;
+
+
+procedure TForm1.GenerateXML;
+begin
+  //
 end;
 
 

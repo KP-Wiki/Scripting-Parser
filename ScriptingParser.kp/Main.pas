@@ -485,10 +485,15 @@ begin
 
         // Now we can assemble Description, after we have detected and removed parameters descriptions from it
         for j := 0 to descrTxt.Count - 1 do
-          res.Description := res.Description + ' ' + descrTxt[j];
+          // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
+          if (j > 0) and (RightStr(descrTxt[j-1],6) = '</pre>') then
+            res.Description := res.Description + descrTxt[j]
+          else
+            res.Description := res.Description + '<br/>' + descrTxt[j];
+
 
         // Now we have all the parts and can combine them however we like
-        aList.Add('| ' + res.Version + ' | ' + res.Name + '<br/><sub>' + res.Description + '</sub>' +
+        aList.Add('| ' + res.Version + ' | ' + res.Name + '<sub>' + res.Description + '</sub>' +
                   ' | <sub>' + res.Parameters + '</sub>' +
                   IfThen(aHasReturn, ' | <sub>' + res.Return + IfThen(res.ReturnDesc <> '', ' // ' + res.ReturnDesc) + '</sub>') +
                   ' |');

@@ -39,10 +39,10 @@ object Form1: TForm1
     OnClick = btnKPClick
   end
   object btnGenerateWiki: TButton
-    Left = 711
-    Top = 80
-    Width = 99
-    Height = 73
+    Left = 720
+    Top = 51
+    Width = 90
+    Height = 54
     Anchors = [akTop, akRight]
     Caption = 'Generate Wiki'
     Font.Charset = DEFAULT_CHARSET
@@ -57,33 +57,24 @@ object Form1: TForm1
     WordWrap = True
     OnClick = btnGenerateWikiClick
   end
-  object TabControl1: TTabControl
-    Left = 8
-    Top = 159
-    Width = 802
-    Height = 481
+  object btnGenerateXML: TButton
+    Left = 720
+    Top = 107
+    Width = 90
+    Height = 54
+    Anchors = [akTop, akRight]
+    Caption = 'Generate XML'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
     TabOrder = 3
-    Tabs.Strings = (
-      'Actions'
-      'Events'
-      'States'
-      'Utils')
-    TabIndex = 0
-    OnChange = TabControl1Change
-    DesignSize = (
-      802
-      481)
-    object txtParserOutput: TMemo
-      Left = 3
-      Top = 27
-      Width = 790
-      Height = 451
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      ReadOnly = True
-      ScrollBars = ssVertical
-      TabOrder = 0
-      OnKeyPress = txtParserOutputKeyPress
-    end
+    WordWrap = True
+    OnClick = btnGenerateXMLClick
   end
   object gbSettings: TGroupBox
     Left = 8
@@ -237,6 +228,34 @@ object Form1: TForm1
       Height = 21
       TabOrder = 11
       OnChange = edtOnTextChange
+    end
+  end
+  object TabControl1: TTabControl
+    Left = 8
+    Top = 159
+    Width = 802
+    Height = 481
+    TabOrder = 5
+    Tabs.Strings = (
+      'Actions'
+      'Events'
+      'States'
+      'Utils')
+    TabIndex = 0
+    OnChange = TabControl1Change
+    DesignSize = (
+      802
+      481)
+    object txtParserOutput: TMemo
+      Left = 3
+      Top = 27
+      Width = 790
+      Height = 451
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      ReadOnly = True
+      ScrollBars = ssVertical
+      TabOrder = 0
+      OnKeyPress = txtParserOutputKeyPress
     end
   end
 end
