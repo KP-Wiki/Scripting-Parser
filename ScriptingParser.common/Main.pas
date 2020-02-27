@@ -361,15 +361,16 @@ procedure TForm1.ParseText(aFile: string; aList: TStringList; aHasReturn: Boolea
 var
   i, j, iPlus: Integer;
   restStr: string;
-  sourceTxt, descrTxt: TStringList;
+  slSourceText, descrTxt: TStringList;
+  srcLine: string;
   res: TCommandInfo;
 begin
-  sourceTxt := TStringList.Create;
+  slSourceText := TStringList.Create;
   descrTxt  := TStringList.Create;
   try
-    sourceTxt.LoadFromFile(aFile);
+    slSourceText.LoadFromFile(aFile);
 
-    for i := 0 to SourceTxt.Count - 1 do
+    for i := 0 to slSourceText.Count - 1 do
     begin
       // Reset old values
       res := default(TCommandInfo);
@@ -383,69 +384,73 @@ begin
       //* Result: Small optional description of returned value
 
       // Before anything it should start with "//* Version:"
-      if StartsStr('//* Version:', sourceTxt[i]) then
+      if StartsStr('//* Version:', slSourceText[i]) then
       begin
-        restStr := Trim(StrSubstring(sourceTxt[i], StrIndexOf(sourceTxt[i], ':') + 2));
+        restStr := Trim(StrSubstring(slSourceText[i], StrIndexOf(slSourceText[i], ':') + 2));
         res.Version := IfThen(restStr = '', '-', restStr);
         Inc(iPlus);
+        srcLine := slSourceText[i+iPlus];
 
         // Descriptions are only added by lines starting with "//* "
-        if StartsStr('//*', sourceTxt[i+iPlus]) then
+        if StartsStr('//*', srcLine) then
           // Repeat until no description tags are found
-          while StartsStr('//*', sourceTxt[i+iPlus]) do
+          while StartsStr('//*', srcLine) do
           begin
             // Handle Result description separately to keep the output clean.
-            if StartsStr('//* Result:', sourceTxt[i+iPlus]) then
-              res.ReturnDesc := StrSubstring(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], ':') + 2)
+            if StartsStr('//* Result:', srcLine) then
+              res.ReturnDesc := StrSubstring(srcLine, StrIndexOf(srcLine, ':') + 2)
             else
-              descrTxt.Add(StrSubstring(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '*') + 2));
+              descrTxt.Add(StrSubstring(srcLine, StrIndexOf(srcLine, '*') + 2));
             Inc(iPlus);
+            srcLine := slSourceText[i+iPlus];
           end;
 
         // Skip empty or "faulty" lines
-        while
-          not StartsStr('procedure', sourceTxt[i+iPlus])
-          and not StartsStr('function', sourceTxt[i+iPlus]) do
+        while not StartsStr('procedure', srcLine)
+        and not StartsStr('function', srcLine) do
+        begin
           Inc(iPlus);
+          srcLine := slSourceText[i+iPlus];
+        end;
 
         // Format procedures
-        if StartsStr('procedure', sourceTxt[i+iPlus]) then
+        if StartsStr('procedure', srcLine) then
         begin
-          if Pos('(', sourceTxt[i+iPlus]) <> 0 then
+          if Pos('(', srcLine) <> 0 then
           begin
-            restStr := Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '.') + 2,
-                            StrIndexOf(sourceTxt[i+iPlus], '(') - (StrIndexOf(sourceTxt[i+iPlus], '.') + 1));
+            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                            StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
             res.Name := ReplaceStr(restStr, 'Proc', 'On');
-            res.Parameters := ParseParams(Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '(') + 2,
-                                                                   StrIndexOf(sourceTxt[i+iPlus], ')') - (
-                                                                   StrIndexOf(sourceTxt[i+iPlus], '(') + 1)), descrTxt);
+            res.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
+                                                                   StrIndexOf(srcLine, ')') - (
+                                                                   StrIndexOf(srcLine, '(') + 1)), descrTxt);
           end else
           begin
-            restStr := Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '.') + 2,
-                            StrIndexOf(sourceTxt[i+iPlus], ';') - (StrIndexOf(sourceTxt[i+iPlus], '.') + 1));
+            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                            StrIndexOf(srcLine, ';') - (StrIndexOf(srcLine, '.') + 1));
             res.Name := ReplaceStr(restStr, 'Proc', 'On');
           end;
         end;
 
         // Format functions
-        if StartsStr('function', sourceTxt[i+iPlus]) then
+        if StartsStr('function', srcLine) then
         begin
-          if Pos('(', sourceTxt[i+iPlus]) <> 0 then
+          if Pos('(', srcLine) <> 0 then
           begin
-            restStr := Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '.') + 2,
-                            StrIndexOf(sourceTxt[i+iPlus], '(') - (StrIndexOf(sourceTxt[i+iPlus], '.') + 1));
+            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                            StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
             res.Name := ReplaceStr(restStr, 'Func', 'On');
-            res.Parameters := ParseParams(Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '(') + 2,
-                                                                   StrIndexOf(sourceTxt[i+iPlus], ')') - (
-                                                                   StrIndexOf(sourceTxt[i+iPlus], '(') + 1)), descrTxt);
+            res.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
+                                                                   StrIndexOf(srcLine, ')') - (
+                                                                   StrIndexOf(srcLine, '(') + 1)), descrTxt);
           end else
           begin
-            restStr := Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '.') + 2,
-                            StrIndexOf(sourceTxt[i+iPlus], ':') - (StrIndexOf(sourceTxt[i+iPlus], '.') + 1));
+            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                            StrIndexOf(srcLine, ':') - (StrIndexOf(srcLine, '.') + 1));
             res.Name := ReplaceStr(restStr, 'Func', 'On');
           end;
 
-          restStr  := StrTrimRightSeparators(StrSubstring(sourceTxt[i+iPlus], StrLastIndexOf(sourceTxt[i+iPlus], ':') + 2));
+          restStr  := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
           res.Return  := IfThen(SameText(restStr, 'TIntegerArray'), 'array of Integer', restStr);
         end;
 
@@ -466,7 +471,7 @@ begin
       end;
     end;
   finally
-    FreeAndNil(sourceTxt);
+    FreeAndNil(slSourceText);
     FreeAndNil(descrTxt);
   end;
 end;
