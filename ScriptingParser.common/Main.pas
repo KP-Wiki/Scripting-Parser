@@ -391,19 +391,18 @@ begin
         Inc(iPlus);
         srcLine := slSourceText[i+iPlus];
 
-        // Descriptions are only added by lines starting with "//* "
-        if StartsStr('//*', srcLine) then
-          // Repeat until no description tags are found
-          while StartsStr('//*', srcLine) do
-          begin
-            // Handle Result description separately to keep the output clean.
-            if StartsStr('//* Result:', srcLine) then
-              res.ReturnDesc := StrSubstring(srcLine, StrIndexOf(srcLine, ':') + 2)
-            else
-              descrTxt.Add(StrSubstring(srcLine, StrIndexOf(srcLine, '*') + 2));
-            Inc(iPlus);
-            srcLine := slSourceText[i+iPlus];
-          end;
+        // Descriptions are only added by lines starting with "//*"
+        // Repeat until no description tags are found
+        while StartsStr('//*', srcLine) do
+        begin
+          // Handle Result description separately to keep the output clean.
+          if StartsStr('//* Result:', srcLine) then
+            res.ReturnDesc := StrSubstring(srcLine, StrIndexOf(srcLine, ':') + 2)
+          else
+            descrTxt.Add(StrSubstring(srcLine, StrIndexOf(srcLine, '*') + 2));
+          Inc(iPlus);
+          srcLine := slSourceText[i+iPlus];
+        end;
 
         // Skip empty or "faulty" lines
         while not StartsStr('procedure', srcLine)
