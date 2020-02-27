@@ -433,16 +433,13 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
-                          StrIndexOf(srcLine, '(') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, '(') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
           ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1,
-                                                                 StrIndexOf(srcLine, ')') - (
-                                                                 StrIndexOf(srcLine, '(') + 1)), ci.Details);
+                                                                 StrIndexOf(srcLine, ')') - Pos('(', srcLine)), ci.Details);
         end else
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
-                          StrIndexOf(srcLine, ';') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, ';') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
         end;
       end;
@@ -452,16 +449,13 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
-                          StrIndexOf(srcLine, '(') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, '(') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
-          ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
-                                                                 StrIndexOf(srcLine, ')') - (
-                                                                 StrIndexOf(srcLine, '(') + 1)), ci.Details);
+          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1,
+                                                                 StrIndexOf(srcLine, ')') - Pos('(', srcLine)), ci.Details);
         end else
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
-                          StrIndexOf(srcLine, ':') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, ':') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
         end;
 
