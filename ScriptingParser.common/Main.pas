@@ -391,6 +391,7 @@ begin
     // Create new command to fill
     ci := TCommandInfo.Create;
     iPlus := 0;
+    srcLine := aSource[i+iPlus];
 
     //* Version: 1234
     //* Large description of the method, optional
@@ -399,9 +400,9 @@ begin
     //* Result: Small optional description of returned value
 
     // Before anything it should start with "//* Version:"
-    if StartsStr('//* Version:', aSource[i]) then
+    if StartsStr('//* Version:', srcLine) then
     begin
-      restStr := Trim(StrSubstring(aSource[i], Pos(':', aSource[i]) + 1));
+      restStr := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
       ci.Version := IfThen(restStr = '', '-', restStr);
       Inc(iPlus);
       srcLine := aSource[i+iPlus];
@@ -419,7 +420,7 @@ begin
         srcLine := aSource[i+iPlus];
       end;
 
-      // Skip empty or "faulty" lines
+      // Skip empty or "faulty" lines (e.g. comments not intended for wiki)
       while not StartsStr('procedure', srcLine)
       and not StartsStr('function', srcLine) do
       begin
@@ -432,16 +433,16 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
-          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                          StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
+                          StrIndexOf(srcLine, '(') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
-          ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
+          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1,
                                                                  StrIndexOf(srcLine, ')') - (
                                                                  StrIndexOf(srcLine, '(') + 1)), ci.Details);
         end else
         begin
-          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                          StrIndexOf(srcLine, ';') - (StrIndexOf(srcLine, '.') + 1));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
+                          StrIndexOf(srcLine, ';') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
         end;
       end;
@@ -451,16 +452,16 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
-          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                          StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
+                          StrIndexOf(srcLine, '(') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
           ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
                                                                  StrIndexOf(srcLine, ')') - (
                                                                  StrIndexOf(srcLine, '(') + 1)), ci.Details);
         end else
         begin
-          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                          StrIndexOf(srcLine, ':') - (StrIndexOf(srcLine, '.') + 1));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1,
+                          StrIndexOf(srcLine, ':') - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
         end;
 
