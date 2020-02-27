@@ -106,13 +106,7 @@ const
 var
   Form1: TForm1;
 
-  //String functions
-  function StrIndexOf(const aStr, aSubStr: String): Integer;
-  function StrLastIndexOf(const aStr, aSubStr: String): Integer;
   function StrSubstring(const aStr: String; aFrom: Integer): String;
-  function StrContains(const aStr, aSubStr: String): Boolean;
-  function StrTrimRight(const aStr: String; aCharsToTrim: TKMCharArray): String;
-  procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
 
 
 implementation
@@ -147,14 +141,6 @@ begin
   //Todo refactor:
   //@Krom: Why not just replace StrSubstring with RightStr everywhere in code?
   Result := Copy(aStr, aFrom + 1, Length(aStr));
-end;
-
-
-function StrContains(const aStr, aSubStr: String): Boolean;
-begin
-  //Todo refactor:
-  //@Krom: Why not just replace StrContains with Pos() <> 0 everywhere in code?
-  Result := StrIndexOf(aStr, aSubStr) <> -1;
 end;
 
 
@@ -443,7 +429,7 @@ begin
         // Format procedures
         if StartsStr('procedure', sourceTxt[i+iPlus]) then
         begin
-          if StrContains(sourceTxt[i+iPlus], '(') then
+          if Pos('(', sourceTxt[i+iPlus]) <> 0 then
           begin
             restStr := Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '.') + 2,
                             StrIndexOf(sourceTxt[i+iPlus], '(') - (StrIndexOf(sourceTxt[i+iPlus], '.') + 1));
@@ -462,7 +448,7 @@ begin
         // Format functions
         if StartsStr('function', sourceTxt[i+iPlus]) then
         begin
-          if StrContains(sourceTxt[i+iPlus], '(') then
+          if Pos('(', sourceTxt[i+iPlus]) <> 0 then
           begin
             restStr := Copy(sourceTxt[i+iPlus], StrIndexOf(sourceTxt[i+iPlus], '.') + 2,
                             StrIndexOf(sourceTxt[i+iPlus], '(') - (StrIndexOf(sourceTxt[i+iPlus], '.') + 1));
