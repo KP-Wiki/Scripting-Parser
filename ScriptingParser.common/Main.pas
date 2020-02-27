@@ -121,14 +121,6 @@ These function are replacements for String functions introduced after XE2 (XE5 p
 Names are the same as in new Delphi versions, but with 'Str' prefix
 We keep them here to support pre-XE5 compilation
 }
-function StrIndexOf(const aStr, aSubStr: String): Integer;
-begin
-  //Todo refactor:
-  //@Krom: Why not just replace StrIndexOf with Pos everywhere in code?
-  Result := Pos(aSubStr, aStr) - 1;
-end;
-
-
 function StrLastIndexOf(const aStr, aSubStr: String): Integer;
 var I: Integer;
 begin
@@ -433,13 +425,13 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, '(') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
           ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1,
-                                                                 StrIndexOf(srcLine, ')') - Pos('(', srcLine)), ci.Details);
+                                                                 Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
         end else
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, ';') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
         end;
       end;
@@ -449,13 +441,13 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, '(') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
           ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1,
-                                                                 StrIndexOf(srcLine, ')') - Pos('(', srcLine)), ci.Details);
+                                                                 Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
         end else
         begin
-          restStr := Copy(srcLine, Pos('.', srcLine) + 1, StrIndexOf(srcLine, ':') - Pos('.', srcLine));
+          restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
         end;
 
