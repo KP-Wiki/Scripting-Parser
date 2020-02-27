@@ -255,9 +255,6 @@ var
   charArr: TKMCharArray;
   nextVarModifier: String;
 begin
-  if aString = 'aPlayer: ShortInt; const aFileName: AnsiString; aVolume: Single' then
-    Sleep(0);
-
   Result := '';
 
   listTokens := TStringList.Create;
