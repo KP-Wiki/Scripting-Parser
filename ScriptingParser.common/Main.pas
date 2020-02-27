@@ -45,7 +45,7 @@ type
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fSettingsPath: string;
     fUpdating: Boolean;
-    procedure ParseText(aFile: string; aList: TStringList; aHasReturn: Boolean);
+    procedure ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -378,121 +378,112 @@ begin
 end;
 
 
-// Scans file's contents and puts it all in proper formatting for most wikis.
-procedure TForm1.ParseText(aFile: string; aList: TStringList; aHasReturn: Boolean);
+// Scans source contents and puts it all in proper formatting for most wikis.
+procedure TForm1.ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
 var
   i, j, iPlus: Integer;
   restStr: string;
-  slSourceText: TStringList;
   srcLine: string;
   ci: TCommandInfo;
 begin
-  slSourceText := TStringList.Create;
-  try
-    slSourceText.LoadFromFile(aFile);
+  for i := 0 to aSource.Count - 1 do
+  begin
+    // Create new command to fill
+    ci := TCommandInfo.Create;
+    iPlus := 0;
 
-    for i := 0 to slSourceText.Count - 1 do
+    //* Version: 1234
+    //* Large description of the method, optional
+    //* aX: Small optional description of parameter
+    //* aY: Small optional description of parameter
+    //* Result: Small optional description of returned value
+
+    // Before anything it should start with "//* Version:"
+    if StartsStr('//* Version:', aSource[i]) then
     begin
-      // Create new command to fill
-      ci := TCommandInfo.Create;
-      iPlus := 0;
+      restStr := Trim(StrSubstring(aSource[i], Pos(':', aSource[i]) + 1));
+      ci.Version := IfThen(restStr = '', '-', restStr);
+      Inc(iPlus);
+      srcLine := aSource[i+iPlus];
 
-      //* Version: 1234
-      //* Large description of the method, optional
-      //* aX: Small optional description of parameter
-      //* aY: Small optional description of parameter
-      //* Result: Small optional description of returned value
-
-      // Before anything it should start with "//* Version:"
-      if StartsStr('//* Version:', slSourceText[i]) then
+      // Descriptions are only added by lines starting with "//*"
+      // Repeat until no description tags are found
+      while StartsStr('//*', srcLine) do
       begin
-        restStr := Trim(StrSubstring(slSourceText[i], Pos(':', slSourceText[i]) + 1));
-        ci.Version := IfThen(restStr = '', '-', restStr);
+        // Handle Result description separately to keep the output clean.
+        if StartsStr('//* Result:', srcLine) then
+          ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
+        else
+          ci.Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
         Inc(iPlus);
-        srcLine := slSourceText[i+iPlus];
-
-        // Descriptions are only added by lines starting with "//*"
-        // Repeat until no description tags are found
-        while StartsStr('//*', srcLine) do
-        begin
-          // Handle Result description separately to keep the output clean.
-          if StartsStr('//* Result:', srcLine) then
-            ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
-          else
-            ci.Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
-          Inc(iPlus);
-          srcLine := slSourceText[i+iPlus];
-        end;
-
-        // Skip empty or "faulty" lines
-        while not StartsStr('procedure', srcLine)
-        and not StartsStr('function', srcLine) do
-        begin
-          Inc(iPlus);
-          srcLine := slSourceText[i+iPlus];
-        end;
-
-        // Format procedures
-        if StartsStr('procedure', srcLine) then
-        begin
-          if Pos('(', srcLine) <> 0 then
-          begin
-            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                            StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
-            ci.Name := ReplaceStr(restStr, 'Proc', 'On');
-            ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
-                                                                   StrIndexOf(srcLine, ')') - (
-                                                                   StrIndexOf(srcLine, '(') + 1)), ci.Details);
-          end else
-          begin
-            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                            StrIndexOf(srcLine, ';') - (StrIndexOf(srcLine, '.') + 1));
-            ci.Name := ReplaceStr(restStr, 'Proc', 'On');
-          end;
-        end;
-
-        // Format functions
-        if StartsStr('function', srcLine) then
-        begin
-          if Pos('(', srcLine) <> 0 then
-          begin
-            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                            StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
-            ci.Name := ReplaceStr(restStr, 'Func', 'On');
-            ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
-                                                                   StrIndexOf(srcLine, ')') - (
-                                                                   StrIndexOf(srcLine, '(') + 1)), ci.Details);
-          end else
-          begin
-            restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
-                            StrIndexOf(srcLine, ':') - (StrIndexOf(srcLine, '.') + 1));
-            ci.Name := ReplaceStr(restStr, 'Func', 'On');
-          end;
-
-          restStr  := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-          ci.Return  := IfThen(SameText(restStr, 'TIntegerArray'), 'array of Integer', restStr);
-        end;
-
-        // Now we can assemble Description, after we have detected and removed parameters descriptions from it
-        for j := 0 to ci.Details.Count - 1 do
-          // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-          if (j > 0) and (RightStr(ci.Details[j-1], 6) = '</pre>') then
-            ci.Description := ci.Description + ci.Details[j]
-          else
-            ci.Description := ci.Description + '<br/>' + ci.Details[j];
-
-
-        // Now we have all the parts and can combine them however we like
-        aList.Add('| ' + ci.Version + ' | ' + ci.Name + '<sub>' + ci.Description + '</sub>' +
-                  ' | <sub>' + ci.Parameters + '</sub>' +
-                  IfThen(aHasReturn, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
-                  ' |');
+        srcLine := aSource[i+iPlus];
       end;
 
-      FreeAndNil(ci);
+      // Skip empty or "faulty" lines
+      while not StartsStr('procedure', srcLine)
+      and not StartsStr('function', srcLine) do
+      begin
+        Inc(iPlus);
+        srcLine := aSource[i+iPlus];
+      end;
+
+      // Format procedures
+      if StartsStr('procedure', srcLine) then
+      begin
+        if Pos('(', srcLine) <> 0 then
+        begin
+          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                          StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
+          ci.Name := ReplaceStr(restStr, 'Proc', 'On');
+          ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
+                                                                 StrIndexOf(srcLine, ')') - (
+                                                                 StrIndexOf(srcLine, '(') + 1)), ci.Details);
+        end else
+        begin
+          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                          StrIndexOf(srcLine, ';') - (StrIndexOf(srcLine, '.') + 1));
+          ci.Name := ReplaceStr(restStr, 'Proc', 'On');
+        end;
+      end;
+
+      // Format functions
+      if StartsStr('function', srcLine) then
+      begin
+        if Pos('(', srcLine) <> 0 then
+        begin
+          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                          StrIndexOf(srcLine, '(') - (StrIndexOf(srcLine, '.') + 1));
+          ci.Name := ReplaceStr(restStr, 'Func', 'On');
+          ci.Parameters := ParseParams(Copy(srcLine, StrIndexOf(srcLine, '(') + 2,
+                                                                 StrIndexOf(srcLine, ')') - (
+                                                                 StrIndexOf(srcLine, '(') + 1)), ci.Details);
+        end else
+        begin
+          restStr := Copy(srcLine, StrIndexOf(srcLine, '.') + 2,
+                          StrIndexOf(srcLine, ':') - (StrIndexOf(srcLine, '.') + 1));
+          ci.Name := ReplaceStr(restStr, 'Func', 'On');
+        end;
+
+        restStr  := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
+        ci.Return  := IfThen(SameText(restStr, 'TIntegerArray'), 'array of Integer', restStr);
+      end;
+
+      // Now we can assemble Description, after we have detected and removed parameters descriptions from it
+      for j := 0 to ci.Details.Count - 1 do
+        // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
+        if (j > 0) and (RightStr(ci.Details[j-1], 6) = '</pre>') then
+          ci.Description := ci.Description + ci.Details[j]
+        else
+          ci.Description := ci.Description + '<br/>' + ci.Details[j];
+
+      // Now we have all the parts and can combine them however we like
+      aList.Add('| ' + ci.Version + ' | ' + ci.Name + '<sub>' + ci.Description + '</sub>' +
+                ' | <sub>' + ci.Parameters + '</sub>' +
+                IfThen(aHasReturn, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
+                ' |');
     end;
-  finally
-    FreeAndNil(slSourceText);
+
+    FreeAndNil(ci);
   end;
 end;
 
@@ -518,33 +509,41 @@ end;
 
 procedure TForm1.GenerateWiki;
 
-  procedure ParseList(aName: String; aResultList: TStringList; aInputFile,aHeaderFile,aOutputFile: String; aHasReturn: Boolean = True);
+  procedure ParseSource(const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: String;
+    aHasReturn: Boolean = True);
   var
-    tmpList: TStringList;
+    slSource, slBody: TStringList;
     Path: String;
   begin
     if not FileExists(aInputFile) then Exit;
 
-    tmpList := TStringList.Create;
+    slBody := TStringList.Create;
 
     aResultList.Clear;
-    tmpList.Clear;
-    ParseText(aInputFile, tmpList, aHasReturn);
-    tmpList.CustomSort(DoSort);
+
+    slSource := TStringList.Create;
+    try
+      slSource.LoadFromFile(aInputFile);
+      ParseText(slSource, slBody, aHasReturn);
+    finally
+      slSource.Free;
+    end;
+
+    slBody.CustomSort(DoSort);
 
     if FileExists(aHeaderFile) then
       aResultList.LoadFromFile(aHeaderFile);
 
     if aHasReturn then
     begin
-      aResultList.Add('| Ver<br/>sion | ' + aName + ' Description | Parameters<br/>and types | Returns |');
+      aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
       aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
     end else begin
-      aResultList.Add('| Ver<br/>sion | ' + aName + ' Description | Parameters<br/>and types |');
+      aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types |');
       aResultList.Add('| ------- | ------------------------------------ | -------------- |');
     end;
 
-    aResultList.AddStrings(tmpList);
+    aResultList.AddStrings(slBody);
 
     if aOutputFile <> '' then
     begin
@@ -554,14 +553,14 @@ procedure TForm1.GenerateWiki;
       aResultList.SaveToFile(aOutputFile);
     end;
 
-    FreeAndNil(tmpList);
+    FreeAndNil(slBody);
   end;
 
 begin
-  ParseList('Action', fListActions, edtActionsFile.Text, edtHeaderFileActions.Text, edtOutputFileActions.Text);
-  ParseList('Event', fListEvents, edtEventsFile.Text, edtHeaderFileEvents.Text, edtOutputFileEvents.Text, False);
-  ParseList('State', fListStates, edtStatesFile.Text, edtHeaderFileStates.Text, edtOutputFileStates.Text);
-  ParseList('Utility function<br/>', fListUtils, edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text);
+  ParseSource('Action', fListActions, edtActionsFile.Text, edtHeaderFileActions.Text, edtOutputFileActions.Text);
+  ParseSource('Event', fListEvents, edtEventsFile.Text, edtHeaderFileEvents.Text, edtOutputFileEvents.Text, False);
+  ParseSource('State', fListStates, edtStatesFile.Text, edtHeaderFileStates.Text, edtOutputFileStates.Text);
+  ParseSource('Utility function<br/>', fListUtils, edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text);
 
   TabControl1Change(nil);
 end;
