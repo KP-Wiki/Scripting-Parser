@@ -51,6 +51,7 @@ type
     procedure SaveSettings;
     procedure GenerateWiki;
     procedure GenerateXML;
+    function ExpandMethodName(const aMethod: string): string;
   end;
 
   TParamHolder = record
@@ -77,14 +78,14 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 45;
+  VAR_TYPE_COUNT = 46;
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
     // Simple types
     (Name: 'Byte'),       (Name: 'Shortint'),   (Name: 'Smallint'),   (Name: 'Word'),
     (Name: 'Integer'),    (Name: 'Cardinal'),   (Name: 'Single'),     (Name: 'Extended'),
-    (Name: 'Boolean'),    (Name: 'AnsiString'), (Name: 'String'),
+    (Name: 'Boolean'),    (Name: 'AnsiString'), (Name: 'String'),     (Name: 'UnicodeString'),
     (Name: 'array of const'),      (Name: 'array of Boolean'),
     (Name: 'array of String'),     (Name: 'array of AnsiString'),
     (Name: 'array of Integer'),    (Name: 'array of Single'),
@@ -243,6 +244,19 @@ begin
     3: txtParserOutput.Lines.AddStrings(fListUtils);
   end;
 end;
+
+
+function TForm1.ExpandMethodName(const aMethod: string): string;
+var
+  I: Integer;
+begin
+  Result := '';
+
+  for I := 0 to High(VAR_TYPE_INFO) do
+  if SameText(VAR_TYPE_INFO[I].Name, aMethod) then
+    Exit(IfThen(VAR_TYPE_INFO[I].Alias <> '', VAR_TYPE_INFO[I].Alias, VAR_TYPE_INFO[I].Name));
+end;
+
 
 {
   Parses the param string into prefered wiki-format.
@@ -427,8 +441,7 @@ begin
         begin
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
-          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1,
-                                                                 Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
+          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
         end else
         begin
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
@@ -443,8 +456,7 @@ begin
         begin
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
-          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1,
-                                                                 Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
+          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
         end else
         begin
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
