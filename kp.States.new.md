@@ -1,6 +1,6 @@
 ####States
 
-| Ver<br/>sion | State Description | Parameters<br/>and types | Returns |
+| Ver<br/>sion | State description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
 | 7969 | EntityType<sub><br/>Get the entity type by its UID (0 - unknown or none, 1 - Unit, 2 - House, 3 - UnitGroup, 4 - Stockpile)</sub> | <sub>**aEntityID**: Integer;</sub> | <sub>Integer</sub> |
 | - | FogRevealed<sub><br/>See if tile is revealed (known or live)</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |

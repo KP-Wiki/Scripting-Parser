@@ -1,6 +1,6 @@
 ####Utils
 
-| Ver<br/>sion | Utility function<br/> Description | Parameters<br/>and types | Returns |
+| Ver<br/>sion | Utility function<br/> description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
 | 5422 | AbsI<sub><br/>Returns absolute value of specified integer</sub> | <sub>**aValue**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | AbsS<sub><br/>Returns absolute value of specified single number</sub> | <sub>**aValue**: Single;</sub> | <sub>Single</sub> |

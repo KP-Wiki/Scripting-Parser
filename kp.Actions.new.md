@@ -1,6 +1,6 @@
 ####Actions
 
-| Ver<br/>sion | Action Description | Parameters<br/>and types | Returns |
+| Ver<br/>sion | Action description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
 | 8250 | CampaignChapterSetup<sub><br/>Sets up campaign chapter info in campaign menu. Campaign-only action!</sub> | <sub>**aChapter**: Integer; //_chapter index to set up_ <br/> **aTitle**: String; //_text to display for the chapter title_ <br/> **aShortTitle**: String; //_text to display for the chapter short title_ <br/> **aBackgroundImg**: String; //_sprite to be used for the chapter background map (*.png)_</sub> | <sub></sub> |
 | 8250 | CampaignMissionSetup<sub><br/>Sets up all of the campaign mission info in campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; //_mission index to set up_ <br/> **aUnlocked**: Boolean; //_Should it be available for selection and play_ <br/> **aWon**: Boolean; //_should it be marked as won_ <br/> **aFlagImgLocked**: String; //_sprite to be used for the locked state flag (*.png)_ <br/> **aFlagImgNormal**: String; //_sprite to be used for the normal state flag (*.png)_ <br/> **aFlagImgWon**: String; //_sprite to be used for the won state flag (*.png)_ <br/> **aFlagPosX**: Integer; //_flag X position on the campaign map_ <br/> **aFlagPosY**: Integer; //_flag Y position on the campaign map_ <br/> **aTitle**: String; //_text to display for the mission title_ <br/> **aBriefing**: String; //_text to display for the mission briefing_</sub> | <sub></sub> |

@@ -1,6 +1,6 @@
 ####Events
 
-| Ver<br/>sion | Event Description | Parameters<br/>and types |
+| Ver<br/>sion | Event description | Parameters<br/>and types |
 | ------- | ------------------------------------ | -------------- |
 | 8250 | OnCampaignMenu<sub><br/>A campaign menu has been opened. Campaign-only action!</sub> | <sub></sub> |
 | - | OnHouseBuilt<sub><br/>A house has finished construction</sub> | <sub>**aHouse**: Integer;</sub> |
