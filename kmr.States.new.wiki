@@ -20,7 +20,7 @@ Other scripts functions:
 * [Mission Scripts Dynamic Utils](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicUtils)
 <br />
 
-| Ver<br/>sion | State Description | Parameters<br/>and types | Returns |
+| Ver<br/>sion | State description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
 | 7000+ | AIArmyType<sub><br/>Gets AI army type</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>TKMArmyType</sub> |
 | 7000+ | AIAutoAttackRange<sub><br/>Gets AI auto attack range.<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aPlayer**: Byte;</sub> | <sub>Integer</sub> |

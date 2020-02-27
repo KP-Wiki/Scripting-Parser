@@ -40,7 +40,7 @@ Other scripts functions:
 * [Mission Scripts Dynamic Utils](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicUtils)
 <br />
 
-| Ver<br/>sion | Event Description | Parameters<br/>and types |
+| Ver<br/>sion | Event description | Parameters<br/>and types |
 | ------- | ------------------------------------ | -------------- |
 | 6570 | OnBeacon<sub><br/>Occurs when a player places a beacon on the map.</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> |
 | 7000+ | OnFieldBuilt<sub><br/>Occurs when player built a field.</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> |
