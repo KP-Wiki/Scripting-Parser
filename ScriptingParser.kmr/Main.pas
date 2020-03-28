@@ -74,7 +74,7 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 45;
+  VAR_TYPE_COUNT = 46;
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
@@ -99,6 +99,7 @@ const
     (Name: 'TKMHouse'; Alias: 'Integer'), (Name: 'TKMUnit'; Alias: 'Integer'), (Name: 'TKMUnitGroup'; Alias: 'Integer'),
     // KMR
     (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
+    (Name: 'TKMThreeResult'; Alias: 'Boolean'),
     // KP
     (Name: 'TKMEntity'; Alias: 'Integer'), (Name: 'TKMHandIndex'; Alias: 'Integer'), (Name: 'array of TKMHandIndex'; Alias: 'array of Integer')
   );
