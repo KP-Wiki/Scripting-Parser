@@ -78,7 +78,7 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 46;
+  VAR_TYPE_COUNT = 48;
 
   VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
@@ -96,6 +96,7 @@ const
     (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'),
     (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),
     (Name: 'array of TKMTerrainTileBrief'), (Name: 'TKMAudioFormat'), (Name: 'TKMAIAttackTarget'),
+    (Name: 'TKMTerrainKind'), (Name: 'TKMTileMaskKind'),
     // KP
     (Name: 'TKMHouseFace'), (Name: 'TKMObjectiveStatus'), (Name: 'TKMObjectiveType'),
     // Werewolf types
