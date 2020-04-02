@@ -388,7 +388,7 @@ end;
 // Scans source contents and puts it all in proper formatting for most wikis.
 procedure TForm1.ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
 var
-  i, j, iPlus: Integer;
+  i, j, k, iPlus: Integer;
   restStr: string;
   srcLine: string;
   ci: TCommandInfo;
@@ -465,7 +465,13 @@ begin
         end;
 
         restStr  := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-        ci.Return  := IfThen(SameText(restStr, 'TIntegerArray'), 'array of Integer', restStr);
+        for k := 0 to High(VAR_TYPE_INFO) do
+          if (VAR_TYPE_INFO[k].Alias <> '') and SameText(VAR_TYPE_INFO[k].Name, restStr) then
+          begin
+            restStr := VAR_TYPE_INFO[k].Alias;
+            Break;
+          end;
+        ci.Return  := restStr;
       end;
 
       // Now we can assemble Description, after we have detected and removed parameters descriptions from it
