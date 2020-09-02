@@ -1,2 +1,9 @@
 ### Events
 
+Events are written in a form **procedure EVENT_NAME(EVENT_PARAMETERS);** like so:
+```pascal
+    procedure OnHouseBuilt(aHouseID: Integer);
+    begin
+      // code
+    end;
+```
