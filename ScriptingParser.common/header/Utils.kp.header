@@ -1,2 +1,7 @@
 ### Utils
 
+Version column description:  
+<sub>"-" Means this util was added from the start.</sub>  
+<sub>"5678" Means this util was introduced in revision 5678.</sub>  
+<sub>"-5678" Means this util was removed in revision 5678.</sub>
+

@@ -1,9 +1,15 @@
 ### Events
 
-Events are written in a form **procedure EVENT_NAME(EVENT_PARAMETERS);** like so:
+Events are written in a form `procedure EVENT_NAME(EVENT_PARAMETERS);` like so:
 ```pascal
     procedure OnHouseBuilt(aHouseID: Integer);
     begin
       // code
     end;
 ```
+
+Version column description:  
+<sub>"-" Means this event was added from the start.</sub>  
+<sub>"5678" Means this event was introduced in revision 5678.</sub>  
+<sub>"-5678" Means this event was removed in revision 5678.</sub>
+

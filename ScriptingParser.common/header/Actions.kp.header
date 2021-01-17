@@ -1,2 +1,15 @@
 ### Actions
 
+Actions are written in a form `Actions.ACTION_NAME(ACTION_PARAMETERS);` like so:
+```pascal
+    if States.StatArmyCount(0) <= 3 then
+      Actions.PlayerDefeat(0); // Defeat 1st player
+```
+
+Most of action parameters are numeric (except houses, units and some others when mentioned).
+
+Version column description:  
+<sub>"-" Means this action was added from the start.</sub>  
+<sub>"5678" Means this action was introduced in revision 5678.</sub>  
+<sub>"-5678" Means this action was removed in revision 5678.</sub>
+

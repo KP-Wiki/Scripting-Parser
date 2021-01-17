@@ -1,2 +1,13 @@
 ### States
 
+States are queried in a form `States.STATE_NAME(STATE_PARAMETERS)` like so:
+```pascal
+    if States.StatPlayerCount > 5 then
+      unitCnt := States.StatUnitCount(1);
+```
+
+Version column description:  
+<sub>"-" Means this state was added from the start.</sub>  
+<sub>"5678" Means this state was introduced in revision 5678.</sub>  
+<sub>"-5678" Means this state was removed in revision 5678.</sub>
+
