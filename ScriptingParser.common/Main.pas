@@ -167,6 +167,18 @@ begin
 end;
 
 
+// Try to convert a type into alias
+function TryTypeToAlias(const aType: string): string;
+var
+  I: Integer;
+begin
+  Result := aType;
+  for I := 0 to High(VAR_TYPE_INFO) do
+    if (VAR_TYPE_INFO[I].Alias <> '') and SameText(VAR_TYPE_INFO[I].Name, aType) then
+      Exit(VAR_TYPE_INFO[I].Alias);
+end;
+
+
 { TCommandInfo }
 constructor TCommandInfo.Create;
 begin
@@ -388,7 +400,7 @@ end;
 // Scans source contents and puts it all in proper formatting for most wikis.
 procedure TForm1.ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
 var
-  i, j, k, iPlus: Integer;
+  i, j, iPlus: Integer;
   restStr: string;
   srcLine: string;
   ci: TCommandInfo;
@@ -440,11 +452,24 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
+          // Procedure with parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
-          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
+
+          // Parameters could go for several lines
+          restStr := '';
+          while Pos(')', srcLine) = 0 do
+          begin
+            restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+            Inc(iPlus);
+            srcLine := aSource[i+iPlus];
+          end;
+          restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
+
+          ci.Parameters := ParseParams(restStr, ci.Details);
         end else
         begin
+          // Procedure without parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Proc', 'On');
         end;
@@ -455,23 +480,31 @@ begin
       begin
         if Pos('(', srcLine) <> 0 then
         begin
+          // Function with parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
-          ci.Parameters := ParseParams(Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine)), ci.Details);
+
+          // Parameters could go for several lines
+          restStr := '';
+          while Pos(')', srcLine) = 0 do
+          begin
+            restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+            Inc(iPlus);
+            srcLine := aSource[i+iPlus];
+          end;
+          restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
+
+          ci.Parameters := ParseParams(restStr, ci.Details);
         end else
         begin
+          // Function without parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
           ci.Name := ReplaceStr(restStr, 'Func', 'On');
         end;
 
-        restStr  := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-        for k := 0 to High(VAR_TYPE_INFO) do
-          if (VAR_TYPE_INFO[k].Alias <> '') and SameText(VAR_TYPE_INFO[k].Name, restStr) then
-          begin
-            restStr := VAR_TYPE_INFO[k].Alias;
-            Break;
-          end;
-        ci.Return  := restStr;
+        // Function result
+        restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
+        ci.Return := TryTypeToAlias(restStr);
       end;
 
       // Now we can assemble Description, after we have detected and removed parameters descriptions from it
