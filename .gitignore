@@ -2,3 +2,8 @@
 ScriptingParser.common/ScriptingParser.kmr.ini
 
 *.dcu
+*.res
+*.map
+*.identcache
+*.exe
+*.drc
