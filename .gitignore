@@ -7,3 +7,4 @@ ScriptingParser.common/ScriptingParser.kmr.ini
 *.identcache
 *.exe
 *.drc
+/ScriptingParser.common/__history/

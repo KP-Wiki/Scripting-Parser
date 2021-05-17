@@ -63,6 +63,8 @@ type
   public
     Version: string; // Version in which command was added/changed
     Name: string;
+    IsDeprecated: Boolean;
+    DeprecatedReplacemen: string;
     Description: string;
     Parameters: string; // Parameters parsed from declaration
     Return: string; // Result type
@@ -401,7 +403,7 @@ end;
 procedure TForm1.ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
 var
   i, j, iPlus: Integer;
-  restStr: string;
+  restStr, deprStr: string;
   srcLine: string;
   ci: TCommandInfo;
 begin
@@ -426,11 +428,20 @@ begin
       Inc(iPlus);
       srcLine := aSource[i+iPlus];
 
+      ci.IsDeprecated := False;
+      ci.DeprecatedReplacemen := '';
       // Descriptions are only added by lines starting with "//*"
       // Repeat until no description tags are found
       while StartsStr('//*', srcLine) do
       begin
+        // Handle Deprecated tag
+        if StartsStr('//* @Deprecated:', srcLine) then
+        begin
+          ci.IsDeprecated := True;
+          ci.DeprecatedReplacemen := StrSubstring(srcLine, Pos(':', srcLine) + 1);
         // Handle Result description separately to keep the output clean.
+        end
+        else
         if StartsStr('//* Result:', srcLine) then
           ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
         else
@@ -515,8 +526,22 @@ begin
         else
           ci.Description := ci.Description + '<br/>' + ci.Details[j];
 
+      deprStr := '';
+      if ci.IsDeprecated then
+      begin
+        deprStr := '<br />&#x274C;`Deprecated`<br />' +
+                   '<sub>*Method could be removed in the future game versions';
+        if Trim(ci.DeprecatedReplacemen) <> '' then
+          deprStr := deprStr + ', use <a href="#' + ci.DeprecatedReplacemen + '">' +
+                     ci.DeprecatedReplacemen + '</a> instead';
+
+        deprStr := deprStr + '*</sub>';
+      end;
+
       // Now we have all the parts and can combine them however we like
-      aList.Add('| ' + ci.Version + ' | ' + ci.Name + '<sub>' + ci.Description + '</sub>' +
+      aList.Add('| ' + ci.Version + ' | <a id="' + ci.Name + '">' + ci.Name + '</a>' +
+                deprStr +
+                '<sub>' + ci.Description + '</sub>' +
                 ' | <sub>' + ci.Parameters + '</sub>' +
                 IfThen(aHasReturn, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
                 ' |');
