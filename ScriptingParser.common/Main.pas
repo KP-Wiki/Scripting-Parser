@@ -403,6 +403,8 @@ end;
 
 // Scans source contents and puts it all in proper formatting for most wikis.
 procedure TForm1.ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
+const
+  UNICODE_RED_CROSS = '&#x274C;';
 var
   i, j, iPlus: Integer;
   restStr, deprStr: string;
@@ -539,19 +541,27 @@ begin
       deprStr := '';
       if ci.Status = csDeprecated then
       begin
-        deprStr := '<br/>&#x274C;`Deprecated`<br/>' + // Unicode for RedCross
+        deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
                    '<sub>*Method could be removed in the future game versions';
+
         if ci.Replacement <> '' then
-          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead';
+          if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
+            deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
+          else
+            deprStr := deprStr + ', ' + ci.Replacement;
 
         deprStr := deprStr + '*</sub>';
       end;
       if ci.Status = csRemoved then
       begin
-        deprStr := '<br/>&#x274C;`Removed`<br/>' + // Unicode for RedCross
+        deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
                    '<sub>*Method was removed';
+
         if ci.Replacement <> '' then
-          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead';
+          if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
+            deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
+          else
+            deprStr := deprStr + ', ' + ci.Replacement;
 
         deprStr := deprStr + '*</sub>';
       end;
