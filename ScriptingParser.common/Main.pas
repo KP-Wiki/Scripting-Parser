@@ -64,7 +64,7 @@ type
     Version: string; // Version in which command was added/changed
     Name: string;
     IsDeprecated: Boolean;
-    DeprecatedReplacemen: string;
+    DeprecatedReplacement: string;
     Description: string;
     Parameters: string; // Parameters parsed from declaration
     Return: string; // Result type
@@ -415,6 +415,7 @@ begin
     srcLine := aSource[i+iPlus];
 
     //* Version: 1234
+    //todo: * Status: -/deprecated/removed
     //* Large description of the method, optional
     //* aX: Small optional description of parameter
     //* aY: Small optional description of parameter
@@ -429,7 +430,7 @@ begin
       srcLine := aSource[i+iPlus];
 
       ci.IsDeprecated := False;
-      ci.DeprecatedReplacemen := '';
+      ci.DeprecatedReplacement := '';
       // Descriptions are only added by lines starting with "//*"
       // Repeat until no description tags are found
       while StartsStr('//*', srcLine) do
@@ -438,7 +439,7 @@ begin
         if StartsStr('//* @Deprecated:', srcLine) then
         begin
           ci.IsDeprecated := True;
-          ci.DeprecatedReplacemen := StrSubstring(srcLine, Pos(':', srcLine) + 1);
+          ci.DeprecatedReplacement := StrSubstring(srcLine, Pos(':', srcLine) + 1);
         // Handle Result description separately to keep the output clean.
         end
         else
@@ -531,9 +532,9 @@ begin
       begin
         deprStr := '<br />&#x274C;`Deprecated`<br />' +
                    '<sub>*Method could be removed in the future game versions';
-        if Trim(ci.DeprecatedReplacemen) <> '' then
-          deprStr := deprStr + ', use <a href="#' + ci.DeprecatedReplacemen + '">' +
-                     ci.DeprecatedReplacemen + '</a> instead';
+        if Trim(ci.DeprecatedReplacement) <> '' then
+          deprStr := deprStr + ', use <a href="#' + ci.DeprecatedReplacement + '">' +
+                     ci.DeprecatedReplacement + '</a> instead';
 
         deprStr := deprStr + '*</sub>';
       end;
