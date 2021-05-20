@@ -58,13 +58,15 @@ type
     Name, varType: string;
   end;
 
+  TKMCommandStatus = (csOk, csDeprecated, csRemoved);
+
   // Complete command info
   TCommandInfo = class
   public
     Version: string; // Version in which command was added/changed
     Name: string;
-    IsDeprecated: Boolean;
-    DeprecatedReplacement: string;
+    Status: TKMCommandStatus;
+    Replacement: string;
     Description: string;
     Parameters: string; // Parameters parsed from declaration
     Return: string; // Result type
@@ -406,6 +408,7 @@ var
   restStr, deprStr: string;
   srcLine: string;
   ci: TCommandInfo;
+  strStatus: string;
 begin
   for i := 0 to aSource.Count - 1 do
   begin
@@ -415,8 +418,9 @@ begin
     srcLine := aSource[i+iPlus];
 
     //* Version: 1234
-    //todo: * Status: -/deprecated/removed
-    //* Large description of the method, optional
+    //* Status: -/Deprecated/Removed [optional]
+    //* Replacement: Link to the replacement method [optional]
+    //* Large description of the method [optional]
     //* aX: Small optional description of parameter
     //* aY: Small optional description of parameter
     //* Result: Small optional description of returned value
@@ -429,20 +433,25 @@ begin
       Inc(iPlus);
       srcLine := aSource[i+iPlus];
 
-      ci.IsDeprecated := False;
-      ci.DeprecatedReplacement := '';
+      ci.Status := csOk;
+      ci.Replacement := '';
       // Descriptions are only added by lines starting with "//*"
       // Repeat until no description tags are found
       while StartsStr('//*', srcLine) do
       begin
-        // Handle Deprecated tag
-        if StartsStr('//* @Deprecated:', srcLine) then
+        if StartsStr('//* Status:', srcLine) then
         begin
-          ci.IsDeprecated := True;
-          ci.DeprecatedReplacement := StrSubstring(srcLine, Pos(':', srcLine) + 1);
-        // Handle Result description separately to keep the output clean.
-        end
+          strStatus := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
+          if StartsStr('Deprecated', strStatus) then
+            ci.Status := csDeprecated
+          else
+          if StartsStr('Removed', strStatus) then
+            ci.Status := csRemoved;
+        end else
+        if StartsStr('//* Replacement:', srcLine) then
+          ci.Replacement := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1))
         else
+        // Handle Result description separately to keep the output clean
         if StartsStr('//* Result:', srcLine) then
           ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
         else
@@ -528,13 +537,21 @@ begin
           ci.Description := ci.Description + '<br/>' + ci.Details[j];
 
       deprStr := '';
-      if ci.IsDeprecated then
+      if ci.Status = csDeprecated then
       begin
-        deprStr := '<br />&#x274C;`Deprecated`<br />' +
+        deprStr := '<br/>&#x274C;`Deprecated`<br/>' + // Unicode for RedCross
                    '<sub>*Method could be removed in the future game versions';
-        if Trim(ci.DeprecatedReplacement) <> '' then
-          deprStr := deprStr + ', use <a href="#' + ci.DeprecatedReplacement + '">' +
-                     ci.DeprecatedReplacement + '</a> instead';
+        if ci.Replacement <> '' then
+          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead';
+
+        deprStr := deprStr + '*</sub>';
+      end;
+      if ci.Status = csRemoved then
+      begin
+        deprStr := '<br/>&#x274C;`Removed`<br/>' + // Unicode for RedCross
+                   '<sub>*Method was removed';
+        if ci.Replacement <> '' then
+          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead';
 
         deprStr := deprStr + '*</sub>';
       end;
