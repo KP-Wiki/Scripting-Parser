@@ -477,7 +477,8 @@ begin
         begin
           // Procedure with parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-          ci.Name := ReplaceStr(restStr, 'Proc', 'On');
+          restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
+          ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
 
           // Parameters could go for several lines
           restStr := '';
@@ -494,7 +495,8 @@ begin
         begin
           // Procedure without parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
-          ci.Name := ReplaceStr(restStr, 'Proc', 'On');
+          restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
+          ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
         end;
       end;
 
@@ -505,7 +507,8 @@ begin
         begin
           // Function with parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-          ci.Name := ReplaceStr(restStr, 'Func', 'On');
+          restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
+          ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
 
           // Parameters could go for several lines
           restStr := '';
@@ -522,7 +525,8 @@ begin
         begin
           // Function without parameters
           restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
-          ci.Name := ReplaceStr(restStr, 'Func', 'On');
+          restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
+          ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
         end;
 
         // Function result
