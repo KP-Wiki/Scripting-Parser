@@ -95,7 +95,7 @@ const
     (Name: 'array of Integer'),    (Name: 'array of Single'),
     (Name: 'array of Extended'),
     // Custom types
-    (Name: 'TKMPoint'), (Name: 'TKMHouseType'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
+    (Name: 'TKMPoint'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
     // KMR
     (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'),
     (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),
@@ -107,7 +107,7 @@ const
     (Name: 'TByteSet'; Alias: 'set of Byte'), (Name: 'TIntegerArray'; Alias: 'array of Integer'), (Name: 'TAnsiStringArray'; Alias: 'array of AnsiString'),
     (Name: 'TKMHouse'; Alias: 'Integer'), (Name: 'TKMUnit'; Alias: 'Integer'), (Name: 'TKMUnitGroup'; Alias: 'Integer'),
     // KMR
-    (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
+    (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'TKMHouseType'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
     // KP
     (Name: 'TKMEntity'; Alias: 'Integer'), (Name: 'TKMHandIndex'; Alias: 'Integer'), (Name: 'array of TKMHandIndex'; Alias: 'array of Integer')
   );
