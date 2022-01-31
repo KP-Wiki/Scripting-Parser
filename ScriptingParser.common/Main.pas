@@ -640,6 +640,7 @@ procedure TForm1.GenerateWiki;
 
     aResultList.AddStrings(slLinks);
 
+    aResultList.Add('<br />');
     aResultList.Add('');
 
     if aHasReturn then
