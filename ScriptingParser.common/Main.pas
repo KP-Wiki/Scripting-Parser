@@ -45,7 +45,7 @@ type
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fSettingsPath: string;
     fUpdating: Boolean;
-    procedure ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
+    procedure ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -402,7 +402,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TForm1.ParseText(aSource: TStringList; aList: TStringList; aHasReturn: Boolean);
+procedure TForm1.ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean);
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
@@ -577,6 +577,8 @@ begin
                 ' | <sub>' + ci.Parameters + '</sub>' +
                 IfThen(aHasReturn, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
                 ' |');
+
+      aLinks.Add('* <a href="#' + ci.Name + '">' + ci.Name + '</a>');
     end;
 
     FreeAndNil(ci);
@@ -608,27 +610,37 @@ procedure TForm1.GenerateWiki;
   procedure ParseSource(const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: String;
     aHasReturn: Boolean = True);
   var
-    slSource, slBody: TStringList;
+    slSource, slBody, slLinks: TStringList;
     Path: String;
   begin
     if not FileExists(aInputFile) then Exit;
 
     slBody := TStringList.Create;
+    slLinks := TStringList.Create;
 
     aResultList.Clear;
 
     slSource := TStringList.Create;
     try
       slSource.LoadFromFile(aInputFile);
-      ParseText(slSource, slBody, aHasReturn);
+      ParseText(slSource, slBody, slLinks, aHasReturn);
     finally
       slSource.Free;
     end;
 
     slBody.CustomSort(DoSort);
+    slLinks.Sort();
 
     if FileExists(aHeaderFile) then
       aResultList.LoadFromFile(aHeaderFile);
+
+    aResultList.Add('');
+    aResultList.Add('***');
+    aResultList.Add('');
+
+    aResultList.AddStrings(slLinks);
+
+    aResultList.Add('');
 
     if aHasReturn then
     begin
@@ -650,6 +662,7 @@ procedure TForm1.GenerateWiki;
     end;
 
     FreeAndNil(slBody);
+    FreeAndNil(slLinks);
   end;
 
 begin
