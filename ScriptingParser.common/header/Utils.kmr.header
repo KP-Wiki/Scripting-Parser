@@ -16,13 +16,14 @@ or, in short form
 ***
 
 Other scripts functions:
-* [Mission Scripts Dynamic Events](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicEvents)
-* [Mission Scripts Dynamic Actions](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicActions)
-* [Mission Scripts Dynamic States](https://github.com/reyandme/kam_remake/wiki/MissionScriptsDynamicStates)
+* [Events](https://github.com/reyandme/kam_remake/wiki/Events-(Mission-Script-Dynamic))
+* [Actions](https://github.com/reyandme/kam_remake/wiki/Actions-(Mission-Script-Dynamic))
+* [States](https://github.com/reyandme/kam_remake/wiki/States-(Mission-Script-Dynamic))
 
 Dynamic scripts usefull info:
-* [Mission Scripts Dynamic Types](https://github.com/reyandme/kam_remake/wiki/Mission-Script-Dynamic-Types)
-* [Mission Scripts Lookups](https://github.com/reyandme/kam_remake/wiki/MissionScriptsLookups)
-* [Mission Scripts Custom Console Commands](https://github.com/reyandme/kam_remake/wiki/Mission-Scripts-Custom-Console-Commands)
-* [Mission Scripts Advanced Features](https://github.com/reyandme/kam_remake/wiki/MissionScriptDynamic-Features)
+* [Tutorial](https://github.com/reyandme/kam_remake/wiki/Tutorial-(Mission-Script-Dynamic))
+* [Types](https://github.com/reyandme/kam_remake/wiki/Types-(Mission-Script-Dynamic))
+* [Lookup Tables](https://github.com/reyandme/kam_remake/wiki/Lookup-Tables-(Mission-Script-Dynamic))
+* [Advanced Features](https://github.com/reyandme/kam_remake/wiki/Advanced-Features-(Mission-Script-Dynamic))
+* [Custom Console Commands](https://github.com/reyandme/kam_remake/wiki/Custom-Console-Commands-(Mission-Script-Dynamic))
 
