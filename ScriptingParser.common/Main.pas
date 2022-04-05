@@ -5,6 +5,8 @@ uses
   Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls;
 
 type
+  TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
+
   TForm1 = class(TForm)
     btnReyKMR: TButton;
     btnKromKMR: TButton;
@@ -45,6 +47,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
+    fParsingGame: TKMParsingGame;
     fSettingsPath: string;
     fUpdating: Boolean;
     procedure ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean; aEvent: Boolean);
@@ -215,7 +218,7 @@ begin
   fListStates := TStringList.Create;
   fListUtils := TStringList.Create;
 
-  btnKMR.Click;
+  btnReyKMR.Click;
 end;
 
 
@@ -710,6 +713,7 @@ end;
 procedure TForm1.btnReyKMRClick(Sender: TObject);
 begin
   // Rey KaM
+  fParsingGame := pgKaMRemake;
   fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.rey.kmr.ini';
   LoadSettings;
 end;
@@ -718,6 +722,7 @@ end;
 procedure TForm1.btnKromKMRClick(Sender: TObject);
 begin
   // Krom KaM
+  fParsingGame := pgKaMRemake;
   fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.krom.kmr.ini';
   LoadSettings;
 end;
@@ -726,6 +731,7 @@ end;
 procedure TForm1.btnKromKPClick(Sender: TObject);
 begin
   // Krom KP
+  fParsingGame := pgKnightsProvince;
   fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.krom.kp.ini';
   LoadSettings;
 end;
