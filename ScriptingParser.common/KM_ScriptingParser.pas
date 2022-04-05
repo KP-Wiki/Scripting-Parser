@@ -22,8 +22,9 @@ type
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
     procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
-    function ExtractParams(aString: string; aDescriptions: TStringList): string;
+    function ExtractParams(aArguments: string; aDescriptions: TStringList): string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
+    procedure SplitArguments(const aArguments: string; aParamList: TStringList);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
@@ -138,6 +139,7 @@ var
 begin
   StrArray := SplitString(aStr, aDelimiters);
   for I := Low(StrArray) to High(StrArray) do
+  if StrArray[I] <> '' then
     aStrings.Add(StrArray[I]);
 end;
 
@@ -206,17 +208,47 @@ begin
 end;
 
 
+procedure TKMScriptingParser.SplitArguments(const aArguments: string; aParamList: TStringList);
+var
+  I, nextType: Integer;
+  listTokens: TStringList;
+begin
+  listTokens := TStringList.Create;
+  try
+    StrSplit(aArguments, ',:; ', listTokens);
+
+    // Re-combine type arrays
+    nextType := -1;
+    for I := 0 to listTokens.Count - 1 do
+    begin
+      if SameText(listTokens[I], 'array') then
+      begin
+        // Assemble the "[array] + [of] + [something]"
+        aParamList.Add(listTokens[I] + ' ' + listTokens[I + 1] + ' ' + listTokens[I + 2]);
+        nextType := I + 2;
+      end else
+        // Skip unused stuff
+        if not SameText(listTokens[I], 'of')
+        and not SameText(listTokens[I], 'const')
+        and not (I = nextType) then
+          aParamList.Add(listTokens[I]);
+    end;
+  finally
+    FreeAndNil(listTokens);
+  end;
+end;
+
 {
   Parses the param string into prefered wiki-format.
   Results:
   1 - [name]: [type];
   2 - etc
 }
-function TKMScriptingParser.ExtractParams(aString: string; aDescriptions: TStringList): string;
+function TKMScriptingParser.ExtractParams(aArguments: string; aDescriptions: TStringList): string;
 var
-  I, J, K, nextType: Integer;
+  I, J, K: Integer;
   isParam: Boolean;
-  listTokens, paramList, typeList: TStringList;
+  paramList, typeList: TStringList;
   scriptParameters: TKMScriptParameters;
   lastType: string;
   nextVarModifier: string;
@@ -226,33 +258,13 @@ begin
 
   scriptParameters := TKMScriptParameters.Create;
 
-  listTokens := TStringList.Create;
   paramList := TStringList.Create;
   typeList  := TStringList.Create;
   try
     // If not set to -1 it skips the first variable
-    nextType := -1;
     nextVarModifier := '';
 
-    StrSplit(aString, ' ', listTokens);
-
-    // Re-combine type arrays
-    for I := 0 to listTokens.Count - 1 do
-    begin
-      listTokens[I] := StrTrimRightSeparators(listTokens[I]);
-
-      if SameText(listTokens[I], 'array') then
-      begin
-        nextType := I + 2;
-        // For some reason this kept giving 'array of Integer;' hence the trim
-        paramList.Add(StrTrimRightSeparators(listTokens[I] + ' ' + listTokens[nextType - 1] + ' ' + listTokens[nextType]));
-      end else
-        // Skip unused stuff
-        if not ((SameText(listTokens[I], 'of'))
-             or (SameText(listTokens[I], 'const'))
-             or (I = nextType)) then
-          paramList.Add(listTokens[I]);
-    end;
+    SplitArguments(aArguments, paramList);
 
     //Check for 'out' and 'var' variables modifiers (they are in paramList now)
     nextVarModifier := '';
@@ -318,7 +330,6 @@ begin
       end;
     end;
   finally
-    FreeAndNil(listTokens);
     FreeAndNil(paramList);
     FreeAndNil(typeList);
   end;
