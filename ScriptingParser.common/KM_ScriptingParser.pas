@@ -309,10 +309,8 @@ begin
     // Use reverse scan, so that we can remember last met type and apply it to all preceeding parameters
     lastType := '';
     for I := tokenList.Count - 1 downto 0 do
+    if tokenList[I] <> '' then // Skip empty params (f.e. modifiers "var" or "out")
     begin
-      if tokenList[I] = '' then // Skip empty params (f.e. modifiers "var" or "out")
-        Continue;
-
       // See if this token is a Type
       isParam := True;
       for K := 0 to High(VAR_TYPE_INFO) do
@@ -325,7 +323,7 @@ begin
 
       if isParam then
       begin
-        // Find and remove parameter description
+        // Find the parameter description (and remove it from source)
         desc := '';
         for J := aDescriptions.Count - 1 downto 0 do
           if StartsStr(tokenList[I], aDescriptions[J]) then
