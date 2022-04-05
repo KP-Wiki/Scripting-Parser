@@ -25,6 +25,7 @@ type
     function ExtractParams(aArguments: string; aDescriptions: TStringList): string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure SplitArguments(const aArguments: string; aTokenList: TStringList);
+    procedure AdjoinModifiers(aTokenList: TStringList);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
@@ -237,6 +238,46 @@ begin
     aTokenList.Delete(I);
 end;
 
+
+procedure TKMScriptingParser.AdjoinModifiers(aTokenList: TStringList);
+var
+  I, K: Integer;
+  nextVarModifier: string;
+  isParam: Boolean;
+begin
+  // Check for 'out' and 'var' variables modifiers (they are in aTokenList now)
+  nextVarModifier := '';
+  for I := 0 to aTokenList.Count - 1 do
+  begin
+    // See if this token is a Type
+    isParam := True;
+    for K := 0 to High(VAR_MODIFIERS) do
+      if SameText(VAR_MODIFIERS[K], aTokenList[I]) then
+      begin
+        nextVarModifier := VAR_MODIFIERS[K];
+        aTokenList[I] := ''; // Modifier is not a param. Erase it
+        isParam := False;
+        Break;
+      end;
+
+    // Update var names until first type found
+    if isParam then
+      for K := 0 to High(VAR_TYPE_INFO) do
+        if SameText(VAR_TYPE_INFO[K].Name, aTokenList[I]) then
+        begin
+          nextVarModifier := '';
+          isParam := False;
+          Break;
+        end;
+
+    // Update var name (add modifier to it)
+    if isParam and (nextVarModifier <> '') then
+      aTokenList[I] := nextVarModifier + ' ' + aTokenList[I];
+  end;
+
+end;
+
+
 {
   Parses the param string into prefered wiki-format.
   Results:
@@ -250,7 +291,6 @@ var
   tokenList, typeList: TStringList;
   scriptParameters: TKMScriptParameters;
   lastType: string;
-  nextVarModifier: string;
   desc: string;
 begin
   Result := '';
@@ -260,40 +300,10 @@ begin
   tokenList := TStringList.Create;
   typeList  := TStringList.Create;
   try
-    nextVarModifier := '';
-
     // Split into tokens
     SplitArguments(aArguments, tokenList);
 
-    // Check for 'out' and 'var' variables modifiers (they are in tokenList now)
-    nextVarModifier := '';
-    for I := 0 to tokenList.Count - 1 do
-    begin
-      // See if this token is a Type
-      isParam := True;
-      for K := 0 to High(VAR_MODIFIERS) do
-        if SameText(VAR_MODIFIERS[K], tokenList[I]) then
-        begin
-          nextVarModifier := VAR_MODIFIERS[K];
-          tokenList[I] := ''; //modifier is not a param
-          isParam := False;
-          Break;
-        end;
-
-      //Update var names until first type found
-      if isParam then
-        for K := 0 to High(VAR_TYPE_INFO) do
-          if SameText(VAR_TYPE_INFO[K].Name, tokenList[I]) then
-          begin
-            nextVarModifier := '';
-            isParam := False;
-            Break;
-          end;
-
-      //Update var name (add modifier to it)
-      if isParam and (nextVarModifier <> '') then
-        tokenList[I] := nextVarModifier + ' ' + tokenList[I];
-    end;
+    AdjoinModifiers(tokenList);
 
     // Bind variable names to their type
     // Use reverse scan, so that we can remember last met type and apply it to all preceeding parameters
