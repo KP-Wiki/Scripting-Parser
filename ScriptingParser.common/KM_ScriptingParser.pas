@@ -7,11 +7,10 @@ uses
 
 type
   TKMParsingArea = (paActions, paEvents, paStates, paUtils);
+  TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
+
 const
   AREA_SHORT: array [TKMParsingArea] of string = ('Actions', 'Events', 'States', 'Utils');
-type
-  TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
-const
   GAME_EXT: array [TKMParsingGame] of string = ('kmr', 'kp');
 
 type
@@ -41,10 +40,10 @@ type
   TKMCommandStatus = (csOk, csDeprecated, csRemoved);
 
   // Complete command info
-  TCommandInfo = class
+  TKMCommandInfo = class
   public
-    Version: string; // Version in which command was added/changed
     Name: string;
+    Version: string; // Version in which command was added/changed
     Status: TKMCommandStatus;
     Replacement: string;
     Description: string;
@@ -110,8 +109,8 @@ begin
 end;
 
 
-{ TCommandInfo }
-constructor TCommandInfo.Create;
+{ TKMCommandInfo }
+constructor TKMCommandInfo.Create;
 begin
   inherited;
 
@@ -119,7 +118,7 @@ begin
 end;
 
 
-destructor TCommandInfo.Destroy;
+destructor TKMCommandInfo.Destroy;
 begin
   FreeAndNil(Details);
 
@@ -270,13 +269,13 @@ var
   i, j, iPlus: Integer;
   restStr, deprStr: string;
   srcLine: string;
-  ci: TCommandInfo;
+  ci: TKMCommandInfo;
   strStatus: string;
 begin
   for i := 0 to aSource.Count - 1 do
   begin
     // Create new command to fill
-    ci := TCommandInfo.Create;
+    ci := TKMCommandInfo.Create;
     iPlus := 0;
     srcLine := aSource[i+iPlus];
 
