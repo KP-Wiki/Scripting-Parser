@@ -21,10 +21,7 @@ type
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
     procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
-    function ExtractParams(aArguments: string; aDescriptions: TStringList): string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure SplitArguments(const aArguments: string; aTokenList: TStringList);
-    procedure CollectParameters(aTokenList: TStringList; aDescriptions: TStringList; aParams: TKMScriptParameters);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
@@ -41,18 +38,21 @@ type
 
   // Complete command info
   TKMCommandInfo = class
+  private
+    fDetails: TStringList; // Command description and parameters comments
+    fParameters: TKMScriptParameters; // Parameters parsed from declaration
   public
     Name: string;
     Version: string; // Version in which command was added/changed
     Status: TKMCommandStatus;
     Replacement: string;
     Description: string;
-    Parameters: string; // Parameters parsed from declaration
     Return: string; // Result type
     ReturnDesc: string; // Result comment
-    Details: TStringList; // Command description and parameters comments
     constructor Create;
     destructor Destroy; override;
+    property Details: TStringList read fDetails;
+    property Parameters: TKMScriptParameters read fParameters;
   end;
 
 
@@ -97,30 +97,21 @@ begin
 end;
 
 
-procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList);
-var
-  StrArray: TStringDynArray;
-  I: Integer;
-begin
-  StrArray := SplitString(aStr, aDelimiters);
-  for I := Low(StrArray) to High(StrArray) do
-  if StrArray[I] <> '' then
-    aStrings.Add(StrArray[I]);
-end;
-
 
 { TKMCommandInfo }
 constructor TKMCommandInfo.Create;
 begin
   inherited;
 
-  Details := TStringList.Create;
+  fDetails := TStringList.Create;
+  fParameters := TKMScriptParameters.Create;
 end;
 
 
 destructor TKMCommandInfo.Destroy;
 begin
-  FreeAndNil(Details);
+  FreeAndNil(fDetails);
+  FreeAndNil(fParameters);
 
   inherited;
 end;
@@ -146,118 +137,6 @@ begin
   FreeAndNil(fListUtils);
 
   inherited;
-end;
-
-
-// Take a string of arguments and split it into list of tokens
-procedure TKMScriptingParser.SplitArguments(const aArguments: string; aTokenList: TStringList);
-var
-  I: Integer;
-begin
-  StrSplit(aArguments, ',:; ', aTokenList);
-
-  // Assemble the "[array] + [of] + [something]"
-  // Do it first, cos we can have [array of const]
-  for I := aTokenList.Count - 1 downto 0 do
-    if SameText(aTokenList[I], 'array') then
-    begin
-      aTokenList[I] := aTokenList[I] + ' ' + aTokenList[I + 1] + ' ' + aTokenList[I + 2];
-      aTokenList.Delete(I + 2);
-      aTokenList.Delete(I + 1);
-    end;
-
-  // Remove single 'const' modifiers
-  for I := aTokenList.Count - 1 downto 0 do
-  if SameText(aTokenList[I], 'const') then
-    aTokenList.Delete(I);
-end;
-
-
-procedure TKMScriptingParser.CollectParameters(aTokenList: TStringList; aDescriptions: TStringList; aParams: TKMScriptParameters);
-  function FindDescription(const aName: string): string;
-  var
-    I: Integer;
-  begin
-    // Find the parameter description (and remove it from source)
-    Result := '';
-    // Scan in reverse since method descroption can contain the argument names too
-    //for I := aDescriptions.Count - 1 downto 0 do
-    for I := 0 to aDescriptions.Count - 1 do
-      if StartsStr(aName + ':', aDescriptions[I]) then
-      begin
-        Result := StrSubstring(aDescriptions[I], Pos(':', aDescriptions[I]) + 1);
-        aDescriptions.Delete(I);
-        Exit;
-      end;
-  end;
-var
-  I, K: Integer;
-  varModifier, newModifier: string;
-  varType, newType: string;
-  list: array of record Modifier, &Type: string; end;
-  desc: string;
-begin
-  SetLength(list, aTokenList.Count);
-
-  varModifier := '';
-  varType := '';
-
-  // Forward pass to assign modifiers
-  for I := 0 to aTokenList.Count - 1 do
-  begin
-    if TokenIsModifier(aTokenList[I], newModifier) then
-      varModifier := newModifier;
-
-    if TokenIsType(aTokenList[I], newType) then
-      varModifier := '';
-
-    list[I].Modifier := varModifier;
-  end;
-
-  // Backward pass to assign types
-  for I := aTokenList.Count - 1 downto 0 do
-  begin
-    if TokenIsType(aTokenList[I], newType) then
-      varType := newType;
-
-    list[I].&Type := varType;
-  end;
-
-  // Now we can collect names
-  for I := 0 to aTokenList.Count - 1 do
-  if not TokenIsModifier(aTokenList[I], newModifier)
-  and not TokenIsType(aTokenList[I], newType) then
-    aParams.Append(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I]));
-end;
-
-
-{
-  Parses the param string into prefered wiki-format.
-  Results:
-  1 - [name]: [type];
-  2 - etc
-}
-function TKMScriptingParser.ExtractParams(aArguments: string; aDescriptions: TStringList): string;
-var
-  tokenList: TStringList;
-  scriptParameters: TKMScriptParameters;
-begin
-  Result := '';
-
-  scriptParameters := TKMScriptParameters.Create;
-
-  tokenList := TStringList.Create;
-  try
-    // Split into tokens
-    SplitArguments(aArguments, tokenList);
-
-    CollectParameters(tokenList, aDescriptions, scriptParameters);
-  finally
-    FreeAndNil(tokenList);
-  end;
-  Result := scriptParameters.GetText;
-
-  scriptParameters.Free;
 end;
 
 
@@ -350,7 +229,7 @@ begin
           end;
           restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-          ci.Parameters := ExtractParams(restStr, ci.Details);
+          ci.Parameters.ParseFromString(restStr, ci.Details);
         end else
         begin
           // Procedure without parameters
@@ -380,7 +259,7 @@ begin
           end;
           restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-          ci.Parameters := ExtractParams(restStr, ci.Details);
+          ci.Parameters.ParseFromString(restStr, ci.Details);
         end else
         begin
           // Function without parameters
@@ -434,7 +313,7 @@ begin
       aList.Add('| ' + ci.Version + ' | <a id="' + ci.Name + '">' + ci.Name + '</a>' +
                 deprStr +
                 '<sub>' + ci.Description + '</sub>' +
-                ' | <sub>' + ci.Parameters + '</sub>' +
+                ' | <sub>' + ci.Parameters.GetText + '</sub>' +
                 IfThen(aArea <> paEvents, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
                 ' |');
 
