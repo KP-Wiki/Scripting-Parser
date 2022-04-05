@@ -50,13 +50,13 @@ type
     fParsingGame: TKMParsingGame;
     fSettingsPath: string;
     fUpdating: Boolean;
-    procedure ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean; aEvent: Boolean);
-    function ParseParams(aString: string; aDescriptions: TStringList; aEvent: Boolean): string;
+    procedure ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean);
+    function ParseParams(aString: string; aDescriptions: TStringList): string;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure GenerateWiki;
     procedure GenerateXML;
-//    function ExpandMethodName(const aMethod: string; aEvent: Boolean): string;
+    function ExpandMethodName(const aMethod: string): string;
   end;
 
   TParamHolder = record
@@ -84,8 +84,6 @@ type
   TKMTypeInfo = record
     Name: string;
     Alias: string;
-    EventOnlyAlias: Boolean; // If true, then alias will apply only for events
-    function GetName(aEvent: Boolean): string;
   end;
 
 const
@@ -114,8 +112,7 @@ const
     (Name: 'TByteSet'; Alias: 'set of Byte'), (Name: 'TIntegerArray'; Alias: 'array of Integer'), (Name: 'TAnsiStringArray'; Alias: 'array of AnsiString'),
     (Name: 'TKMHouse'; Alias: 'Integer'), (Name: 'TKMUnit'; Alias: 'Integer'), (Name: 'TKMUnitGroup'; Alias: 'Integer'),
     // KMR
-    (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
-    (Name: 'TKMHouseType'; Alias: 'Integer'; EventOnlyAlias: True),
+    (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'TKMHouseType'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
     // KP
     (Name: 'TKMEntity'; Alias: 'Integer'), (Name: 'TKMHandIndex'; Alias: 'Integer'), (Name: 'array of TKMHandIndex'; Alias: 'array of Integer')
   );
@@ -180,15 +177,13 @@ end;
 
 
 // Try to convert a type into alias
-function TryTypeToAlias(const aType: string; aEvent: Boolean): string;
+function TryTypeToAlias(const aType: string): string;
 var
   I: Integer;
 begin
   Result := aType;
   for I := 0 to High(VAR_TYPE_INFO) do
-    if (not aEvent or VAR_TYPE_INFO[I].EventOnlyAlias)
-      and (VAR_TYPE_INFO[I].Alias <> '')
-      and SameText(VAR_TYPE_INFO[I].Name, aType) then
+    if (VAR_TYPE_INFO[I].Alias <> '') and SameText(VAR_TYPE_INFO[I].Name, aType) then
       Exit(VAR_TYPE_INFO[I].Alias);
 end;
 
@@ -280,16 +275,16 @@ begin
 end;
 
 
-//function TForm1.ExpandMethodName(const aMethod: string; aEvent: Boolean): string;
-//var
-//  I: Integer;
-//begin
-//  Result := '';
-//
-//  for I := 0 to High(VAR_TYPE_INFO) do
-//  if SameText(VAR_TYPE_INFO[I].Name, aMethod) then
-//    Exit(VAR_TYPE_INFO[I].GetName(aEvent));
-//end;
+function TForm1.ExpandMethodName(const aMethod: string): string;
+var
+  I: Integer;
+begin
+  Result := '';
+
+  for I := 0 to High(VAR_TYPE_INFO) do
+  if SameText(VAR_TYPE_INFO[I].Name, aMethod) then
+    Exit(IfThen(VAR_TYPE_INFO[I].Alias <> '', VAR_TYPE_INFO[I].Alias, VAR_TYPE_INFO[I].Name));
+end;
 
 
 {
@@ -298,7 +293,7 @@ end;
   1 - [name]: [type];
   2 - etc
 }
-function TForm1.ParseParams(aString: string; aDescriptions: TStringList; aEvent: Boolean): string;
+function TForm1.ParseParams(aString: string; aDescriptions: TStringList): string;
 var
   i, j, K, nextType: Integer;
   isParam: Boolean;
@@ -380,7 +375,7 @@ begin
       for K := 0 to High(VAR_TYPE_INFO) do
         if SameText(VAR_TYPE_INFO[K].Name, paramList[i]) then
         begin
-          lastType := VAR_TYPE_INFO[K].GetName(aEvent);
+          lastType := IfThen(VAR_TYPE_INFO[K].Alias <> '', VAR_TYPE_INFO[K].Alias, VAR_TYPE_INFO[K].Name);
           isParam := False;
           Break;
         end;
@@ -419,7 +414,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TForm1.ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean; aEvent: Boolean);
+procedure TForm1.ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean);
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
@@ -507,7 +502,7 @@ begin
           end;
           restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-          ci.Parameters := ParseParams(restStr, ci.Details, aEvent);
+          ci.Parameters := ParseParams(restStr, ci.Details);
         end else
         begin
           // Procedure without parameters
@@ -537,7 +532,7 @@ begin
           end;
           restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-          ci.Parameters := ParseParams(restStr, ci.Details, aEvent);
+          ci.Parameters := ParseParams(restStr, ci.Details);
         end else
         begin
           // Function without parameters
@@ -548,7 +543,7 @@ begin
 
         // Function result
         restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-        ci.Return := TryTypeToAlias(restStr, aEvent);
+        ci.Return := TryTypeToAlias(restStr);
       end;
 
       // Now we can assemble Description, after we have detected and removed parameters descriptions from it
@@ -625,7 +620,7 @@ end;
 procedure TForm1.GenerateWiki;
 
   procedure ParseSource(const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: String;
-    aHasReturn: Boolean = True; aEvent: Boolean = False);
+    aHasReturn: Boolean = True);
   var
     slSource, slBody, slLinks: TStringList;
     Path: String;
@@ -640,7 +635,7 @@ procedure TForm1.GenerateWiki;
     slSource := TStringList.Create;
     try
       slSource.LoadFromFile(aInputFile);
-      ParseText(slSource, slBody, slLinks, aHasReturn, aEvent);
+      ParseText(slSource, slBody, slLinks, aHasReturn);
     finally
       slSource.Free;
     end;
@@ -695,7 +690,7 @@ procedure TForm1.GenerateWiki;
 
 begin
   ParseSource('Action', fListActions, edtActionsFile.Text, edtHeaderFileActions.Text, edtOutputFileActions.Text);
-  ParseSource('Event', fListEvents, edtEventsFile.Text, edtHeaderFileEvents.Text, edtOutputFileEvents.Text, False, True);
+  ParseSource('Event', fListEvents, edtEventsFile.Text, edtHeaderFileEvents.Text, edtOutputFileEvents.Text, False);
   ParseSource('State', fListStates, edtStatesFile.Text, edtHeaderFileStates.Text, edtOutputFileStates.Text);
   ParseSource('Utility function<br/>', fListUtils, edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text);
 
