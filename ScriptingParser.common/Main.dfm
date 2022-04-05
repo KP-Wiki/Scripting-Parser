@@ -20,29 +20,31 @@ object Form1: TForm1
     648)
   PixelsPerInch = 96
   TextHeight = 13
-  object btnKMR: TButton
-    Left = 720
+  object btnReyKMR: TButton
+    Left = 712
     Top = 16
     Width = 33
-    Height = 25
-    Caption = 'KMR'
+    Height = 33
+    Caption = 'Rey KMR'
     TabOrder = 0
-    OnClick = btnKMRClick
+    WordWrap = True
+    OnClick = btnReyKMRClick
   end
-  object btnKP: TButton
-    Left = 752
+  object btnKromKP: TButton
+    Left = 776
     Top = 16
     Width = 33
-    Height = 25
-    Caption = 'KP'
+    Height = 33
+    Caption = 'Krom KP'
     TabOrder = 1
-    OnClick = btnKPClick
+    WordWrap = True
+    OnClick = btnKromKPClick
   end
   object btnGenerateWiki: TButton
-    Left = 720
-    Top = 51
-    Width = 90
-    Height = 54
+    Left = 712
+    Top = 56
+    Width = 98
+    Height = 49
     Anchors = [akTop, akRight]
     Caption = 'Generate Wiki'
     Font.Charset = DEFAULT_CHARSET
@@ -58,10 +60,10 @@ object Form1: TForm1
     OnClick = btnGenerateWikiClick
   end
   object btnGenerateXML: TButton
-    Left = 720
-    Top = 107
-    Width = 90
-    Height = 54
+    Left = 712
+    Top = 104
+    Width = 98
+    Height = 49
     Anchors = [akTop, akRight]
     Caption = 'Generate XML'
     Font.Charset = DEFAULT_CHARSET
@@ -257,5 +259,15 @@ object Form1: TForm1
       TabOrder = 0
       OnKeyPress = txtParserOutputKeyPress
     end
+  end
+  object btnKromKMR: TButton
+    Left = 744
+    Top = 16
+    Width = 33
+    Height = 33
+    Caption = 'Krom KMR'
+    TabOrder = 6
+    WordWrap = True
+    OnClick = btnKromKMRClick
   end
 end

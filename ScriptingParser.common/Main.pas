@@ -1,13 +1,14 @@
 unit Main;
 interface
 uses
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils, Windows,
   Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls;
 
 type
   TForm1 = class(TForm)
-    btnKMR: TButton;
-    btnKP: TButton;
+    btnReyKMR: TButton;
+    btnKromKMR: TButton;
+    btnKromKP: TButton;
     btnGenerateWiki: TButton;
     btnGenerateXML: TButton;
     gbSettings: TGroupBox;
@@ -36,8 +37,9 @@ type
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
     procedure edtOnTextChange(Sender: TObject);
-    procedure btnKMRClick(Sender: TObject);
-    procedure btnKPClick(Sender: TObject);
+    procedure btnReyKMRClick(Sender: TObject);
+    procedure btnKromKPClick(Sender: TObject);
+    procedure btnKromKMRClick(Sender: TObject);
     procedure btnGenerateXMLClick(Sender: TObject);
     procedure TabControl1Change(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -677,6 +679,8 @@ begin
   ParseSource('State', fListStates, edtStatesFile.Text, edtHeaderFileStates.Text, edtOutputFileStates.Text);
   ParseSource('Utility function<br/>', fListUtils, edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text);
 
+  //todo: Windows.CopyFile(PChar(edtOutputFileActions.Text), PChar(ExtractFilePath(Application.ExeName) + '..\' + ExtractFileName(edtOutputFileActions.Text)), False);
+
   TabControl1Change(nil);
 end;
 
@@ -703,18 +707,26 @@ begin
 end;
 
 
-procedure TForm1.btnKMRClick(Sender: TObject);
+procedure TForm1.btnReyKMRClick(Sender: TObject);
 begin
-  // KaM
-  fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.kmr.ini';
+  // Rey KaM
+  fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.rey.kmr.ini';
   LoadSettings;
 end;
 
 
-procedure TForm1.btnKPClick(Sender: TObject);
+procedure TForm1.btnKromKMRClick(Sender: TObject);
 begin
-  // KP
-  fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.kp.ini';
+  // Krom KaM
+  fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.krom.kmr.ini';
+  LoadSettings;
+end;
+
+
+procedure TForm1.btnKromKPClick(Sender: TObject);
+begin
+  // Krom KP
+  fSettingsPath := ExtractFilePath(ParamStr(0)) + 'ScriptingParser.krom.kp.ini';
   LoadSettings;
 end;
 
