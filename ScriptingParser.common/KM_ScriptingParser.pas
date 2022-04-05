@@ -23,6 +23,7 @@ type
     procedure ParseText(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
+    procedure ParseSource(aArea: TKMParsingArea; const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
