@@ -147,8 +147,7 @@ procedure TKMScriptParameters.CollectParameters(aTokenList: TStringList; aDescri
   begin
     // Find the parameter description (and remove it from source)
     Result := '';
-    // Scan in reverse since method descroption can contain the argument names too
-    //for I := aDescriptions.Count - 1 downto 0 do
+    // Parameter names are identified by the [Name:]
     for I := 0 to aDescriptions.Count - 1 do
       if StartsStr(aName + ':', aDescriptions[I]) then
       begin
