@@ -47,7 +47,7 @@ Version column description:
 | - | <a id="OnHouseBuilt">OnHouseBuilt</a><sub><br/>A house has finished construction</sub> | <sub>**aHouse**: Integer;</sub> |
 | 7820 | <a id="OnHouseDamaged">OnHouseDamaged</a><sub><br/>A house got damaged</sub> | <sub>**aHouse**: Integer; <br/> **aAttacker**: Integer; //_Attacker - UID of the attacked, can be a house, a unit or noone (e.g. if damage was applied from script)_</sub> |
 | - | <a id="OnHouseDestroyed">OnHouseDestroyed</a><sub><br/>Occurs right before house gets destroyed</sub> | <sub>**aHouse**: Integer; <br/> **aDestroyerIndex**: Integer;</sub> |
-| - | <a id="OnHousePlanPlaced">OnHousePlanPlaced</a><sub><br/>HouseFace added in r10532</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aType**: Integer; <br/> **aFace**: TKMHouseFace; //_Face - house facing direction_</sub> |
+| - | <a id="OnHousePlanPlaced">OnHousePlanPlaced</a><sub><br/>HouseFace added in r10532</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aType**: TKMHouseType; <br/> **aFace**: TKMHouseFace; //_Face - house facing direction_</sub> |
 | - | <a id="OnMissionStart">OnMissionStart</a><sub><br/>Happens right before OnTick(1);</sub> | <sub></sub> |
 | - | <a id="OnPlayerDefeated">OnPlayerDefeated</a><sub><br/>Happens when player gets defeated</sub> | <sub>**aPlayer**: Integer;</sub> |
 | - | <a id="OnPlayerVictory">OnPlayerVictory</a><sub><br/>Event is fired right before victory gets registered.<br/>It's a good time to set the mission highscore or passing campaign data</sub> | <sub>**aPlayer**: Integer;</sub> |
