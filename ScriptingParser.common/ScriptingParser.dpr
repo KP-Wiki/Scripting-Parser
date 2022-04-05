@@ -2,7 +2,8 @@ program ScriptingParser;
 
 uses
   Vcl.Forms,
-  Main in 'Main.pas' {Form1};
+  Main in 'Main.pas' {Form1},
+  KM_ScriptingParser in 'KM_ScriptingParser.pas';
 
 {$R *.res}
 
