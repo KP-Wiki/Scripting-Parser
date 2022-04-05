@@ -62,7 +62,7 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 49;
+  VAR_TYPE_COUNT = 66;
 
   VAR_MODIFIERS: array[0..1] of string = ('out', 'var');
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
@@ -81,6 +81,12 @@ const
     (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),
     (Name: 'array of TKMTerrainTileBrief'), (Name: 'TKMAudioFormat'), (Name: 'TKMAIAttackTarget'),
     (Name: 'TKMTerrainKind'), (Name: 'TKMTileMaskKind'), (Name: 'TKMTileOverlay'),
+    (Name: 'TKMGroupType'), (Name: 'TKMGroupTypeSet'), (Name: 'TKMDirection'), (Name: 'TKMDeliveryMode'),
+    (Name: 'TKMWoodcutterMode'), (Name: 'TKMHandHouseLock'), (Name: 'TKMTerrainPassability'),
+    (Name: 'TKMAIDefencePosType'), (Name: 'TKMAIAttackType'), (Name: 'TKMAIRepairMode'),
+    (Name: 'TKMAIAttackInfo'), (Name: 'TKMDefencePositionInfo'), (Name: 'TKMHouseTypeSet'),
+    (Name: 'TKMUnitTypeSet'), (Name: 'TKMWareTypeSet'), (Name: 'TReplaceFlags'),
+    (Name: 'TKMFont'),
     // KP
     (Name: 'TKMHouseFace'), (Name: 'TKMObjectiveStatus'), (Name: 'TKMObjectiveType'),
     // Werewolf types
