@@ -683,13 +683,26 @@ procedure TForm1.GenerateWiki;
     FreeAndNil(slLinks);
   end;
 
+  procedure CopyForReference(aFilename, aType: string);
+  const
+    EXT: array [TKMParsingGame] of string = ('kmr', 'kp');
+  var
+    tgtPath: string;
+  begin
+    tgtPath := ExtractFilePath(Application.ExeName) + '..\' + EXT[fParsingGame] + '.' + aType + '.orig.wiki';
+    Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
+  end;
+
 begin
   ParseSource('Action', fListActions, edtActionsFile.Text, edtHeaderFileActions.Text, edtOutputFileActions.Text);
   ParseSource('Event', fListEvents, edtEventsFile.Text, edtHeaderFileEvents.Text, edtOutputFileEvents.Text, False, True);
   ParseSource('State', fListStates, edtStatesFile.Text, edtHeaderFileStates.Text, edtOutputFileStates.Text);
   ParseSource('Utility function<br/>', fListUtils, edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text);
 
-  //todo: Windows.CopyFile(PChar(edtOutputFileActions.Text), PChar(ExtractFilePath(Application.ExeName) + '..\' + ExtractFileName(edtOutputFileActions.Text)), False);
+  CopyForReference(edtOutputFileActions.Text, 'Actions');
+  CopyForReference(edtOutputFileEvents.Text, 'Events');
+  CopyForReference(edtOutputFileStates.Text, 'States');
+  CopyForReference(edtOutputFileUtils.Text, 'Utils');
 
   TabControl1Change(nil);
 end;
