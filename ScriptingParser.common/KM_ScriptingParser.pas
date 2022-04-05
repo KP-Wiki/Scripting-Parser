@@ -175,6 +175,22 @@ end;
 
 
 procedure TKMScriptingParser.CollectParameters(aTokenList: TStringList; aDescriptions: TStringList; aParams: TKMScriptParameters);
+  function FindDescription(const aName: string): string;
+  var
+    I: Integer;
+  begin
+    // Find the parameter description (and remove it from source)
+    Result := '';
+    // Scan in reverse since method descroption can contain the argument names too
+    //for I := aDescriptions.Count - 1 downto 0 do
+    for I := 0 to aDescriptions.Count - 1 do
+      if StartsStr(aName + ':', aDescriptions[I]) then
+      begin
+        Result := StrSubstring(aDescriptions[I], Pos(':', aDescriptions[I]) + 1);
+        aDescriptions.Delete(I);
+        Exit;
+      end;
+  end;
 var
   I, K: Integer;
   varModifier, newModifier: string;
@@ -212,19 +228,7 @@ begin
   for I := 0 to aTokenList.Count - 1 do
   if not TokenIsModifier(aTokenList[I], newModifier)
   and not TokenIsType(aTokenList[I], newType) then
-  begin
-    // Find the parameter description (and remove it from source)
-    desc := '';
-    for K := aDescriptions.Count - 1 downto 0 do
-      if StartsStr(aTokenList[I], aDescriptions[K]) then
-      begin
-        desc := StrSubstring(aDescriptions[K], Pos(':', aDescriptions[K]) + 1);
-        aDescriptions.Delete(K);
-        Break;
-      end;
-
-    aParams.Append(aTokenList[I], list[I].Modifier, list[I].&Type, desc);
-  end;
+    aParams.Append(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I]));
 end;
 
 

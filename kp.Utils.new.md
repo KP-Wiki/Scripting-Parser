@@ -61,7 +61,7 @@ Version column description:
 | 5422 | <a id="EnsureRangeI">EnsureRangeI</a><sub><br/>Returns the closest to aValue integer that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Integer; <br/> **aMin**: Integer; <br/> **aMax**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="EnsureRangeS">EnsureRangeS</a><sub><br/>Returns the closest to aValue single number that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin**: Single; <br/> **aMax**: Single;</sub> | <sub>Single</sub> |
 | 5422 | <a id="Format">Format</a><sub><br/>Wrapper for pascal Format function<br/>Formats aFormat string with specified aArgs array of arguments</sub> | <sub>**aFormat**: String; <br/> **aArgs**: array of const;</sub> | <sub>string</sub> |
-| 5422 | <a id="HexToInt">HexToInt</a><sub><br/>Converts hex string into a number</sub> | <sub>**aHexString**: String; //_HexString should be in form "1234AB", without $ or 0x prefix_</sub> | <sub>Integer</sub> |
+| 5422 | <a id="HexToInt">HexToInt</a><sub><br/>Converts hex string into a number</sub> | <sub>**aHexString**: String; //_should be in form "1234AB", without $ or 0x prefix_</sub> | <sub>Integer</sub> |
 | 5422 | <a id="IfThen">IfThen</a><sub><br/>Checks condition aBool and returns aTrue/aFalse string depending on check result</sub> | <sub>**aBool**: Boolean; <br/> **aTrue**: String; <br/> **aFalse**: String;</sub> | <sub>string</sub> |
 | 5422 | <a id="IfThenI">IfThenI</a><sub><br/>Checks condition aBool and returns aTrue/aFalse integer depending on check result</sub> | <sub>**aBool**: Boolean; <br/> **aTrue**: Integer; <br/> **aFalse**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="IfThenS">IfThenS</a><sub><br/>Checks condition aBool and returns aTrue/aFalse single number depending on check result</sub> | <sub>**aBool**: Boolean; <br/> **aTrue**: Single; <br/> **aFalse**: Single;</sub> | <sub>Single</sub> |
@@ -77,7 +77,7 @@ Version column description:
 | 5422 | <a id="MinInArrayI">MinInArrayI</a><sub><br/>Returns min number of array elements</sub> | <sub>**aArray**: array of Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="MinInArrayS">MinInArrayS</a><sub><br/>Returns min number of array elements</sub> | <sub>**aArray**: array of Single;</sub> | <sub>Single</sub> |
 | 5422 | <a id="MinS">MinS</a><sub><br/>Returns min number of two specified</sub> | <sub>**A**: Single; <br/> **B**: Single;</sub> | <sub>Single</sub> |
-| 5422 | <a id="Power">Power</a><sub></sub> | <sub>**Base**: Extended; <br/> **Exp**: Extended; //_xponentation, returns base "Base" raised to power "Exp". F.e. Power(3, 2) = 3^2 = 9_</sub> | <sub>Extended</sub> |
+| 5422 | <a id="Power">Power</a><sub><br/>Exponentation, returns base "Base" raised to power "Exp". F.e. Power(3, 2) = 3^2 = 9</sub> | <sub>**Base**: Extended; <br/> **Exp**: Extended;</sub> | <sub>Extended</sub> |
 | 6683 | <a id="Random">Random</a><sub><br/>Returns random float within 0..1</sub> | <sub></sub> | <sub>Single</sub> |
 | 6683 | <a id="RandomI">RandomI</a><sub><br/>Returns random integer within 0..aMax-1</sub> | <sub>**aMax**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="Sqr">Sqr</a><sub><br/>Returns A^2 = A*A</sub> | <sub>**A**: Extended;</sub> | <sub>Extended</sub> |
