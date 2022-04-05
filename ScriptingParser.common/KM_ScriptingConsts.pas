@@ -5,8 +5,8 @@ uses
 
 
   function TryTypeToAlias(const aType: string): string;
-  function TokenIsModifier(aToken: string; out aName: string): Boolean;
-  function TokenIsType(aToken: string; out aName: string): Boolean;
+  function TokenIsModifier(const aToken: string; out aName: string): Boolean;
+  function TokenIsType(const aToken: string; out aName: string): Boolean;
 
 
 implementation
@@ -68,7 +68,7 @@ begin
 end;
 
 
-function TokenIsModifier(aToken: string; out aName: string): Boolean;
+function TokenIsModifier(const aToken: string; out aName: string): Boolean;
 var
   I: Integer;
 begin
@@ -83,7 +83,7 @@ begin
 end;
 
 
-function TokenIsType(aToken: string; out aName: string): Boolean;
+function TokenIsType(const aToken: string; out aName: string): Boolean;
 var
   I: Integer;
 begin
