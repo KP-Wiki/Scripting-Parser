@@ -220,6 +220,7 @@ begin
     // Re-combine type arrays
     nextType := -1;
     for I := 0 to listTokens.Count - 1 do
+    if not SameText(listTokens[I], 'const') then
     begin
       if SameText(listTokens[I], 'array') then
       begin
@@ -227,10 +228,8 @@ begin
         aParamList.Add(listTokens[I] + ' ' + listTokens[I + 1] + ' ' + listTokens[I + 2]);
         nextType := I + 2;
       end else
-        // Skip unused stuff
-        if not SameText(listTokens[I], 'of')
-        and not SameText(listTokens[I], 'const')
-        and not (I = nextType) then
+        // Skip parts after [array]
+        if I > nextType then
           aParamList.Add(listTokens[I]);
     end;
   finally
