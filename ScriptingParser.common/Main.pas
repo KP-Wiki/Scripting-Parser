@@ -108,14 +108,7 @@ end;
 
 procedure TForm1.TabControl1Change(Sender: TObject);
 begin
-  txtParserOutput.Lines.Clear;
-
-  case TabControl1.TabIndex of
-    0: txtParserOutput.Lines.AddStrings(fScriptingParser.ListActions);
-    1: txtParserOutput.Lines.AddStrings(fScriptingParser.ListEvents);
-    2: txtParserOutput.Lines.AddStrings(fScriptingParser.ListStates);
-    3: txtParserOutput.Lines.AddStrings(fScriptingParser.ListUtils);
-  end;
+  txtParserOutput.Text := fScriptingParser.GetText(TKMParsingArea(TabControl1.TabIndex));
 end;
 
 
@@ -128,6 +121,8 @@ begin
     edtStatesFile.Text, edtHeaderFileStates.Text, edtOutputFileStates.Text,
     edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text
   );
+
+  TabControl1Change(nil);
 end;
 
 

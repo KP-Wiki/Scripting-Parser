@@ -5,6 +5,7 @@ uses
   StrUtils;
 
 type
+  TKMParsingArea = (paActions, paEvents, paStates, paUtils);
   TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
 
 
@@ -18,10 +19,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    property ListActions: TStringList read fListActions;
-    property ListEvents: TStringList read fListEvents;
-    property ListStates: TStringList read fListStates;
-    property ListUtils: TStringList read fListUtils;
+    function GetText(aArea: TKMParsingArea): string;
 
     procedure GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
       aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
@@ -618,6 +616,17 @@ end;
 procedure TKMScriptingParser.GenerateXML;
 begin
   //
+end;
+
+
+function TKMScriptingParser.GetText(aArea: TKMParsingArea): string;
+begin
+  case aArea of
+    paActions:  Result := fListActions.Text;
+    paEvents:   Result := fListEvents.Text;
+    paStates:   Result := fListStates.Text;
+    paUtils:    Result := fListUtils.Text;
+  end;
 end;
 
 
