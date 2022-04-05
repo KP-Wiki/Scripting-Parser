@@ -1,7 +1,7 @@
 unit KM_ScriptingParser;
 interface
 uses
-  Classes, SysUtils, Types, Vcl.Forms, Windows,
+  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections,
   StrUtils;
 
 type
@@ -36,8 +36,27 @@ type
     function ExpandMethodName(const aMethod: string): string;
   end;
 
-  TParamHolder = record
-    Name, varType: string;
+  // Single parameter info
+  TKMScriptParameter = record
+  public
+    Name, VarType, Desc: string;
+    function GetText: string;
+  end;
+
+  // List of parameters
+  TKMScriptParameters = class
+  private
+    fList: TList<TKMScriptParameter>;
+    function GetCount: Integer;
+    function GetItem(aIndex: Integer): TKMScriptParameter;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure Append(aName, aVarType, aDesc: string);
+    property Count: Integer read GetCount;
+    property Items[aIndex: Integer]: TKMScriptParameter read GetItem; default;
+    function GetText: string;
   end;
 
   TKMCommandStatus = (csOk, csDeprecated, csRemoved);
@@ -53,7 +72,7 @@ type
     Parameters: string; // Parameters parsed from declaration
     Return: string; // Result type
     ReturnDesc: string; // Result comment
-    Details: TStringList; // Command description and parameters commants
+    Details: TStringList; // Command description and parameters comments
     constructor Create;
     destructor Destroy; override;
   end;
@@ -174,6 +193,64 @@ begin
 end;
 
 
+{ TKMScriptParameter }
+function TKMScriptParameter.GetText: string;
+begin
+  Result := '**' + Name + '**: ' + VarType + ';' + IfThen(Desc <> '', ' //_' + Desc + '_');
+end;
+
+
+{ TKMScriptParameters }
+constructor TKMScriptParameters.Create;
+begin
+  inherited;
+
+  fList := TList<TKMScriptParameter>.Create;
+end;
+
+
+destructor TKMScriptParameters.Destroy;
+begin
+  FreeAndNil(fList);
+
+  inherited;
+end;
+
+
+function TKMScriptParameters.GetItem(aIndex: Integer): TKMScriptParameter;
+begin
+  Result := fList[aIndex];
+end;
+
+
+function TKMScriptParameters.GetText: string;
+var
+  I: Integer;
+begin
+  Result := '';
+
+  for I := Count - 1 downto 0 do
+    Result := Result + Items[I].GetText + IfThen(I <> 0, ' <br/> ');
+end;
+
+
+procedure TKMScriptParameters.Append(aName, aVarType, aDesc: string);
+var
+  sp: TKMScriptParameter;
+begin
+  sp.Name := aName;
+  sp.VarType := aVarType;
+  sp.Desc := aDesc;
+  fList.Add(sp);
+end;
+
+
+function TKMScriptParameters.GetCount: Integer;
+begin
+  Result := fList.Count;
+end;
+
+
 { TKMScriptingParser }
 constructor TKMScriptingParser.Create;
 begin
@@ -217,14 +294,17 @@ end;
 }
 function TKMScriptingParser.ExtractParams(aString: string; aDescriptions: TStringList): string;
 var
-  i, j, K, nextType: Integer;
+  I, J, K, nextType: Integer;
   isParam: Boolean;
   listTokens, paramList, typeList: TStringList;
-  paramHolder: array of TParamHolder;
+  scriptParameters: TKMScriptParameters;
   lastType: string;
   nextVarModifier: string;
+  desc: string;
 begin
   Result := '';
+
+  scriptParameters := TKMScriptParameters.Create;
 
   listTokens := TStringList.Create;
   paramList := TStringList.Create;
@@ -237,34 +317,34 @@ begin
     StrSplit(aString, ' ', listTokens);
 
     // Re-combine type arrays
-    for i := 0 to listTokens.Count - 1 do
+    for I := 0 to listTokens.Count - 1 do
     begin
-      listTokens[i] := StrTrimRightSeparators(listTokens[i]);
+      listTokens[I] := StrTrimRightSeparators(listTokens[I]);
 
-      if SameText(listTokens[i], 'array') then
+      if SameText(listTokens[I], 'array') then
       begin
-        nextType := i + 2;
+        nextType := I + 2;
         // For some reason this kept giving 'array of Integer;' hence the trim
-        paramList.Add(StrTrimRightSeparators(listTokens[i] + ' ' + listTokens[nextType - 1] + ' ' + listTokens[nextType]));
+        paramList.Add(StrTrimRightSeparators(listTokens[I] + ' ' + listTokens[nextType - 1] + ' ' + listTokens[nextType]));
       end else
         // Skip unused stuff
-        if not ((SameText(listTokens[i], 'of'))
-             or (SameText(listTokens[i], 'const'))
-             or (i = nextType)) then
-          paramList.Add(listTokens[i]);
+        if not ((SameText(listTokens[I], 'of'))
+             or (SameText(listTokens[I], 'const'))
+             or (I = nextType)) then
+          paramList.Add(listTokens[I]);
     end;
 
     //Check for 'out' and 'var' variables modifiers (they are in paramList now)
     nextVarModifier := '';
-    for i := 0 to paramList.Count - 1 do
+    for I := 0 to paramList.Count - 1 do
     begin
       // See if this token is a Type
       isParam := True;
       for K := 0 to High(VAR_MODIFIERS) do
-        if SameText(VAR_MODIFIERS[K], paramList[i]) then
+        if SameText(VAR_MODIFIERS[K], paramList[I]) then
         begin
           nextVarModifier := VAR_MODIFIERS[K];
-          paramList[i] := ''; //modifier is not a param
+          paramList[I] := ''; //modifier is not a param
           isParam := False;
           Break;
         end;
@@ -272,7 +352,7 @@ begin
       //Update var names until first type found
       if isParam then
         for K := 0 to High(VAR_TYPE_INFO) do
-          if SameText(VAR_TYPE_INFO[K].Name, paramList[i]) then
+          if SameText(VAR_TYPE_INFO[K].Name, paramList[I]) then
           begin
             nextVarModifier := '';
             isParam := False;
@@ -281,21 +361,21 @@ begin
 
       //Update var name (add modifier to it)
       if isParam and (nextVarModifier <> '') then
-        paramList[i] := nextVarModifier + ' ' + paramList[i];
+        paramList[I] := nextVarModifier + ' ' + paramList[I];
     end;
 
     // Bind variable names to their type
     // Use reverse scan, so that we can remember last met type and apply it to all preceeding parameters
     lastType := '';
-    for i := paramList.Count - 1 downto 0 do
+    for I := paramList.Count - 1 downto 0 do
     begin
-      if paramList[i] = '' then // Skip empty params (f.e. modifiers "var" or "out")
+      if paramList[I] = '' then // Skip empty params (f.e. modifiers "var" or "out")
         Continue;
 
       // See if this token is a Type
       isParam := True;
       for K := 0 to High(VAR_TYPE_INFO) do
-        if SameText(VAR_TYPE_INFO[K].Name, paramList[i]) then
+        if SameText(VAR_TYPE_INFO[K].Name, paramList[I]) then
         begin
           lastType := IfThen(VAR_TYPE_INFO[K].Alias <> '', VAR_TYPE_INFO[K].Alias, VAR_TYPE_INFO[K].Name);
           isParam := False;
@@ -304,34 +384,28 @@ begin
 
       if isParam then
       begin
-        SetLength(paramHolder, Length(paramHolder) + 1);
-        paramHolder[High(paramHolder)].Name := paramList[i];
-        paramHolder[High(paramHolder)].varType := lastType;
+        // Find and remove parameter description
+        desc := '';
+        for J := aDescriptions.Count - 1 downto 0 do
+          if StartsStr(paramList[I], aDescriptions[J]) then
+          begin
+            desc := StrSubstring(aDescriptions[J], Pos(':', aDescriptions[J]) + 1);
+            aDescriptions.Delete(J);
+            Break;
+          end;
+
+        scriptParameters.Append(paramList[I], lastType, desc);
       end;
-    end;
-
-    // Add line-breaks
-    for i := High(paramHolder) downto 0 do
-    begin
-      Result := Result + '**' + paramHolder[i].Name + '**: ' + paramHolder[i].varType + ';';
-
-      // Add micro descriptions to the parameters and remove them from the stringlist.
-      for j := aDescriptions.Count - 1 downto 0 do
-        if StartsStr(paramHolder[i].Name, aDescriptions[j]) then
-        begin
-          Result := Result + ' //_' + StrSubstring(aDescriptions[j], Pos(':', aDescriptions[j]) + 1) + '_';
-          aDescriptions.Delete(j);
-          Break;
-        end;
-
-      if i <> 0 then
-        Result := Result + ' <br/> ';
     end;
   finally
     FreeAndNil(listTokens);
     FreeAndNil(paramList);
     FreeAndNil(typeList);
   end;
+
+  Result := scriptParameters.GetText;
+
+  scriptParameters.Free;
 end;
 
 
