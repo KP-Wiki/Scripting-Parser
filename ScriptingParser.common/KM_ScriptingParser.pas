@@ -10,6 +10,8 @@ type
 
 
   TKMScriptingParser = class
+  private const
+    DBG_COPY_FOR_REFERENCE = True;
   private
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
@@ -606,10 +608,13 @@ begin
   ParseSource('State', fListStates, aStateIn, aStateHead, aStateOut);
   ParseSource('Utility function<br/>', fListUtils, aUtilIn, aUtilHead, aUtilOut);
 
-  CopyForReference(aActOut, 'Actions');
-  CopyForReference(aEventOut, 'Events');
-  CopyForReference(aStateOut, 'States');
-  CopyForReference(aUtilOut, 'Utils');
+  if DBG_COPY_FOR_REFERENCE then
+  begin
+    CopyForReference(aActOut, 'Actions');
+    CopyForReference(aEventOut, 'Events');
+    CopyForReference(aStateOut, 'States');
+    CopyForReference(aUtilOut, 'Utils');
+  end;
 end;
 
 
