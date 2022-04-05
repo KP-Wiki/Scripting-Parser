@@ -288,7 +288,7 @@ function TKMScriptingParser.ExtractParams(aArguments: string; aDescriptions: TSt
 var
   I, J, K: Integer;
   isParam: Boolean;
-  tokenList, typeList: TStringList;
+  tokenList: TStringList;
   scriptParameters: TKMScriptParameters;
   lastType: string;
   desc: string;
@@ -298,7 +298,6 @@ begin
   scriptParameters := TKMScriptParameters.Create;
 
   tokenList := TStringList.Create;
-  typeList  := TStringList.Create;
   try
     // Split into tokens
     SplitArguments(aArguments, tokenList);
@@ -338,7 +337,6 @@ begin
     end;
   finally
     FreeAndNil(tokenList);
-    FreeAndNil(typeList);
   end;
 
   Result := scriptParameters.GetText;
