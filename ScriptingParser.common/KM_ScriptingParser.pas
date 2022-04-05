@@ -23,7 +23,7 @@ type
     procedure ParseText(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure ParseSource(aArea: TKMParsingArea; const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
+    procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -66,7 +66,7 @@ type
 const
   VAR_TYPE_COUNT = 49;
 
-  VAR_MODIFIERS: array[0..1] of String = ('out', 'var');
+  VAR_MODIFIERS: array[0..1] of string = ('out', 'var');
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
     // Simple types
     (Name: 'Byte'),       (Name: 'Shortint'),   (Name: 'Smallint'),   (Name: 'Word'),
@@ -98,21 +98,19 @@ const
 implementation
 
 
-{String functions
-These function are replacements for String functions introduced after XE2 (XE5 probably)
-Names are the same as in new Delphi versions, but with 'Str' prefix
-We keep them here to support pre-XE5 compilation
-}
-function StrSubstring(const aStr: String; aFrom: Integer): String;
+// string functions
+// These function are replacements for string functions introduced after XE2 (XE5 probably)
+// Names are the same as in new Delphi versions, but with 'Str' prefix
+// We keep them here to support pre-XE5 compilation
+function StrSubstring(const aStr: string; aFrom: Integer): string;
 begin
-  //Todo refactor:
-  //@Krom: Why not just replace StrSubstring with RightStr everywhere in code?
   Result := Copy(aStr, aFrom + 1, Length(aStr));
 end;
 
 
-function StrLastIndexOf(const aStr, aSubStr: String): Integer;
-var I: Integer;
+function StrLastIndexOf(const aStr, aSubStr: string): Integer;
+var
+  I: Integer;
 begin
   Result := -1;
   for I := 1 to Length(aStr) do
@@ -121,7 +119,7 @@ begin
 end;
 
 
-function StrTrimRightSeparators(const aStr: String): String;
+function StrTrimRightSeparators(const aStr: string): string;
 var
   I, K: Integer;
 begin
@@ -136,7 +134,7 @@ begin
 end;
 
 
-procedure StrSplit(const aStr, aDelimiters: String; aStrings: TStringList);
+procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList);
 var
   StrArray: TStringDynArray;
   I: Integer;
@@ -224,7 +222,7 @@ var
   listTokens, paramList, typeList: TStringList;
   paramHolder: array of TParamHolder;
   lastType: string;
-  nextVarModifier: String;
+  nextVarModifier: string;
 begin
   Result := '';
 
@@ -544,10 +542,10 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
+procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
 var
   slSource, slBody, slLinks: TStringList;
-  Path: String;
+  Path: string;
 begin
   if not FileExists(aInputFile) then Exit;
 
