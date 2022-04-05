@@ -6,23 +6,23 @@ uses
 
 type
   // Single parameter info
-  TKMScriptParameter = record
+  TKMScriptParameter = class
   public
-    Name, VarType, Desc: string;
+    Name, Modifier, VarType, Desc: string;
     function GetText: string;
   end;
 
   // List of parameters
   TKMScriptParameters = class
   private
-    fList: TList<TKMScriptParameter>;
+    fList: TObjectList<TKMScriptParameter>;
     function GetCount: Integer;
     function GetItem(aIndex: Integer): TKMScriptParameter;
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure Append(aName, aVarType, aDesc: string);
+    procedure Append(aName, aModifier, aVarType, aDesc: string);
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMScriptParameter read GetItem; default;
     function GetText: string;
@@ -35,7 +35,7 @@ implementation
 { TKMScriptParameter }
 function TKMScriptParameter.GetText: string;
 begin
-  Result := '**' + Name + '**: ' + VarType + ';' + IfThen(Desc <> '', ' //_' + Desc + '_');
+  Result := '**' + IfThen(Modifier <> '', Modifier + ' ') + Name + '**: ' + VarType + ';' + IfThen(Desc <> '', ' //_' + Desc + '_');
 end;
 
 
@@ -44,7 +44,7 @@ constructor TKMScriptParameters.Create;
 begin
   inherited;
 
-  fList := TList<TKMScriptParameter>.Create;
+  fList := TObjectList<TKMScriptParameter>.Create;
 end;
 
 
@@ -68,16 +68,18 @@ var
 begin
   Result := '';
 
-  for I := Count - 1 downto 0 do
-    Result := Result + Items[I].GetText + IfThen(I <> 0, ' <br/> ');
+  for I := 0 to Count - 1 do
+    Result := Result + Items[I].GetText + IfThen(I <> Count - 1, ' <br/> ');
 end;
 
 
-procedure TKMScriptParameters.Append(aName, aVarType, aDesc: string);
+procedure TKMScriptParameters.Append(aName, aModifier, aVarType, aDesc: string);
 var
   sp: TKMScriptParameter;
 begin
+  sp := TKMScriptParameter.Create;
   sp.Name := aName;
+  sp.Modifier := aModifier;
   sp.VarType := aVarType;
   sp.Desc := aDesc;
   fList.Add(sp);

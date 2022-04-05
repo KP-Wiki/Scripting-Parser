@@ -25,7 +25,7 @@ type
     function ExtractParams(aArguments: string; aDescriptions: TStringList): string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure SplitArguments(const aArguments: string; aTokenList: TStringList);
-    procedure AdjoinModifiers(aTokenList: TStringList);
+    procedure CollectParameters(aTokenList: TStringList; aParams: TKMScriptParameters);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
@@ -239,42 +239,70 @@ begin
 end;
 
 
-procedure TKMScriptingParser.AdjoinModifiers(aTokenList: TStringList);
-  function TokenIsType(aToken: string): Boolean;
+procedure TKMScriptingParser.CollectParameters(aTokenList: TStringList; aParams: TKMScriptParameters);
+  function TokenIsModifier(aToken: string; out aName: string): Boolean;
   var
     I: Integer;
   begin
+    aName := '';
+    Result := False;
+    for I := 0 to High(VAR_MODIFIERS) do
+      if SameText(VAR_MODIFIERS[I], aToken) then
+      begin
+        aName := VAR_MODIFIERS[I];
+        Exit(True);
+      end;
+  end;
+  function TokenIsType(aToken: string; out aName: string): Boolean;
+  var
+    I: Integer;
+  begin
+    aName := '';
     Result := False;
     for I := 0 to High(VAR_TYPE_INFO) do
       if SameText(VAR_TYPE_INFO[I].Name, aToken) then
+      begin
+        aName := IfThen(VAR_TYPE_INFO[I].Alias <> '', VAR_TYPE_INFO[I].Alias, VAR_TYPE_INFO[I].Name);
         Exit(True);
+      end;
   end;
 var
-  I, K: Integer;
-  varModifier: string;
+  I: Integer;
+  varModifier, newModifier: string;
+  varType, newType: string;
+  list: array of record Modifier, &Type: string; end;
 begin
-  // Attach 'out' and 'var' modifiers to their variables
-  // Note that several variables may follow (use the same modifier)
+  SetLength(list, aTokenList.Count);
+
   varModifier := '';
+  varType := '';
+
+  // Forward pass to assign modifiers
   for I := 0 to aTokenList.Count - 1 do
   begin
-    // See if this token is a modifier
-    for K := 0 to High(VAR_MODIFIERS) do
-      if SameText(VAR_MODIFIERS[K], aTokenList[I]) then
-      begin
-        varModifier := VAR_MODIFIERS[K];
-        aTokenList[I] := ''; // Modifier is not a param. Erase it
-        Break;
-      end;
+    if TokenIsModifier(aTokenList[I], newModifier) then
+      varModifier := newModifier;
 
-    // Stop updating var names after first type is found
-    if (varModifier <> '') and TokenIsType(aTokenList[I]) then
+    if TokenIsType(aTokenList[I], newType) then
       varModifier := '';
 
-    // Update var name (add modifier to it)
-    if (varModifier <> '') and (aTokenList[I] <> '') then
-      aTokenList[I] := varModifier + ' ' + aTokenList[I];
+    list[I].Modifier := varModifier;
   end;
+
+  // Backward pass to assign types
+  for I := aTokenList.Count - 1 downto 0 do
+  begin
+    if TokenIsType(aTokenList[I], newType) then
+      varType := newType;
+
+    list[I].&Type := varType;
+  end;
+
+  // Now we can collect names
+  for I := 0 to aTokenList.Count - 1 do
+  if not TokenIsModifier(aTokenList[I], newModifier)
+  and not TokenIsType(aTokenList[I], newType) then
+    aParams.Append(aTokenList[I], list[I].Modifier, list[I].&Type, '');
 end;
 
 
@@ -286,11 +314,9 @@ end;
 }
 function TKMScriptingParser.ExtractParams(aArguments: string; aDescriptions: TStringList): string;
 var
-  I, J, K: Integer;
-  isParam: Boolean;
+  I, K: Integer;
   tokenList: TStringList;
   scriptParameters: TKMScriptParameters;
-  lastType: string;
   desc: string;
 begin
   Result := '';
@@ -302,41 +328,24 @@ begin
     // Split into tokens
     SplitArguments(aArguments, tokenList);
 
-    AdjoinModifiers(tokenList);
-
-    // Bind variable names to their type
-    // Use reverse scan, so that we can remember last met type and apply it to all preceeding parameters
-    lastType := '';
-    for I := tokenList.Count - 1 downto 0 do
-    if tokenList[I] <> '' then // Skip empty params (f.e. modifiers "var" or "out")
-    begin
-      // See if this token is a Type
-      isParam := True;
-      for K := 0 to High(VAR_TYPE_INFO) do
-        if SameText(VAR_TYPE_INFO[K].Name, tokenList[I]) then
-        begin
-          lastType := IfThen(VAR_TYPE_INFO[K].Alias <> '', VAR_TYPE_INFO[K].Alias, VAR_TYPE_INFO[K].Name);
-          isParam := False;
-          Break;
-        end;
-
-      if isParam then
-      begin
-        // Find the parameter description (and remove it from source)
-        desc := '';
-        for J := aDescriptions.Count - 1 downto 0 do
-          if StartsStr(tokenList[I], aDescriptions[J]) then
-          begin
-            desc := StrSubstring(aDescriptions[J], Pos(':', aDescriptions[J]) + 1);
-            aDescriptions.Delete(J);
-            Break;
-          end;
-
-        scriptParameters.Append(tokenList[I], lastType, desc);
-      end;
-    end;
+    CollectParameters(tokenList, scriptParameters);
   finally
     FreeAndNil(tokenList);
+  end;
+
+  for I := 0 to scriptParameters.Count - 1 do
+  begin
+    // Find the parameter description (and remove it from source)
+    desc := '';
+    for K := aDescriptions.Count - 1 downto 0 do
+      if StartsStr(scriptParameters[I].Name, aDescriptions[K]) then
+      begin
+        desc := StrSubstring(aDescriptions[K], Pos(':', aDescriptions[K]) + 1);
+        aDescriptions.Delete(K);
+        Break;
+      end;
+
+    scriptParameters[I].Desc := desc;
   end;
 
   Result := scriptParameters.GetText;
