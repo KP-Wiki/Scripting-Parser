@@ -20,8 +20,8 @@ type
   private
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
-    procedure ParseText(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
-    function ParseParams(aString: string; aDescriptions: TStringList): string;
+    procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
+    function ExtractParams(aString: string; aDescriptions: TStringList): string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
@@ -215,7 +215,7 @@ end;
   1 - [name]: [type];
   2 - etc
 }
-function TKMScriptingParser.ParseParams(aString: string; aDescriptions: TStringList): string;
+function TKMScriptingParser.ExtractParams(aString: string; aDescriptions: TStringList): string;
 var
   i, j, K, nextType: Integer;
   isParam: Boolean;
@@ -336,7 +336,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptingParser.ParseText(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
+procedure TKMScriptingParser.ExtractBodyAndLinks(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
@@ -424,7 +424,7 @@ begin
           end;
           restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-          ci.Parameters := ParseParams(restStr, ci.Details);
+          ci.Parameters := ExtractParams(restStr, ci.Details);
         end else
         begin
           // Procedure without parameters
@@ -454,7 +454,7 @@ begin
           end;
           restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-          ci.Parameters := ParseParams(restStr, ci.Details);
+          ci.Parameters := ExtractParams(restStr, ci.Details);
         end else
         begin
           // Function without parameters
@@ -557,7 +557,7 @@ begin
   slSource := TStringList.Create;
   try
     slSource.LoadFromFile(aInputFile);
-    ParseText(aArea, slSource, slBody, slLinks);
+    ExtractBodyAndLinks(aArea, slSource, slBody, slLinks);
   finally
     slSource.Free;
   end;
