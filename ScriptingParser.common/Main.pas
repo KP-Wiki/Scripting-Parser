@@ -102,7 +102,7 @@ const
     // Custom types
     (Name: 'TKMPoint'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
     // KMR
-    (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'),
+    (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'), (Name: 'TKMHouseType'),
     (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),
     (Name: 'array of TKMTerrainTileBrief'), (Name: 'TKMAudioFormat'), (Name: 'TKMAIAttackTarget'),
     (Name: 'TKMTerrainKind'), (Name: 'TKMTileMaskKind'), (Name: 'TKMTileOverlay'),
@@ -112,7 +112,7 @@ const
     (Name: 'TByteSet'; Alias: 'set of Byte'), (Name: 'TIntegerArray'; Alias: 'array of Integer'), (Name: 'TAnsiStringArray'; Alias: 'array of AnsiString'),
     (Name: 'TKMHouse'; Alias: 'Integer'), (Name: 'TKMUnit'; Alias: 'Integer'), (Name: 'TKMUnitGroup'; Alias: 'Integer'),
     // KMR
-    (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'TKMHouseType'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
+    (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
     // KP
     (Name: 'TKMEntity'; Alias: 'Integer'), (Name: 'TKMHandIndex'; Alias: 'Integer'), (Name: 'array of TKMHandIndex'; Alias: 'array of Integer')
   );
@@ -185,13 +185,6 @@ begin
   for I := 0 to High(VAR_TYPE_INFO) do
     if (VAR_TYPE_INFO[I].Alias <> '') and SameText(VAR_TYPE_INFO[I].Name, aType) then
       Exit(VAR_TYPE_INFO[I].Alias);
-end;
-
-
-{ TKMTypeInfo }
-function TKMTypeInfo.GetName(aEvent: Boolean): string;
-begin
-  Result := IfThen((not EventOnlyAlias or aEvent) and (Alias <> ''), Alias, Name);
 end;
 
 
