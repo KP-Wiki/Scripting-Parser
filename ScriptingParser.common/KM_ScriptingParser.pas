@@ -243,38 +243,37 @@ procedure TKMScriptingParser.AdjoinModifiers(aTokenList: TStringList);
 var
   I, K: Integer;
   nextVarModifier: string;
-  isParam: Boolean;
+  isModifier: Boolean;
 begin
   // Check for 'out' and 'var' variables modifiers (they are in aTokenList now)
   nextVarModifier := '';
   for I := 0 to aTokenList.Count - 1 do
   begin
     // See if this token is a Type
-    isParam := True;
+    isModifier := False;
     for K := 0 to High(VAR_MODIFIERS) do
       if SameText(VAR_MODIFIERS[K], aTokenList[I]) then
       begin
         nextVarModifier := VAR_MODIFIERS[K];
         aTokenList[I] := ''; // Modifier is not a param. Erase it
-        isParam := False;
+        isModifier := True;
         Break;
       end;
 
     // Update var names until first type found
-    if isParam then
+    if not isModifier then
       for K := 0 to High(VAR_TYPE_INFO) do
         if SameText(VAR_TYPE_INFO[K].Name, aTokenList[I]) then
         begin
           nextVarModifier := '';
-          isParam := False;
+          isModifier := True;
           Break;
         end;
 
     // Update var name (add modifier to it)
-    if isParam and (nextVarModifier <> '') then
+    if not isModifier and (nextVarModifier <> '') then
       aTokenList[I] := nextVarModifier + ' ' + aTokenList[I];
   end;
-
 end;
 
 
