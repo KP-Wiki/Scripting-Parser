@@ -1,8 +1,8 @@
 program ScriptingParser;
 
-uses 
-  Vcl.Forms, 
-  Main in 'Main.pas' {Form1}; 
+uses
+  Vcl.Forms,
+  Main in 'Main.pas' {Form1};
 
 {$R *.res}
 
