@@ -240,39 +240,40 @@ end;
 
 
 procedure TKMScriptingParser.AdjoinModifiers(aTokenList: TStringList);
+  function TokenIsType(aToken: string): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    for I := 0 to High(VAR_TYPE_INFO) do
+      if SameText(VAR_TYPE_INFO[I].Name, aToken) then
+        Exit(True);
+  end;
 var
   I, K: Integer;
-  nextVarModifier: string;
-  isModifier: Boolean;
+  varModifier: string;
 begin
-  // Check for 'out' and 'var' variables modifiers (they are in aTokenList now)
-  nextVarModifier := '';
+  // Attach 'out' and 'var' modifiers to their variables
+  // Note that several variables may follow (use the same modifier)
+  varModifier := '';
   for I := 0 to aTokenList.Count - 1 do
   begin
-    // See if this token is a Type
-    isModifier := False;
+    // See if this token is a modifier
     for K := 0 to High(VAR_MODIFIERS) do
       if SameText(VAR_MODIFIERS[K], aTokenList[I]) then
       begin
-        nextVarModifier := VAR_MODIFIERS[K];
+        varModifier := VAR_MODIFIERS[K];
         aTokenList[I] := ''; // Modifier is not a param. Erase it
-        isModifier := True;
         Break;
       end;
 
-    // Update var names until first type found
-    if not isModifier then
-      for K := 0 to High(VAR_TYPE_INFO) do
-        if SameText(VAR_TYPE_INFO[K].Name, aTokenList[I]) then
-        begin
-          nextVarModifier := '';
-          isModifier := True;
-          Break;
-        end;
+    // Stop updating var names after first type is found
+    if (varModifier <> '') and TokenIsType(aTokenList[I]) then
+      varModifier := '';
 
     // Update var name (add modifier to it)
-    if not isModifier and (nextVarModifier <> '') then
-      aTokenList[I] := nextVarModifier + ' ' + aTokenList[I];
+    if (varModifier <> '') and (aTokenList[I] <> '') then
+      aTokenList[I] := varModifier + ' ' + aTokenList[I];
   end;
 end;
 
