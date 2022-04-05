@@ -15,7 +15,7 @@ type
   private
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
-    procedure ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean);
+    procedure ParseText(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
   public
     constructor Create;
@@ -331,7 +331,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptingParser.ParseText(aSource, aList, aLinks: TStringList; aHasReturn: Boolean);
+procedure TKMScriptingParser.ParseText(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
@@ -504,7 +504,7 @@ begin
                 deprStr +
                 '<sub>' + ci.Description + '</sub>' +
                 ' | <sub>' + ci.Parameters + '</sub>' +
-                IfThen(aHasReturn, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
+                IfThen(aArea <> paEvents, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
                 ' |');
 
       aLinks.Add('* <a href="#' + ci.Name + '">' + ci.Name + '</a>');
@@ -531,8 +531,7 @@ end;
 procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
   aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
 
-  procedure ParseSource(const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: String;
-    aHasReturn: Boolean = True);
+  procedure ParseSource(aArea: TKMParsingArea; const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   var
     slSource, slBody, slLinks: TStringList;
     Path: String;
@@ -547,7 +546,7 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aA
     slSource := TStringList.Create;
     try
       slSource.LoadFromFile(aInputFile);
-      ParseText(slSource, slBody, slLinks, aHasReturn);
+      ParseText(aArea, slSource, slBody, slLinks);
     finally
       slSource.Free;
     end;
@@ -567,7 +566,7 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aA
     aResultList.Add('<br />');
     aResultList.Add('');
 
-    if aHasReturn then
+    if aArea <> paEvents then
     begin
       aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
       aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
@@ -603,10 +602,10 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aA
 begin
   fParsingGame := aParsingGame;
 
-  ParseSource('Action', fListActions, aActIn, aActHead, aActOut);
-  ParseSource('Event', fListEvents, aEventIn, aEventHead, aEventOut, False);
-  ParseSource('State', fListStates, aStateIn, aStateHead, aStateOut);
-  ParseSource('Utility function<br/>', fListUtils, aUtilIn, aUtilHead, aUtilOut);
+  ParseSource(paActions, 'Action', fListActions, aActIn, aActHead, aActOut);
+  ParseSource(paEvents, 'Event', fListEvents, aEventIn, aEventHead, aEventOut);
+  ParseSource(paStates, 'State', fListStates, aStateIn, aStateHead, aStateOut);
+  ParseSource(paUtils, 'Utility function<br/>', fListUtils, aUtilIn, aUtilHead, aUtilOut);
 
   if DBG_COPY_FOR_REFERENCE then
   begin
