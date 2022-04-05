@@ -6,9 +6,14 @@ uses
 
 type
   TKMParsingArea = (paActions, paEvents, paStates, paUtils);
+const
+  AREA_SHORT: array [TKMParsingArea] of string = ('Actions', 'Events', 'States', 'Utils');
+type
   TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
+const
+  GAME_EXT: array [TKMParsingGame] of string = ('kmr', 'kp');
 
-
+type
   TKMScriptingParser = class
   private const
     DBG_COPY_FOR_REFERENCE = True;
@@ -590,12 +595,10 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aA
   end;
 
   procedure CopyForReference(aFilename, aType: string);
-  const
-    EXT: array [TKMParsingGame] of string = ('kmr', 'kp');
   var
     tgtPath: string;
   begin
-    tgtPath := ExtractFilePath(Application.ExeName) + '..\' + EXT[fParsingGame] + '.' + aType + '.new.md';
+    tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_EXT[fParsingGame] + '.' + aType + '.new.md';
     Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
   end;
 
@@ -609,10 +612,10 @@ begin
 
   if DBG_COPY_FOR_REFERENCE then
   begin
-    CopyForReference(aActOut, 'Actions');
-    CopyForReference(aEventOut, 'Events');
-    CopyForReference(aStateOut, 'States');
-    CopyForReference(aUtilOut, 'Utils');
+    CopyForReference(aActOut, AREA_SHORT[paActions]);
+    CopyForReference(aEventOut, AREA_SHORT[paEvents]);
+    CopyForReference(aStateOut, AREA_SHORT[paStates]);
+    CopyForReference(aUtilOut, AREA_SHORT[paUtils]);
   end;
 end;
 
