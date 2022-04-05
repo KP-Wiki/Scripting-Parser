@@ -22,6 +22,7 @@ type
     fParsingGame: TKMParsingGame;
     procedure ParseText(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
     function ParseParams(aString: string; aDescriptions: TStringList): string;
+    procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
   public
     constructor Create;
     destructor Destroy; override;
@@ -533,6 +534,15 @@ begin
 end;
 
 
+procedure TKMScriptingParser.CopyForReference(aFilename: string; aArea: TKMParsingArea);
+var
+  tgtPath: string;
+begin
+  tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_EXT[fParsingGame] + '.' + AREA_SHORT[aArea] + '.new.md';
+  Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
+end;
+
+
 procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
   aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
 
@@ -594,14 +604,6 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aA
     FreeAndNil(slLinks);
   end;
 
-  procedure CopyForReference(aFilename, aType: string);
-  var
-    tgtPath: string;
-  begin
-    tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_EXT[fParsingGame] + '.' + aType + '.new.md';
-    Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
-  end;
-
 begin
   fParsingGame := aParsingGame;
 
@@ -612,10 +614,10 @@ begin
 
   if DBG_COPY_FOR_REFERENCE then
   begin
-    CopyForReference(aActOut, AREA_SHORT[paActions]);
-    CopyForReference(aEventOut, AREA_SHORT[paEvents]);
-    CopyForReference(aStateOut, AREA_SHORT[paStates]);
-    CopyForReference(aUtilOut, AREA_SHORT[paUtils]);
+    CopyForReference(aActOut, paActions);
+    CopyForReference(aEventOut, paEvents);
+    CopyForReference(aStateOut, paStates);
+    CopyForReference(aUtilOut, paUtils);
   end;
 end;
 
