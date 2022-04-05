@@ -1,0 +1,487 @@
+#### States
+
+All states parameters are numeric and get mapped to unit/house types according to default tables used in DAT scripts.
+
+States are queried in a form **States.STATE_NAME(STATE_PARAMETERS)** like so:
+```pascal
+    if States.StatPlayerCount > 5 then
+      UnitCnt := States.StatUnitCount(1);
+```
+Also there is a short name for States: just **S**, so you could use it as
+```pascal
+  UnitCnt := S.StatUnitCount(1); //Get 1st player units count and store it in variable UnitCnt
+```
+
+***
+
+Other scripts functions:
+* [Events](https://github.com/reyandme/kam_remake/wiki/Events-(Mission-Script-Dynamic))
+* [Actions](https://github.com/reyandme/kam_remake/wiki/Actions-(Mission-Script-Dynamic))
+* [Utils](https://github.com/reyandme/kam_remake/wiki/Utils-(Mission-Script-Dynamic))
+
+Dynamic scripts usefull info:
+* [Tutorial](https://github.com/reyandme/kam_remake/wiki/Tutorial-(Mission-Script-Dynamic))
+* [Types](https://github.com/reyandme/kam_remake/wiki/Types-(Mission-Script-Dynamic))
+* [Lookup Tables](https://github.com/reyandme/kam_remake/wiki/Lookup-Tables-(Mission-Script-Dynamic))
+* [Advanced Features](https://github.com/reyandme/kam_remake/wiki/Advanced-Features-(Mission-Script-Dynamic))
+* [Custom Console Commands](https://github.com/reyandme/kam_remake/wiki/Custom-Console-Commands-(Mission-Script-Dynamic))
+
+
+***
+
+* <a href="#AIArmyType">AIArmyType</a>
+* <a href="#AIAutoAttack">AIAutoAttack</a>
+* <a href="#AIAutoAttackRange">AIAutoAttackRange</a>
+* <a href="#AIAutoBuild">AIAutoBuild</a>
+* <a href="#AIAutoDefence">AIAutoDefence</a>
+* <a href="#AIAutoRepair">AIAutoRepair</a>
+* <a href="#AIDefencePositionGet">AIDefencePositionGet</a>
+* <a href="#AIDefencePositionGetByIndex">AIDefencePositionGetByIndex</a>
+* <a href="#AIDefendAllies">AIDefendAllies</a>
+* <a href="#AIEquipRate">AIEquipRate</a>
+* <a href="#AIGroupsFormationGet">AIGroupsFormationGet</a>
+* <a href="#AIGroupsFormationGetEx">AIGroupsFormationGetEx</a>
+* <a href="#AIRecruitDelay">AIRecruitDelay</a>
+* <a href="#AIRecruitLimit">AIRecruitLimit</a>
+* <a href="#AIRepairMode">AIRepairMode</a>
+* <a href="#AISerfsPerHouse">AISerfsPerHouse</a>
+* <a href="#AISoldiersLimit">AISoldiersLimit</a>
+* <a href="#AIStartPosition">AIStartPosition</a>
+* <a href="#AIWorkerLimit">AIWorkerLimit</a>
+* <a href="#CampaignMissionID">CampaignMissionID</a>
+* <a href="#CampaignMissionsCount">CampaignMissionsCount</a>
+* <a href="#ClosestGroup">ClosestGroup</a>
+* <a href="#ClosestGroupEx">ClosestGroupEx</a>
+* <a href="#ClosestGroupMultipleTypes">ClosestGroupMultipleTypes</a>
+* <a href="#ClosestGroupMultipleTypesEx">ClosestGroupMultipleTypesEx</a>
+* <a href="#ClosestHouse">ClosestHouse</a>
+* <a href="#ClosestHouseEx">ClosestHouseEx</a>
+* <a href="#ClosestHouseMultipleTypes">ClosestHouseMultipleTypes</a>
+* <a href="#ClosestHouseMultipleTypesEx">ClosestHouseMultipleTypesEx</a>
+* <a href="#ClosestUnit">ClosestUnit</a>
+* <a href="#ClosestUnitEx">ClosestUnitEx</a>
+* <a href="#ClosestUnitMultipleTypes">ClosestUnitMultipleTypes</a>
+* <a href="#ClosestUnitMultipleTypesEx">ClosestUnitMultipleTypesEx</a>
+* <a href="#ConnectedByRoad">ConnectedByRoad</a>
+* <a href="#ConnectedByWalking">ConnectedByWalking</a>
+* <a href="#FogRevealed">FogRevealed</a>
+* <a href="#GameSpeed">GameSpeed</a>
+* <a href="#GameSpeedChangeAllowed">GameSpeedChangeAllowed</a>
+* <a href="#GameTime">GameTime</a>
+* <a href="#GroupAllowAllyToSelect">GroupAllowAllyToSelect</a>
+* <a href="#GroupAssignedToDefencePosition">GroupAssignedToDefencePosition</a>
+* <a href="#GroupAt">GroupAt</a>
+* <a href="#GroupColumnCount">GroupColumnCount</a>
+* <a href="#GroupDead">GroupDead</a>
+* <a href="#GroupIdle">GroupIdle</a>
+* <a href="#GroupInFight">GroupInFight</a>
+* <a href="#GroupManualFormation">GroupManualFormation</a>
+* <a href="#GroupMember">GroupMember</a>
+* <a href="#GroupMemberCount">GroupMemberCount</a>
+* <a href="#GroupOrder">GroupOrder</a>
+* <a href="#GroupOwner">GroupOwner</a>
+* <a href="#GroupType">GroupType</a>
+* <a href="#GroupTypeEx">GroupTypeEx</a>
+* <a href="#HandHouseCanBuild">HandHouseCanBuild</a>
+* <a href="#HandHouseLock">HandHouseLock</a>
+* <a href="#HandUnitCanTrain">HandUnitCanTrain</a>
+* <a href="#HandWareDistribution">HandWareDistribution</a>
+* <a href="#HouseAllowAllyToSelect">HouseAllowAllyToSelect</a>
+* <a href="#HouseAt">HouseAt</a>
+* <a href="#HouseBarracksRallyPointX">HouseBarracksRallyPointX</a>
+* <a href="#HouseBarracksRallyPointY">HouseBarracksRallyPointY</a>
+* <a href="#HouseBarracksRecruitBlock">HouseBarracksRecruitBlock</a>
+* <a href="#HouseBarracksRecruitsCount">HouseBarracksRecruitsCount</a>
+* <a href="#HouseBuildingProgress">HouseBuildingProgress</a>
+* <a href="#HouseCanReachResources">HouseCanReachResources</a>
+* <a href="#HouseDamage">HouseDamage</a>
+* <a href="#HouseDeliveryBlocked">HouseDeliveryBlocked</a>
+* <a href="#HouseDeliveryMode">HouseDeliveryMode</a>
+* <a href="#HouseDestroyed">HouseDestroyed</a>
+* <a href="#HouseFlagPoint">HouseFlagPoint</a>
+* <a href="#HouseGetAllUnitsIn">HouseGetAllUnitsIn</a>
+* <a href="#HouseHasOccupant">HouseHasOccupant</a>
+* <a href="#HouseHasWorker">HouseHasWorker</a>
+* <a href="#HouseIsComplete">HouseIsComplete</a>
+* <a href="#HouseOwner">HouseOwner</a>
+* <a href="#HousePosition">HousePosition</a>
+* <a href="#HousePositionX">HousePositionX</a>
+* <a href="#HousePositionY">HousePositionY</a>
+* <a href="#HouseRepair">HouseRepair</a>
+* <a href="#HouseResourceAmount">HouseResourceAmount</a>
+* <a href="#HouseSchoolQueue">HouseSchoolQueue</a>
+* <a href="#HouseSiteIsDigged">HouseSiteIsDigged</a>
+* <a href="#HouseTownHallMaxGold">HouseTownHallMaxGold</a>
+* <a href="#HouseType">HouseType</a>
+* <a href="#HouseTypeEx">HouseTypeEx</a>
+* <a href="#HouseTypeMaxHealth">HouseTypeMaxHealth</a>
+* <a href="#HouseTypeMaxHealthEx">HouseTypeMaxHealthEx</a>
+* <a href="#HouseTypeName">HouseTypeName</a>
+* <a href="#HouseTypeNameEx">HouseTypeNameEx</a>
+* <a href="#HouseTypeToOccupantType">HouseTypeToOccupantType</a>
+* <a href="#HouseTypeToWorkerType">HouseTypeToWorkerType</a>
+* <a href="#HouseUnlocked">HouseUnlocked</a>
+* <a href="#HouseWareBlocked">HouseWareBlocked</a>
+* <a href="#HouseWareBlockedEx">HouseWareBlockedEx</a>
+* <a href="#HouseWareBlockedTakeOut">HouseWareBlockedTakeOut</a>
+* <a href="#HouseWeaponsOrdered">HouseWeaponsOrdered</a>
+* <a href="#HouseWeaponsOrderedEx">HouseWeaponsOrderedEx</a>
+* <a href="#HouseWoodcutterChopOnly">HouseWoodcutterChopOnly</a>
+* <a href="#HouseWoodcutterMode">HouseWoodcutterMode</a>
+* <a href="#HouseWorker">HouseWorker</a>
+* <a href="#IsFieldAt">IsFieldAt</a>
+* <a href="#IsFieldPlanAt">IsFieldPlanAt</a>
+* <a href="#IsHousePlanAt">IsHousePlanAt</a>
+* <a href="#IsMissionBlockColorSelection">IsMissionBlockColorSelection</a>
+* <a href="#IsMissionBlockFullMapPreview">IsMissionBlockFullMapPreview</a>
+* <a href="#IsMissionBlockPeacetime">IsMissionBlockPeacetime</a>
+* <a href="#IsMissionBlockTeamSelection">IsMissionBlockTeamSelection</a>
+* <a href="#IsMissionBuildType">IsMissionBuildType</a>
+* <a href="#IsMissionCoopType">IsMissionCoopType</a>
+* <a href="#IsMissionFightType">IsMissionFightType</a>
+* <a href="#IsMissionPlayableAsSP">IsMissionPlayableAsSP</a>
+* <a href="#IsMissionSpecialType">IsMissionSpecialType</a>
+* <a href="#IsPlanAt">IsPlanAt</a>
+* <a href="#IsRoadAt">IsRoadAt</a>
+* <a href="#IsRoadPlanAt">IsRoadPlanAt</a>
+* <a href="#IsWinefieldAt">IsWinefieldAt</a>
+* <a href="#IsWinefieldPlanAt">IsWinefieldPlanAt</a>
+* <a href="#KaMRandom">KaMRandom</a>
+* <a href="#KaMRandomI">KaMRandomI</a>
+* <a href="#LocationCount">LocationCount</a>
+* <a href="#MapHeight">MapHeight</a>
+* <a href="#MapTileHasOnlyTerrainKind">MapTileHasOnlyTerrainKind</a>
+* <a href="#MapTileHasOnlyTerrainKinds">MapTileHasOnlyTerrainKinds</a>
+* <a href="#MapTileHasTerrainKind">MapTileHasTerrainKind</a>
+* <a href="#MapTileHeight">MapTileHeight</a>
+* <a href="#MapTileIsCoal">MapTileIsCoal</a>
+* <a href="#MapTileIsGold">MapTileIsGold</a>
+* <a href="#MapTileIsIce">MapTileIsIce</a>
+* <a href="#MapTileIsInMapCoords">MapTileIsInMapCoords</a>
+* <a href="#MapTileIsIron">MapTileIsIron</a>
+* <a href="#MapTileIsSand">MapTileIsSand</a>
+* <a href="#MapTileIsSnow">MapTileIsSnow</a>
+* <a href="#MapTileIsSoil">MapTileIsSoil</a>
+* <a href="#MapTileIsStone">MapTileIsStone</a>
+* <a href="#MapTileIsWater">MapTileIsWater</a>
+* <a href="#MapTileObject">MapTileObject</a>
+* <a href="#MapTileOverlay">MapTileOverlay</a>
+* <a href="#MapTileOwner">MapTileOwner</a>
+* <a href="#MapTilePassability">MapTilePassability</a>
+* <a href="#MapTilePassabilityEx">MapTilePassabilityEx</a>
+* <a href="#MapTileRotation">MapTileRotation</a>
+* <a href="#MapTileType">MapTileType</a>
+* <a href="#MapWidth">MapWidth</a>
+* <a href="#MarketFromWare">MarketFromWare</a>
+* <a href="#MarketFromWareEx">MarketFromWareEx</a>
+* <a href="#MarketLossFactor">MarketLossFactor</a>
+* <a href="#MarketOrderAmount">MarketOrderAmount</a>
+* <a href="#MarketToWare">MarketToWare</a>
+* <a href="#MarketToWareEx">MarketToWareEx</a>
+* <a href="#MarketValue">MarketValue</a>
+* <a href="#MarketValueEx">MarketValueEx</a>
+* <a href="#MissionAuthor">MissionAuthor</a>
+* <a href="#MissionDifficulty">MissionDifficulty</a>
+* <a href="#MissionDifficultyLevels">MissionDifficultyLevels</a>
+* <a href="#MissionVersion">MissionVersion</a>
+* <a href="#PeaceTime">PeaceTime</a>
+* <a href="#PlayerAllianceCheck">PlayerAllianceCheck</a>
+* <a href="#PlayerColorFlag">PlayerColorFlag</a>
+* <a href="#PlayerColorText">PlayerColorText</a>
+* <a href="#PlayerDefeated">PlayerDefeated</a>
+* <a href="#PlayerEnabled">PlayerEnabled</a>
+* <a href="#PlayerGetAllGroups">PlayerGetAllGroups</a>
+* <a href="#PlayerGetAllHouses">PlayerGetAllHouses</a>
+* <a href="#PlayerGetAllUnits">PlayerGetAllUnits</a>
+* <a href="#PlayerIsAI">PlayerIsAI</a>
+* <a href="#PlayerName">PlayerName</a>
+* <a href="#PlayerVictorious">PlayerVictorious</a>
+* <a href="#PlayerWareDistribution">PlayerWareDistribution</a>
+* <a href="#StatAIDefencePositionsCount">StatAIDefencePositionsCount</a>
+* <a href="#StatArmyCount">StatArmyCount</a>
+* <a href="#StatArmyPower">StatArmyPower</a>
+* <a href="#StatCitizenCount">StatCitizenCount</a>
+* <a href="#StatHouseCount">StatHouseCount</a>
+* <a href="#StatHouseMultipleTypesCount">StatHouseMultipleTypesCount</a>
+* <a href="#StatHouseMultipleTypesCountEx">StatHouseMultipleTypesCountEx</a>
+* <a href="#StatHouseTypeCount">StatHouseTypeCount</a>
+* <a href="#StatHouseTypeCountEx">StatHouseTypeCountEx</a>
+* <a href="#StatHouseTypePlansCount">StatHouseTypePlansCount</a>
+* <a href="#StatHouseTypePlansCountEx">StatHouseTypePlansCountEx</a>
+* <a href="#StatPlayerCount">StatPlayerCount</a>
+* <a href="#StatResourceProducedCount">StatResourceProducedCount</a>
+* <a href="#StatResourceProducedCountEx">StatResourceProducedCountEx</a>
+* <a href="#StatResourceProducedMultipleTypesCount">StatResourceProducedMultipleTypesCount</a>
+* <a href="#StatResourceProducedMultipleTypesCountEx">StatResourceProducedMultipleTypesCountEx</a>
+* <a href="#StatUnitCount">StatUnitCount</a>
+* <a href="#StatUnitKilledCount">StatUnitKilledCount</a>
+* <a href="#StatUnitKilledCountEx">StatUnitKilledCountEx</a>
+* <a href="#StatUnitKilledMultipleTypesCount">StatUnitKilledMultipleTypesCount</a>
+* <a href="#StatUnitKilledMultipleTypesCountEx">StatUnitKilledMultipleTypesCountEx</a>
+* <a href="#StatUnitLostCount">StatUnitLostCount</a>
+* <a href="#StatUnitLostCountEx">StatUnitLostCountEx</a>
+* <a href="#StatUnitLostMultipleTypesCount">StatUnitLostMultipleTypesCount</a>
+* <a href="#StatUnitLostMultipleTypesCountEx">StatUnitLostMultipleTypesCountEx</a>
+* <a href="#StatUnitMultipleTypesCount">StatUnitMultipleTypesCount</a>
+* <a href="#StatUnitMultipleTypesCountEx">StatUnitMultipleTypesCountEx</a>
+* <a href="#StatUnitTypeCount">StatUnitTypeCount</a>
+* <a href="#StatUnitTypeCountEx">StatUnitTypeCountEx</a>
+* <a href="#UnitAllowAllyToSelect">UnitAllowAllyToSelect</a>
+* <a href="#UnitAt">UnitAt</a>
+* <a href="#UnitCarrying">UnitCarrying</a>
+* <a href="#UnitCarryingEx">UnitCarryingEx</a>
+* <a href="#UnitDead">UnitDead</a>
+* <a href="#UnitDirection">UnitDirection</a>
+* <a href="#UnitDirectionEx">UnitDirectionEx</a>
+* <a href="#UnitDismissable">UnitDismissable</a>
+* <a href="#UnitHome">UnitHome</a>
+* <a href="#UnitHPCurrent">UnitHPCurrent</a>
+* <a href="#UnitHPInvulnerable">UnitHPInvulnerable</a>
+* <a href="#UnitHPMax">UnitHPMax</a>
+* <a href="#UnitHunger">UnitHunger</a>
+* <a href="#UnitIdle">UnitIdle</a>
+* <a href="#UnitInHouse">UnitInHouse</a>
+* <a href="#UnitLowHunger">UnitLowHunger</a>
+* <a href="#UnitMaxHunger">UnitMaxHunger</a>
+* <a href="#UnitOwner">UnitOwner</a>
+* <a href="#UnitPosition">UnitPosition</a>
+* <a href="#UnitPositionX">UnitPositionX</a>
+* <a href="#UnitPositionY">UnitPositionY</a>
+* <a href="#UnitsGroup">UnitsGroup</a>
+* <a href="#UnitType">UnitType</a>
+* <a href="#UnitTypeEx">UnitTypeEx</a>
+* <a href="#UnitTypeName">UnitTypeName</a>
+* <a href="#UnitTypeNameEx">UnitTypeNameEx</a>
+* <a href="#WareTypeName">WareTypeName</a>
+* <a href="#WareTypeNameEx">WareTypeNameEx</a>
+* <a href="#WarriorInFight">WarriorInFight</a>
+<br />
+
+| Ver<br/>sion | State description | Parameters<br/>and types | Returns |
+| ------- | ------------------------------------ | -------------- | ------- |
+| 7000+ | <a id="AIArmyType">AIArmyType</a><sub><br/>Gets AI army type</sub> | <sub>**aHand**: Byte;</sub> | <sub>TKMArmyType</sub> |
+| 13000 | <a id="AIAutoAttack">AIAutoAttack</a><sub><br/>Gets AI AutoAttack (True or False)</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="AIAutoAttackRange">AIAutoAttackRange</a><sub><br/>Gets AI auto attack range.<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
+| 7000+ | <a id="AIAutoBuild">AIAutoBuild</a><sub><br/>Gets whether the AI should build and manage his own village<br/>Returns False if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="AIAutoDefence">AIAutoDefence</a><sub><br/>Gets whether the AI should position his soldiers automatically<br/>Returns False if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="AIAutoRepair">AIAutoRepair</a><sub><br/>Gets whether the AI should automatically repair damaged buildings<br/>Returns False if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean</sub> |
+| 12000+ | <a id="AIDefencePositionGet">AIDefencePositionGet</a><sub><br/>Gets the parameters of AI defence position<br/>Parameters are returned in aX, aY, aGroupType, aRadius, aDefType variables<br/>Group types: 0 = Melee; 1	= Anti-horse; 2	= Ranged; 3	= Mounted<br/>Defence type: 0 = Defenders; 1 = Attackers</sub> | <sub>**aHand**: Byte; <br/> **aID**: Byte; <br/> **out aX**: Integer; <br/> **out aY**: Integer; <br/> **out aGroupType**: Byte; <br/> **out aRadius**: Integer; <br/> **out aDefType**: Byte;</sub> | <sub></sub> |
+| 13900 | <a id="AIDefencePositionGetByIndex">AIDefencePositionGetByIndex</a><sub><br/>Gets the parameters of AI defence position<br/>Returns defence position parameters</sub> | <sub>**aHand**: Integer; <br/> **aIndex**: Integer; //_index in the list of all defence positions for the specified player_</sub> | <sub>TKMDefencePositionInfo</sub> |
+| 7000+ | <a id="AIDefendAllies">AIDefendAllies</a><sub><br/>Gets whether AI should defend units and houses of allies as if they were its own<br/>Returns False if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="AIEquipRate">AIEquipRate</a><sub><br/>Gets the warriors equip rate for AI.<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte; <br/> **aType**: Byte; //_type: 0 - leather, 1 - iron_</sub> | <sub>Integer</sub> |
+| 7000+ | <a id="AIGroupsFormationGet">AIGroupsFormationGet</a><sub><br/>Gets the formation the AI uses for defence positions for specified player and group type<br/>GroupType: 0 = Melee, 1 = AntiHorse, 2 = Ranged, 3 = Mounted<br/>group count and columns are returned in aCount and aColumns variables</sub> | <sub>**aHand**: Byte; <br/> **aType**: Byte; <br/> **out aCount**: Integer; <br/> **out aColumns**: Integer;</sub> | <sub></sub> |
+| 13900 | <a id="AIGroupsFormationGetEx">AIGroupsFormationGetEx</a><sub><br/>Gets the formation the AI uses for defence positions for specified player and group type<br/>group count and columns are returned in aCount and aColumns variables</sub> | <sub>**aHand**: Integer; <br/> **aGroupType**: Integer; <br/> **TKMGroupType**: Integer; <br/> **out aCount**: Integer; <br/> **out aColumns**: Integer;</sub> | <sub></sub> |
+| 7000+ | <a id="AIRecruitDelay">AIRecruitDelay</a><sub><br/>Gets the number of ticks before the specified AI will start training recruits<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
+| 7000+ | <a id="AIRecruitLimit">AIRecruitLimit</a><sub><br/>Gets the number of recruits the AI will keep in each barracks<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
+| 13900 | <a id="AIRepairMode">AIRepairMode</a><sub><br/>Gets whether the AI should automatically repair damaged buildings<br/>Returns rmNone if used with wrong parameters<br/>rmNever if disable repair for all houses<br/>rmAlways if enable repair for all houses<br/>rmManual if repair is set by script manually via Actions.HouseRepairEnable</sub> | <sub>**aHand**: Integer;</sub> | <sub>TKMAIRepairMode</sub> |
+| 7000+ | <a id="AISerfsPerHouse">AISerfsPerHouse</a><sub><br/>Gets the number of serfs the AI will train per house.<br/>Can be a decimal (0.25 for 1 serf per 4 houses)<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Single</sub> |
+| 7000+ | <a id="AISoldiersLimit">AISoldiersLimit</a><sub><br/>Gets the maximum number of soldiers the AI will train, or -1 for unlimited<br/>Returns -2 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
+| 7000+ | <a id="AIStartPosition">AIStartPosition</a><sub><br/>Gets the AI start position which is used for targeting AI attacks<br/>Returns (-1;-1) if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>TKMPoint</sub> |
+| 7000+ | <a id="AIWorkerLimit">AIWorkerLimit</a><sub><br/>Gets the maximum number of laborers the AI will train<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
+| 12600 | <a id="CampaignMissionID">CampaignMissionID</a><sub><br/>Returns current campaing mission number or -1 if this is not a campaign mission<br/>First mission got ID = 1</sub> | <sub></sub> | <sub>Integer</sub> |
+| 12600 | <a id="CampaignMissionsCount">CampaignMissionsCount</a><sub><br/>Returns current campaign missions count or -1 if this is not a campaign mission</sub> | <sub></sub> | <sub>Integer</sub> |
+| 6216 | <a id="ClosestGroup">ClosestGroup</a><sub><br/>Returns the group of the specified player and group type that is closest to the specified coordinates,<br/>or -1 if no such group was found.<br/>If the group type is -1 any group type will be accepted</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aGroupType**: Integer;</sub> | <sub>Integer //Group ID</sub> |
+| 13900 | <a id="ClosestGroupEx">ClosestGroupEx</a><sub><br/>Returns the group of the specified player and group type that is closest to the specified coordinates,<br/>or -1 if no such group was found.</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aGroupType**: ; <br/> **TKMGroupType**: ;</sub> | <sub>Integer //Group ID</sub> |
+| 6216 | <a id="ClosestGroupMultipleTypes">ClosestGroupMultipleTypes</a><sub><br/>Returns the group of the specified player and group types that is closest to the specified coordinates,<br/>or -1 if no such group was found.<br/>The group types is a "set of Byte", for example [1,3]</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aGroupTypes**: set of Byte; //_Set of group types_</sub> | <sub>Integer //Group ID</sub> |
+| 13900 | <a id="ClosestGroupMultipleTypesEx">ClosestGroupMultipleTypesEx</a><sub><br/>Returns the group of the specified player and group types that is closest to the specified coordinates,<br/>or -1 if no such group was found.<br/>The group types is a "set of Byte", for example [1,3]</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aGroupTypes**: ; //_Set of group types_ <br/> **TKMGroupTypeSet**: ;</sub> | <sub>Integer //Group ID</sub> |
+| 6216 | <a id="ClosestHouse">ClosestHouse</a><sub><br/>Returns the house of the specified player and house type that is closest to the specified coordinates,<br/>or -1 if no such house was found.<br/>If the house type is -1 any house type will be accepted</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aHouseType**: Integer;</sub> | <sub>Integer //House ID</sub> |
+| 13900 | <a id="ClosestHouseEx">ClosestHouseEx</a><sub><br/>Returns the house of the specified player and house type that is closest to the specified coordinates,<br/>or -1 if no such house was found.<br/>If the house type is htAny any house type will be accepted</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer //House ID</sub> |
+| 6216 | <a id="ClosestHouseMultipleTypes">ClosestHouseMultipleTypes</a><sub><br/>Returns the house of the specified player and house types that is closest to the specified coordinates,<br/>or -1 if no such house was found.<br/>The house types is a "set of Byte", for example [11,13,21]</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aHouseTypes**: set of Byte; //_Set of house types_</sub> | <sub>Integer //House ID</sub> |
+| 13900 | <a id="ClosestHouseMultipleTypesEx">ClosestHouseMultipleTypesEx</a><sub><br/>Returns the house of the specified player and house types that is closest to the specified coordinates,<br/>or -1 if no such house was found.<br/>The house types is a "set of TKMHouseType", for example [htQuary, htSchool, htStore]</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aHouseTypes**: ; //_Set of house types_ <br/> **TKMHouseTypeSet**: ;</sub> | <sub>Integer //House ID</sub> |
+| 6216 | <a id="ClosestUnit">ClosestUnit</a><sub><br/>Returns the unit of the specified player and unit type that is closest to the specified coordinates,<br/>or -1 if no such unit was found.<br/>If the unit type is -1 any unit type will be accepted</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aUnitType**: Integer;</sub> | <sub>Integer //Unit ID</sub> |
+| 13900 | <a id="ClosestUnitEx">ClosestUnitEx</a><sub><br/>Returns the unit of the specified player and unit type that is closest to the specified coordinates,<br/>or -1 if no such unit was found.<br/>If the unit type is utAny any unit type will be accepted</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Integer //Unit ID</sub> |
+| 6216 | <a id="ClosestUnitMultipleTypes">ClosestUnitMultipleTypes</a><sub><br/>Returns the unit of the specified player and unit types that is closest to the specified coordinates,<br/>or -1 if no such unit was found.<br/>The unit types is a "set of Byte", for example [0,9]</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aUnitTypes**: set of Byte; //_Set of unit types_</sub> | <sub>Integer //Unit ID</sub> |
+| 13900 | <a id="ClosestUnitMultipleTypesEx">ClosestUnitMultipleTypesEx</a><sub><br/>Returns the unit of the specified player and unit types that is closest to the specified coordinates,<br/>or -1 if no such unit was found.<br/>The unit types is a "set of TKMUnitType", for example [utSerf, utMilitia]</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aUnitTypes**: ; //_Set of unit types_ <br/> **TKMUnitTypeSet**: ;</sub> | <sub>Integer //Unit ID</sub> |
+| 6602 | <a id="ConnectedByRoad">ConnectedByRoad</a><sub><br/>Check if two tiles are connected by walkable road</sub> | <sub>**X1**: Integer; //_left coordinate_ <br/> **Y1**: Integer; //_top coordinate_ <br/> **X2**: Integer; //_right coordinate_ <br/> **Y2**: Integer; //_bottom coordinate_</sub> | <sub>Boolean //Connected</sub> |
+| 6602 | <a id="ConnectedByWalking">ConnectedByWalking</a><sub><br/>Check if two tiles are connected by a walkable route</sub> | <sub>**X1**: Integer; //_Left coordinate_ <br/> **Y1**: Integer; //_Top coordinate_ <br/> **X2**: Integer; //_Right coordinate_ <br/> **Y2**: Integer; //_Bottom coordinate_</sub> | <sub>Boolean //Connected</sub> |
+| 5097 | <a id="FogRevealed">FogRevealed</a><sub><br/>Check if a tile is revealed in fog of war for a player</sub> | <sub>**aHand**: Byte; <br/> **aX**: Integer; <br/> **aY**: Integer;</sub> | <sub>Boolean //Revealed</sub> |
+| 11000 | <a id="GameSpeed">GameSpeed</a><sub><br/>Get the game speed</sub> | <sub></sub> | <sub>Single //Game speed</sub> |
+| 11000 | <a id="GameSpeedChangeAllowed">GameSpeedChangeAllowed</a><sub><br/>Return true if game speed change is allowed</sub> | <sub></sub> | <sub>Boolean //Is game speed change allowed</sub> |
+| 5057 | <a id="GameTime">GameTime</a><sub><br/>Get the number of game ticks since mission start</sub> | <sub></sub> | <sub>Cardinal //Ticks (~10 per second)</sub> |
+| 12600 | <a id="GroupAllowAllyToSelect">GroupAllowAllyToSelect</a><sub><br/>Return if specified group is allowed to be selected and viewed by his allies</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="GroupAssignedToDefencePosition">GroupAssignedToDefencePosition</a><sub><br/>Returns true if target Group is assigned to the Defence Position at coordinates X, Y</sub> | <sub>**aGroupID**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Group assigned to Defence position</sub> |
+| 5057 | <a id="GroupAt">GroupAt</a><sub><br/>Returns the ID of the group of the unit on the specified tile or -1 if no group exists there</sub> | <sub>**aX**: Integer; <br/> **aY**: Integer;</sub> | <sub>Integer //Group ID</sub> |
+| 5272 | <a id="GroupColumnCount">GroupColumnCount</a><sub><br/>Returns the number of columns (units per row) of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Column count</sub> |
+| 5057 | <a id="GroupDead">GroupDead</a><sub><br/>Returns true if the group is dead (all members dead or joined other groups)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean //Dead</sub> |
+| 6523 | <a id="GroupIdle">GroupIdle</a><sub><br/>Returns true if specified group is idle (has no orders/action)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean //Idle</sub> |
+| 7000+ | <a id="GroupInFight">GroupInFight</a><sub><br/>Returns true if specified group is in fight</sub> | <sub>**aGroupID**: Integer; <br/> **aCountCitizens**: Boolean; //_CountCitizens - including fights with citizens_</sub> | <sub>Boolean //InFight</sub> |
+| 11200 | <a id="GroupManualFormation">GroupManualFormation</a><sub><br/>Returns the manual formation parameter of the specified group (false for new group, true if player changed formation manually at least once)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean //manual formation</sub> |
+| 5057 | <a id="GroupMember">GroupMember</a><sub><br/>Returns the unit ID of the specified group member.<br/>Member 0 will be the flag holder, 1...GroupMemberCount-1 will be the other members<br/>(0 <= MemberIndex <= GroupMemberCount-1)</sub> | <sub>**aGroupID**: Integer; <br/> **aMemberIndex**: Integer;</sub> | <sub>Integer //Unit ID</sub> |
+| 5057 | <a id="GroupMemberCount">GroupMemberCount</a><sub><br/>Returns the total number of members of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Member count</sub> |
+| 7000+ | <a id="GroupOrder">GroupOrder</a><sub><br/>Returns current order of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>TKMGroupOrder //TKMGroupOrder</sub> |
+| 5057 | <a id="GroupOwner">GroupOwner</a><sub><br/>Returns the owner of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Player ID</sub> |
+| 5932 | <a id="GroupType">GroupType</a><sub><br/>Returns the type of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //Group type</sub> |
+| 13900 | <a id="GroupTypeEx">GroupTypeEx</a><sub><br/>Returns the type of the specified group or gtNone if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>TKMGroupType //Group type</sub> |
+| 13900 | <a id="HandHouseCanBuild">HandHouseCanBuild</a><sub><br/>Returns true if the specified hand (player) can build the specified house type</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean //House can build</sub> |
+| 13900 | <a id="HandHouseLock">HandHouseLock</a><sub><br/>Returns hand (player) house lock as enum value of TKMHandHouseLock = (hlDefault, hlBlocked, hlGranted)</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>TKMHandHouseLock //Hand house lock</sub> |
+| 13900 | <a id="HandUnitCanTrain">HandUnitCanTrain</a><sub><br/>Returns true if the specified player can train/equip the specified unit type</sub> | <sub>**aHand**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Boolean //Unit unlocked</sub> |
+| 13900 | <a id="HandWareDistribution">HandWareDistribution</a><sub><br/>Returns the ware distribution for the specified resource, house and player</sub> | <sub>**aHand**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer //Ware distribution [0..5]</sub> |
+| 10940 | <a id="HouseAllowAllyToSelect">HouseAllowAllyToSelect</a><sub><br/>Return if specified house is allowed to be selected and viewed by his allies</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| 5057 | <a id="HouseAt">HouseAt</a><sub><br/>Returns the ID of the house at the specified location or -1 if no house exists there</sub> | <sub>**aX**: Integer; <br/> **aY**: Integer;</sub> | <sub>Integer //House ID</sub> |
+| 6516 | <a id="HouseBarracksRallyPointX">HouseBarracksRallyPointX</a><sub><br/>Returns X coordinate of Rally Point of specified barracks or 0 if BarracksID is invalid</sub> | <sub>**aBarracks**: Integer;</sub> | <sub>Integer //X coordinate</sub> |
+| 6516 | <a id="HouseBarracksRallyPointY">HouseBarracksRallyPointY</a><sub><br/>Returns Y coordinate of Rally Point of specified barracks or 0 if BarracksID is invalid</sub> | <sub>**aBarracks**: Integer;</sub> | <sub>Integer //Y coordinate</sub> |
+| 14000 | <a id="HouseBarracksRecruitBlock">HouseBarracksRecruitBlock</a><sub><br/>Returns if recruits are blocked in the specified Barracks</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| 12600 | <a id="HouseBarracksRecruitsCount">HouseBarracksRecruitsCount</a><sub><br/>Return number of recruits in the specified barracks or 0 if BarracksID is invalid</sub> | <sub>**aBarracks**: Integer;</sub> | <sub>Integer</sub> |
+| 6285 | <a id="HouseBuildingProgress">HouseBuildingProgress</a><sub><br/>Returns building progress of the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Building progress</sub> |
+| 5993 | <a id="HouseCanReachResources">HouseCanReachResources</a><sub><br/>Returns true if the specified house can reach the resources that it mines (coal, stone, fish, etc.)</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Reachable</sub> |
+| 5057 | <a id="HouseDamage">HouseDamage</a><sub><br/>Returns the damage of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //House damage</sub> |
+| 5057 | <a id="HouseDeliveryBlocked">HouseDeliveryBlocked</a><sub><br/>Returns true if the specified house has delivery disabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Blocked</sub> |
+| 13900 | <a id="HouseDeliveryMode">HouseDeliveryMode</a><sub><br/>Returns house delivery mode,<br/>if no house was found then ID = 1 is returned</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMDeliveryMode //Delivery mode</sub> |
+| 5057 | <a id="HouseDestroyed">HouseDestroyed</a><sub><br/>Returns true if the house is destroyed</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Destroyed</sub> |
+| 7000+ | <a id="HouseFlagPoint">HouseFlagPoint</a><sub><br/>Returns House Flag Point of specified house or KMPoint(0,0) if aHouseId is invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMPoint //Flag Point</sub> |
+| 12982 | <a id="HouseGetAllUnitsIn">HouseGetAllUnitsIn</a><sub><br/>Returns an array with IDs for all the units in the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>array of Integer //Array of unit IDs</sub> |
+| 5057 | <a id="HouseHasOccupant">HouseHasOccupant</a><br/>&#x274C;`Deprecated`<br/><sub>*Method could be removed in the future game versions, use <a href="#HouseHasWorker">HouseHasWorker</a> instead*</sub><sub><br/>Returns true if the specified house currently has a worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Has worker</sub> |
+| 13050 | <a id="HouseHasWorker">HouseHasWorker</a><sub><br/>Returns true if the specified house currently has a worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Has worker</sub> |
+| 5345 | <a id="HouseIsComplete">HouseIsComplete</a><sub><br/>Returns true if the specified house is fully built</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| 5057 | <a id="HouseOwner">HouseOwner</a><sub><br/>Returns the owner of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Player ID</sub> |
+| 7000+ | <a id="HousePosition">HousePosition</a><sub><br/>Returns the Entrance Point of the specified house or (-1;-1) point if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMPoint //TKMPoint</sub> |
+| 5057 | <a id="HousePositionX">HousePositionX</a><sub><br/>Returns the X coordinate of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //X coordinate</sub> |
+| 5057 | <a id="HousePositionY">HousePositionY</a><sub><br/>Returns the Y coordinate of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Y coordinate</sub> |
+| 5057 | <a id="HouseRepair">HouseRepair</a><sub><br/>Returns true if the specified house has repair enabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Repair enabled</sub> |
+| 5057 | <a id="HouseResourceAmount">HouseResourceAmount</a><sub><br/>Returns the amount of the specified resource in the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aResource**: Integer;</sub> | <sub>Integer //Number of resources</sub> |
+| 5165 | <a id="HouseSchoolQueue">HouseSchoolQueue</a><sub><br/>Returns the unit type in the specified slot of the school queue.<br/>Slot 0 is the unit currently training, slots 1..5 are the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer; //_Queue index (0..5)_</sub> | <sub>Integer //Unit type</sub> |
+| 6510 | <a id="HouseSiteIsDigged">HouseSiteIsDigged</a><sub><br/>Returns true if specified WIP house area is digged</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Digged</sub> |
+| 7000+ | <a id="HouseTownHallMaxGold">HouseTownHallMaxGold</a><sub><br/>Returns Max amount of gold which is possible to deliver into the TownHall<br/>or -1 if TownHall house was not found</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //Max gold for specified TownHall</sub> |
+| 5057 | <a id="HouseType">HouseType</a><sub><br/>Returns the type of the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //House type</sub> |
+| 13900 | <a id="HouseTypeEx">HouseTypeEx</a><sub><br/>Returns the type of the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMHouseType //House type</sub> |
+| 6284 | <a id="HouseTypeMaxHealth">HouseTypeMaxHealth</a><sub><br/>Returns max health of the specified house type</sub> | <sub>**aHouseType**: Integer;</sub> | <sub>Integer //Max health</sub> |
+| 13900 | <a id="HouseTypeMaxHealthEx">HouseTypeMaxHealthEx</a><sub><br/>Returns max health of the specified house type</sub> | <sub>**aHouseType**: TKMHouseType;</sub> | <sub>Integer //Max health</sub> |
+| 6001 | <a id="HouseTypeName">HouseTypeName</a><sub><br/>Returns the the translated name of the specified house type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup which is<br/>decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aHouseType**: Byte;</sub> | <sub>AnsiString //House type name</sub> |
+| 13900 | <a id="HouseTypeNameEx">HouseTypeNameEx</a><sub><br/>Returns the the translated name of the specified house type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup which is<br/>decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aHouseType**: TKMHouseType;</sub> | <sub>AnsiString //House type name</sub> |
+| 5345 | <a id="HouseTypeToOccupantType">HouseTypeToOccupantType</a><br/>&#x274C;`Deprecated`<br/><sub>*Method could be removed in the future game versions, use <a href="#HouseTypeToWorkerType">HouseTypeToWorkerType</a> instead*</sub><sub><br/>Returns the type of unit that should work in the specified type of house, or -1 if no unit should work in it.</sub> | <sub>**aHouseType**: Integer;</sub> | <sub>Integer //Unit type</sub> |
+| 13900 | <a id="HouseTypeToWorkerType">HouseTypeToWorkerType</a><sub><br/>Returns the type of unit that should work in the specified type of house, or utNone if no unit should work in it.</sub> | <sub>**aHouseType**: TKMHouseType;</sub> | <sub>TKMUnitType //Unit type</sub> |
+| 6220 | <a id="HouseUnlocked">HouseUnlocked</a><sub><br/>Returns true if the specified player can build the specified house type (unlocked and allowed).</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: Integer;</sub> | <sub>Boolean //House unlocked</sub> |
+| 5099 | <a id="HouseWareBlocked">HouseWareBlocked</a><sub><br/>Returns true if the specified ware in the specified storehouse or barracks is blocked</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: Integer;</sub> | <sub>Boolean //Ware blocked</sub> |
+| 13900 | <a id="HouseWareBlockedEx">HouseWareBlockedEx</a><sub><br/>Returns true if the specified ware in the specified storehouse or barracks is blocked</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean //Ware blocked</sub> |
+| 13900 | <a id="HouseWareBlockedTakeOut">HouseWareBlockedTakeOut</a><sub><br/>Returns true if the specified ware in the specified storehouse or barracks is blocked for taking out (yellow triangle)</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean //Ware blocked for taking out</sub> |
+| 5165 | <a id="HouseWeaponsOrdered">HouseWeaponsOrdered</a><sub><br/>Returns the number of the specified weapon ordered to be produced in the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: Integer;</sub> | <sub>Integer //Number of ordered weapons</sub> |
+| 13900 | <a id="HouseWeaponsOrderedEx">HouseWeaponsOrderedEx</a><sub><br/>Returns the number of the specified weapon ordered to be produced in the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer //Number of ordered weapons</sub> |
+| 5099 | <a id="HouseWoodcutterChopOnly">HouseWoodcutterChopOnly</a><sub><br/>Returns true if the specified woodcutter's hut is on chop-only mode</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean //Chop-only</sub> |
+| 13900 | <a id="HouseWoodcutterMode">HouseWoodcutterMode</a><sub><br/>Returns woodcutter mode value for the specified woodcutter's hut</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMWoodcutterMode //woodcutter mode as TKMWoodcutterMode = (wmChopAndPlant, wmChop, wmPlant)</sub> |
+| 13050 | <a id="HouseWorker">HouseWorker</a><sub><br/>Returns ID of a citizen, who works in specified house or -1 if there is no worker or aHouseID is incorrect</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
+| 5345 | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Returns true if the specified player has a corn field at the specified location.<br/>If player index is -1 it will return true if any player has a corn field at the specified tile</sub> | <sub>**aHand**: Shortint; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is field</sub> |
+| 7000+ | <a id="IsFieldPlanAt">IsFieldPlanAt</a><sub><br/>Returns true if the specified player has a field plan (ftCorn) at the specified location.<br/>If aHand index is -1 it will return true if any player has field plan at the specified location.<br/>If Corn (Field) Plan found then aHand will contain its player id</sub> | <sub>**var aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is field plan found</sub> |
+| 7000+ | <a id="IsHousePlanAt">IsHousePlanAt</a><sub><br/>Returns true if the specified player has a house plan of the specified type at the specified location.<br/>If aHand index is -1 it will return true if any player has house plan of the specified type at the specified location.<br/>If aHouseType is htAny it will return if the specified player has a house plan of the any type at the specified location.<br/>If aHand index is -1 and aHouseType is htNone it will return if any player has a house plan of the any type at the specified location.<br/>If house plan found then after execution aHand will contain its player id and aHouseType its type</sub> | <sub>**var aHand**: Integer; <br/> **var aHouseType**: TKMHouseType; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is house plan found</sub> |
+| 11230 | <a id="IsMissionBlockColorSelection">IsMissionBlockColorSelection</a><sub><br/>Returns if color selection is locked for current mission</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionBlockFullMapPreview">IsMissionBlockFullMapPreview</a><sub><br/>Returns if full map preview is blocked for current mission</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionBlockPeacetime">IsMissionBlockPeacetime</a><sub><br/>Returns if peacetime is locked for current mission</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionBlockTeamSelection">IsMissionBlockTeamSelection</a><sub><br/>Returns if team selection is locked for current mission</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionBuildType">IsMissionBuildType</a><sub><br/>Returns if mission is build type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionCoopType">IsMissionCoopType</a><sub><br/>Returns if mission is cooperative type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionFightType">IsMissionFightType</a><sub><br/>Returns if mission is fight type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionPlayableAsSP">IsMissionPlayableAsSP</a><sub><br/>Returns if mission is playable as Singleplayer map</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsMissionSpecialType">IsMissionSpecialType</a><sub><br/>Returns if mission is special type</sub> | <sub></sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="IsPlanAt">IsPlanAt</a><sub><br/>Returns true if the specified player has a field plan of the specified type at the specified location.<br/>If aHand index is -1 it will return true if any player has plan of the specified type at the specified location.<br/>If aFieldType is ftNone it will return if the specified player has a field plan of the any type (ftCorn, ftRoad, ftWine) at the specified location.<br/>If aHand index is -1 and aFieldType is ftNone it will return if any player has a field plan of the any type (ftCorn, ftRoad, ftWine) at the specified location.<br/>If Plan found then aHand will contain its player id and aFieldType its type</sub> | <sub>**var aHand**: Integer; <br/> **var aFieldType**: TKMFieldType; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is plan found</sub> |
+| 5345 | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Returns true if the specified player has a road at the specified location.<br/>If player index is -1 it will return true if any player has a road at the specified tile</sub> | <sub>**aHand**: Shortint; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is road</sub> |
+| 7000+ | <a id="IsRoadPlanAt">IsRoadPlanAt</a><sub><br/>Returns true if the specified player has a field plan (ftRoad) at the specified location.<br/>If aHand index is -1 it will return true if any player has road plan at the specified location.<br/>If Road plan found then aHand will contain its player id</sub> | <sub>**var aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is road plan found</sub> |
+| 5345 | <a id="IsWinefieldAt">IsWinefieldAt</a><sub><br/>Returns true if the specified player has a winefield at the specified location.<br/>If player index is -1 it will return true if any player has a winefield at the specified tile</sub> | <sub>**aHand**: Shortint; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is winefield</sub> |
+| 7000+ | <a id="IsWinefieldPlanAt">IsWinefieldPlanAt</a><sub><br/>Returns true if the specified player has a field plan (ftWine) at the specified location.<br/>If aHand index is -1 it will return true if any player has winefield plan at the specified location.<br/>If Winefield Plan found then aHand will contain its player id</sub> | <sub>**var aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Is winefield plan found</sub> |
+| 6216 | <a id="KaMRandom">KaMRandom</a><sub><br/>Returns a random single (float) such that: 0 <= Number < 1.0</sub> | <sub></sub> | <sub>Single //Decimal number 0.0 to 1.0</sub> |
+| 6216 | <a id="KaMRandomI">KaMRandomI</a><sub><br/>Returns a random integer such that: 0 <= Number</sub> | <sub>**aMax:Integer**: ;</sub> | <sub>Integer //Number 0 to aMax</sub> |
+| 6611 | <a id="LocationCount">LocationCount</a><sub><br/>Returns the number of player locations available on the map (including AIs),<br/>regardless of whether the location was taken in multiplayer (use PlayerEnabled to check if a location is being used)</sub> | <sub></sub> | <sub>Integer //Number of locations</sub> |
+| 6613 | <a id="MapHeight">MapHeight</a><sub><br/>Returns the height of the map</sub> | <sub></sub> | <sub>Integer //Height</sub> |
+| 11000 | <a id="MapTileHasOnlyTerrainKind">MapTileHasOnlyTerrainKind</a><sub><br/>Check if tile at XY coordinates has only requested terrain kind. F.e. water, but no transition with shallow or stone.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer; <br/> **TerKind**: TKMTerrainKind;</sub> | <sub>Boolean //Tile has only requested terrain kind</sub> |
+| 11000 | <a id="MapTileHasOnlyTerrainKinds">MapTileHasOnlyTerrainKinds</a><sub><br/>Check if tile at XY coordinates has only requested terrain kinds. F.e. water and stone, but no dirt</sub> | <sub>**X**: Integer; <br/> **Y**: Integer; <br/> **TerKinds**: ; <br/> **array of TKMTerrainKind**: ;</sub> | <sub>Boolean //Tile has only requested terrain kinds</sub> |
+| 11000 | <a id="MapTileHasTerrainKind">MapTileHasTerrainKind</a><sub><br/>Check if tile at XY coordinates has a part of requested terrain kind. F.e. water tile has corner transition with dirt</sub> | <sub>**X**: Integer; <br/> **Y**: Integer; <br/> **TerKind**: TKMTerrainKind;</sub> | <sub>Boolean //Tile has requested terrain kind part</sub> |
+| 6587 | <a id="MapTileHeight">MapTileHeight</a><sub><br/>Returns the height of the terrain at the top left corner (vertex) of the tile at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Height (0..100)</sub> |
+| 11000 | <a id="MapTileIsCoal">MapTileIsCoal</a><sub><br/>Check coal deposit size at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Coal deposit size at X, Y</sub> |
+| 11000 | <a id="MapTileIsGold">MapTileIsGold</a><sub><br/>Check gold deposit size at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Gold deposit size at X, Y</sub> |
+| 11000 | <a id="MapTileIsIce">MapTileIsIce</a><sub><br/>Check if tile at the specified XY coordinates has ice</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Tile has ice</sub> |
+| 11750 | <a id="MapTileIsInMapCoords">MapTileIsInMapCoords</a><sub><br/>Check if tile at the specified XY coordinates is within map borders (map has specified XY coordinates).<br/>F.e. coordinates (150, 200) are invalid for 128x128 map and not within map borders</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //tile is in map coordinates</sub> |
+| 11000 | <a id="MapTileIsIron">MapTileIsIron</a><sub><br/>Check iron deposit size at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Iron deposit size at X, Y</sub> |
+| 11000 | <a id="MapTileIsSand">MapTileIsSand</a><sub><br/>Check if tile at the specified XY coordinates has sand</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Tile has sand</sub> |
+| 11000 | <a id="MapTileIsSnow">MapTileIsSnow</a><sub><br/>Check if tile at the specified XY coordinates has snow</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Tile has snow</sub> |
+| 11000 | <a id="MapTileIsSoil">MapTileIsSoil</a><sub><br/>Check if tile at the specified XY coordinates has fertile soil (grass, dirt etc terrain good for fields, trees)</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean //Tile has soil</sub> |
+| 11000 | <a id="MapTileIsStone">MapTileIsStone</a><sub><br/>Check stone deposit size at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Stone deposit size at X, Y</sub> |
+| 11000 | <a id="MapTileIsWater">MapTileIsWater</a><sub><br/>Check if tile at the specified XY coordinates has water.<br/>FullTilesOnly = True means we check only water tiles not containing transition with grass/sand/stone etc tiles.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer; <br/> **FullTilesOnly**: Boolean; //_ullTilesOnly = False checks any water containing tiles including transitions._</sub> | <sub>Boolean //Tile has water</sub> |
+| 6587 | <a id="MapTileObject">MapTileObject</a><sub><br/>Returns the terrain object ID on the tile at the specified XY coordinates.<br/>Object IDs can be seen in the map editor on the objects tab.<br/>Object 61 is "block walking".<br/>If there is no object on the tile, the result will be 255.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Object type (0..255)</sub> |
+| 11000+ | <a id="MapTileOverlay">MapTileOverlay</a><sub><br/>Returns the terrain overlay on the tile at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>TKMTileOverlay //tile overlay</sub> |
+| 11000+ | <a id="MapTileOwner">MapTileOwner</a><sub><br/>Returns the tile owner at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //tile owner ID</sub> |
+| 7000+ | <a id="MapTilePassability">MapTilePassability</a><sub><br/>Returns true if specified tile has requested passability.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer; <br/> **aPassability**: Byte; //_passability index as listed in KM_Defaults (starts from 0)_</sub> | <sub>Boolean //True or False</sub> |
+| 13900 | <a id="MapTilePassabilityEx">MapTilePassabilityEx</a><sub><br/>Returns true if specified tile has requested passability.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer; <br/> **aPassability**: ; //_TKMTerrainPassability_ <br/> **TKMTerrainPassability**: ;</sub> | <sub>Boolean //True or False</sub> |
+| 6587 | <a id="MapTileRotation">MapTileRotation</a><sub><br/>Returns the rotation of the tile at the specified XY coordinates.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Rotation (0..3)</sub> |
+| 6587 | <a id="MapTileType">MapTileType</a><sub><br/>Returns the tile type ID of the tile at the specified XY coordinates.<br/>Tile IDs can be seen by hovering over the tiles on the terrain tiles tab in the map editor.</sub> | <sub>**X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Integer //Tile type (0..597)</sub> |
+| 6613 | <a id="MapWidth">MapWidth</a><sub><br/>Returns the width of the map</sub> | <sub></sub> | <sub>Integer //Width</sub> |
+| 6287 | <a id="MarketFromWare">MarketFromWare</a><sub><br/>Returns type of FromWare in specified market, or -1 if no ware is selected</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>Integer //Ware type</sub> |
+| 13900 | <a id="MarketFromWareEx">MarketFromWareEx</a><sub><br/>Returns type of FromWare in specified market, or wtNone if no ware is selected</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>TKMWareType //Ware type</sub> |
+| 6217 | <a id="MarketLossFactor">MarketLossFactor</a><sub><br/>Returns the factor of resources lost during market trading,<br/>used to calculate the TradeRatio (see explanation in MarketValue).<br/>This value is constant within one KaM Remake release, but may change in future KaM Remake releases</sub> | <sub></sub> | <sub>Single //Loss factor</sub> |
+| 6287 | <a id="MarketOrderAmount">MarketOrderAmount</a><sub><br/>Returns trade order amount in specified market</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>Integer //Order amount</sub> |
+| 6287 | <a id="MarketToWare">MarketToWare</a><sub><br/>Returns type of ToWare in specified market, or -1 if no ware is selected</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>Integer //Ware type</sub> |
+| 13900 | <a id="MarketToWareEx">MarketToWareEx</a><sub><br/>Returns type of ToWare in specified market, or wtNone if no ware is selected</sub> | <sub>**aMarketID**: Integer;</sub> | <sub>TKMWareType //Ware type</sub> |
+| 6216 | <a id="MarketValue">MarketValue</a><sub><br/>Returns the relative market value of the specified resource type,<br/>which is a rough indication of the cost to produce that resource.<br/>These values are constant within one KaM Remake release, but may change in future KaM Remake releases.<br/>The TradeRatio is calculated as: MarketLossFactor * MarketValue(To) / (MarketValue(From).<br/>If the TradeRatio is >= 1, then the number of From resources required to receive 1 To resource is: Round(TradeRatio).<br/>If the trade ratio is < 1 then the number of To resources received for trading 1 From resource is: Round(1 / TradeRatio)</sub> | <sub>**aRes**: Integer;</sub> | <sub>Single //Value</sub> |
+| 13900 | <a id="MarketValueEx">MarketValueEx</a><sub><br/>Returns the relative market value of the specified resource type,<br/>which is a rough indication of the cost to produce that resource.<br/>These values are constant within one KaM Remake release, but may change in future KaM Remake releases.<br/>The TradeRatio is calculated as: MarketLossFactor * MarketValue(To) / (MarketValue(From).<br/>If the TradeRatio is >= 1, then the number of From resources required to receive 1 To resource is: Round(TradeRatio).<br/>If the trade ratio is < 1 then the number of To resources received for trading 1 From resource is: Round(1 / TradeRatio)</sub> | <sub>**aWareType**: TKMWareType;</sub> | <sub>Single //Value</sub> |
+| 7000+ | <a id="MissionAuthor">MissionAuthor</a><sub><br/>Returns mission author</sub> | <sub></sub> | <sub>UnicodeString</sub> |
+| 7000+ | <a id="MissionDifficulty">MissionDifficulty</a><sub><br/>Returns mission difficulty for current game</sub> | <sub></sub> | <sub>TKMMissionDifficulty</sub> |
+| 7000+ | <a id="MissionDifficultyLevels">MissionDifficultyLevels</a><sub><br/>Returns allowed mission difficulty levels</sub> | <sub></sub> | <sub>TKMMissionDifficultySet</sub> |
+| 11300 | <a id="MissionVersion">MissionVersion</a><sub><br/>Returns mission version</sub> | <sub></sub> | <sub>UnicodeString</sub> |
+| 5057 | <a id="PeaceTime">PeaceTime</a><sub><br/>Length of peacetime in ticks (multiplayer)</sub> | <sub></sub> | <sub>Cardinal //Ticks (~10 per second)</sub> |
+| 5057 | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub><br/>Check how player 1 feels towards player 2 (order matters).<br/>Returns true for ally, false for enemy</sub> | <sub>**aHand1**: Byte; <br/> **aHand2**: Byte;</sub> | <sub>Boolean //Allied</sub> |
+| 10940 | <a id="PlayerColorFlag">PlayerColorFlag</a><sub><br/>Get players color in hex format</sub> | <sub>**aHand**: Byte;</sub> | <sub>AnsiString //Player color</sub> |
+| 4758 | <a id="PlayerColorText">PlayerColorText</a><sub><br/>Get players color as text in hex format</sub> | <sub>**aHand**: Byte;</sub> | <sub>AnsiString //Player color as text</sub> |
+| 5057 | <a id="PlayerDefeated">PlayerDefeated</a><sub><br/>See if player was defeated</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean //Defeated</sub> |
+| 5057 | <a id="PlayerEnabled">PlayerEnabled</a><sub><br/>Will be false if nobody selected that location in multiplayer</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean //Enabled</sub> |
+| 5209 | <a id="PlayerGetAllGroups">PlayerGetAllGroups</a><sub><br/>Returns an array with IDs for all the groups of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>array of Integer //Array of group IDs</sub> |
+| 5209 | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Returns an array with IDs for all the houses of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>array of Integer //Array of house IDs</sub> |
+| 5165 | <a id="PlayerGetAllUnits">PlayerGetAllUnits</a><sub><br/>Returns an array with IDs for all the units of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>array of Integer //Array of unit IDs</sub> |
+| 5927 | <a id="PlayerIsAI">PlayerIsAI</a><sub><br/>Wherever player is controlled by AI</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean //Player is AI</sub> |
+| 5057 | <a id="PlayerName">PlayerName</a><sub><br/>Get name of player as a string (for multiplayer)</sub> | <sub>**aHand**: Byte;</sub> | <sub>AnsiString //Player name</sub> |
+| 4545 | <a id="PlayerVictorious">PlayerVictorious</a><sub><br/>See if player is victorious</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean //Victorious</sub> |
+| 5345 | <a id="PlayerWareDistribution">PlayerWareDistribution</a><sub><br/>Returns the ware distribution for the specified resource, house and player</sub> | <sub>**aHand**: Byte; <br/> **aWareType**: Byte; <br/> **aHouseType**: Byte;</sub> | <sub>Byte //Ware distribution [0..5]</sub> |
+| 6323 | <a id="StatAIDefencePositionsCount">StatAIDefencePositionsCount</a><sub><br/>How many defence positions AI player has.<br/>Useful for scripts like "if not enough positions and too much groups then add a new position"</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer //Defence position count</sub> |
+| 5057 | <a id="StatArmyCount">StatArmyCount</a><sub><br/>How many military units player has</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer //Army count</sub> |
+| 13660 | <a id="StatArmyPower">StatArmyPower</a><sub><br/>The power factor of a player's army</sub> | <sub>**aHand**: Byte;</sub> | <sub>Single //Army power</sub> |
+| 5057 | <a id="StatCitizenCount">StatCitizenCount</a><sub><br/>How many citizen player has</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer //Citizen count</sub> |
+| 10940 | <a id="StatHouseCount">StatHouseCount</a><sub><br/>Returns the number of houses of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer //Number of houses</sub> |
+| 6328 | <a id="StatHouseMultipleTypesCount">StatHouseMultipleTypesCount</a><sub><br/>Returns number of specified house types for specified player.</sub> | <sub>**aHand**: Byte; <br/> **aTypes**: set of Byte; //_House types eg. [11, 13, 21]_</sub> | <sub>Integer //Total number of houses</sub> |
+| 13900 | <a id="StatHouseMultipleTypesCountEx">StatHouseMultipleTypesCountEx</a><sub><br/>Returns number of specified house types for specified player.</sub> | <sub>**aHand**: Integer; <br/> **aTypes**: ; //_House types eg. [htQuary, htSchool, htStore]_ <br/> **TKMHouseTypeSet**: ;</sub> | <sub>Integer //Total number of houses</sub> |
+| 5057 | <a id="StatHouseTypeCount">StatHouseTypeCount</a><sub><br/>Returns the total number of the specified house type for the specified player.</sub> | <sub>**aHand**: Byte; <br/> **aHouseType**: Byte;</sub> | <sub>Integer //Number of houses</sub> |
+| 13900 | <a id="StatHouseTypeCountEx">StatHouseTypeCountEx</a><sub><br/>Returns the total number of the specified house type for the specified player.</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer //Number of houses</sub> |
+| 6313 | <a id="StatHouseTypePlansCount">StatHouseTypePlansCount</a><sub><br/>Specified house type plans count</sub> | <sub>**aHand**: Byte; <br/> **aHouseType**: Byte;</sub> | <sub>Integer //Number of plans</sub> |
+| 13900 | <a id="StatHouseTypePlansCountEx">StatHouseTypePlansCountEx</a><sub><br/>Specified house type plans count</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer //Number of plans</sub> |
+| 5057 | <a id="StatPlayerCount">StatPlayerCount</a><sub><br/>How many active players there are.</sub> | <sub></sub> | <sub>Integer //Number of players</sub> |
+| 5057 | <a id="StatResourceProducedCount">StatResourceProducedCount</a><sub><br/>Returns the number of the specified resource produced by the specified player</sub> | <sub>**aHand**: Byte; <br/> **aResType**: Byte;</sub> | <sub>Integer //Number of produced resources</sub> |
+| 13900 | <a id="StatResourceProducedCountEx">StatResourceProducedCountEx</a><sub><br/>Returns the number of the specified resource produced by the specified player<br/>if wtFood is passed, then all produced food will be returned<br/>if wtWarfare is passed, then all produced warfare will be returned, including horses<br/>if wtAll is passed, then all produced wares will be returned</sub> | <sub>**aHand**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer //Number of produced resources</sub> |
+| 6331 | <a id="StatResourceProducedMultipleTypesCount">StatResourceProducedMultipleTypesCount</a><sub><br/>Returns the number of the specified resource types produced by the specified player.</sub> | <sub>**aHand**: Byte; <br/> **aTypes**: set of Byte; //_Set of ware types eg. [8, 10, 13, 27] for food_</sub> | <sub>Integer //Number of produced resources</sub> |
+| 13900 | <a id="StatResourceProducedMultipleTypesCountEx">StatResourceProducedMultipleTypesCountEx</a><sub><br/>Returns the number of the specified resource types produced by the specified player.</sub> | <sub>**aHand**: Integer; <br/> **aTypes**: ; //_Set of ware types eg. [wtCoal, wtSteel, wtGold]_ <br/> **TKMWareTypeSet**: ;</sub> | <sub>Integer //Number of produced resources</sub> |
+| 4289 | <a id="StatUnitCount">StatUnitCount</a><sub><br/>Returns the number of units of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer //Number of units</sub> |
+| 5057 | <a id="StatUnitKilledCount">StatUnitKilledCount</a><sub><br/>Returns the number of the specified unit killed by the specified player</sub> | <sub>**aHand**: Byte; <br/> **aUnitType**: Byte;</sub> | <sub>Integer //Number of killed units</sub> |
+| 13900 | <a id="StatUnitKilledCountEx">StatUnitKilledCountEx</a><sub><br/>Returns the number of the specified unit killed by the specified player<br/>if utAny is passed, then return all killed units by the specified player</sub> | <sub>**aHand**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Integer //Number of killed units</sub> |
+| 6331 | <a id="StatUnitKilledMultipleTypesCount">StatUnitKilledMultipleTypesCount</a><sub><br/>Returns the number of the specified unit types killed by the specified player.</sub> | <sub>**aHand**: Byte; <br/> **aTypes**: set of Byte;</sub> | <sub>Integer //Set of unit types eg. [0, 5, 13]</sub> |
+| 13900 | <a id="StatUnitKilledMultipleTypesCountEx">StatUnitKilledMultipleTypesCountEx</a><sub><br/>Returns the number of the specified unit types killed by the specified player.</sub> | <sub>**aHand**: Integer; <br/> **aTypes**: ; <br/> **TKMUnitTypeSet**: ;</sub> | <sub>Integer //Set of unit types eg. [utMilitia, utAxeFighter, utSwordsman]</sub> |
+| 5057 | <a id="StatUnitLostCount">StatUnitLostCount</a><sub><br/>Returns the number of the specified unit lost by the specified player</sub> | <sub>**aHand**: Byte; <br/> **aUnitType**: Byte;</sub> | <sub>Integer //Number of lost units</sub> |
+| 13900 | <a id="StatUnitLostCountEx">StatUnitLostCountEx</a><sub><br/>Returns the number of the specified unit lost by the specified player<br/>if utAny is passed, then return number of all lost units by the specified player</sub> | <sub>**aHand**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Integer //Number of lost units</sub> |
+| 6331 | <a id="StatUnitLostMultipleTypesCount">StatUnitLostMultipleTypesCount</a><sub><br/>Returns the number of the specified unit types lost by the specified player.</sub> | <sub>**aHand**: Byte; <br/> **aTypes**: set of Byte; //_Set of unit types eg. [0, 5, 13]_</sub> | <sub>Integer //Number of lost units</sub> |
+| 13900 | <a id="StatUnitLostMultipleTypesCountEx">StatUnitLostMultipleTypesCountEx</a><sub><br/>Returns the number of the specified unit types lost by the specified player.</sub> | <sub>**aHand**: Byte; <br/> **aTypes**: ; //_Set of unit types eg. [utMilitia, utAxeFighter, utSwordsman]_ <br/> **TKMUnitTypeSet**: ;</sub> | <sub>Integer //Number of lost units</sub> |
+| 6328 | <a id="StatUnitMultipleTypesCount">StatUnitMultipleTypesCount</a><sub><br/>Returns number of specified unit types for specified player.</sub> | <sub>**aHand**: Byte; <br/> **aTypes**: set of Byte; //_Set of unit types eg. [0, 5, 13]_</sub> | <sub>Integer //Total number of  units</sub> |
+| 13900 | <a id="StatUnitMultipleTypesCountEx">StatUnitMultipleTypesCountEx</a><sub><br/>Returns number of specified unit types for specified player.</sub> | <sub>**aHand**: Integer; <br/> **aTypes**: ; //_Set of unit types eg. [utSerf, utMilitia]_ <br/> **TKMUnitTypeSet**: ;</sub> | <sub>Integer //Total number of  units</sub> |
+| 5057 | <a id="StatUnitTypeCount">StatUnitTypeCount</a><sub><br/>Returns number of specified unit type for specified player</sub> | <sub>**aHand**: Byte; <br/> **aUnitType**: Byte;</sub> | <sub>Integer //Number of units</sub> |
+| 13900 | <a id="StatUnitTypeCountEx">StatUnitTypeCountEx</a><sub><br/>Returns number of specified unit type for specified player<br/>if passed utAny as unit type, then returns number of all units for the specified player</sub> | <sub>**aHand**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Integer //Number of units</sub> |
+| 12600 | <a id="UnitAllowAllyToSelect">UnitAllowAllyToSelect</a><sub><br/>Return if specified unit is allowed to be selected and viewed by his allies<br/>For warriors returns if allies can select their group</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean</sub> |
+| 5057 | <a id="UnitAt">UnitAt</a><sub><br/>Returns the ID of the unit on the specified tile or -1 if no unit exists there</sub> | <sub>**aX**: Integer; <br/> **aY**: Integer;</sub> | <sub>Integer //Unit ID</sub> |
+| 5057 | <a id="UnitCarrying">UnitCarrying</a><sub><br/>Returns the ware a serf is carrying, or -1 if the unit is not a serf or is not carrying anything</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Ware type</sub> |
+| 13900 | <a id="UnitCarryingEx">UnitCarryingEx</a><sub><br/>Returns the ware a serf is carrying, or wtNone if the unit is not a serf or is not carrying anything</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMWareType //Ware type</sub> |
+| 5057 | <a id="UnitDead">UnitDead</a><sub><br/>Returns true if the unit is dead</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //Dead</sub> |
+| 5165 | <a id="UnitDirection">UnitDirection</a><sub><br/>Returns the direction the specified unit is facing</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Direction (0..7)</sub> |
+| 13900 | <a id="UnitDirectionEx">UnitDirectionEx</a><sub><br/>Returns the direction the specified unit is facing</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMDirection //Direction (dirNA, dirN, dirNE, dirE, dirSE, dirS, dirSW, dirW, dirNW)</sub> |
+| 7000+ | <a id="UnitDismissable">UnitDismissable</a><sub><br/>Returns the 'Dismissable' status of specified unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //is unit dismissable</sub> |
+| 5997 | <a id="UnitHome">UnitHome</a><sub><br/>Returns the ID of the house which is the home of the specified unit (house where he works) or -1 if the unit does not have a home</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //House ID</sub> |
+| 7000+ | <a id="UnitHPCurrent">UnitHPCurrent</a><sub><br/>Returns current hitpoints for specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //HitPoints</sub> |
+| 7000+ | <a id="UnitHPInvulnerable">UnitHPInvulnerable</a><sub><br/>See if unit is invulnerable</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //true or false</sub> |
+| 7000+ | <a id="UnitHPMax">UnitHPMax</a><sub><br/>Returns max hitpoints for specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //HitPoints</sub> |
+| 5057 | <a id="UnitHunger">UnitHunger</a><sub><br/>Returns the hunger level of the specified unit as number of ticks until death or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Hunger level</sub> |
+| 6523 | <a id="UnitIdle">UnitIdle</a><sub><br/>Returns true if specified unit is idle (has no orders/action)</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean //Idle</sub> |
+| 12982 | <a id="UnitInHouse">UnitInHouse</a><sub><br/>Returns HouseID where specified Unit is now, at this particular moment, or -1 if Unit not found or Unit is not in any house</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //HouseId, where unit is placed</sub> |
+| 5057 | <a id="UnitLowHunger">UnitLowHunger</a><sub><br/>Gives the hunger level when a unit will try to eat in ticks until death</sub> | <sub></sub> | <sub>Integer //Hunger in ticks</sub> |
+| 5057 | <a id="UnitMaxHunger">UnitMaxHunger</a><sub><br/>Gives the maximum hunger level a unit can have in ticks until death</sub> | <sub></sub> | <sub>Integer //Hunger in ticks</sub> |
+| 5057 | <a id="UnitOwner">UnitOwner</a><sub><br/>Returns the owner of the specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Player ID</sub> |
+| 7000+ | <a id="UnitPosition">UnitPosition</a><sub><br/>Returns the TKMPoint with coordinates of the specified unit or (-1;-1) point if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMPoint //TKMPoint</sub> |
+| 5057 | <a id="UnitPositionX">UnitPositionX</a><sub><br/>Returns the X coordinate of the specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //X coordinate</sub> |
+| 5057 | <a id="UnitPositionY">UnitPositionY</a><sub><br/>Returns the Y coordinate of the specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Y coordinate</sub> |
+| 5057 | <a id="UnitsGroup">UnitsGroup</a><sub><br/>Returns the group that the specified unit (warrior) belongs to or -1 if it does not belong to a group</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Group ID</sub> |
+| 5057 | <a id="UnitType">UnitType</a><sub><br/>Returns the type of the specified unit or -1 if unit id is invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer //Unit type</sub> |
+| 13900 | <a id="UnitTypeEx">UnitTypeEx</a><sub><br/>Returns the type of the specified unit or utNone if unit id is invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMUnitType //Unit type</sub> |
+| 6001 | <a id="UnitTypeName">UnitTypeName</a><sub><br/>Returns the the translated name of the specified unit type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup<br/>which is decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aUnitType**: Byte;</sub> | <sub>AnsiString //Unit type name</sub> |
+| 13900 | <a id="UnitTypeNameEx">UnitTypeNameEx</a><sub><br/>Returns the the translated name of the specified unit type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup<br/>which is decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aUnitType**: TKMUnitType;</sub> | <sub>AnsiString //Unit type name</sub> |
+| 6001 | <a id="WareTypeName">WareTypeName</a><sub><br/>Returns the the translated name of the specified ware type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup<br/>which is decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aWareType**: Byte;</sub> | <sub>AnsiString //Ware type name</sub> |
+| 13900 | <a id="WareTypeNameEx">WareTypeNameEx</a><sub><br/>Returns the the translated name of the specified ware type.<br/>Note: To ensure multiplayer consistency the name is returned as a number encoded within a markup<br/>which is decoded on output, not the actual translated text.<br/>Therefore string operations like LowerCase will not work.</sub> | <sub>**aWareType**: TKMWareType;</sub> | <sub>AnsiString //Ware type name</sub> |
+| 7000+ | <a id="WarriorInFight">WarriorInFight</a><sub><br/>Returns true if specified warrior is in fight</sub> | <sub>**aUnitID**: Integer; <br/> **aCountCitizens**: Boolean; //_CountCitizens - including fights with citizens_</sub> | <sub>Boolean //InFight</sub> |

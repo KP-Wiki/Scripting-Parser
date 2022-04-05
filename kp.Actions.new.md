@@ -1,113 +1,268 @@
-####Actions
+### Actions
+
+Actions are written in a form `Actions.ACTION_NAME(ACTION_PARAMETERS);` like so:
+```pascal
+    if States.StatArmyCount(0) <= 3 then
+      Actions.PlayerDefeat(0); // Defeat 1st player
+```
+
+Most of action parameters are numeric (except houses, units and some others when mentioned).
+
+Version column description:  
+<sub>"-" Means this action was added from the start.</sub>  
+<sub>"5678" Means this action was introduced in revision 5678.</sub>  
+<sub>"-5678" Means this action was removed in revision 5678.</sub>
+
+
+***
+
+* <a href="#CampaignChapterSetup">CampaignChapterSetup</a>
+* <a href="#CampaignMissionResult">CampaignMissionResult</a>
+* <a href="#CampaignMissionSetup">CampaignMissionSetup</a>
+* <a href="#CampaignMissionUnlock">CampaignMissionUnlock</a>
+* <a href="#CampaignMissionWon">CampaignMissionWon</a>
+* <a href="#CampaignProgress">CampaignProgress</a>
+* <a href="#CampaignSetup">CampaignSetup</a>
+* <a href="#CinematicBarsHide">CinematicBarsHide</a>
+* <a href="#CinematicBarsShow">CinematicBarsShow</a>
+* <a href="#CinematicBegin">CinematicBegin</a>
+* <a href="#CinematicEnd">CinematicEnd</a>
+* <a href="#CinematicFadeIn">CinematicFadeIn</a>
+* <a href="#CinematicFadeOut">CinematicFadeOut</a>
+* <a href="#CinematicSpeechBubble">CinematicSpeechBubble</a>
+* <a href="#CinematicSubtitle">CinematicSubtitle</a>
+* <a href="#CinematicText">CinematicText</a>
+* <a href="#CinematicViewMoveTo">CinematicViewMoveTo</a>
+* <a href="#CinematicViewMoveToEx">CinematicViewMoveToEx</a>
+* <a href="#CinematicViewReset">CinematicViewReset</a>
+* <a href="#CinematicViewRevert">CinematicViewRevert</a>
+* <a href="#CinematicViewSetTo">CinematicViewSetTo</a>
+* <a href="#CinematicViewSetToDefault">CinematicViewSetToDefault</a>
+* <a href="#CinematicViewSetToEx">CinematicViewSetToEx</a>
+* <a href="#CinematicViewStore">CinematicViewStore</a>
+* <a href="#FenceAdd">FenceAdd</a>
+* <a href="#FenceRemove">FenceRemove</a>
+* <a href="#FogCoverAll">FogCoverAll</a>
+* <a href="#FogCoverCircle">FogCoverCircle</a>
+* <a href="#FogCoverRect">FogCoverRect</a>
+* <a href="#FogRevealAll">FogRevealAll</a>
+* <a href="#FogRevealCircle">FogRevealCircle</a>
+* <a href="#FogRevealRect">FogRevealRect</a>
+* <a href="#GiveGroup">GiveGroup</a>
+* <a href="#GiveHouse">GiveHouse</a>
+* <a href="#GiveUnit">GiveUnit</a>
+* <a href="#GiveWares">GiveWares</a>
+* <a href="#GiveWeapons">GiveWeapons</a>
+* <a href="#GroupOrderAttackHouse">GroupOrderAttackHouse</a>
+* <a href="#GroupOrderAttackUnit">GroupOrderAttackUnit</a>
+* <a href="#GroupOrderFood">GroupOrderFood</a>
+* <a href="#GroupOrderHalt">GroupOrderHalt</a>
+* <a href="#GroupOrderLink">GroupOrderLink</a>
+* <a href="#GroupOrderSplit">GroupOrderSplit</a>
+* <a href="#GroupOrderStorm">GroupOrderStorm</a>
+* <a href="#GroupOrderWalk">GroupOrderWalk</a>
+* <a href="#GroupOwnerChange">GroupOwnerChange</a>
+* <a href="#GroupSetFormation">GroupSetFormation</a>
+* <a href="#HouseAddDamage">HouseAddDamage</a>
+* <a href="#HouseAddRepair">HouseAddRepair</a>
+* <a href="#HouseAddWaresTo">HouseAddWaresTo</a>
+* <a href="#HouseAllow">HouseAllow</a>
+* <a href="#HouseDestroy">HouseDestroy</a>
+* <a href="#HouseOwnerChange">HouseOwnerChange</a>
+* <a href="#HouseRepairEnable">HouseRepairEnable</a>
+* <a href="#HouseTrainQueueAdd">HouseTrainQueueAdd</a>
+* <a href="#HouseTrainQueueRemove">HouseTrainQueueRemove</a>
+* <a href="#HouseUnlock">HouseUnlock</a>
+* <a href="#HouseWareAdd">HouseWareAdd</a>
+* <a href="#HouseWareInBlock">HouseWareInBlock</a>
+* <a href="#HouseWareRemove">HouseWareRemove</a>
+* <a href="#HouseWaresInBlock">HouseWaresInBlock</a>
+* <a href="#HouseWeaponsOrderSet">HouseWeaponsOrderSet</a>
+* <a href="#HouseWoodcutterMode">HouseWoodcutterMode</a>
+* <a href="#MissionHighscore">MissionHighscore</a>
+* <a href="#PlanAddField">PlanAddField</a>
+* <a href="#PlanAddHouse">PlanAddHouse</a>
+* <a href="#PlanAddOrchard">PlanAddOrchard</a>
+* <a href="#PlanAddRoad">PlanAddRoad</a>
+* <a href="#PlanRemove">PlanRemove</a>
+* <a href="#PlayerAIArmyCompositionReset">PlayerAIArmyCompositionReset</a>
+* <a href="#PlayerAIArmyCompositionSet">PlayerAIArmyCompositionSet</a>
+* <a href="#PlayerAIDispositionAdd">PlayerAIDispositionAdd</a>
+* <a href="#PlayerAIDispositionRemove">PlayerAIDispositionRemove</a>
+* <a href="#PlayerAllianceChange">PlayerAllianceChange</a>
+* <a href="#PlayerColorChange">PlayerColorChange</a>
+* <a href="#PlayerDefeat">PlayerDefeat</a>
+* <a href="#PlayerGoalsSetDefault">PlayerGoalsSetDefault</a>
+* <a href="#PlayerHouseBlock">PlayerHouseBlock</a>
+* <a href="#PlayerHouseGrant">PlayerHouseGrant</a>
+* <a href="#PlayerMessage">PlayerMessage</a>
+* <a href="#PlayerMessageFormatted">PlayerMessageFormatted</a>
+* <a href="#PlayerMessageGoto">PlayerMessageGoto</a>
+* <a href="#PlayerMessageGotoFormatted">PlayerMessageGotoFormatted</a>
+* <a href="#PlayerMessageOpen">PlayerMessageOpen</a>
+* <a href="#PlayerMessageWithButtons">PlayerMessageWithButtons</a>
+* <a href="#PlayerMissionResultString">PlayerMissionResultString</a>
+* <a href="#PlayerNameSet">PlayerNameSet</a>
+* <a href="#PlayerObjectiveAdd">PlayerObjectiveAdd</a>
+* <a href="#PlayerObjectiveUpdateStatus">PlayerObjectiveUpdateStatus</a>
+* <a href="#PlayerObjectiveUpdateText">PlayerObjectiveUpdateText</a>
+* <a href="#PlayerOverlayAppend">PlayerOverlayAppend</a>
+* <a href="#PlayerOverlayAppendFormatted">PlayerOverlayAppendFormatted</a>
+* <a href="#PlayerOverlaySet">PlayerOverlaySet</a>
+* <a href="#PlayerOverlaySetFormatted">PlayerOverlaySetFormatted</a>
+* <a href="#PlayerShareFog">PlayerShareFog</a>
+* <a href="#PlayerTradeAllow">PlayerTradeAllow</a>
+* <a href="#PlayerWareDistribution">PlayerWareDistribution</a>
+* <a href="#PlayerWin">PlayerWin</a>
+* <a href="#PlayWAV">PlayWAV</a>
+* <a href="#PlayWAVAtLocation">PlayWAVAtLocation</a>
+* <a href="#RoadAdd">RoadAdd</a>
+* <a href="#RoadRemove">RoadRemove</a>
+* <a href="#StockpileAdd">StockpileAdd</a>
+* <a href="#StockpileSetCount">StockpileSetCount</a>
+* <a href="#TerrainHighlightDelete">TerrainHighlightDelete</a>
+* <a href="#TerrainHighlightFill">TerrainHighlightFill</a>
+* <a href="#TerrainHighlightLine">TerrainHighlightLine</a>
+* <a href="#TerrainParticleEmitterAdd">TerrainParticleEmitterAdd</a>
+* <a href="#TerrainParticleEmitterDelete">TerrainParticleEmitterDelete</a>
+* <a href="#TerrainTriggerAdd">TerrainTriggerAdd</a>
+* <a href="#TerrainTriggerDelete">TerrainTriggerDelete</a>
+* <a href="#UnitAnimalSteer">UnitAnimalSteer</a>
+* <a href="#UnitCarryGive">UnitCarryGive</a>
+* <a href="#UnitCarryTake">UnitCarryTake</a>
+* <a href="#UnitDirectionSet">UnitDirectionSet</a>
+* <a href="#UnitHungerSet">UnitHungerSet</a>
+* <a href="#UnitKill">UnitKill</a>
+* <a href="#UnitOrderWalk">UnitOrderWalk</a>
+* <a href="#UnitOwnerChange">UnitOwnerChange</a>
+* <a href="#UnitUnlock">UnitUnlock</a>
+* <a href="#UnitWagonOrderEnterHouse">UnitWagonOrderEnterHouse</a>
+* <a href="#UnitWagonOrderHalt">UnitWagonOrderHalt</a>
+* <a href="#UnitWagonOrderWalk">UnitWagonOrderWalk</a>
+<br />
 
 | Ver<br/>sion | Action description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
-| 8250 | CampaignChapterSetup<sub><br/>Sets up campaign chapter info in campaign menu. Campaign-only action!</sub> | <sub>**aChapter**: Integer; //_chapter index to set up_ <br/> **aTitle**: String; //_text to display for the chapter title_ <br/> **aShortTitle**: String; //_text to display for the chapter short title_ <br/> **aBackgroundImg**: String; //_sprite to be used for the chapter background map (*.png)_</sub> | <sub></sub> |
-| 8250 | CampaignMissionSetup<sub><br/>Sets up all of the campaign mission info in campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; //_mission index to set up_ <br/> **aUnlocked**: Boolean; //_Should it be available for selection and play_ <br/> **aWon**: Boolean; //_should it be marked as won_ <br/> **aFlagImgLocked**: String; //_sprite to be used for the locked state flag (*.png)_ <br/> **aFlagImgNormal**: String; //_sprite to be used for the normal state flag (*.png)_ <br/> **aFlagImgWon**: String; //_sprite to be used for the won state flag (*.png)_ <br/> **aFlagPosX**: Integer; //_flag X position on the campaign map_ <br/> **aFlagPosY**: Integer; //_flag Y position on the campaign map_ <br/> **aTitle**: String; //_text to display for the mission title_ <br/> **aBriefing**: String; //_text to display for the mission briefing_</sub> | <sub></sub> |
-| 8261 | CampaignMissionUnlock<sub><br/>Sets up unlocked/won status of a campaign mission in a campaign menu. Campaign-only action!<br/>aWon: should it be marked as won</sub> | <sub>**aMission**: Integer; //_mission index to set up_ <br/> **aUnlocked**: Boolean; //_Should it be available for selection and play_</sub> | <sub></sub> |
-| 8261 | CampaignProgress<sub><br/>Sets up progress campaign info in campaign selection menu. Campaign-only action!</sub> | <sub>**aProgress**: String; //_campaign progress displayed in the campaign selection menu_</sub> | <sub></sub> |
-| 8250 | CampaignSetup<sub><br/>Sets up generic campaign info in campaign selection menu. Campaign-only action!</sub> | <sub>**aProgress**: String; //_campaign progress displayed in the campaign selection menu_ <br/> **aNodeImg**: String; //_sprite to be used for the nodes between mission flags (*.png)_ <br/> **aMissionNext**: Integer; //_which mission will be selected by default to be played next_</sub> | <sub></sub> |
-| 8155 | CinematicBarsHide<sub><br/>Hides cinematic black bars around the screen</sub> | <sub></sub> | <sub></sub> |
-| 8155 | CinematicBarsShow<sub><br/>Shows cinematic black bars around the screen</sub> | <sub></sub> | <sub></sub> |
-| 8155 | CinematicBegin<sub><br/>Starts cinematic mode. Blocks all viewport controls</sub> | <sub></sub> | <sub></sub> |
-| 8155 | CinematicEnd<sub><br/>Ends cinematic mode. Unblocks viewport controls</sub> | <sub></sub> | <sub></sub> |
-| 8155 | CinematicFadeIn<sub><br/>Gradually reveals the screen from full black</sub> | <sub>**aDurationSec**: Single; //_effect duration in seconds_</sub> | <sub></sub> |
-| 8155 | CinematicFadeOut<sub><br/>Gradually darkens the screen to full black</sub> | <sub>**aDurationSec**: Single; //_effect duration in seconds_</sub> | <sub></sub> |
-| 8585 | CinematicSpeechBubble<sub><br/>Shows speech bubble at specified location and height over terrain</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeight**: Single; <br/> **aScale**: Byte; <br/> **aText**: String; <br/> **aDurationSec**: Single;</sub> | <sub></sub> |
-| 8155 | CinematicSubtitle<sub><br/>Shows the subtitles</sub> | <sub>**aText**: String;</sub> | <sub></sub> |
-| 8155 | CinematicText<sub><br/>Shows the text in the middle of the screen</sub> | <sub>**aText**: String; <br/> **aScale**: Byte; //_Text scale 1..16_</sub> | <sub></sub> |
-| 8155 | CinematicViewMoveTo<sub><br/>Moves the camera</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aZoom**: Single; <br/> **aDurationSec**: Single; //_move duration in seconds_</sub> | <sub></sub> |
-| 8155 | CinematicViewMoveToEx<sub><br/>Moves the camera with more control over the setup</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aPitch**: Single; <br/> **aDist**: Single; <br/> **aFOV**: Single; <br/> **aDurationSec**: Single; //_move duration in seconds_</sub> | <sub></sub> |
-| 8155 | CinematicViewReset<sub><br/>Resets the camera to default orientation and zoom</sub> | <sub></sub> | <sub></sub> |
-| 8155 | CinematicViewRevert<sub><br/>Restores player viewport setup (position, orientation, zoom)</sub> | <sub></sub> | <sub></sub> |
-| 8155 | CinematicViewSetTo<sub><br/>Sets the camera</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aZoom**: Single;</sub> | <sub></sub> |
-| 8166 | CinematicViewSetToDefault<sub><br/>Sets the camera X and Y. Heading and zoom are set to default</sub> | <sub>**aX**: Single; <br/> **aY**: Single;</sub> | <sub></sub> |
-| 8155 | CinematicViewSetToEx<sub><br/>Sets the camera with more control over the setup</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aPitch**: Single; <br/> **aDist**: Single; <br/> **aFOV**: Single;</sub> | <sub></sub> |
-| 8155 | CinematicViewStore<sub><br/>Saves player viewport setup (position, orientation, zoom)</sub> | <sub></sub> | <sub></sub> |
-| 8461 | FenceAdd<sub><br/>Set a fence on terrain</sub> | <sub>**X,Y**: Word; <br/> **aDir**: Word; <br/> **aFenceType**: Integer; //_Type of the fence (default = 1)_ <br/> **aPlayer**: Integer; //_Owner of the fence_</sub> | <sub>Boolean //Success or fail</sub> |
-| 8461 | FenceRemove<sub><br/>Remove fence from terrain</sub> | <sub>**X,Y**: Word; <br/> **aDir**: Word;</sub> | <sub></sub> |
-| - | FogCoverAll<sub><br/>Cover whole map with fog of war for specified player</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
-| - | FogCoverCircle<sub><br/>Cover circle with fog of war</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word; <br/> **aRadius**: Word;</sub> | <sub></sub> |
-| - | FogCoverRect<sub><br/>Cover rectangle with fog of war</sub> | <sub>**aPlayer**: Integer; <br/> **X1**: Word; <br/> **Y1**: Word; <br/> **X2**: Word; <br/> **Y2**: Word;</sub> | <sub></sub> |
-| - | FogRevealAll<sub><br/>Reveal whole map</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
-| - | FogRevealCircle<sub><br/>Reveal circle</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word; <br/> **aRadius**: Word;</sub> | <sub></sub> |
-| - | FogRevealRect<sub><br/>Reveal rectangle</sub> | <sub>**aPlayer**: Integer; <br/> **X1**: Word; <br/> **Y1**: Word; <br/> **X2**: Word; <br/> **Y2**: Word;</sub> | <sub></sub> |
-| - | GiveGroup<sub><br/>Gives group to a player</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **X,Y**: Word; <br/> **aDir**: Word; <br/> **aCount**: Word; <br/> **aColumns**: Word;</sub> | <sub>Integer //UID of the group on success</sub> |
-| 4433 | GiveHouse<sub><br/>Places house on terrain, removing removable objects below it (trees and such)</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **X,Y**: Word; <br/> **aFace**: TKMHouseFace;</sub> | <sub>Integer //UID of the house on success</sub> |
-| - | GiveUnit<sub><br/>Gives unit to a player</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **X,Y**: Word; <br/> **aDir**: Word;</sub> | <sub>Integer //UID of the unit on success</sub> |
-| - | GiveWares<sub><br/>Wares are added to first Camp</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word;</sub> | <sub></sub> |
-| - | GiveWeapons<sub><br/>Weapons are added to first Barracks</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word;</sub> | <sub></sub> |
-| - | GroupOrderAttackHouse<sub></sub> | <sub>**aGroupID**: Integer; <br/> **aHouseID**: Integer;</sub> | <sub></sub> |
-| - | GroupOrderAttackUnit<sub></sub> | <sub>**aGroupID**: Integer; <br/> **aUnitID**: Integer;</sub> | <sub></sub> |
-| - | GroupOrderFood<sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
-| - | GroupOrderHalt<sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
-| - | GroupOrderLink<sub></sub> | <sub>**aGroupID**: Integer; <br/> **aDestGroupID**: Integer;</sub> | <sub></sub> |
-| - | GroupOrderSplit<sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //UID of the separated group</sub> |
-| - | GroupOrderStorm<sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
-| - | GroupOrderWalk<sub></sub> | <sub>**aGroupID**: Integer; <br/> **X**: Word; <br/> **Y**: Word; <br/> **aDirection**: Word;</sub> | <sub></sub> |
-| 6982 | GroupOwnerChange<sub><br/>Change owner of the group. Technically it kills old units and creates new ones with the same basic props<br/>(type, position, direction, hp, condition). All the advanced props and states do not get copied over.<br/>If old group was moving/fighting, it is not guaranteed that new group units will be placed on the same positions</sub> | <sub>**aGroupId**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer //UID of new group</sub> |
-| - | GroupSetFormation<sub></sub> | <sub>**aGroupID**: Integer; <br/> **aNumColumns**: Byte;</sub> | <sub></sub> |
-| - | HouseAddDamage<sub></sub> | <sub>**aHouseID**: Integer; <br/> **aDamage**: Word; //_number of hitpoints to take from the house_</sub> | <sub></sub> |
-| - | HouseAddRepair<sub></sub> | <sub>**aHouseID**: Integer; <br/> **aRepair**: Word; //_number of hitpoints to give to the house_</sub> | <sub></sub> |
-| -7981 | HouseAddWaresTo<sub><br/>Renamed into HouseWareAdd</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word;</sub> | <sub></sub> |
-| - | HouseAllow<sub><br/>Allow or block the house from being built</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **aAllowed**: Boolean;</sub> | <sub></sub> |
-| - | HouseDestroy<sub></sub> | <sub>**aHouseID**: Integer; <br/> **aSilent**: Boolean; //_Wherever to play the sound and leave rubble on terrain or not_</sub> | <sub></sub> |
-| 5194 | HouseOwnerChange<sub><br/>Change owner of the House. Technically it kills old House and creates a new one with the same basic props<br/>(type, position, direction, hp, ..). All the advanced props and states do not get copied over.<br/>Wares do not get copied over yet.</sub> | <sub>**aHouseID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer //UID of new House</sub> |
-| - | HouseRepairEnable<sub></sub> | <sub>**aHouseID**: Integer; <br/> **aRepairEnabled**: Boolean;</sub> | <sub></sub> |
-| 4820 | HouseTrainQueueAdd<sub><br/>Train units in the house (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aCount**: Integer;</sub> | <sub>Integer //number of units added to the queue</sub> |
-| 4820 | HouseTrainQueueRemove<sub><br/>Try to remove units from training queue in the house (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aQueueIndex**: Integer; //_Should be in 0..5 range_</sub> | <sub></sub> |
-| - | HouseUnlock<sub><br/>Allow the house to be built irregardless of preceeding houses availability</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub></sub> |
-| 7981 | HouseWareAdd<sub><br/>Adds wares to specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word; //_number of wares to add. Gets trimmed to not exceed house max storage_</sub> | <sub></sub> |
-| 7021 | HouseWareInBlock<sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aBlock**: Integer;</sub> | <sub></sub> |
-| 7985 | HouseWareRemove<sub><br/>Removes wares from specified house. Works only on complete houses</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word; //_number of wares to take_</sub> | <sub>Word //number of wares that were actually taken</sub> |
-| - | HouseWeaponsOrderSet<sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aAmount**: Integer;</sub> | <sub></sub> |
-| - | HouseWoodcutterChopOnly<sub></sub> | <sub>**aHouseID**: Integer; <br/> **aChopOnly**: Boolean;</sub> | <sub></sub> |
-| - | PlanAddField<sub></sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
-| 4433 | PlanAddHouse<sub><br/>Places house plan on terrain, removing removable objects below it (trees and such)</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **X,Y**: Word; <br/> **aFace**: TKMHouseFace;</sub> | <sub>Boolean //success or fail</sub> |
-| - | PlanAddOrchard<sub></sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
-| - | PlanAddRoad<sub></sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
-| - | PlanRemove<sub><br/>Removes any house or fieldwork plan</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
-| 5374 | PlayerAIArmyCompositionReset<sub><br/>Reset the rate at which AI should equip new warriors to 0</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
-| 5374 | PlayerAIArmyCompositionSet<sub><br/>Change the rate at which AI should equip new warriors (units per hour)</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aWarriorsPerHour**: Word;</sub> | <sub></sub> |
-| 5735 | PlayerAIDispositionAdd<sub><br/>Add disposition for players AI</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word; <br/> **aDir**: Word; <br/> **aGroupType**: Word; <br/> **TKMGroupType**: Word; <br/> **aGuardRadius**: Word; <br/> **aNumUnits**: Word; <br/> **aUnitsPerRow**: Word;</sub> | <sub>Boolean //Success or fail (due to bad parameters or already existing position)</sub> |
-| 5735 | PlayerAIDispositionRemove<sub><br/>Remove disposition</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub> //Success or fail</sub> |
-| 4053 | PlayerAllianceChange<sub><br/>Change alliance between players. Always symmetrical</sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer; <br/> **aAllied**: Boolean; //_Ally or enemy_ <br/> **aShareFOW**: Boolean; //_Start sharing FOW between players_</sub> | <sub></sub> |
-| 5422 | PlayerColorChange<sub><br/>Change players color. Note that animals have their own colors on the minimap</sub> | <sub>**aPlayer**: Integer; //_Player index (0..N-1)_ <br/> **aColor**: Integer; //_New color_</sub> | <sub></sub> |
-| - | PlayerDefeat<sub><br/>Set player defeated</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
-| - | PlayerGoalsSetDefault<sub><br/>Add default multiplayer goals for a player - to kill all enemies.</sub> | <sub>**aPlayer**: Integer; //_Player index (0..N-1)_ <br/> **aBuildings**: Boolean; //_destroy core houses too_</sub> | <sub></sub> |
-| 8180 | PlayerMessage<sub><br/>Send a message to the player. Message gets stored in message log</sub> | <sub>**aPlayer**: Integer; //_can be -1 to send the message to all the players_ <br/> **aText**: String; //_text with libx codes to substitute_ <br/> **aOpen**: Boolean; //_should the message be opened to the player at once_</sub> | <sub></sub> |
-| -8131 | PlayerMessageFormatted<sub><br/>Formatted messages can be made with Utils.Format()</sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
-| -8180 | PlayerMessageGoto<sub><br/>Goto messages should be done with Actions.PlayerMessageWithButtons</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aText**: String;</sub> | <sub></sub> |
-| -8131 | PlayerMessageGotoFormatted<sub><br/>Formatted messages can be made with Utils.Format()</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
-| -8180 | PlayerMessageOpen<sub><br/>Adjoined with PlayerMessage with a boolean key</sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
-| 8180 | PlayerMessageWithButtons<sub><br/>Send a message to the player<br/>Message result will return asynchronously in the `OnScriptButton` event from each player (possibly even in different ticks).<br/>In multiplayer games, event might be several ticks later due to lag.<br/>In rare cases, when player cheats, he can miss the message altogether (e.g. by viewing different Hand during message invocation).</sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; //_Message text_ <br/> **aButtons**: array of String; //_Array of button captions. Can be up to 8_ <br/> **aImages**: array of String; <br/> **aTags**: array of Integer; //_Array of button tags (will be used in click event)_ <br/> **aOpen**: Boolean; //_Opens the message and sets the game on pause after current tick is done_ <br/> **aBlockAfterClick**: Boolean; //_Block buttons after click_</sub> | <sub></sub> |
-| 5027 | PlayerNameSet<sub><br/>Rename a player (works only in Singleplayer and for AIs in Multiplayer)<br/>Note: renaming a player updates texts for all affected objectives created from goals</sub> | <sub>**aPlayer**: Integer; <br/> **aName**: String;</sub> | <sub></sub> |
-| 3026 | PlayerObjectiveAdd<sub><br/>Add objective for the player</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveType**: TKMObjectiveType; //_type of the objective (see TKMObjectiveType for details)_ <br/> **aPriority**: Integer; //_Affects objective position in the list. Smaller numbers come first. Otherwise objectives keep order in which they were added_ <br/> **aStatus**: TKMObjectiveStatus; //_status of the objective (see TKMObjectiveStatus for details)_ <br/> **aCaption**: String; //_text displayed_</sub> | <sub>Integer //UID of the objective</sub> |
-| 3026 | PlayerObjectiveUpdateStatus<sub><br/>Update objective status</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveId**: Integer; <br/> **aStatus**: TKMObjectiveStatus;</sub> | <sub></sub> |
-| - | PlayerObjectiveUpdateText<sub><br/>Update objective text displayed in GUI. Color-coding is supported</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveId**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
-| 4947 | PlayerOverlayAppend<sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
-| -8131 | PlayerOverlayAppendFormatted<sub><br/>Formatted messages can be made with Utils.Format()</sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
-| 4947 | PlayerOverlaySet<sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
-| -8131 | PlayerOverlaySetFormatted<sub><br/>Formatted messages can be made with Utils.Format()</sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
-| - | PlayerShareFog<sub><br/>Start or stop sharing FOW between players. This can be done assymetrically<br/>True means that aPlayer1 shares his FOW with aPlayer2 (in other words, P1 allows P2 to see his FOW</sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer; <br/> **aShare**: Boolean;</sub> | <sub></sub> |
-| 8460 | PlayerTradeAllow<sub><br/>Allows or forbids trading of certain ware in Marketplace</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aAllowed**: Boolean;</sub> | <sub></sub> |
-| - | PlayerWareDistribution<sub><br/>Change ware distribution between players houses</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType; <br/> **aAmount**: Byte; //_New value (0..5)_</sub> | <sub></sub> |
-| - | PlayerWin<sub><br/>Sets all player IDs in aVictors to victorious. All other players are set to defeated.</sub> | <sub>**aVictors**: array of Integer; <br/> **aTeamVictory**: Boolean; //_If all teammates win too_</sub> | <sub></sub> |
-| - | PlayWAV<sub><br/>Play WAV file</sub> | <sub>**aPlayer**: Integer; <br/> **aFilename**: String; //_Name of the file from the map folder, without a path. Must have ".wav" extension._ <br/> **aVolume**: Single; //_Playback volume. From 0.0 to 1.0_</sub> | <sub></sub> |
-| - | PlayWAVAtLocation<sub><br/>Play WAV file at specified location on map</sub> | <sub>**aPlayer**: Integer; <br/> **aFilename**: String; //_Name of the file from the map folder, without a path. Must have ".wav" extension._ <br/> **aVolume**: Single; //_Playback volume. From 0.0 to 1.0_ <br/> **X**: Word; //_X tile coordinate_ <br/> **Y**: Word; //_Y tile coordinate_</sub> | <sub></sub> |
-| 4586 | StockpileAdd<sub><br/>Add stockpile on the map</sub> | <sub>**aWareType**: TKMWareType; //_Ware type_ <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aCount**: Word; //_Ware count. Must be positive_</sub> | <sub>Integer //UID of the stockpile in case of success</sub> |
-| 4586 | StockpileSetCount<sub><br/>Change number of wares in a stockpile</sub> | <sub>**aStockpileID**: Integer; //_UID of the stockpile_ <br/> **aCount**: Word; //_New ware count. If zero, stockpile will be removed_</sub> | <sub></sub> |
-| 8166 | TerrainHighlightDelete<sub><br/>Delete highlight previously placed on terrain</sub> | <sub>**aUID**: Integer;</sub> | <sub></sub> |
-| 8166 | TerrainHighlightFill<sub><br/>Add highlighted area to terrain</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aWidth**: Single; <br/> **aHeight**: Single; <br/> **aColor**: Cardinal;</sub> | <sub>Integer</sub> |
-| 8166 | TerrainHighlightLine<sub><br/>Add outline highlight to terrain</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aWidth**: Single; <br/> **aHeight**: Single; <br/> **aThickness**: Single; <br/> **aColor**: Cardinal;</sub> | <sub>Integer</sub> |
-| 6620 | TerrainParticleEmitterAdd<sub><br/>Adds particle emitter on to terrain. Replaces any existing emitter on the spot</sub> | <sub>**aX**: Word; <br/> **aY**: Word; <br/> **aType**: Integer;</sub> | <sub></sub> |
-| 6620 | TerrainParticleEmitterDelete<sub><br/>Remove particle emitter from terrain</sub> | <sub>**aX**: Word; <br/> **aY**: Word;</sub> | <sub></sub> |
-| 5094 | TerrainTriggerAdd<sub><br/>Adds rectangle trigger area on to terrain</sub> | <sub>**aLeft**: Word; <br/> **aTop**: Word; <br/> **aRight**: Word; <br/> **aBottom**: Word;</sub> | <sub>Integer //Id of trigger in case of success. Otherwise -1.</sub> |
-| 5094 | TerrainTriggerDelete<sub><br/>Remove trigger area from terrain</sub> | <sub>**aId**: Integer;</sub> | <sub></sub> |
-| 7968 | UnitCarryGive<sub><br/>Give wares to the unit (only Wagons supported yet)</sub> | <sub>**aUnitID**: Integer; <br/> **aCarry**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub>Integer //number of wares Given (could be 0 or smaller than requested due to max Wagon capacity and ware type mismatch)</sub> |
-| 2732 | UnitCarryTake<sub><br/>Take wares from the unit (only Wagons supported yet)</sub> | <sub>**aUnitID**: Integer; <br/> **aCarry**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub>Integer //number of wares taken (0 if unsuccessfull)</sub> |
-| - | UnitDirectionSet<sub><br/>Make idle unit face specified direction</sub> | <sub>**aUnitID**: Integer; <br/> **aDir**: Integer;</sub> | <sub>Boolean //success or fail</sub> |
-| 6692 | UnitHungerSet<sub><br/>Set unit hunger level.</sub> | <sub>**aUnitID**: Integer; //_ID of the unit_ <br/> **aHungerSec**: Integer; //_Hunger level in seconds of unit life. Should be within 0 and 2700 (45min)_</sub> | <sub></sub> |
-| - | UnitKill<sub><br/>Kills a unit<br/>Actual death could still take up to a couple of ticks, until all internal interactions are resolved<br/>Units in training can not die until they are trained.</sub> | <sub>**aUnitID**: Integer; <br/> **aSilent**: Boolean; //_Makes unit die without exiting house, death animation and sound_</sub> | <sub></sub> |
-| - | UnitOrderWalk<sub><br/>Order a unit to walk to location. Can not order to animals. Only idle units can be ordered to walk.</sub> | <sub>**aUnitID**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
-| 5128 | UnitOwnerChange<sub><br/>Change owner of the unit. Technically it kills old unit and creates a new one with the same basic props<br/>(type, position, direction, hp, condition, wares). All the advanced props and states do not get copied over.<br/>Warriors need to change owner via GroupOwnerChange (even single ones)</sub> | <sub>**aUnitID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer //UID of new unit</sub> |
+| 8250 | <a id="CampaignChapterSetup">CampaignChapterSetup</a><sub><br/>Sets up campaign chapter info in campaign menu. Campaign-only action!</sub> | <sub>**aChapter**: Integer; //_chapter index to set up_ <br/> **aTitle**: String; //_text to display for the chapter title_ <br/> **aShortTitle**: String; //_text to display for the chapter short title_ <br/> **aBackgroundImg**: String; //_sprite to be used for the chapter background map (*.png)_</sub> | <sub></sub> |
+| 8794 | <a id="CampaignMissionResult">CampaignMissionResult</a><sub><br/>Sets up mission result in campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; //_mission index to set up_ <br/> **aResult**: String; //_text to display for the mission result_</sub> | <sub></sub> |
+| 8250 | <a id="CampaignMissionSetup">CampaignMissionSetup</a><sub><br/>Sets up all of the campaign mission info in campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; //_mission index to set up_ <br/> **aUnlocked**: Boolean; //_Should it be available for selection and play_ <br/> **aWon**: Boolean; //_should it be marked as won_ <br/> **aFlagImgLocked**: String; //_sprite to be used for the locked state flag (*.png)_ <br/> **aFlagImgNormal**: String; //_sprite to be used for the normal state flag (*.png)_ <br/> **aFlagImgWon**: String; //_sprite to be used for the won state flag (*.png)_ <br/> **aFlagPosX**: Integer; //_flag X position on the campaign map_ <br/> **aFlagPosY**: Integer; //_flag Y position on the campaign map_ <br/> **aTitle**: String; //_text to display for the mission title_ <br/> **aBriefing**: String; //_text to display for the mission briefing_</sub> | <sub></sub> |
+| 8261 | <a id="CampaignMissionUnlock">CampaignMissionUnlock</a><sub><br/>Sets up unlocked status of a campaign mission in a campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; //_mission index to unlock_ <br/> **aUnlocked**: Boolean; //_Should it be available for selection and play_</sub> | <sub></sub> |
+| 8722 | <a id="CampaignMissionWon">CampaignMissionWon</a><sub><br/>Sets up won status of a campaign mission in a campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; //_mission index to set up_ <br/> **aWon**: Boolean; //_Won status_</sub> | <sub></sub> |
+| 8261 | <a id="CampaignProgress">CampaignProgress</a><sub><br/>Sets up progress campaign info in campaign selection menu. Campaign-only action!</sub> | <sub>**aProgress**: String; //_campaign progress displayed in the campaign selection menu_</sub> | <sub></sub> |
+| 8250 | <a id="CampaignSetup">CampaignSetup</a><sub><br/>Sets up generic campaign info in campaign selection menu. Campaign-only action!</sub> | <sub>**aProgress**: String; //_campaign progress displayed in the campaign selection menu_ <br/> **aNodeImg**: String; //_sprite to be used for the nodes between mission flags (*.png)_ <br/> **aMissionNext**: Integer; //_which mission will be selected by default to be played next_</sub> | <sub></sub> |
+| 8155 | <a id="CinematicBarsHide">CinematicBarsHide</a><sub><br/>Hides cinematic black bars around the screen</sub> | <sub></sub> | <sub></sub> |
+| 8155 | <a id="CinematicBarsShow">CinematicBarsShow</a><sub><br/>Shows cinematic black bars around the screen</sub> | <sub></sub> | <sub></sub> |
+| 8155 | <a id="CinematicBegin">CinematicBegin</a><sub><br/>Starts cinematic mode. Blocks all viewport controls</sub> | <sub></sub> | <sub></sub> |
+| 8155 | <a id="CinematicEnd">CinematicEnd</a><sub><br/>Ends cinematic mode. Unblocks viewport controls</sub> | <sub></sub> | <sub></sub> |
+| 8155 | <a id="CinematicFadeIn">CinematicFadeIn</a><sub><br/>Gradually reveals the screen from full black</sub> | <sub>**aDurationSec**: Single; //_effect duration in seconds_</sub> | <sub></sub> |
+| 8155 | <a id="CinematicFadeOut">CinematicFadeOut</a><sub><br/>Gradually darkens the screen to full black</sub> | <sub>**aDurationSec**: Single; //_effect duration in seconds_</sub> | <sub></sub> |
+| 8585 | <a id="CinematicSpeechBubble">CinematicSpeechBubble</a><sub><br/>Shows speech bubble at specified location and height over terrain</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeight**: Single; <br/> **aScale**: Byte; <br/> **aText**: String; <br/> **aDurationSec**: Single;</sub> | <sub></sub> |
+| 8155 | <a id="CinematicSubtitle">CinematicSubtitle</a><sub><br/>Shows the subtitles</sub> | <sub>**aText**: String;</sub> | <sub></sub> |
+| 8155 | <a id="CinematicText">CinematicText</a><sub><br/>Shows the text in the middle of the screen</sub> | <sub>**aText**: String; <br/> **aScale**: Byte; //_Text scale 1..16_</sub> | <sub></sub> |
+| 8155 | <a id="CinematicViewMoveTo">CinematicViewMoveTo</a><sub><br/>Moves the camera</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aZoom**: Single; <br/> **aDurationSec**: Single; //_move duration in seconds_</sub> | <sub></sub> |
+| 8155 | <a id="CinematicViewMoveToEx">CinematicViewMoveToEx</a><sub><br/>Moves the camera with more control over the setup</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aPitch**: Single; <br/> **aDist**: Single; <br/> **aFOV**: Single; <br/> **aDurationSec**: Single; //_move duration in seconds_</sub> | <sub></sub> |
+| 8155 | <a id="CinematicViewReset">CinematicViewReset</a><sub><br/>Resets the camera to default orientation and zoom</sub> | <sub></sub> | <sub></sub> |
+| 8155 | <a id="CinematicViewRevert">CinematicViewRevert</a><sub><br/>Restores player viewport setup (position, orientation, zoom)</sub> | <sub></sub> | <sub></sub> |
+| 8155 | <a id="CinematicViewSetTo">CinematicViewSetTo</a><sub><br/>Sets the camera</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aZoom**: Single;</sub> | <sub></sub> |
+| 8166 | <a id="CinematicViewSetToDefault">CinematicViewSetToDefault</a><sub><br/>Sets the camera X and Y. Heading and zoom are set to default</sub> | <sub>**aX**: Single; <br/> **aY**: Single;</sub> | <sub></sub> |
+| 8155 | <a id="CinematicViewSetToEx">CinematicViewSetToEx</a><sub><br/>Sets the camera with more control over the setup</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aHeading**: Single; <br/> **aPitch**: Single; <br/> **aDist**: Single; <br/> **aFOV**: Single;</sub> | <sub></sub> |
+| 8155 | <a id="CinematicViewStore">CinematicViewStore</a><sub><br/>Saves player viewport setup (position, orientation, zoom)</sub> | <sub></sub> | <sub></sub> |
+| 8461 | <a id="FenceAdd">FenceAdd</a><sub><br/>Set a fence on terrain</sub> | <sub>**X,Y**: Word; <br/> **aDir**: Word; <br/> **aFenceType**: Integer; //_Type of the fence_ <br/> **TKMFenceType**: Integer; <br/> **aPlayer**: Integer; //_Owner of the fence_</sub> | <sub>Boolean //Success or fail</sub> |
+| 8461 | <a id="FenceRemove">FenceRemove</a><sub><br/>Remove fence from terrain</sub> | <sub>**X,Y**: Word; <br/> **aDir**: Word;</sub> | <sub></sub> |
+| - | <a id="FogCoverAll">FogCoverAll</a><sub><br/>Cover whole map with fog of war for specified player</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
+| - | <a id="FogCoverCircle">FogCoverCircle</a><sub><br/>Cover circle with fog of war</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word; <br/> **aRadius**: Word;</sub> | <sub></sub> |
+| - | <a id="FogCoverRect">FogCoverRect</a><sub><br/>Cover rectangle with fog of war</sub> | <sub>**aPlayer**: Integer; <br/> **X1**: Word; <br/> **Y1**: Word; <br/> **X2**: Word; <br/> **Y2**: Word;</sub> | <sub></sub> |
+| - | <a id="FogRevealAll">FogRevealAll</a><sub><br/>Reveal whole map</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
+| - | <a id="FogRevealCircle">FogRevealCircle</a><sub><br/>Reveal circle</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word; <br/> **aRadius**: Word;</sub> | <sub></sub> |
+| - | <a id="FogRevealRect">FogRevealRect</a><sub><br/>Reveal rectangle</sub> | <sub>**aPlayer**: Integer; <br/> **X1**: Word; <br/> **Y1**: Word; <br/> **X2**: Word; <br/> **Y2**: Word;</sub> | <sub></sub> |
+| - | <a id="GiveGroup">GiveGroup</a><sub><br/>Gives group to a player</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **X,Y**: Word; <br/> **aDir**: Word; <br/> **aCount**: Word; <br/> **aColumns**: Word;</sub> | <sub>Integer //UID of the group on success</sub> |
+| 4433 | <a id="GiveHouse">GiveHouse</a><sub><br/>Places house on terrain, removing removable objects below it (trees and such)<br/>If there are units below - placement fails</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **X,Y**: Word; <br/> **aFace**: TKMHouseFace;</sub> | <sub>Integer //UID of the house on success</sub> |
+| - | <a id="GiveUnit">GiveUnit</a><sub><br/>Gives unit to a player</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **X,Y**: Word; <br/> **aDir**: Word;</sub> | <sub>Integer //UID of the unit on success</sub> |
+| - | <a id="GiveWares">GiveWares</a><sub><br/>Wares are added to first Camp</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word;</sub> | <sub></sub> |
+| - | <a id="GiveWeapons">GiveWeapons</a><sub><br/>Weapons are added to first Barracks</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word;</sub> | <sub></sub> |
+| - | <a id="GroupOrderAttackHouse">GroupOrderAttackHouse</a><sub></sub> | <sub>**aGroupID**: Integer; <br/> **aHouseID**: Integer;</sub> | <sub></sub> |
+| - | <a id="GroupOrderAttackUnit">GroupOrderAttackUnit</a><sub></sub> | <sub>**aGroupID**: Integer; <br/> **aUnitID**: Integer;</sub> | <sub></sub> |
+| - | <a id="GroupOrderFood">GroupOrderFood</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
+| - | <a id="GroupOrderHalt">GroupOrderHalt</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
+| - | <a id="GroupOrderLink">GroupOrderLink</a><sub><br/>Order the group to link to another group (if possible)</sub> | <sub>**aGroupID**: Integer; <br/> **aDestGroupID**: Integer;</sub> | <sub></sub> |
+| - | <a id="GroupOrderSplit">GroupOrderSplit</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer //UID of the separated group</sub> |
+| - | <a id="GroupOrderStorm">GroupOrderStorm</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
+| - | <a id="GroupOrderWalk">GroupOrderWalk</a><sub></sub> | <sub>**aGroupID**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aDirection**: Word;</sub> | <sub></sub> |
+| 6982 | <a id="GroupOwnerChange">GroupOwnerChange</a><sub><br/>Change owner of the group. Technically it kills old units and creates new ones with the same basic props<br/>(type, position, direction, hp, condition). All the advanced props and states do not get copied over.<br/>If old group was moving/fighting, it is not guaranteed that new group units will be placed on the same positions</sub> | <sub>**aGroupID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer //UID of new group</sub> |
+| - | <a id="GroupSetFormation">GroupSetFormation</a><sub></sub> | <sub>**aGroupID**: Integer; <br/> **aNumColumns**: Byte;</sub> | <sub></sub> |
+| - | <a id="HouseAddDamage">HouseAddDamage</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aDamage**: Word; //_number of hitpoints to take from the house_</sub> | <sub></sub> |
+| - | <a id="HouseAddRepair">HouseAddRepair</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aRepair**: Word; //_number of hitpoints to give to the house_</sub> | <sub></sub> |
+| -7981 | <a id="HouseAddWaresTo">HouseAddWaresTo</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseWareAdd">HouseWareAdd</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word;</sub> | <sub></sub> |
+| -10696 | <a id="HouseAllow">HouseAllow</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerHouseBlock">PlayerHouseBlock</a> instead*</sub><sub><br/>Allow or block the house from being built</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **aAllowed**: Boolean;</sub> | <sub></sub> |
+| - | <a id="HouseDestroy">HouseDestroy</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aSilent**: Boolean; //_Wherever to play the sound and leave rubble on terrain or not_</sub> | <sub></sub> |
+| 5194 | <a id="HouseOwnerChange">HouseOwnerChange</a><sub><br/>Change owner of the House. Technically it kills old House and creates a new one with the same basic props<br/>(type, position, direction, hp, ..). All the advanced props and states do not get copied over.<br/>Wares do not get copied over yet.</sub> | <sub>**aHouseID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer //UID of new House</sub> |
+| - | <a id="HouseRepairEnable">HouseRepairEnable</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aRepairEnabled**: Boolean;</sub> | <sub></sub> |
+| 4820 | <a id="HouseTrainQueueAdd">HouseTrainQueueAdd</a><sub><br/>Train units in the house (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aCount**: Integer;</sub> | <sub>Integer //number of units added to the queue</sub> |
+| 4820 | <a id="HouseTrainQueueRemove">HouseTrainQueueRemove</a><sub><br/>Try to remove units from training queue in the house (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aQueueIndex**: Integer; //_Should be in 0..5 range_</sub> | <sub></sub> |
+| -10696 | <a id="HouseUnlock">HouseUnlock</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerHouseGrant">PlayerHouseGrant</a> instead*</sub><sub><br/>Allow the house to be built irregardless of preceeding houses availability</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub></sub> |
+| 7981 | <a id="HouseWareAdd">HouseWareAdd</a><sub><br/>Adds wares to specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word; //_number of wares to add. Gets trimmed to not exceed house max storage_</sub> | <sub></sub> |
+| 7021 | <a id="HouseWareInBlock">HouseWareInBlock</a><sub><br/>Set spacious house ware delivery policy. Works only for spacious houses (Camp, Fort, Store, Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aBlock**: Integer; //_0 - allow, 1 - block, 2 - evacuate_</sub> | <sub></sub> |
+| 7985 | <a id="HouseWareRemove">HouseWareRemove</a><sub><br/>Removes wares from specified house. Works only on complete houses</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word; //_number of wares to take_</sub> | <sub>Word //number of wares that were actually taken</sub> |
+| 10399 | <a id="HouseWaresInBlock">HouseWaresInBlock</a><sub><br/>Set common house ware delivery policy. Works only for spacious houses (Camp, Fort, Store, Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aBlock**: Integer; //_0 - allow, 1 - block_</sub> | <sub></sub> |
+| - | <a id="HouseWeaponsOrderSet">HouseWeaponsOrderSet</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aAmount**: Integer;</sub> | <sub></sub> |
+| 8900 | <a id="HouseWoodcutterMode">HouseWoodcutterMode</a><sub><br/>Modes are: 1 - cut and plant, 2 - chop only, 3 - plant only</sub> | <sub>**aHouseID**: Integer; <br/> **aChopMode**: Byte;</sub> | <sub></sub> |
+| 8775 | <a id="MissionHighscore">MissionHighscore</a><sub><br/>Sets the mission score<br/>Score can be set only for single-player Campaign and Story missions that have Highscores enabled in MapEd.<br/>Timed missions can have highscores too, but the score there is supplementary.<br/>Good highscore mission are:<br/>- Single-Player, so other players can not affect the outcome<br/>- Story, so player can not choose weaker or stronger AI opponents<br/>- If it is in a campaign - not affected by previous campaign missions<br/>- Have no random or dynamic difficulty or difficulty/bonuses choice via script<br/>Thus, only mapmaker can tell if mission should be scored or not, and it can be done by calling this action</sub> | <sub>**aScore**: Integer; //_number between -1 and 99999. -1 will keep highscore calculation to the default game formula_</sub> | <sub></sub> |
+| - | <a id="PlanAddField">PlanAddField</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
+| 4433 | <a id="PlanAddHouse">PlanAddHouse</a><sub><br/>Places house plan on terrain, removing removable objects below it (trees and such)</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **X,Y**: Word; <br/> **aFace**: TKMHouseFace;</sub> | <sub>Boolean //success or fail</sub> |
+| - | <a id="PlanAddOrchard">PlanAddOrchard</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
+| - | <a id="PlanAddRoad">PlanAddRoad</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
+| - | <a id="PlanRemove">PlanRemove</a><sub><br/>Removes any house or fieldwork plan</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
+| 5374 | <a id="PlayerAIArmyCompositionReset">PlayerAIArmyCompositionReset</a><sub><br/>Reset the rate at which AI should equip new warriors to 0</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
+| 5374 | <a id="PlayerAIArmyCompositionSet">PlayerAIArmyCompositionSet</a><sub><br/>Change the rate at which AI should equip new warriors (units per hour)</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aWarriorsPerHour**: Word;</sub> | <sub></sub> |
+| 5735 | <a id="PlayerAIDispositionAdd">PlayerAIDispositionAdd</a><sub><br/>Add disposition for players AI</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word; <br/> **aDir**: Word; <br/> **aGroupType**: Word; <br/> **TKMGroupType**: Word; <br/> **aGuardRadius**: Word; <br/> **aNumUnits**: Word; <br/> **aUnitsPerRow**: Word;</sub> | <sub>Boolean //Success or fail (due to bad parameters or already existing position)</sub> |
+| 5735 | <a id="PlayerAIDispositionRemove">PlayerAIDispositionRemove</a><sub><br/>Remove disposition</sub> | <sub>**aPlayer**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub> //Success or fail</sub> |
+| 4053 | <a id="PlayerAllianceChange">PlayerAllianceChange</a><sub><br/>Change alliance between players. Always symmetrical</sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer; <br/> **aAllied**: Boolean; //_Ally or enemy_ <br/> **aShareFOW**: Boolean; //_Start sharing FOW between players_</sub> | <sub></sub> |
+| 5422 | <a id="PlayerColorChange">PlayerColorChange</a><sub><br/>Change players color. Note that animals have their own colors on the minimap</sub> | <sub>**aPlayer**: Integer; //_Player index (0..N-1)_ <br/> **aColor**: Integer; //_New color_</sub> | <sub></sub> |
+| - | <a id="PlayerDefeat">PlayerDefeat</a><sub><br/>Set player defeated</sub> | <sub>**aPlayer**: Integer;</sub> | <sub></sub> |
+| - | <a id="PlayerGoalsSetDefault">PlayerGoalsSetDefault</a><sub><br/>Add default multiplayer goals for a player - to kill all enemies.</sub> | <sub>**aPlayer**: Integer; //_Player index (0..N-1)_ <br/> **aBuildings**: Boolean; //_destroy core houses too_</sub> | <sub></sub> |
+| 10696 | <a id="PlayerHouseBlock">PlayerHouseBlock</a><sub><br/>Block the house from being built irregardless of preceeding houses availability<br/>If house is both granted and blocked - it will be blocked</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **aBlock**: Boolean;</sub> | <sub></sub> |
+| 10696 | <a id="PlayerHouseGrant">PlayerHouseGrant</a><sub><br/>Allow the house to be built irregardless of preceeding houses availability<br/>If house is both granted and blocked - it will be blocked</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **aGrant**: Boolean;</sub> | <sub></sub> |
+| 8180 | <a id="PlayerMessage">PlayerMessage</a><sub><br/>Send a message to the player. Message gets stored in message log</sub> | <sub>**aPlayer**: Integer; //_can be -1 to send the message to all the players_ <br/> **aText**: String; //_text with libx codes to substitute_ <br/> **aOpen**: Boolean; //_should the message be opened to the player at once_</sub> | <sub></sub> |
+| -8131 | <a id="PlayerMessageFormatted">PlayerMessageFormatted</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, Formatted messages can be made with Utils.Format()*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
+| -8180 | <a id="PlayerMessageGoto">PlayerMessageGoto</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, Goto messages should be done with Actions.PlayerMessageWithButtons*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aText**: String;</sub> | <sub></sub> |
+| -8131 | <a id="PlayerMessageGotoFormatted">PlayerMessageGotoFormatted</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, Formatted messages can be made with Utils.Format()*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
+| -8180 | <a id="PlayerMessageOpen">PlayerMessageOpen</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, Adjoined with PlayerMessage with a boolean key*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
+| 9746 | <a id="PlayerMessageWithButtons">PlayerMessageWithButtons</a><sub><br/>Send a message to the player with options (buttons) player can choose from<br/>Message result will return asynchronously in the `OnScriptButton` event from each player (possibly even in different ticks).<br/>In multiplayer games, event might be several ticks later due to lag.<br/>When you need to show several modal messages - spread them over different ticks, to avoid piling up.<br/>In rare cases, when player cheats, he can miss the message altogether (e.g. by viewing different Hand during message invocation).</sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; //_Message text_ <br/> **aButtons**: array of String; //_Array of button captions. Can be up to 8_ <br/> **aImages**: array of String; //_Array of button image names (need to be .png)_ <br/> **aTags**: array of Integer; //_Array of button tags (need to be > 0. Will be passed back in click event)_ <br/> **aOpen**: Boolean; //_Opens the message and sets the game on pause after current tick is done_ <br/> **aBlockAfterClick**: Boolean; //_Block buttons after click_ <br/> **aModal**: Boolean; //_Block "close" and "prev/next" buttons, forcing player to choose one of the message options_</sub> | <sub></sub> |
+| 8742 | <a id="PlayerMissionResultString">PlayerMissionResultString</a><sub><br/>Sets a message shown to the player on mission result.<br/>Typically used in campaign and story missions.<br/>Can be set at any moment and is shown for any mission outcome.<br/>Available size is around 18 by 8 characters.</sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
+| 5027 | <a id="PlayerNameSet">PlayerNameSet</a><sub><br/>Rename a player (works only in Singleplayer and for AIs in Multiplayer)<br/>Note: renaming a player updates texts for all affected objectives created from goals</sub> | <sub>**aPlayer**: Integer; <br/> **aName**: String;</sub> | <sub></sub> |
+| 3026 | <a id="PlayerObjectiveAdd">PlayerObjectiveAdd</a><sub><br/>Add objective for the player</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveType**: TKMObjectiveType; //_type of the objective (see TKMObjectiveType for details)_ <br/> **aPriority**: Integer; //_Affects objective position in the list. Smaller numbers come first. Otherwise objectives keep order in which they were added_ <br/> **aStatus**: TKMObjectiveStatus; //_status of the objective (see TKMObjectiveStatus for details)_ <br/> **aCaption**: String; //_text displayed_</sub> | <sub>Integer //UID of the objective</sub> |
+| 3026 | <a id="PlayerObjectiveUpdateStatus">PlayerObjectiveUpdateStatus</a><sub><br/>Update objective status</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveId**: Integer; <br/> **aStatus**: TKMObjectiveStatus;</sub> | <sub></sub> |
+| - | <a id="PlayerObjectiveUpdateText">PlayerObjectiveUpdateText</a><sub><br/>Update objective text displayed in GUI. Color-coding is supported</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveId**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
+| 4947 | <a id="PlayerOverlayAppend">PlayerOverlayAppend</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
+| -8131 | <a id="PlayerOverlayAppendFormatted">PlayerOverlayAppendFormatted</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, Formatted messages can be made with Utils.Format()*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
+| 4947 | <a id="PlayerOverlaySet">PlayerOverlaySet</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String;</sub> | <sub></sub> |
+| -8131 | <a id="PlayerOverlaySetFormatted">PlayerOverlaySetFormatted</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, Formatted messages can be made with Utils.Format()*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aText**: String; <br/> **Params**: array of const;</sub> | <sub></sub> |
+| - | <a id="PlayerShareFog">PlayerShareFog</a><sub><br/>Start or stop sharing FOW between players. This can be done assymetrically<br/>True means that aPlayer1 shares his FOW with aPlayer2 (in other words, P1 allows P2 to see his FOW</sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer; <br/> **aShare**: Boolean;</sub> | <sub></sub> |
+| 8460 | <a id="PlayerTradeAllow">PlayerTradeAllow</a><sub><br/>Allows or forbids trading of certain ware in Marketplace</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aAllowed**: Boolean;</sub> | <sub></sub> |
+| - | <a id="PlayerWareDistribution">PlayerWareDistribution</a><sub><br/>Change ware distribution between players houses</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType; <br/> **aAmount**: Byte; //_Sets how many wares of the type can be a maximum in the house type. Allowed values (0..5)_</sub> | <sub></sub> |
+| - | <a id="PlayerWin">PlayerWin</a><sub><br/>Sets all player IDs in aVictors to victorious. All other players are set to defeated.</sub> | <sub>**aVictors**: array of Integer; <br/> **aTeamVictory**: Boolean; //_If all teammates win too_</sub> | <sub></sub> |
+| - | <a id="PlayWAV">PlayWAV</a><sub><br/>Play WAV file</sub> | <sub>**aPlayer**: Integer; <br/> **aFilename**: String; //_Name of the file from the map folder, without a path. Must have ".wav" extension._ <br/> **aVolume**: Single; //_Playback volume. From 0.0 to 1.0_</sub> | <sub></sub> |
+| - | <a id="PlayWAVAtLocation">PlayWAVAtLocation</a><sub><br/>Play WAV file at specified location on map</sub> | <sub>**aPlayer**: Integer; <br/> **aFilename**: String; //_Name of the file from the map folder, without a path. Must have ".wav" extension._ <br/> **aVolume**: Single; //_Playback volume. From 0.0 to 1.0_ <br/> **X**: Word; //_X tile coordinate_ <br/> **Y**: Word; //_Y tile coordinate_</sub> | <sub></sub> |
+| 10523 | <a id="RoadAdd">RoadAdd</a><sub><br/>Set a road on terrain</sub> | <sub>**X,Y**: Word; <br/> **aPlayer**: Integer; //_Owner of the road_</sub> | <sub>Boolean //Success or fail</sub> |
+| 10523 | <a id="RoadRemove">RoadRemove</a><sub><br/>Remove road from terrain</sub> | <sub>**X,Y**: Word;</sub> | <sub></sub> |
+| 4586 | <a id="StockpileAdd">StockpileAdd</a><sub><br/>Add stockpile on the map</sub> | <sub>**aWareType**: TKMWareType; //_Ware type_ <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aCount**: Word; //_Ware count. Must be in range 1 .. 10_</sub> | <sub>Integer //UID of the stockpile in case of success</sub> |
+| 4586 | <a id="StockpileSetCount">StockpileSetCount</a><sub><br/>Change number of wares in a stockpile. Stockpile must be not empty</sub> | <sub>**aStockpileID**: Integer; //_UID of the stockpile_ <br/> **aCount**: Word; //_New ware count. If zero, stockpile will be removed_</sub> | <sub></sub> |
+| 8166 | <a id="TerrainHighlightDelete">TerrainHighlightDelete</a><sub><br/>Delete highlight previously placed on terrain</sub> | <sub>**aUID**: Integer;</sub> | <sub></sub> |
+| 8166 | <a id="TerrainHighlightFill">TerrainHighlightFill</a><sub><br/>Add highlighted area to terrain</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aWidth**: Single; <br/> **aHeight**: Single; <br/> **aColor**: Cardinal;</sub> | <sub>Integer</sub> |
+| 8166 | <a id="TerrainHighlightLine">TerrainHighlightLine</a><sub><br/>Add outline highlight to terrain</sub> | <sub>**aX**: Single; <br/> **aY**: Single; <br/> **aWidth**: Single; <br/> **aHeight**: Single; <br/> **aThickness**: Single; <br/> **aColor**: Cardinal;</sub> | <sub>Integer //Id of the highlight (to be used in delete). -1 in case of fail</sub> |
+| 6620 | <a id="TerrainParticleEmitterAdd">TerrainParticleEmitterAdd</a><sub><br/>Adds particle emitter on to terrain. Replaces any existing emitter on the spot</sub> | <sub>**aX**: Word; <br/> **aY**: Word; <br/> **aType**: Integer;</sub> | <sub></sub> |
+| 6620 | <a id="TerrainParticleEmitterDelete">TerrainParticleEmitterDelete</a><sub><br/>Remove particle emitter from terrain</sub> | <sub>**aX**: Word; <br/> **aY**: Word;</sub> | <sub></sub> |
+| 5094 | <a id="TerrainTriggerAdd">TerrainTriggerAdd</a><sub><br/>Adds rectangle trigger area on to terrain</sub> | <sub>**aLeft**: Word; <br/> **aTop**: Word; <br/> **aRight**: Word; <br/> **aBottom**: Word;</sub> | <sub>Integer //Id of trigger in case of success. Otherwise -1.</sub> |
+| 5094 | <a id="TerrainTriggerDelete">TerrainTriggerDelete</a><sub><br/>Remove trigger area from terrain</sub> | <sub>**aId**: Integer;</sub> | <sub></sub> |
+| 9785 | <a id="UnitAnimalSteer">UnitAnimalSteer</a><sub><br/>Tells animals to walk around new anchor</sub> | <sub>**aUnitID**: Integer; //_ID of the unit (needs to be an animal)_ <br/> **aAnchorX**: Word; //_New anchor around which the animal will try to walk_ <br/> **aAnchorY**: Word; //_New anchor around which the animal will try to walk_ <br/> **aGuardRadius**: Word; //_New guard radius (for agressive animals). How far from the anchor animal can actively attack foes. 0..255_ <br/> **aWanderRadius**: Word; //_New wandering radius. How far from the anchor animal can wander. 0..255_</sub> | <sub></sub> |
+| 7968 | <a id="UnitCarryGive">UnitCarryGive</a><sub><br/>Give wares to the unit (only Wagons supported yet)</sub> | <sub>**aUnitID**: Integer; <br/> **aCarry**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub>Integer //number of wares Given (could be 0 or smaller than requested due to max Wagon capacity and ware type mismatch)</sub> |
+| 2732 | <a id="UnitCarryTake">UnitCarryTake</a><sub><br/>Take wares from the unit (only Wagons supported yet)</sub> | <sub>**aUnitID**: Integer; <br/> **aCarry**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub>Integer //number of wares taken (0 if unsuccessfull)</sub> |
+| - | <a id="UnitDirectionSet">UnitDirectionSet</a><sub><br/>Make idle unit face specified direction</sub> | <sub>**aUnitID**: Integer; <br/> **aDir**: Integer;</sub> | <sub>Boolean //success or fail</sub> |
+| 6692 | <a id="UnitHungerSet">UnitHungerSet</a><sub><br/>Set unit hunger level.</sub> | <sub>**aUnitID**: Integer; //_ID of the unit_ <br/> **aHungerSec**: Integer; //_Hunger level in seconds of unit life. Should be within 0 and 2700 (45min)_</sub> | <sub></sub> |
+| - | <a id="UnitKill">UnitKill</a><sub><br/>Kills a unit<br/>Actual death could still take up to a couple of ticks, until all internal interactions are resolved<br/>Units in training can not die until they are trained.</sub> | <sub>**aUnitID**: Integer; <br/> **aSilent**: Boolean; //_Makes unit die without exiting house, death animation and sound_</sub> | <sub></sub> |
+| - | <a id="UnitOrderWalk">UnitOrderWalk</a><sub><br/>Order a unit to walk to location. Can not order to animals. Only idle units can be ordered to walk.</sub> | <sub>**aUnitID**: Integer; <br/> **X**: Word; <br/> **Y**: Word;</sub> | <sub>Boolean //success or fail</sub> |
+| 5128 | <a id="UnitOwnerChange">UnitOwnerChange</a><sub><br/>Change owner of the unit. Technically it kills old unit and creates a new one with the same basic props<br/>(type, position, direction, hp, condition, wares). All the advanced props and states do not get copied over.<br/>Warriors need to change owner via GroupOwnerChange (even single ones)</sub> | <sub>**aUnitID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer //UID of new unit</sub> |
+| Alpha 11.2 | <a id="UnitUnlock">UnitUnlock</a><sub><br/>Allow the unit to be trained (if was blocked in a static script)</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub></sub> |
+| r10636 | <a id="UnitWagonOrderEnterHouse">UnitWagonOrderEnterHouse</a><sub></sub> | <sub>**aWagonID**: Integer; <br/> **aHouseID**: Integer;</sub> | <sub></sub> |
+| r10636 | <a id="UnitWagonOrderHalt">UnitWagonOrderHalt</a><sub></sub> | <sub>**aWagonID**: Integer;</sub> | <sub></sub> |
+| r10636 | <a id="UnitWagonOrderWalk">UnitWagonOrderWalk</a><sub></sub> | <sub>**aWagonID**: Integer; <br/> **aX**: Word; <br/> **aY**: Word; <br/> **aDirection**: Word;</sub> | <sub></sub> |

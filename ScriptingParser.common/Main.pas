@@ -677,7 +677,7 @@ procedure TForm1.GenerateWiki;
   var
     tgtPath: string;
   begin
-    tgtPath := ExtractFilePath(Application.ExeName) + '..\' + EXT[fParsingGame] + '.' + aType + '.orig.wiki';
+    tgtPath := ExtractFilePath(Application.ExeName) + '..\' + EXT[fParsingGame] + '.' + aType + '.new.md';
     Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
   end;
 
