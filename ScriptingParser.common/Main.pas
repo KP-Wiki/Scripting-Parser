@@ -193,6 +193,13 @@ begin
 end;
 
 
+{ TKMTypeInfo }
+function TKMTypeInfo.GetName(aEvent: Boolean): string;
+begin
+  Result := IfThen((not EventOnlyAlias or aEvent) and (Alias <> ''), Alias, Name);
+end;
+
+
 { TCommandInfo }
 constructor TCommandInfo.Create;
 begin
@@ -768,11 +775,5 @@ begin
 end;
 
 
-{ TKMTypeInfo }
-
-function TKMTypeInfo.GetName(aEvent: Boolean): string;
-begin
-  Result := IfThen((not EventOnlyAlias or aEvent) and (Alias <> ''), Alias, Name);
-end;
-
 end.
+
