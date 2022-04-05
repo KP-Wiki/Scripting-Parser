@@ -543,67 +543,67 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
-  aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
+procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
+var
+  slSource, slBody, slLinks: TStringList;
+  Path: String;
+begin
+  if not FileExists(aInputFile) then Exit;
 
-  procedure ParseSource(aArea: TKMParsingArea; const aTitle: String; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
-  var
-    slSource, slBody, slLinks: TStringList;
-    Path: String;
-  begin
-    if not FileExists(aInputFile) then Exit;
+  slBody := TStringList.Create;
+  slLinks := TStringList.Create;
 
-    slBody := TStringList.Create;
-    slLinks := TStringList.Create;
+  aResultList.Clear;
 
-    aResultList.Clear;
-
-    slSource := TStringList.Create;
-    try
-      slSource.LoadFromFile(aInputFile);
-      ParseText(aArea, slSource, slBody, slLinks);
-    finally
-      slSource.Free;
-    end;
-
-    slBody.CustomSort(DoSort);
-    slLinks.Sort();
-
-    if FileExists(aHeaderFile) then
-      aResultList.LoadFromFile(aHeaderFile);
-
-    aResultList.Add('');
-    aResultList.Add('***');
-    aResultList.Add('');
-
-    aResultList.AddStrings(slLinks);
-
-    aResultList.Add('<br />');
-    aResultList.Add('');
-
-    if aArea <> paEvents then
-    begin
-      aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
-      aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
-    end else begin
-      aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types |');
-      aResultList.Add('| ------- | ------------------------------------ | -------------- |');
-    end;
-
-    aResultList.AddStrings(slBody);
-
-    if aOutputFile <> '' then
-    begin
-      Path := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
-      if not DirectoryExists(ExtractFileDir(Path)) then
-        ForceDirectories(ExtractFileDir(Path));
-      aResultList.SaveToFile(aOutputFile);
-    end;
-
-    FreeAndNil(slBody);
-    FreeAndNil(slLinks);
+  slSource := TStringList.Create;
+  try
+    slSource.LoadFromFile(aInputFile);
+    ParseText(aArea, slSource, slBody, slLinks);
+  finally
+    slSource.Free;
   end;
 
+  slBody.CustomSort(DoSort);
+  slLinks.Sort();
+
+  if FileExists(aHeaderFile) then
+    aResultList.LoadFromFile(aHeaderFile);
+
+  aResultList.Add('');
+  aResultList.Add('***');
+  aResultList.Add('');
+
+  aResultList.AddStrings(slLinks);
+
+  aResultList.Add('<br />');
+  aResultList.Add('');
+
+  if aArea <> paEvents then
+  begin
+    aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
+    aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
+  end else begin
+    aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types |');
+    aResultList.Add('| ------- | ------------------------------------ | -------------- |');
+  end;
+
+  aResultList.AddStrings(slBody);
+
+  if aOutputFile <> '' then
+  begin
+    Path := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+    if not DirectoryExists(ExtractFileDir(Path)) then
+      ForceDirectories(ExtractFileDir(Path));
+    aResultList.SaveToFile(aOutputFile);
+  end;
+
+  FreeAndNil(slBody);
+  FreeAndNil(slLinks);
+end;
+
+
+procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
+  aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
 begin
   fParsingGame := aParsingGame;
 
