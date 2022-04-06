@@ -311,19 +311,6 @@ begin
 end;
 
 
-function DoSort(List: TStringList; Index1, Index2: Integer): Integer;
-var
-  A, B: string;
-begin
-  A := List[Index1];
-  B := List[Index2];
-  // Sort in assumption that method name is in the second || clause
-  A := Copy(A, PosEx('| ', A, 2) + 2, 40);
-  B := Copy(B, PosEx('| ', B, 2) + 2, 40);
-  Result := CompareText(A, B);
-end;
-
-
 procedure TKMScriptingParser.CopyForReference(aFilename: string; aArea: TKMParsingArea);
 var
   tgtPath: string;
@@ -353,10 +340,10 @@ begin
     slSource.Free;
   end;
 
-  ExportBodyAndLinks(aArea, slBody, slLinks);
+  // Sort for neat order
+  fCommands[aArea].SortByName;
 
-  slBody.CustomSort(DoSort);
-  slLinks.Sort();
+  ExportBodyAndLinks(aArea, slBody, slLinks);
 
   if FileExists(aHeaderFile) then
     aResultList.LoadFromFile(aHeaderFile);

@@ -1,7 +1,7 @@
 unit KM_ScriptingCommands;
 interface
 uses
-  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections,
+  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, Generics.Defaults,
   StrUtils,
   KM_ScriptingParameters;
 
@@ -42,6 +42,7 @@ type
     procedure Clear;
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMCommandInfo read GetItem; default;
+    procedure SortByName;
     function GetText: string;
   end;
 
@@ -113,7 +114,13 @@ constructor TKMScriptCommands.Create;
 begin
   inherited;
 
-  fList := TObjectList<TKMCommandInfo>.Create;
+  fList := TObjectList<TKMCommandInfo>.Create(
+    TComparer<TKMCommandInfo>.Construct(
+      function(const A, B: TKMCommandInfo): Integer
+      begin
+        // Case-sensitive compare, since we use CamelCase and it looks nicer that way
+        Result := CompareText(A.Name, B.Name);
+      end));
 end;
 
 
@@ -157,6 +164,12 @@ begin
 
   {for I := 0 to Count - 1 do
     Result := Result + Items[I].GetText + IfThen(I <> Count - 1, ' <br/> '); }
+end;
+
+
+procedure TKMScriptCommands.SortByName;
+begin
+  fList.Sort;
 end;
 
 
