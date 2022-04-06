@@ -19,12 +19,15 @@ type
     Status: TKMCommandStatus;
     Replacement: string;
     Description: string;
+    NeedReturn: Boolean; // We dont need returns for Events
     Return: string; // Result type
     ReturnDesc: string; // Result comment
     constructor Create;
     destructor Destroy; override;
     property Details: TStringList read fDetails;
     property Parameters: TKMScriptParameters read fParameters;
+    function GetBody: string;
+    function GetLink: string;
   end;
 
 
@@ -43,6 +46,7 @@ type
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMCommandInfo read GetItem; default;
     procedure SortByName;
+    function GetBody: string;
     function GetLinks: string;
   end;
 
@@ -88,7 +92,6 @@ begin
 end;
 
 
-
 { TKMCommandInfo }
 constructor TKMCommandInfo.Create;
 begin
@@ -107,6 +110,55 @@ begin
   inherited;
 end;
 
+
+function TKMCommandInfo.GetBody: string;
+const
+  UNICODE_RED_CROSS = '&#x274C;';
+var
+  deprStr: string;
+begin
+  case Status of
+    csDeprecated: begin
+                    deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
+                               '<sub>*Method could be removed in the future game versions';
+
+                    if Replacement <> '' then
+                      if Replacement = StringReplace(Replacement, ' ', '', [rfReplaceAll]) then
+                        deprStr := deprStr + ', use <a href="#' + Replacement + '">' + Replacement + '</a> instead'
+                      else
+                        deprStr := deprStr + ', ' + Replacement;
+
+                    deprStr := deprStr + '*</sub>';
+                  end;
+    csRemoved:    begin
+                    deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
+                               '<sub>*Method was removed';
+
+                    if Replacement <> '' then
+                      if Replacement = StringReplace(Replacement, ' ', '', [rfReplaceAll]) then
+                        deprStr := deprStr + ', use <a href="#' + Replacement + '">' + Replacement + '</a> instead'
+                      else
+                        deprStr := deprStr + ', ' + Replacement;
+
+                    deprStr := deprStr + '*</sub>';
+                  end;
+  else
+    deprStr := '';
+  end;
+
+  Result := '| ' + Version + ' | <a id="' + Name + '">' + Name + '</a>' +
+              deprStr +
+              '<sub>' + Description + '</sub>' +
+              ' | <sub>' + Parameters.GetText + '</sub>' +
+              IfThen(NeedReturn, ' | <sub>' + Return + IfThen(ReturnDesc <> '', ' //' + ReturnDesc) + '</sub>') +
+              ' |';
+end;
+
+
+function TKMCommandInfo.GetLink: string;
+begin
+  Result := '* <a href="#' + Name + '">' + Name + '</a>';
+end;
 
 
 { TKMScriptCommands }
@@ -156,6 +208,17 @@ begin
 end;
 
 
+function TKMScriptCommands.GetBody: string;
+var
+  I: Integer;
+begin
+  Result := '';
+
+  for I := 0 to Count - 1 do
+    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetBody;
+end;
+
+
 function TKMScriptCommands.GetLinks: string;
 var
   I: Integer;
@@ -163,7 +226,7 @@ begin
   Result := '';
 
   for I := 0 to Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + '* <a href="#' + Items[I].Name + '">' + Items[I].Name + '</a>';
+    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetLink;
 end;
 
 

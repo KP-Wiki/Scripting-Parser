@@ -23,7 +23,6 @@ type
     fParsingGame: TKMParsingGame;
     fCommands: array [TKMParsingArea] of TKMScriptCommands;
     procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aInputFile: string);
-    procedure ExportBodyAndLinks(aArea: TKMParsingArea; aList: TStringList);
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
@@ -116,7 +115,7 @@ end;
 procedure TKMScriptingParser.ExtractBodyAndLinks(aArea: TKMParsingArea; aInputFile: string);
 var
   slSource: TStringList;
-  i, iPlus: Integer;
+  I, K, iPlus: Integer;
   restStr: string;
   srcLine: string;
   ci: TKMCommandInfo;
@@ -249,70 +248,21 @@ begin
           ci.Return := TryTypeToAlias(restStr);
         end;
 
+        ci.NeedReturn := aArea <> paEvents;
+
+        // Now we can assemble Description, after we have detected and removed parameters descriptions from it
+        for K := 0 to ci.Details.Count - 1 do
+          // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
+          if (K > 0) and (RightStr(ci.Details[K-1], 6) = '</pre>') then
+            ci.Description := ci.Description + ci.Details[K]
+          else
+            ci.Description := ci.Description + '<br/>' + ci.Details[K];
+
         fCommands[aArea].Append(ci);
       end;
     end;
   finally
     slSource.Free;
-  end;
-end;
-
-
-procedure TKMScriptingParser.ExportBodyAndLinks(aArea: TKMParsingArea; aList: TStringList);
-const
-  UNICODE_RED_CROSS = '&#x274C;';
-var
-  I, J: Integer;
-  ci: TKMCommandInfo;
-  deprStr: string;
-begin
-  for I := 0 to fCommands[aArea].Count - 1 do
-  begin
-    ci := fCommands[aArea][I];
-
-    // Now we can assemble Description, after we have detected and removed parameters descriptions from it
-    for j := 0 to ci.Details.Count - 1 do
-      // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-      if (j > 0) and (RightStr(ci.Details[j-1], 6) = '</pre>') then
-        ci.Description := ci.Description + ci.Details[j]
-      else
-        ci.Description := ci.Description + '<br/>' + ci.Details[j];
-
-    deprStr := '';
-    if ci.Status = csDeprecated then
-    begin
-      deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
-                 '<sub>*Method could be removed in the future game versions';
-
-      if ci.Replacement <> '' then
-        if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
-          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
-        else
-          deprStr := deprStr + ', ' + ci.Replacement;
-
-      deprStr := deprStr + '*</sub>';
-    end;
-    if ci.Status = csRemoved then
-    begin
-      deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
-                 '<sub>*Method was removed';
-
-      if ci.Replacement <> '' then
-        if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
-          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
-        else
-          deprStr := deprStr + ', ' + ci.Replacement;
-
-      deprStr := deprStr + '*</sub>';
-    end;
-
-    // Now we have all the parts and can combine them however we like
-    aList.Add('| ' + ci.Version + ' | <a id="' + ci.Name + '">' + ci.Name + '</a>' +
-              deprStr +
-              '<sub>' + ci.Description + '</sub>' +
-              ' | <sub>' + ci.Parameters.GetText + '</sub>' +
-              IfThen(aArea <> paEvents, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
-              ' |');
   end;
 end;
 
@@ -328,7 +278,6 @@ end;
 
 procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
 var
-  slBody: TStringList;
   Path: string;
 begin
   if not FileExists(aInputFile) then Exit;
@@ -337,10 +286,6 @@ begin
 
   // Sort for neat order
   fCommands[aArea].SortByName;
-
-  slBody := TStringList.Create;
-
-  ExportBodyAndLinks(aArea, slBody);
 
   aResultList.Clear;
 
@@ -365,7 +310,7 @@ begin
     aResultList.Add('| ------- | ------------------------------------ | -------------- |');
   end;
 
-  aResultList.AddStrings(slBody);
+  aResultList.Append(fCommands[aArea].GetBody);
 
   if aOutputFile <> '' then
   begin
@@ -374,8 +319,6 @@ begin
       ForceDirectories(ExtractFileDir(Path));
     aResultList.SaveToFile(aOutputFile);
   end;
-
-  FreeAndNil(slBody);
 end;
 
 
