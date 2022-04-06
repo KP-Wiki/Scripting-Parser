@@ -48,6 +48,7 @@ type
     procedure SortByName;
     function GetBody(aNeedReturn: Boolean): string;
     function GetLinks: string;
+    function ExportWiki(aTitle, aHeaderFile: string; aNeedReturn: Boolean): string;
   end;
 
 
@@ -351,6 +352,41 @@ end;
 procedure TKMScriptCommands.SortByName;
 begin
   fList.Sort;
+end;
+
+
+function TKMScriptCommands.ExportWiki(aTitle, aHeaderFile: string; aNeedReturn: Boolean): string;
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+
+  if FileExists(aHeaderFile) then
+    sl.LoadFromFile(aHeaderFile);
+
+  sl.Add('');
+  sl.Add('***');
+  sl.Add('');
+
+  sl.Append(GetLinks);
+
+  sl.Add('<br />');
+  sl.Add('');
+
+  if aNeedReturn then
+  begin
+    sl.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
+    sl.Add('| ------- | ------------------------------------ | -------------- | ------- |');
+  end else begin
+    sl.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types |');
+    sl.Add('| ------- | ------------------------------------ | -------------- |');
+  end;
+
+  sl.Append(GetBody(aNeedReturn));
+
+  Result := sl.Text;
+
+  sl.Free;
 end;
 
 

@@ -94,30 +94,7 @@ begin
   // Sort for neat order
   fCommands[aArea].SortByName;
 
-  aResultList.Clear;
-
-  if FileExists(aHeaderFile) then
-    aResultList.LoadFromFile(aHeaderFile);
-
-  aResultList.Add('');
-  aResultList.Add('***');
-  aResultList.Add('');
-
-  aResultList.Append(fCommands[aArea].GetLinks);
-
-  aResultList.Add('<br />');
-  aResultList.Add('');
-
-  if aArea <> paEvents then
-  begin
-    aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
-    aResultList.Add('| ------- | ------------------------------------ | -------------- | ------- |');
-  end else begin
-    aResultList.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types |');
-    aResultList.Add('| ------- | ------------------------------------ | -------------- |');
-  end;
-
-  aResultList.Append(fCommands[aArea].GetBody(aArea <> paEvents));
+  aResultList.Text := fCommands[aArea].ExportWiki(aTitle, aHeaderFile, aArea <> paEvents);
 
   if aOutputFile <> '' then
   begin
