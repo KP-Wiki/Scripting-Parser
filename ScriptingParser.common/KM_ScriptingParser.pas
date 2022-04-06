@@ -125,8 +125,6 @@ begin
 
   for i := 0 to aSource.Count - 1 do
   begin
-    // Create new command to fill
-    ci := TKMCommandInfo.Create;
     iPlus := 0;
     srcLine := aSource[i+iPlus];
 
@@ -141,13 +139,14 @@ begin
     // Before anything it should start with "//* Version:"
     if StartsStr('//* Version:', srcLine) then
     begin
+      // Create new command to fill
+      ci := TKMCommandInfo.Create;
+
       restStr := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
       ci.Version := IfThen(restStr = '', '-', restStr);
       Inc(iPlus);
       srcLine := aSource[i+iPlus];
 
-      ci.Status := csOk;
-      ci.Replacement := '';
       // Descriptions are only added by lines starting with "//*"
       // Repeat until no description tags are found
       while StartsStr('//*', srcLine) do
