@@ -22,7 +22,8 @@ type
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
     fCommands: array [TKMParsingArea] of TKMScriptCommands;
-    procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
+    procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aSource: TStringList);
+    procedure ExportBodyAndLinks(aArea: TKMParsingArea; aList, aLinks: TStringList);
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
@@ -112,12 +113,10 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptingParser.ExtractBodyAndLinks(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
-const
-  UNICODE_RED_CROSS = '&#x274C;';
+procedure TKMScriptingParser.ExtractBodyAndLinks(aArea: TKMParsingArea; aSource: TStringList);
 var
-  i, j, iPlus: Integer;
-  restStr, deprStr: string;
+  i, iPlus: Integer;
+  restStr: string;
   srcLine: string;
   ci: TKMCommandInfo;
   strStatus: string;
@@ -249,7 +248,17 @@ begin
       fCommands[aArea].Append(ci);
     end;
   end;
+end;
 
+
+procedure TKMScriptingParser.ExportBodyAndLinks(aArea: TKMParsingArea; aList, aLinks: TStringList);
+const
+  UNICODE_RED_CROSS = '&#x274C;';
+var
+  I, J: Integer;
+  ci: TKMCommandInfo;
+  deprStr: string;
+begin
   for I := 0 to fCommands[aArea].Count - 1 do
   begin
     ci := fCommands[aArea][I];
@@ -340,10 +349,12 @@ begin
   slSource := TStringList.Create;
   try
     slSource.LoadFromFile(aInputFile);
-    ExtractBodyAndLinks(aArea, slSource, slBody, slLinks);
+    ExtractBodyAndLinks(aArea, slSource);
   finally
     slSource.Free;
   end;
+
+  ExportBodyAndLinks(aArea, slBody, slLinks);
 
   slBody.CustomSort(DoSort);
   slLinks.Sort();
