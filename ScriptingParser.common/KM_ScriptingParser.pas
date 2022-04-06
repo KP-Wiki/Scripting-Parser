@@ -3,6 +3,7 @@ interface
 uses
   Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections,
   StrUtils,
+  KM_ScriptingCommands,
   KM_ScriptingParameters;
 
 type
@@ -20,6 +21,7 @@ type
   private
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
+    fCommands: array [TKMParsingArea] of TKMScriptCommands;
     procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aSource, aList, aLinks: TStringList);
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
@@ -32,27 +34,6 @@ type
     procedure GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
       aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
     procedure GenerateXML;
-  end;
-
-  TKMCommandStatus = (csOk, csDeprecated, csRemoved);
-
-  // Complete command info
-  TKMCommandInfo = class
-  private
-    fDetails: TStringList; // Command description and parameters comments
-    fParameters: TKMScriptParameters; // Parameters parsed from declaration
-  public
-    Name: string;
-    Version: string; // Version in which command was added/changed
-    Status: TKMCommandStatus;
-    Replacement: string;
-    Description: string;
-    Return: string; // Result type
-    ReturnDesc: string; // Result comment
-    constructor Create;
-    destructor Destroy; override;
-    property Details: TStringList read fDetails;
-    property Parameters: TKMScriptParameters read fParameters;
   end;
 
 
@@ -97,28 +78,10 @@ begin
 end;
 
 
-
-{ TKMCommandInfo }
-constructor TKMCommandInfo.Create;
-begin
-  inherited;
-
-  fDetails := TStringList.Create;
-  fParameters := TKMScriptParameters.Create;
-end;
-
-
-destructor TKMCommandInfo.Destroy;
-begin
-  FreeAndNil(fDetails);
-  FreeAndNil(fParameters);
-
-  inherited;
-end;
-
-
 { TKMScriptingParser }
 constructor TKMScriptingParser.Create;
+var
+  I: TKMParsingArea;
 begin
   inherited;
 
@@ -126,15 +89,23 @@ begin
   fListEvents := TStringList.Create;
   fListStates := TStringList.Create;
   fListUtils := TStringList.Create;
+
+  for I := Low(TKMParsingArea) to High(TKMParsingArea) do
+    fCommands[I] := TKMScriptCommands.Create;
 end;
 
 
 destructor TKMScriptingParser.Destroy;
+var
+  I: TKMParsingArea;
 begin
   FreeAndNil(fListActions);
   FreeAndNil(fListEvents);
   FreeAndNil(fListStates);
   FreeAndNil(fListUtils);
+
+  for I := Low(TKMParsingArea) to High(TKMParsingArea) do
+    FreeAndNil(fCommands[I]);
 
   inherited;
 end;
@@ -151,6 +122,8 @@ var
   ci: TKMCommandInfo;
   strStatus: string;
 begin
+  fCommands[aArea].Clear;
+
   for i := 0 to aSource.Count - 1 do
   begin
     // Create new command to fill
@@ -273,54 +246,59 @@ begin
         ci.Return := TryTypeToAlias(restStr);
       end;
 
-      // Now we can assemble Description, after we have detected and removed parameters descriptions from it
-      for j := 0 to ci.Details.Count - 1 do
-        // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-        if (j > 0) and (RightStr(ci.Details[j-1], 6) = '</pre>') then
-          ci.Description := ci.Description + ci.Details[j]
+      fCommands[aArea].Append(ci);
+    end;
+  end;
+
+  for I := 0 to fCommands[aArea].Count - 1 do
+  begin
+    ci := fCommands[aArea][I];
+
+    // Now we can assemble Description, after we have detected and removed parameters descriptions from it
+    for j := 0 to ci.Details.Count - 1 do
+      // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
+      if (j > 0) and (RightStr(ci.Details[j-1], 6) = '</pre>') then
+        ci.Description := ci.Description + ci.Details[j]
+      else
+        ci.Description := ci.Description + '<br/>' + ci.Details[j];
+
+    deprStr := '';
+    if ci.Status = csDeprecated then
+    begin
+      deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
+                 '<sub>*Method could be removed in the future game versions';
+
+      if ci.Replacement <> '' then
+        if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
+          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
         else
-          ci.Description := ci.Description + '<br/>' + ci.Details[j];
+          deprStr := deprStr + ', ' + ci.Replacement;
 
-      deprStr := '';
-      if ci.Status = csDeprecated then
-      begin
-        deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
-                   '<sub>*Method could be removed in the future game versions';
+      deprStr := deprStr + '*</sub>';
+    end;
+    if ci.Status = csRemoved then
+    begin
+      deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
+                 '<sub>*Method was removed';
 
-        if ci.Replacement <> '' then
-          if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
-            deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
-          else
-            deprStr := deprStr + ', ' + ci.Replacement;
+      if ci.Replacement <> '' then
+        if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
+          deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
+        else
+          deprStr := deprStr + ', ' + ci.Replacement;
 
-        deprStr := deprStr + '*</sub>';
-      end;
-      if ci.Status = csRemoved then
-      begin
-        deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
-                   '<sub>*Method was removed';
-
-        if ci.Replacement <> '' then
-          if ci.Replacement = StringReplace(ci.Replacement, ' ', '', [rfReplaceAll]) then
-            deprStr := deprStr + ', use <a href="#' + ci.Replacement + '">' + ci.Replacement + '</a> instead'
-          else
-            deprStr := deprStr + ', ' + ci.Replacement;
-
-        deprStr := deprStr + '*</sub>';
-      end;
-
-      // Now we have all the parts and can combine them however we like
-      aList.Add('| ' + ci.Version + ' | <a id="' + ci.Name + '">' + ci.Name + '</a>' +
-                deprStr +
-                '<sub>' + ci.Description + '</sub>' +
-                ' | <sub>' + ci.Parameters.GetText + '</sub>' +
-                IfThen(aArea <> paEvents, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
-                ' |');
-
-      aLinks.Add('* <a href="#' + ci.Name + '">' + ci.Name + '</a>');
+      deprStr := deprStr + '*</sub>';
     end;
 
-    FreeAndNil(ci);
+    // Now we have all the parts and can combine them however we like
+    aList.Add('| ' + ci.Version + ' | <a id="' + ci.Name + '">' + ci.Name + '</a>' +
+              deprStr +
+              '<sub>' + ci.Description + '</sub>' +
+              ' | <sub>' + ci.Parameters.GetText + '</sub>' +
+              IfThen(aArea <> paEvents, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
+              ' |');
+
+    aLinks.Add('* <a href="#' + ci.Name + '">' + ci.Name + '</a>');
   end;
 end;
 
