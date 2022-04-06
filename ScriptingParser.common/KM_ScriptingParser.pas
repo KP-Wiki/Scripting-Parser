@@ -23,7 +23,7 @@ type
     fParsingGame: TKMParsingGame;
     fCommands: array [TKMParsingArea] of TKMScriptCommands;
     procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aInputFile: string);
-    procedure ExportBodyAndLinks(aArea: TKMParsingArea; aList, aLinks: TStringList);
+    procedure ExportBodyAndLinks(aArea: TKMParsingArea; aList: TStringList);
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
@@ -258,7 +258,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ExportBodyAndLinks(aArea: TKMParsingArea; aList, aLinks: TStringList);
+procedure TKMScriptingParser.ExportBodyAndLinks(aArea: TKMParsingArea; aList: TStringList);
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
@@ -313,8 +313,6 @@ begin
               ' | <sub>' + ci.Parameters.GetText + '</sub>' +
               IfThen(aArea <> paEvents, ' | <sub>' + ci.Return + IfThen(ci.ReturnDesc <> '', ' //' + ci.ReturnDesc) + '</sub>') +
               ' |');
-
-    aLinks.Add('* <a href="#' + ci.Name + '">' + ci.Name + '</a>');
   end;
 end;
 
@@ -330,7 +328,7 @@ end;
 
 procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
 var
-  slBody, slLinks: TStringList;
+  slBody: TStringList;
   Path: string;
 begin
   if not FileExists(aInputFile) then Exit;
@@ -341,9 +339,8 @@ begin
   fCommands[aArea].SortByName;
 
   slBody := TStringList.Create;
-  slLinks := TStringList.Create;
 
-  ExportBodyAndLinks(aArea, slBody, slLinks);
+  ExportBodyAndLinks(aArea, slBody);
 
   aResultList.Clear;
 
@@ -354,7 +351,7 @@ begin
   aResultList.Add('***');
   aResultList.Add('');
 
-  aResultList.AddStrings(slLinks);
+  aResultList.Append(fCommands[aArea].GetLinks);
 
   aResultList.Add('<br />');
   aResultList.Add('');
@@ -379,7 +376,6 @@ begin
   end;
 
   FreeAndNil(slBody);
-  FreeAndNil(slLinks);
 end;
 
 

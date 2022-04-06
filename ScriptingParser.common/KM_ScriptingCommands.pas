@@ -43,7 +43,7 @@ type
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMCommandInfo read GetItem; default;
     procedure SortByName;
-    function GetText: string;
+    function GetLinks: string;
   end;
 
 
@@ -156,14 +156,14 @@ begin
 end;
 
 
-function TKMScriptCommands.GetText: string;
+function TKMScriptCommands.GetLinks: string;
 var
   I: Integer;
 begin
   Result := '';
 
-  {for I := 0 to Count - 1 do
-    Result := Result + Items[I].GetText + IfThen(I <> Count - 1, ' <br/> '); }
+  for I := 0 to Count - 1 do
+    Result := Result + IfThen(I > 0, sLineBreak) + '* <a href="#' + Items[I].Name + '">' + Items[I].Name + '</a>';
 end;
 
 
