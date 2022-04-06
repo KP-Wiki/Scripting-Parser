@@ -3,7 +3,7 @@ interface
 uses
   Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, Generics.Defaults,
   StrUtils,
-  KM_ScriptingParameters;
+  KM_ScriptingParameters, KM_ScriptingTypes;
 
 type
   TKMCommandStatus = (csOk, csDeprecated, csRemoved);
@@ -33,22 +33,23 @@ type
   // List of commands
   TKMScriptCommands = class
   private
+    fArea: TKMParsingArea;
     fList: TObjectList<TKMCommandInfo>;
     procedure Append(aCommand: TKMCommandInfo);
     procedure Clear;
     function GetCount: Integer;
     function GetItem(aIndex: Integer): TKMCommandInfo;
   public
-    constructor Create;
+    constructor Create(aArea: TKMParsingArea);
     destructor Destroy; override;
 
     procedure LoadFromFile(const aInputFile: string);
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMCommandInfo read GetItem; default;
     procedure SortByName;
-    function GetBody(aNeedReturn: Boolean): string;
+    function GetBody: string;
     function GetLinks: string;
-    function ExportWiki(aTitle, aHeaderFile: string; aNeedReturn: Boolean): string;
+    function ExportWiki(aTitle, aHeaderFile: string): string;
   end;
 
 
@@ -127,9 +128,11 @@ end;
 
 
 { TKMScriptCommands }
-constructor TKMScriptCommands.Create;
+constructor TKMScriptCommands.Create(aArea: TKMParsingArea);
 begin
-  inherited;
+  inherited Create;
+
+  fArea := aArea;
 
   fList := TObjectList<TKMCommandInfo>.Create(
     TComparer<TKMCommandInfo>.Construct(
@@ -327,14 +330,14 @@ begin
 end;
 
 
-function TKMScriptCommands.GetBody(aNeedReturn: Boolean): string;
+function TKMScriptCommands.GetBody: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetBody(aNeedReturn);
+    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetBody(AREA_NEED_RETURN[fArea]);
 end;
 
 
@@ -355,7 +358,7 @@ begin
 end;
 
 
-function TKMScriptCommands.ExportWiki(aTitle, aHeaderFile: string; aNeedReturn: Boolean): string;
+function TKMScriptCommands.ExportWiki(aTitle, aHeaderFile: string): string;
 var
   sl: TStringList;
 begin
@@ -373,7 +376,7 @@ begin
   sl.Add('<br />');
   sl.Add('');
 
-  if aNeedReturn then
+  if AREA_NEED_RETURN[fArea] then
   begin
     sl.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
     sl.Add('| ------- | ------------------------------------ | -------------- | ------- |');
@@ -382,7 +385,7 @@ begin
     sl.Add('| ------- | ------------------------------------ | -------------- |');
   end;
 
-  sl.Append(GetBody(aNeedReturn));
+  sl.Append(GetBody);
 
   Result := sl.Text;
 

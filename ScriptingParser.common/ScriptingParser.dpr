@@ -7,6 +7,7 @@ uses
   KM_ScriptingConsts in 'KM_ScriptingConsts.pas',
   KM_ScriptingParameters in 'KM_ScriptingParameters.pas',
   KM_ScriptingParser in 'KM_ScriptingParser.pas',
+  KM_ScriptingTypes in 'KM_ScriptingTypes.pas',
   KM_StringUtils in 'KM_StringUtils.pas';
 
 {$R *.res}

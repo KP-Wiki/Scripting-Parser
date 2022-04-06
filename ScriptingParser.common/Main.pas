@@ -3,7 +3,7 @@ interface
 uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils, Windows,
   Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls,
-  KM_ScriptingParser;
+  KM_ScriptingParser, KM_ScriptingTypes;
 
 type
   TForm1 = class(TForm)

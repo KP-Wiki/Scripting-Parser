@@ -4,15 +4,8 @@ uses
   Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections,
   StrUtils,
   KM_ScriptingCommands,
-  KM_ScriptingParameters;
-
-type
-  TKMParsingArea = (paActions, paEvents, paStates, paUtils);
-  TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
-
-const
-  AREA_SHORT: array [TKMParsingArea] of string = ('Actions', 'Events', 'States', 'Utils');
-  GAME_EXT: array [TKMParsingGame] of string = ('kmr', 'kp');
+  KM_ScriptingParameters,
+  KM_ScriptingTypes;
 
 type
   TKMScriptingParser = class
@@ -54,7 +47,7 @@ begin
   fListUtils := TStringList.Create;
 
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fCommands[I] := TKMScriptCommands.Create;
+    fCommands[I] := TKMScriptCommands.Create(I);
 end;
 
 
@@ -94,7 +87,7 @@ begin
   // Sort for neat order
   fCommands[aArea].SortByName;
 
-  aResultList.Text := fCommands[aArea].ExportWiki(aTitle, aHeaderFile, aArea <> paEvents);
+  aResultList.Text := fCommands[aArea].ExportWiki(aTitle, aHeaderFile);
 
   if aOutputFile <> '' then
   begin
