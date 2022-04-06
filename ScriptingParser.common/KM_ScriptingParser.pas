@@ -16,7 +16,7 @@ type
     fParsingGame: TKMParsingGame;
     fCommands: array [TKMParsingArea] of TKMScriptCommands;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
+    procedure ParseSource(aArea: TKMParsingArea; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -76,7 +76,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
+procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
 var
   exportPath: string;
 begin
@@ -87,7 +87,7 @@ begin
   // Sort for neat order
   fCommands[aArea].SortByName;
 
-  aResultList.Text := fCommands[aArea].ExportWiki(aTitle, aHeaderFile);
+  aResultList.Text := fCommands[aArea].ExportWiki(aHeaderFile);
 
   if aOutputFile <> '' then
   begin
@@ -105,10 +105,10 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aA
 begin
   fParsingGame := aParsingGame;
 
-  ParseSource(paActions, 'Action', fListActions, aActIn, aActHead, aActOut);
-  ParseSource(paEvents, 'Event', fListEvents, aEventIn, aEventHead, aEventOut);
-  ParseSource(paStates, 'State', fListStates, aStateIn, aStateHead, aStateOut);
-  ParseSource(paUtils, 'Utility function<br/>', fListUtils, aUtilIn, aUtilHead, aUtilOut);
+  ParseSource(paActions, fListActions, aActIn, aActHead, aActOut);
+  ParseSource(paEvents, fListEvents, aEventIn, aEventHead, aEventOut);
+  ParseSource(paStates, fListStates, aStateIn, aStateHead, aStateOut);
+  ParseSource(paUtils, fListUtils, aUtilIn, aUtilHead, aUtilOut);
 
   if DBG_COPY_FOR_REFERENCE then
   begin

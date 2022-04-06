@@ -49,7 +49,7 @@ type
     procedure SortByName;
     function GetBody: string;
     function GetLinks: string;
-    function ExportWiki(aTitle, aHeaderFile: string): string;
+    function ExportWiki(aHeaderFile: string): string;
   end;
 
 
@@ -358,7 +358,7 @@ begin
 end;
 
 
-function TKMScriptCommands.ExportWiki(aTitle, aHeaderFile: string): string;
+function TKMScriptCommands.ExportWiki(aHeaderFile: string): string;
 var
   sl: TStringList;
 begin
@@ -378,10 +378,10 @@ begin
 
   if AREA_NEED_RETURN[fArea] then
   begin
-    sl.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types | Returns |');
+    sl.Add('| Ver<br/>sion | ' + AREA_TITLE[fArea] + ' description | Parameters<br/>and types | Returns |');
     sl.Add('| ------- | ------------------------------------ | -------------- | ------- |');
   end else begin
-    sl.Add('| Ver<br/>sion | ' + aTitle + ' description | Parameters<br/>and types |');
+    sl.Add('| Ver<br/>sion | ' + AREA_TITLE[fArea] + ' description | Parameters<br/>and types |');
     sl.Add('| ------- | ------------------------------------ | -------------- |');
   end;
 
