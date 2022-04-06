@@ -19,14 +19,13 @@ type
     Status: TKMCommandStatus;
     Replacement: string;
     Description: string;
-    NeedReturn: Boolean; // We dont need returns for Events
     Return: string; // Result type
     ReturnDesc: string; // Result comment
     constructor Create;
     destructor Destroy; override;
     property Details: TStringList read fDetails;
     property Parameters: TKMScriptParameters read fParameters;
-    function GetBody: string;
+    function GetBody(aNeedReturn: Boolean): string;
     function GetLink: string;
   end;
 
@@ -35,25 +34,26 @@ type
   TKMScriptCommands = class
   private
     fList: TObjectList<TKMCommandInfo>;
+    procedure Append(aCommand: TKMCommandInfo);
+    procedure Clear;
     function GetCount: Integer;
     function GetItem(aIndex: Integer): TKMCommandInfo;
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure Append(aCommand: TKMCommandInfo);
-    procedure Clear;
+    procedure LoadFromFile(const aInputFile: string);
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMCommandInfo read GetItem; default;
     procedure SortByName;
-    function GetBody: string;
+    function GetBody(aNeedReturn: Boolean): string;
     function GetLinks: string;
   end;
 
 
 implementation
 uses
-  KM_ScriptingConsts;
+  KM_ScriptingConsts, KM_StringUtils;
 
 
 { TKMCommandInfo }
@@ -75,7 +75,7 @@ begin
 end;
 
 
-function TKMCommandInfo.GetBody: string;
+function TKMCommandInfo.GetBody(aNeedReturn: Boolean): string;
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
@@ -114,7 +114,7 @@ begin
               deprStr +
               '<sub>' + Description + '</sub>' +
               ' | <sub>' + Parameters.GetText + '</sub>' +
-              IfThen(NeedReturn, ' | <sub>' + Return + IfThen(ReturnDesc <> '', ' //' + ReturnDesc) + '</sub>') +
+              IfThen(aNeedReturn, ' | <sub>' + Return + IfThen(ReturnDesc <> '', ' //' + ReturnDesc) + '</sub>') +
               ' |';
 end;
 
@@ -148,6 +148,160 @@ begin
 end;
 
 
+// Scans source contents and puts it all in proper formatting for most wikis.
+procedure TKMScriptCommands.LoadFromFile(const aInputFile: string);
+var
+  slSource: TStringList;
+  I, K, iPlus: Integer;
+  restStr: string;
+  srcLine: string;
+  ci: TKMCommandInfo;
+  strStatus: string;
+begin
+  Clear;
+
+  slSource := TStringList.Create;
+  try
+    slSource.LoadFromFile(aInputFile);
+
+    for i := 0 to slSource.Count - 1 do
+    begin
+      iPlus := 0;
+      srcLine := slSource[i+iPlus];
+
+      //* Version: 1234
+      //* Status: -/Deprecated/Removed [optional]
+      //* Replacement: Link to the replacement method [optional]
+      //* Large description of the method [optional]
+      //* aX: Small optional description of parameter
+      //* aY: Small optional description of parameter
+      //* Result: Small optional description of returned value
+
+      // Before anything it should start with "//* Version:"
+      if StartsStr('//* Version:', srcLine) then
+      begin
+        // Create new command to fill
+        ci := TKMCommandInfo.Create;
+
+        restStr := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
+        ci.Version := IfThen(restStr = '', '-', restStr);
+        Inc(iPlus);
+        srcLine := slSource[i+iPlus];
+
+        // Descriptions are only added by lines starting with "//*"
+        // Repeat until no description tags are found
+        while StartsStr('//*', srcLine) do
+        begin
+          if StartsStr('//* Status:', srcLine) then
+          begin
+            strStatus := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
+            if StartsStr('Deprecated', strStatus) then
+              ci.Status := csDeprecated
+            else
+            if StartsStr('Removed', strStatus) then
+              ci.Status := csRemoved;
+          end else
+          if StartsStr('//* Replacement:', srcLine) then
+            ci.Replacement := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1))
+          else
+          // Handle Result description separately to keep the output clean
+          if StartsStr('//* Result:', srcLine) then
+            ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
+          else
+            ci.Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
+          Inc(iPlus);
+          srcLine := slSource[i+iPlus];
+        end;
+
+        // Skip empty or "faulty" lines (e.g. comments not intended for wiki)
+        while not StartsStr('procedure', srcLine)
+        and not StartsStr('function', srcLine) do
+        begin
+          Inc(iPlus);
+          srcLine := slSource[i+iPlus];
+        end;
+
+        // Format procedures
+        if StartsStr('procedure', srcLine) then
+        begin
+          if Pos('(', srcLine) <> 0 then
+          begin
+            // Procedure with parameters
+            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
+            restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
+            ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
+
+            // Parameters could go for several lines
+            restStr := '';
+            while Pos(')', srcLine) = 0 do
+            begin
+              restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+              Inc(iPlus);
+              srcLine := slSource[i+iPlus];
+            end;
+            restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
+
+            ci.Parameters.ParseFromString(restStr, ci.Details);
+          end else
+          begin
+            // Procedure without parameters
+            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
+            restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
+            ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
+          end;
+        end;
+
+        // Format functions
+        if StartsStr('function', srcLine) then
+        begin
+          if Pos('(', srcLine) <> 0 then
+          begin
+            // Function with parameters
+            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
+            restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
+            ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
+
+            // Parameters could go for several lines
+            restStr := '';
+            while Pos(')', srcLine) = 0 do
+            begin
+              restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+              Inc(iPlus);
+              srcLine := slSource[i+iPlus];
+            end;
+            restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
+
+            ci.Parameters.ParseFromString(restStr, ci.Details);
+          end else
+          begin
+            // Function without parameters
+            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
+            restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
+            ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
+          end;
+
+          // Function result
+          restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
+          ci.Return := TryTypeToAlias(restStr);
+        end;
+
+        // Now we can assemble Description, after we have detected and removed parameters descriptions from it
+        for K := 0 to ci.Details.Count - 1 do
+          // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
+          if (K > 0) and (RightStr(ci.Details[K-1], 6) = '</pre>') then
+            ci.Description := ci.Description + ci.Details[K]
+          else
+            ci.Description := ci.Description + '<br/>' + ci.Details[K];
+
+        Append(ci);
+      end;
+    end;
+  finally
+    slSource.Free;
+  end;
+end;
+
+
 function TKMScriptCommands.GetCount: Integer;
 begin
   Result := fList.Count;
@@ -172,14 +326,14 @@ begin
 end;
 
 
-function TKMScriptCommands.GetBody: string;
+function TKMScriptCommands.GetBody(aNeedReturn: Boolean): string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetBody;
+    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetBody(aNeedReturn);
 end;
 
 

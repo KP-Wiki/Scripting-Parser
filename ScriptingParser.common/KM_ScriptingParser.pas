@@ -22,7 +22,6 @@ type
     fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
     fCommands: array [TKMParsingArea] of TKMScriptCommands;
-    procedure ExtractBodyAndLinks(aArea: TKMParsingArea; aInputFile: string);
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
   public
@@ -40,42 +39,6 @@ type
 implementation
 uses
   KM_ScriptingConsts;
-
-
-// string functions
-// These function are replacements for string functions introduced after XE2 (XE5 probably)
-// Names are the same as in new Delphi versions, but with 'Str' prefix
-// We keep them here to support pre-XE5 compilation
-function StrSubstring(const aStr: string; aFrom: Integer): string;
-begin
-  Result := Copy(aStr, aFrom + 1, Length(aStr));
-end;
-
-
-function StrLastIndexOf(const aStr, aSubStr: string): Integer;
-var
-  I: Integer;
-begin
-  Result := -1;
-  for I := 1 to Length(aStr) do
-    if AnsiPos(aSubStr, StrSubstring(aStr, I-1)) <> 0 then
-      Result := I - 1;
-end;
-
-
-function StrTrimRightSeparators(const aStr: string): string;
-var
-  I, K: Integer;
-begin
-  K := 0;
-  for I := Length(aStr) downto 1 do
-  if not (aStr[I] in [',', ':', ';']) then
-  begin
-    K := I;
-    Break;
-  end;
-  Result := Copy(aStr, 1, K);
-end;
 
 
 { TKMScriptingParser }
@@ -111,162 +74,6 @@ begin
 end;
 
 
-// Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptingParser.ExtractBodyAndLinks(aArea: TKMParsingArea; aInputFile: string);
-var
-  slSource: TStringList;
-  I, K, iPlus: Integer;
-  restStr: string;
-  srcLine: string;
-  ci: TKMCommandInfo;
-  strStatus: string;
-begin
-  fCommands[aArea].Clear;
-
-  slSource := TStringList.Create;
-  try
-    slSource.LoadFromFile(aInputFile);
-
-    for i := 0 to slSource.Count - 1 do
-    begin
-      iPlus := 0;
-      srcLine := slSource[i+iPlus];
-
-      //* Version: 1234
-      //* Status: -/Deprecated/Removed [optional]
-      //* Replacement: Link to the replacement method [optional]
-      //* Large description of the method [optional]
-      //* aX: Small optional description of parameter
-      //* aY: Small optional description of parameter
-      //* Result: Small optional description of returned value
-
-      // Before anything it should start with "//* Version:"
-      if StartsStr('//* Version:', srcLine) then
-      begin
-        // Create new command to fill
-        ci := TKMCommandInfo.Create;
-
-        restStr := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
-        ci.Version := IfThen(restStr = '', '-', restStr);
-        Inc(iPlus);
-        srcLine := slSource[i+iPlus];
-
-        // Descriptions are only added by lines starting with "//*"
-        // Repeat until no description tags are found
-        while StartsStr('//*', srcLine) do
-        begin
-          if StartsStr('//* Status:', srcLine) then
-          begin
-            strStatus := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
-            if StartsStr('Deprecated', strStatus) then
-              ci.Status := csDeprecated
-            else
-            if StartsStr('Removed', strStatus) then
-              ci.Status := csRemoved;
-          end else
-          if StartsStr('//* Replacement:', srcLine) then
-            ci.Replacement := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1))
-          else
-          // Handle Result description separately to keep the output clean
-          if StartsStr('//* Result:', srcLine) then
-            ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
-          else
-            ci.Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
-          Inc(iPlus);
-          srcLine := slSource[i+iPlus];
-        end;
-
-        // Skip empty or "faulty" lines (e.g. comments not intended for wiki)
-        while not StartsStr('procedure', srcLine)
-        and not StartsStr('function', srcLine) do
-        begin
-          Inc(iPlus);
-          srcLine := slSource[i+iPlus];
-        end;
-
-        // Format procedures
-        if StartsStr('procedure', srcLine) then
-        begin
-          if Pos('(', srcLine) <> 0 then
-          begin
-            // Procedure with parameters
-            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-            restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
-
-            // Parameters could go for several lines
-            restStr := '';
-            while Pos(')', srcLine) = 0 do
-            begin
-              restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
-              Inc(iPlus);
-              srcLine := slSource[i+iPlus];
-            end;
-            restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
-
-            ci.Parameters.ParseFromString(restStr, ci.Details);
-          end else
-          begin
-            // Procedure without parameters
-            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
-            restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
-          end;
-        end;
-
-        // Format functions
-        if StartsStr('function', srcLine) then
-        begin
-          if Pos('(', srcLine) <> 0 then
-          begin
-            // Function with parameters
-            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-            restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
-
-            // Parameters could go for several lines
-            restStr := '';
-            while Pos(')', srcLine) = 0 do
-            begin
-              restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
-              Inc(iPlus);
-              srcLine := slSource[i+iPlus];
-            end;
-            restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
-
-            ci.Parameters.ParseFromString(restStr, ci.Details);
-          end else
-          begin
-            // Function without parameters
-            restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
-            restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
-          end;
-
-          // Function result
-          restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-          ci.Return := TryTypeToAlias(restStr);
-        end;
-
-        ci.NeedReturn := aArea <> paEvents;
-
-        // Now we can assemble Description, after we have detected and removed parameters descriptions from it
-        for K := 0 to ci.Details.Count - 1 do
-          // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-          if (K > 0) and (RightStr(ci.Details[K-1], 6) = '</pre>') then
-            ci.Description := ci.Description + ci.Details[K]
-          else
-            ci.Description := ci.Description + '<br/>' + ci.Details[K];
-
-        fCommands[aArea].Append(ci);
-      end;
-    end;
-  finally
-    slSource.Free;
-  end;
-end;
-
-
 procedure TKMScriptingParser.CopyForReference(aFilename: string; aArea: TKMParsingArea);
 var
   tgtPath: string;
@@ -278,11 +85,11 @@ end;
 
 procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aTitle: string; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
 var
-  Path: string;
+  exportPath: string;
 begin
   if not FileExists(aInputFile) then Exit;
 
-  ExtractBodyAndLinks(aArea, aInputFile);
+  fCommands[aArea].LoadFromFile(aInputFile);
 
   // Sort for neat order
   fCommands[aArea].SortByName;
@@ -310,13 +117,14 @@ begin
     aResultList.Add('| ------- | ------------------------------------ | -------------- |');
   end;
 
-  aResultList.Append(fCommands[aArea].GetBody);
+  aResultList.Append(fCommands[aArea].GetBody(aArea <> paEvents));
 
   if aOutputFile <> '' then
   begin
-    Path := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
-    if not DirectoryExists(ExtractFileDir(Path)) then
-      ForceDirectories(ExtractFileDir(Path));
+    exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+    if not DirectoryExists(ExtractFileDir(exportPath)) then
+      ForceDirectories(ExtractFileDir(exportPath));
+
     aResultList.SaveToFile(aOutputFile);
   end;
 end;

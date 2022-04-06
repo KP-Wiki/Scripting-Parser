@@ -36,25 +36,7 @@ type
 
 implementation
 uses
-  KM_ScriptingConsts;
-
-
-function StrSubstring(const aStr: string; aFrom: Integer): string;
-begin
-  Result := Copy(aStr, aFrom + 1, Length(aStr));
-end;
-
-
-procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList);
-var
-  StrArray: TStringDynArray;
-  I: Integer;
-begin
-  StrArray := SplitString(aStr, aDelimiters);
-  for I := Low(StrArray) to High(StrArray) do
-  if StrArray[I] <> '' then
-    aStrings.Add(StrArray[I]);
-end;
+  KM_ScriptingConsts, KM_StringUtils;
 
 
 { TKMScriptParameter }
