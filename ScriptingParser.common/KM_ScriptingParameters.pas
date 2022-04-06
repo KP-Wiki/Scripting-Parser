@@ -19,6 +19,7 @@ type
     function GetCount: Integer;
     function GetItem(aIndex: Integer): TKMScriptParameter;
     procedure SplitArguments(const aArguments: string; aTokenList: TStringList);
+    function FindDescription(const aName: string; aDescriptions: TStringList): string;
     procedure CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
   public
     constructor Create;
@@ -140,28 +141,29 @@ begin
 end;
 
 
-procedure TKMScriptParameters.CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
-  function FindDescription(const aName: string): string;
-  var
-    I: Integer;
-  begin
-    // Find the parameter description (and remove it from source)
-    Result := '';
-    // Parameter names are identified by the [Name:]
-    for I := 0 to aDescriptions.Count - 1 do
-      if StartsStr(aName + ':', aDescriptions[I]) then
-      begin
-        Result := StrSubstring(aDescriptions[I], Pos(':', aDescriptions[I]) + 1);
-        aDescriptions.Delete(I);
-        Exit;
-      end;
-  end;
+function TKMScriptParameters.FindDescription(const aName: string; aDescriptions: TStringList): string;
 var
-  I, K: Integer;
+  I: Integer;
+begin
+  // Find the parameter description (and remove it from source)
+  Result := '';
+  // Parameter names are identified by the [Name:]
+  for I := 0 to aDescriptions.Count - 1 do
+    if StartsStr(aName + ':', aDescriptions[I]) then
+    begin
+      Result := StrSubstring(aDescriptions[I], Pos(':', aDescriptions[I]) + 1);
+      aDescriptions.Delete(I);
+      Exit;
+    end;
+end;
+
+
+procedure TKMScriptParameters.CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
+var
+  I: Integer;
   varModifier, newModifier: string;
   varType, newType: string;
   list: array of record Modifier, &Type: string; end;
-  desc: string;
 begin
   SetLength(list, aTokenList.Count);
 
@@ -193,7 +195,7 @@ begin
   for I := 0 to aTokenList.Count - 1 do
   if not TokenIsModifier(aTokenList[I], newModifier)
   and not TokenIsType(aTokenList[I], newType) then
-    Append(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I]));
+    Append(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions));
 end;
 
 
