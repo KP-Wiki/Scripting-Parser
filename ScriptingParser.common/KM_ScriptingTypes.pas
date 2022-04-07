@@ -1,4 +1,4 @@
-unit KM_ScriptingMethods;
+unit KM_ScriptingTypes;
 interface
 uses
   Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, Generics.Defaults,
@@ -6,39 +6,48 @@ uses
   KM_ScriptingParameters, KM_ParserTypes;
 
 type
-  TKMMethodType = (mtFunc, mtProc);
-  TKMMethodStatus = (msOk, msDeprecated, msRemoved);
+  // There are these base types:
+  TKMTypeType = (
+     tEnum,
+     tRecord,
+     tArray,
+     tSet
+    );
+  // Enum
+  // Record
+  // Array of
+  // Set of
 
-  // Single method info
-  TKMMethodInfo = class
+  TKMScriptTypeElement = record
+  public
+    Name: string;
+    &Type: string;
+    Desc: string;
+  end;
+
+  // Single type info
+  TKMTypeInfo = class
   private
     fName: string;
-    fType: TKMMethodType;
-    fVersion: string; // Version in which the method was added/changed
-    fStatus: TKMMethodStatus;
-    fReplacement: string;
+    fType: TKMTypeType;
     fDescription: string;
-    fParameters: TKMScriptParameters; // Parameters parsed from declaration
-    fResultType: string;
-    fResultDesc: string;
+    fElements: TList<TKMScriptTypeElement>;
   public
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromStringList(aSource: TStringList);
-    function ExportBody(aNeedReturn: Boolean): string;
+    function ExportBody: string;
     function ExportLink: string;
   end;
 
-
-  // List of methods
-  TKMScriptMethods = class
+  // List of types
+  TKMScriptTypes = class
   private
-    fArea: TKMParsingArea;
-    fList: TObjectList<TKMMethodInfo>;
+    fList: TObjectList<TKMTypeInfo>;
     function ExportBody: string;
     function ExportLinks: string;
   public
-    constructor Create(aArea: TKMParsingArea);
+    constructor Create;
     destructor Destroy; override;
 
     procedure LoadFromFile(const aInputFile: string);
@@ -52,31 +61,31 @@ uses
   KM_ScriptingConsts, KM_StringUtils;
 
 
-{ TKMMethodInfo }
-constructor TKMMethodInfo.Create;
+{ TKMTypeInfo }
+constructor TKMTypeInfo.Create;
 begin
   inherited;
 
-  fParameters := TKMScriptParameters.Create;
+  fElements := TList<TKMScriptTypeElement>.Create;
 end;
 
 
-destructor TKMMethodInfo.Destroy;
+destructor TKMTypeInfo.Destroy;
 begin
-  FreeAndNil(fParameters);
+  FreeAndNil(fElements);
 
   inherited;
 end;
 
 
-procedure TKMMethodInfo.LoadFromStringList(aSource: TStringList);
+procedure TKMTypeInfo.LoadFromStringList(aSource: TStringList);
 var
   I: Integer;
   srcLine, restStr, metName: string;
   strStatus: string;
   details: TStringList;
 begin
-  details := TStringList.Create;
+  {details := TStringList.Create;
   try
     I := 0;
     srcLine := aSource[I];
@@ -193,70 +202,35 @@ begin
         fDescription := fDescription + '<br/>' + details[I];
   finally
     details.Free;
-  end;
+  end;}
 end;
 
 
-function TKMMethodInfo.ExportBody(aNeedReturn: Boolean): string;
-const
-  UNICODE_RED_CROSS = '&#x274C;';
+function TKMTypeInfo.ExportBody: string;
 var
-  deprStr: string;
+  I: Integer;
 begin
-  case fStatus of
-    msDeprecated: begin
-                    deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
-                               '<sub>*Method could be removed in the future game versions';
+  Result := '<a id="' + fName + '">' + fName + '</a>' + '<sub>' + fDescription + '</sub>';
 
-                    if fReplacement <> '' then
-                      if fReplacement = StringReplace(fReplacement, ' ', '', [rfReplaceAll]) then
-                        deprStr := deprStr + ', use <a href="#' + fReplacement + '">' + fReplacement + '</a> instead'
-                      else
-                        deprStr := deprStr + ', ' + fReplacement;
-
-                    deprStr := deprStr + '*</sub>';
-                  end;
-    msRemoved:    begin
-                    deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
-                               '<sub>*Method was removed';
-
-                    if fReplacement <> '' then
-                      if fReplacement = StringReplace(fReplacement, ' ', '', [rfReplaceAll]) then
-                        deprStr := deprStr + ', use <a href="#' + fReplacement + '">' + fReplacement + '</a> instead'
-                      else
-                        deprStr := deprStr + ', ' + fReplacement;
-
-                    deprStr := deprStr + '*</sub>';
-                  end;
-  else
-    deprStr := '';
-  end;
-
-  Result := '| ' + IfThen(fVersion <> '', fVersion, '-') + ' | <a id="' + fName + '">' + fName + '</a>' +
-              deprStr +
-              '<sub>' + fDescription + '</sub>' +
-              ' | <sub>' + fParameters.GetText + '</sub>' +
-              IfThen(aNeedReturn, ' | <sub>' + fResultType + IfThen(fResultDesc <> '', ' // ' + fResultDesc) + '</sub>') +
-              ' |';
+  for I := 0 to fElements.Count - 1 do
+    Result := Result + '<sub>' + fElements[I].Name + ' // ' + fElements[I].Desc + '</sub>';
 end;
 
 
-function TKMMethodInfo.ExportLink: string;
+function TKMTypeInfo.ExportLink: string;
 begin
   Result := '* <a href="#' + fName + '">' + fName + '</a>';
 end;
 
 
-{ TKMScriptMethods }
-constructor TKMScriptMethods.Create(aArea: TKMParsingArea);
+{ TKMScriptTypes }
+constructor TKMScriptTypes.Create;
 begin
   inherited Create;
 
-  fArea := aArea;
-
-  fList := TObjectList<TKMMethodInfo>.Create(
-    TComparer<TKMMethodInfo>.Construct(
-      function(const A, B: TKMMethodInfo): Integer
+  fList := TObjectList<TKMTypeInfo>.Create(
+    TComparer<TKMTypeInfo>.Construct(
+      function(const A, B: TKMTypeInfo): Integer
       begin
         // Case-sensitive compare, since we use CamelCase and it looks nicer that way
         Result := CompareText(A.fName, B.fName);
@@ -264,7 +238,7 @@ begin
 end;
 
 
-destructor TKMScriptMethods.Destroy;
+destructor TKMScriptTypes.Destroy;
 begin
   FreeAndNil(fList);
 
@@ -273,7 +247,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptMethods.LoadFromFile(const aInputFile: string);
+procedure TKMScriptTypes.LoadFromFile(const aInputFile: string);
 var
   slSource: TStringList;
   I: Integer;
@@ -331,7 +305,7 @@ begin
           sectionTailEnded := True;
           sectionStarted := False;
 
-          fList.Add(TKMMethodInfo.Create);
+          fList.Add(TKMTypeInfo.Create);
           fList.Last.LoadFromStringList(sl);
         end;
       end;
@@ -343,18 +317,18 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportBody: string;
+function TKMScriptTypes.ExportBody: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportBody(AREA_NEED_RETURN[fArea]);
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportBody;
 end;
 
 
-function TKMScriptMethods.ExportLinks: string;
+function TKMScriptTypes.ExportLinks: string;
 var
   I: Integer;
 begin
@@ -365,13 +339,13 @@ begin
 end;
 
 
-procedure TKMScriptMethods.SortByName;
+procedure TKMScriptTypes.SortByName;
 begin
   fList.Sort;
 end;
 
 
-function TKMScriptMethods.ExportWiki(const aTemplateFile: string): string;
+function TKMScriptTypes.ExportWiki(const aTemplateFile: string): string;
 var
   sl: TStringList;
 begin
@@ -380,7 +354,7 @@ begin
   sl.LoadFromFile(aTemplateFile);
 
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportLinks, []);
-  sl.Text := StringReplace(sl.Text, '{TITLE}', AREA_TITLE[fArea], []);
+  sl.Text := StringReplace(sl.Text, '{TITLE}', AREA_TITLE[paTypes], []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportBody, []);
 
   Result := sl.Text;

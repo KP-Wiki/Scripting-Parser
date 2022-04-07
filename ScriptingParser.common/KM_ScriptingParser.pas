@@ -5,7 +5,8 @@ uses
   StrUtils,
   KM_ScriptingMethods,
   KM_ScriptingParameters,
-  KM_ScriptingTypes;
+  KM_ScriptingTypes,
+  KM_ParserTypes;
 
 type
   TKMScriptingParser = class
@@ -101,7 +102,7 @@ begin
 end;
 
 
-procedure ParseTypes(const aInputFile, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingParser.ParseTypes(const aInputFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
@@ -111,14 +112,14 @@ begin
   fTypes.LoadFromFile(aInputFile);
 
   // Sort for neat order
-  fMethods[aArea].SortByName;
+  fTypes.SortByName;
 
   if aOutputFile = '' then Exit;
 
   sl := TStringList.Create;
 
-  fText[aArea] := fMethods[aArea].ExportWiki(aTemplateFile);
-  sl.Text := fText[aArea];
+  fText[paTypes] := fTypes.ExportWiki(aTemplateFile);
+  sl.Text := fText[paTypes];
 
   exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
   if not DirectoryExists(ExtractFileDir(exportPath)) then

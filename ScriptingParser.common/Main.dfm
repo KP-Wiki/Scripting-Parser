@@ -273,7 +273,8 @@ object Form1: TForm1
       'Actions'
       'Events'
       'States'
-      'Utils')
+      'Utils'
+      'Types')
     TabIndex = 0
     OnChange = TabControl1Change
     DesignSize = (
