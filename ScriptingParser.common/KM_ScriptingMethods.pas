@@ -1,4 +1,4 @@
-unit KM_ScriptingCommands;
+unit KM_ScriptingMethods;
 interface
 uses
   Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, Generics.Defaults,
@@ -6,17 +6,17 @@ uses
   KM_ScriptingParameters, KM_ScriptingTypes;
 
 type
-  TKMCommandStatus = (csOk, csDeprecated, csRemoved);
+  TKMMethodStatus = (msOk, msDeprecated, msRemoved);
 
-  // Complete command info
-  TKMCommandInfo = class
+  // Single method info
+  TKMMethodInfo = class
   private
-    fDetails: TStringList; // Command description and parameters comments
+    fDetails: TStringList; // Method description and parameters comments
     fParameters: TKMScriptParameters; // Parameters parsed from declaration
   public
     Name: string;
-    Version: string; // Version in which command was added/changed
-    Status: TKMCommandStatus;
+    Version: string; // Version in which the method was added/changed
+    Status: TKMMethodStatus;
     Replacement: string;
     Description: string;
     Return: string; // Result type
@@ -30,22 +30,22 @@ type
   end;
 
 
-  // List of commands
-  TKMScriptCommands = class
+  // List of methods
+  TKMScriptMethods = class
   private
     fArea: TKMParsingArea;
-    fList: TObjectList<TKMCommandInfo>;
-    procedure Append(aCommand: TKMCommandInfo);
+    fList: TObjectList<TKMMethodInfo>;
+    procedure Append(aMethod: TKMMethodInfo);
     procedure Clear;
     function GetCount: Integer;
-    function GetItem(aIndex: Integer): TKMCommandInfo;
+    function GetItem(aIndex: Integer): TKMMethodInfo;
   public
     constructor Create(aArea: TKMParsingArea);
     destructor Destroy; override;
 
     procedure LoadFromFile(const aInputFile: string);
     property Count: Integer read GetCount;
-    property Items[aIndex: Integer]: TKMCommandInfo read GetItem; default;
+    property Items[aIndex: Integer]: TKMMethodInfo read GetItem; default;
     procedure SortByName;
     function GetBody: string;
     function GetLinks: string;
@@ -58,8 +58,8 @@ uses
   KM_ScriptingConsts, KM_StringUtils;
 
 
-{ TKMCommandInfo }
-constructor TKMCommandInfo.Create;
+{ TKMMethodInfo }
+constructor TKMMethodInfo.Create;
 begin
   inherited;
 
@@ -68,7 +68,7 @@ begin
 end;
 
 
-destructor TKMCommandInfo.Destroy;
+destructor TKMMethodInfo.Destroy;
 begin
   FreeAndNil(fDetails);
   FreeAndNil(fParameters);
@@ -77,14 +77,14 @@ begin
 end;
 
 
-function TKMCommandInfo.GetBody(aNeedReturn: Boolean): string;
+function TKMMethodInfo.GetBody(aNeedReturn: Boolean): string;
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
   deprStr: string;
 begin
   case Status of
-    csDeprecated: begin
+    msDeprecated: begin
                     deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
                                '<sub>*Method could be removed in the future game versions';
 
@@ -96,7 +96,7 @@ begin
 
                     deprStr := deprStr + '*</sub>';
                   end;
-    csRemoved:    begin
+    msRemoved:    begin
                     deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
                                '<sub>*Method was removed';
 
@@ -121,22 +121,22 @@ begin
 end;
 
 
-function TKMCommandInfo.GetLink: string;
+function TKMMethodInfo.GetLink: string;
 begin
   Result := '* <a href="#' + Name + '">' + Name + '</a>';
 end;
 
 
-{ TKMScriptCommands }
-constructor TKMScriptCommands.Create(aArea: TKMParsingArea);
+{ TKMScriptMethods }
+constructor TKMScriptMethods.Create(aArea: TKMParsingArea);
 begin
   inherited Create;
 
   fArea := aArea;
 
-  fList := TObjectList<TKMCommandInfo>.Create(
-    TComparer<TKMCommandInfo>.Construct(
-      function(const A, B: TKMCommandInfo): Integer
+  fList := TObjectList<TKMMethodInfo>.Create(
+    TComparer<TKMMethodInfo>.Construct(
+      function(const A, B: TKMMethodInfo): Integer
       begin
         // Case-sensitive compare, since we use CamelCase and it looks nicer that way
         Result := CompareText(A.Name, B.Name);
@@ -144,7 +144,7 @@ begin
 end;
 
 
-destructor TKMScriptCommands.Destroy;
+destructor TKMScriptMethods.Destroy;
 begin
   FreeAndNil(fList);
 
@@ -153,13 +153,13 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptCommands.LoadFromFile(const aInputFile: string);
+procedure TKMScriptMethods.LoadFromFile(const aInputFile: string);
 var
   slSource: TStringList;
   I, K, iPlus: Integer;
   restStr: string;
   srcLine: string;
-  ci: TKMCommandInfo;
+  mi: TKMMethodInfo;
   strStatus: string;
 begin
   Clear;
@@ -184,11 +184,11 @@ begin
       // Before anything it should start with "//* Version:"
       if StartsStr('//* Version:', srcLine) then
       begin
-        // Create new command to fill
-        ci := TKMCommandInfo.Create;
+        // Create new Method to fill
+        mi := TKMMethodInfo.Create;
 
         restStr := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
-        ci.Version := IfThen(restStr = '', '-', restStr);
+        mi.Version := IfThen(restStr = '', '-', restStr);
         Inc(iPlus);
         srcLine := slSource[i+iPlus];
 
@@ -200,19 +200,19 @@ begin
           begin
             strStatus := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
             if StartsStr('Deprecated', strStatus) then
-              ci.Status := csDeprecated
+              mi.Status := msDeprecated
             else
             if StartsStr('Removed', strStatus) then
-              ci.Status := csRemoved;
+              mi.Status := msRemoved;
           end else
           if StartsStr('//* Replacement:', srcLine) then
-            ci.Replacement := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1))
+            mi.Replacement := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1))
           else
           // Handle Result description separately to keep the output clean
           if StartsStr('//* Result:', srcLine) then
-            ci.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
+            mi.ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
           else
-            ci.Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
+            mi.Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
           Inc(iPlus);
           srcLine := slSource[i+iPlus];
         end;
@@ -233,7 +233,7 @@ begin
             // Procedure with parameters
             restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
             restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
+            mi.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
 
             // Parameters could go for several lines
             restStr := '';
@@ -245,13 +245,13 @@ begin
             end;
             restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-            ci.Parameters.ParseFromString(restStr, ci.Details);
+            mi.Parameters.ParseFromString(restStr, mi.Details);
           end else
           begin
             // Procedure without parameters
             restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
             restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
+            mi.Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
           end;
         end;
 
@@ -263,7 +263,7 @@ begin
             // Function with parameters
             restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
             restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
+            mi.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
 
             // Parameters could go for several lines
             restStr := '';
@@ -275,29 +275,29 @@ begin
             end;
             restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-            ci.Parameters.ParseFromString(restStr, ci.Details);
+            mi.Parameters.ParseFromString(restStr, mi.Details);
           end else
           begin
             // Function without parameters
             restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
             restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
-            ci.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
+            mi.Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
           end;
 
           // Function result
           restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-          ci.Return := TryTypeToAlias(restStr);
+          mi.Return := TryTypeToAlias(restStr);
         end;
 
         // Now we can assemble Description, after we have detected and removed parameters descriptions from it
-        for K := 0 to ci.Details.Count - 1 do
+        for K := 0 to mi.Details.Count - 1 do
           // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-          if (K > 0) and (RightStr(ci.Details[K-1], 6) = '</pre>') then
-            ci.Description := ci.Description + ci.Details[K]
+          if (K > 0) and (RightStr(mi.Details[K-1], 6) = '</pre>') then
+            mi.Description := mi.Description + mi.Details[K]
           else
-            ci.Description := ci.Description + '<br/>' + ci.Details[K];
+            mi.Description := mi.Description + '<br/>' + mi.Details[K];
 
-        Append(ci);
+        Append(mi);
       end;
     end;
   finally
@@ -306,31 +306,31 @@ begin
 end;
 
 
-function TKMScriptCommands.GetCount: Integer;
+function TKMScriptMethods.GetCount: Integer;
 begin
   Result := fList.Count;
 end;
 
 
-function TKMScriptCommands.GetItem(aIndex: Integer): TKMCommandInfo;
+function TKMScriptMethods.GetItem(aIndex: Integer): TKMMethodInfo;
 begin
   Result := fList[aIndex];
 end;
 
 
-procedure TKMScriptCommands.Append(aCommand: TKMCommandInfo);
+procedure TKMScriptMethods.Append(aMethod: TKMMethodInfo);
 begin
-  fList.Add(aCommand);
+  fList.Add(aMethod);
 end;
 
 
-procedure TKMScriptCommands.Clear;
+procedure TKMScriptMethods.Clear;
 begin
   fList.Clear;
 end;
 
 
-function TKMScriptCommands.GetBody: string;
+function TKMScriptMethods.GetBody: string;
 var
   I: Integer;
 begin
@@ -341,7 +341,7 @@ begin
 end;
 
 
-function TKMScriptCommands.GetLinks: string;
+function TKMScriptMethods.GetLinks: string;
 var
   I: Integer;
 begin
@@ -352,13 +352,13 @@ begin
 end;
 
 
-procedure TKMScriptCommands.SortByName;
+procedure TKMScriptMethods.SortByName;
 begin
   fList.Sort;
 end;
 
 
-function TKMScriptCommands.ExportWiki(aHeaderFile: string): string;
+function TKMScriptMethods.ExportWiki(aHeaderFile: string): string;
 var
   sl: TStringList;
 begin

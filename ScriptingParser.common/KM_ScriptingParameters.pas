@@ -12,7 +12,7 @@ type
     function GetText: string;
   end;
 
-  // List of parameters
+  // List of parameters of a method
   TKMScriptParameters = class
   private
     fList: TObjectList<TKMScriptParameter>;

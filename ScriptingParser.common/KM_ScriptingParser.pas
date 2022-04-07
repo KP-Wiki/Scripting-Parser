@@ -3,7 +3,7 @@ interface
 uses
   Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections,
   StrUtils,
-  KM_ScriptingCommands,
+  KM_ScriptingMethods,
   KM_ScriptingParameters,
   KM_ScriptingTypes;
 
@@ -13,7 +13,7 @@ type
     DBG_COPY_FOR_REFERENCE = True;
   private
     fParsingGame: TKMParsingGame;
-    fCommands: array [TKMParsingArea] of TKMScriptCommands;
+    fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fText: array [TKMParsingArea] of string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ParseSource(aArea: TKMParsingArea; const aInputFile, aHeaderFile, aOutputFile: string);
@@ -42,7 +42,7 @@ begin
   inherited;
 
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fCommands[I] := TKMScriptCommands.Create(I);
+    fMethods[I] := TKMScriptMethods.Create(I);
 end;
 
 
@@ -51,7 +51,7 @@ var
   I: TKMParsingArea;
 begin
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    FreeAndNil(fCommands[I]);
+    FreeAndNil(fMethods[I]);
 
   inherited;
 end;
@@ -73,16 +73,16 @@ var
 begin
   if not FileExists(aInputFile) then Exit;
 
-  fCommands[aArea].LoadFromFile(aInputFile);
+  fMethods[aArea].LoadFromFile(aInputFile);
 
   // Sort for neat order
-  fCommands[aArea].SortByName;
+  fMethods[aArea].SortByName;
 
   if aOutputFile = '' then Exit;
 
   sl := TStringList.Create;
 
-  fText[aArea] := fCommands[aArea].ExportWiki(aHeaderFile);
+  fText[aArea] := fMethods[aArea].ExportWiki(aHeaderFile);
   sl.Text := fText[aArea];
 
   exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
