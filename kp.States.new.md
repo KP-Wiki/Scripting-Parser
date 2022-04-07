@@ -95,7 +95,7 @@ Version column description:
 | Ver<br/>sion | State description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
 | 8721 | <a id="CampaignMissionCount">CampaignMissionCount</a><sub><br/>Get total number of missions in the current campaign. Campaign-only action!</sub> | <sub></sub> | <sub>Integer</sub> |
-| 8723 | <a id="CampaignMissionWon">CampaignMissionWon</a><sub><br/>See if the mission was won. Campaign-only action!</sub> | <sub>**aMission**: Integer; //_mission index to check_</sub> | <sub>Boolean</sub> |
+| 8723 | <a id="CampaignMissionWon">CampaignMissionWon</a><sub><br/>See if the mission was won. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to check_</sub> | <sub>Boolean</sub> |
 | 7969 | <a id="EntityType">EntityType</a><sub><br/>Get the entity type by its UID (0 - unknown or none, 1 - Unit, 2 - House, 3 - UnitGroup, 4 - Stockpile)</sub> | <sub>**aEntityID**: Integer;</sub> | <sub>Integer</sub> |
 | -8743 | <a id="FogRevealed">FogRevealed</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerFogRevealed">PlayerFogRevealed</a> instead*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="GameTime">GameTime</a><sub><br/>Deprecated. Please use the time provided by OnTick event</sub> | <sub></sub> | <sub>Cardinal</sub> |
@@ -124,9 +124,9 @@ Version column description:
 | 10399 | <a id="HouseWaresBlock">HouseWaresBlock</a><sub><br/>Lookup common ware delivery policy. Works only for common houses</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // 0 - allow, 1 - block</sub> |
 | - | <a id="HouseWeaponsOrdered">HouseWeaponsOrdered</a><sub><br/>Get the amount of weapons ordered in the house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseWoodcutterChopOnly">HouseWoodcutterChopOnly</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
-| - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; //_player to whom field must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="IsOrchardAt">IsOrchardAt</a><sub><br/>Check if there is a orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; //_player to whom orchard must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Check if there is a road owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; //_player to whom road must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom field must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsOrchardAt">IsOrchardAt</a><sub><br/>Check if there is a orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom orchard must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Check if there is a road owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom road must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="PeaceTime">PeaceTime</a><sub><br/>Get the peacetime (in game ticks)</sub> | <sub></sub> | <sub>Cardinal</sub> |
 | - | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub></sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerColorText">PlayerColorText</a><sub><br/>Get the string with color code of the player (adjusted brighter for text display)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>UnicodeString</sub> |
@@ -135,7 +135,7 @@ Version column description:
 | 8743 | <a id="PlayerFogRevealed">PlayerFogRevealed</a><sub><br/>See if tile is revealed to the player (known or live)</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerGetAllGroups">PlayerGetAllGroups</a><sub><br/>Get list of all players groups</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>array of Integer</sub> |
 | - | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Return all players houses that are not destroyed</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>array of Integer</sub> |
-| - | <a id="PlayerGetAllRoads">PlayerGetAllRoads</a><sub><br/>Get list of all players roads</sub> | <sub>**aPlayer**: Integer; //_player to whom roads must belong. 0..N-1_</sub> | <sub>TKMPointArray</sub> |
+| - | <a id="PlayerGetAllRoads">PlayerGetAllRoads</a><sub><br/>Get list of all players roads</sub> | <sub>**aPlayer**: Integer; // _player to whom roads must belong. 0..N-1_</sub> | <sub>TKMPointArray</sub> |
 | - | <a id="PlayerGetAllUnits">PlayerGetAllUnits</a><sub><br/>Return all players units that are not dead and not in training</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>array of Integer</sub> |
 | 10697 | <a id="PlayerHouseBlocked">PlayerHouseBlocked</a><sub><br/>Check if Player has the house type explicitly blocked from being built</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerHouseCanBuild">PlayerHouseCanBuild</a><sub><br/>Check if Player can build certain house type</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |

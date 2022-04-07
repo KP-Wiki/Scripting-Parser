@@ -42,7 +42,7 @@ uses
 { TKMScriptParameter }
 function TKMScriptParameter.GetText: string;
 begin
-  Result := '**' + IfThen(Modifier <> '', Modifier + ' ') + Name + '**: ' + VarType + ';' + IfThen(Desc <> '', ' //_' + Desc + '_');
+  Result := '**' + IfThen(Modifier <> '', Modifier + ' ') + Name + '**: ' + VarType + ';' + IfThen(Desc <> '', ' // _' + Desc + '_');
 end;
 
 
