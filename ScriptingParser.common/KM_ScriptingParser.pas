@@ -14,9 +14,11 @@ type
   private
     fParsingGame: TKMParsingGame;
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
+    fTypes: TKMScriptTypes;
     fText: array [TKMParsingArea] of string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure ParseSource(aArea: TKMParsingArea; const aInputFile, aTemplateFile, aOutputFile: string);
+    procedure ParseMethods(aArea: TKMParsingArea; const aInputFile, aTemplateFile, aOutputFile: string);
+    procedure ParseTypes(const aInputFile, aTemplateFile, aOutputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -43,6 +45,8 @@ begin
 
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
     fMethods[I] := TKMScriptMethods.Create(I);
+
+  fTypes := TKMScriptTypes.Create;
 end;
 
 
@@ -52,6 +56,8 @@ var
 begin
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
     FreeAndNil(fMethods[I]);
+
+  FreeAndNil(fTypes);
 
   inherited;
 end;
@@ -66,7 +72,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aInputFile, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingParser.ParseMethods(aArea: TKMParsingArea; const aInputFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
@@ -95,15 +101,45 @@ begin
 end;
 
 
+procedure ParseTypes(const aInputFile, aTemplateFile, aOutputFile: string);
+var
+  sl: TStringList;
+  exportPath: string;
+begin
+  if not FileExists(aInputFile) then Exit;
+
+  fTypes.LoadFromFile(aInputFile);
+
+  // Sort for neat order
+  fMethods[aArea].SortByName;
+
+  if aOutputFile = '' then Exit;
+
+  sl := TStringList.Create;
+
+  fText[aArea] := fMethods[aArea].ExportWiki(aTemplateFile);
+  sl.Text := fText[aArea];
+
+  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+  if not DirectoryExists(ExtractFileDir(exportPath)) then
+    ForceDirectories(ExtractFileDir(exportPath));
+
+  sl.SaveToFile(aOutputFile);
+
+  sl.Free;
+end;
+
+
 procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActTempl, aActOut, aEventIn, aEventTempl, aEventOut,
   aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut, aTypeIn, aTypeTempl, aTypeOut: string);
 begin
   fParsingGame := aParsingGame;
 
-  ParseSource(paActions, aActIn, aActTempl, aActOut);
-  ParseSource(paEvents, aEventIn, aEventTempl, aEventOut);
-  ParseSource(paStates, aStateIn, aStateTempl, aStateOut);
-  ParseSource(paUtils, aUtilIn, aUtilTempl, aUtilOut);
+  ParseMethods(paActions, aActIn, aActTempl, aActOut);
+  ParseMethods(paEvents, aEventIn, aEventTempl, aEventOut);
+  ParseMethods(paStates, aStateIn, aStateTempl, aStateOut);
+  ParseMethods(paUtils, aUtilIn, aUtilTempl, aUtilOut);
+  ParseTypes(aTypeIn, aTypeTempl, aTypeOut);
 
   if DBG_COPY_FOR_REFERENCE then
   begin
@@ -111,6 +147,7 @@ begin
     CopyForReference(aEventOut, paEvents);
     CopyForReference(aStateOut, paStates);
     CopyForReference(aUtilOut, paUtils);
+    CopyForReference(aTypeOut, paTypes);
   end;
 end;
 
