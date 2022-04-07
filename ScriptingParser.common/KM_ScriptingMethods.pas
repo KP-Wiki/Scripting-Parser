@@ -83,8 +83,7 @@ begin
 
   if StartsStr('//* Version:', srcLine) then
   begin
-    restStr := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
-    Version := IfThen(restStr = '', '-', restStr);
+    Version := Trim(RightStrAfter(srcLine, ':'));
     Inc(I);
     srcLine := aSource[I];
   end;
@@ -95,7 +94,7 @@ begin
   begin
     if StartsStr('//* Status:', srcLine) then
     begin
-      strStatus := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1));
+      strStatus := Trim(RightStrAfter(srcLine, ':'));
       if StartsStr('Deprecated', strStatus) then
         Status := msDeprecated
       else
@@ -103,13 +102,14 @@ begin
         Status := msRemoved;
     end else
     if StartsStr('//* Replacement:', srcLine) then
-      Replacement := Trim(StrSubstring(srcLine, Pos(':', srcLine) + 1))
+      Replacement := Trim(RightStrAfter(srcLine, ':'))
     else
     // Handle Result description separately to keep the output clean
     if StartsStr('//* Result:', srcLine) then
-      ReturnDesc := StrSubstring(srcLine, Pos(':', srcLine) + 1)
+      ReturnDesc := Trim(RightStrAfter(srcLine, ':'))
     else
       Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
+      //todo: Details.Add(RightStrAfter(srcLine, '*'));
     Inc(I);
     srcLine := aSource[I];
   end;
@@ -240,11 +240,11 @@ begin
     deprStr := '';
   end;
 
-  Result := '| ' + Version + ' | <a id="' + Name + '">' + Name + '</a>' +
+  Result := '| ' + IfThen(Version <> '', Version, '-') + ' | <a id="' + Name + '">' + Name + '</a>' +
               deprStr +
               '<sub>' + Description + '</sub>' +
               ' | <sub>' + Parameters.GetText + '</sub>' +
-              IfThen(aNeedReturn, ' | <sub>' + Return + IfThen(ReturnDesc <> '', ' //' + ReturnDesc) + '</sub>') +
+              IfThen(aNeedReturn, ' | <sub>' + Return + IfThen(ReturnDesc <> '', ' // ' + ReturnDesc) + '</sub>') +
               ' |';
 end;
 

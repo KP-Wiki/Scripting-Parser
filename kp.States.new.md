@@ -119,9 +119,9 @@ Version column description:
 | - | <a id="HouseRepair">HouseRepair</a><sub><br/>Check if house repair is enabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 4820 | <a id="HouseTrainQueuePeek">HouseTrainQueuePeek</a><sub><br/>Get the unit type in the houses training queue (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer;</sub> | <sub>TKMUnitType</sub> |
 | - | <a id="HouseType">HouseType</a><sub><br/>Get the house type</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMHouseType</sub> |
-| 7021 | <a id="HouseWareBlock">HouseWareBlock</a><sub><br/>Lookup spacious house ware delivery policy. Works only for spacious houses (Camp, Fort, Store, Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer //0 - allow, 1 - block, 2 - evacuate</sub> |
+| 7021 | <a id="HouseWareBlock">HouseWareBlock</a><sub><br/>Lookup spacious house ware delivery policy. Works only for spacious houses (Camp, Fort, Store, Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer // 0 - allow, 1 - block, 2 - evacuate</sub> |
 | - | <a id="HouseWareInside">HouseWareInside</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
-| 10399 | <a id="HouseWaresBlock">HouseWaresBlock</a><sub><br/>Lookup common ware delivery policy. Works only for common houses</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer //0 - allow, 1 - block</sub> |
+| 10399 | <a id="HouseWaresBlock">HouseWaresBlock</a><sub><br/>Lookup common ware delivery policy. Works only for common houses</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // 0 - allow, 1 - block</sub> |
 | - | <a id="HouseWeaponsOrdered">HouseWeaponsOrdered</a><sub><br/>Get the amount of weapons ordered in the house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseWoodcutterChopOnly">HouseWoodcutterChopOnly</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; //_player to whom field must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |

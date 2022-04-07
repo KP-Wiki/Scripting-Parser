@@ -4,6 +4,7 @@ uses
   Classes, SysUtils, Types, StrUtils;
 
 
+function RightStrAfter(const aStr, aSubStr: string): string;
 function StrSubstring(const aStr: string; aFrom: Integer): string;
 function StrLastIndexOf(const aStr, aSubStr: string): Integer;
 function StrTrimRightSeparators(const aStr: string): string;
@@ -11,6 +12,12 @@ procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList);
 
 
 implementation
+
+
+function RightStrAfter(const aStr, aSubStr: string): string;
+begin
+  Result := Copy(aStr, Pos(aSubStr, aStr) + 1, MaxInt);
+end;
 
 
 // string functions
