@@ -28,10 +28,10 @@ type
     edtOutputFileStates: TEdit;
     edtOutputFileUtils: TEdit;
     edtUtilsFile: TEdit;
-    edtHeaderFileActions: TEdit;
-    edtHeaderFileEvents: TEdit;
-    edtHeaderFileStates: TEdit;
-    edtHeaderFileUtils: TEdit;
+    edtTemplateFileActions: TEdit;
+    edtTemplateFileEvents: TEdit;
+    edtTemplateFileStates: TEdit;
+    edtTemplateFileUtils: TEdit;
     TabControl1: TTabControl;
     txtParserOutput: TMemo;
     procedure FormCreate(Sender: TObject);
@@ -88,10 +88,10 @@ begin
   edtEventsFile.Text        := ini.ReadString('INPUT',  'Events',  '..\..\src\scripting\KM_ScriptingEvents.pas');
   edtStatesFile.Text        := ini.ReadString('INPUT',  'States',  '..\..\src\scripting\KM_ScriptingStates.pas');
   edtUtilsFile.Text         := ini.ReadString('INPUT',  'Utils',   '..\..\src\scripting\KM_ScriptingUtils.pas');
-  edtHeaderFileActions.Text := ini.ReadString('HEADER', 'Actions', 'header\Actions.header');
-  edtHeaderFileEvents.Text  := ini.ReadString('HEADER', 'Events',  'header\Events.header');
-  edtHeaderFileStates.Text  := ini.ReadString('HEADER', 'States',  'header\States.header');
-  edtHeaderFileUtils.Text   := ini.ReadString('HEADER', 'Utils',   'header\Utils.header');
+  edtTemplateFileActions.Text := ini.ReadString('TEMPLATE', 'Actions', 'template\Actions.template');
+  edtTemplateFileEvents.Text  := ini.ReadString('TEMPLATE', 'Events',  'template\Events.template');
+  edtTemplateFileStates.Text  := ini.ReadString('TEMPLATE', 'States',  'template\States.template');
+  edtTemplateFileUtils.Text   := ini.ReadString('TEMPLATE', 'Utils',   'template\Utils.template');
   edtOutputFileActions.Text := ini.ReadString('OUTPUT', 'Actions', 'Actions.wiki');
   edtOutputFileEvents.Text  := ini.ReadString('OUTPUT', 'Events',  'Events.wiki');
   edtOutputFileStates.Text  := ini.ReadString('OUTPUT', 'States',  'States.wiki');
@@ -116,10 +116,10 @@ procedure TForm1.btnGenerateWikiClick(Sender: TObject);
 begin
   fScriptingParser.GenerateWiki(
     fParsingGame,
-    edtActionsFile.Text, edtHeaderFileActions.Text, edtOutputFileActions.Text,
-    edtEventsFile.Text, edtHeaderFileEvents.Text, edtOutputFileEvents.Text,
-    edtStatesFile.Text, edtHeaderFileStates.Text, edtOutputFileStates.Text,
-    edtUtilsFile.Text, edtHeaderFileUtils.Text, edtOutputFileUtils.Text
+    edtActionsFile.Text, edtTemplateFileActions.Text, edtOutputFileActions.Text,
+    edtEventsFile.Text, edtTemplateFileEvents.Text, edtOutputFileEvents.Text,
+    edtStatesFile.Text, edtTemplateFileStates.Text, edtOutputFileStates.Text,
+    edtUtilsFile.Text, edtTemplateFileUtils.Text, edtOutputFileUtils.Text
   );
 
   TabControl1Change(nil);
@@ -187,10 +187,10 @@ begin
   ini.WriteString('INPUT',  'Events',  edtEventsFile.Text);
   ini.WriteString('INPUT',  'States',  edtStatesFile.Text);
   ini.WriteString('INPUT',  'Utils',   edtUtilsFile.Text);
-  ini.WriteString('HEADER', 'Actions', edtHeaderFileActions.Text);
-  ini.WriteString('HEADER', 'Events',  edtHeaderFileEvents.Text);
-  ini.WriteString('HEADER', 'States',  edtHeaderFileStates.Text);
-  ini.WriteString('HEADER', 'Utils',   edtHeaderFileUtils.Text);
+  ini.WriteString('TEMPLATE', 'Actions', edtTemplateFileActions.Text);
+  ini.WriteString('TEMPLATE', 'Events',  edtTemplateFileEvents.Text);
+  ini.WriteString('TEMPLATE', 'States',  edtTemplateFileStates.Text);
+  ini.WriteString('TEMPLATE', 'Utils',   edtTemplateFileUtils.Text);
   ini.WriteString('OUTPUT', 'Actions', edtOutputFileActions.Text);
   ini.WriteString('OUTPUT', 'Events',  edtOutputFileEvents.Text);
   ini.WriteString('OUTPUT', 'States',  edtOutputFileStates.Text);

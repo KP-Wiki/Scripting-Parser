@@ -124,9 +124,9 @@ object Form1: TForm1
     object Label5: TLabel
       Left = 371
       Top = 13
-      Width = 52
+      Width = 61
       Height = 13
-      Caption = 'Header file'
+      Caption = 'Template file'
     end
     object Label6: TLabel
       Left = 571
@@ -199,7 +199,7 @@ object Form1: TForm1
       TabOrder = 3
       OnChange = edtOnTextChange
     end
-    object edtHeaderFileActions: TEdit
+    object edtTemplateFileActions: TEdit
       Left = 311
       Top = 32
       Width = 175
@@ -207,7 +207,7 @@ object Form1: TForm1
       TabOrder = 8
       OnChange = edtOnTextChange
     end
-    object edtHeaderFileEvents: TEdit
+    object edtTemplateFileEvents: TEdit
       Left = 311
       Top = 59
       Width = 175
@@ -215,7 +215,7 @@ object Form1: TForm1
       TabOrder = 9
       OnChange = edtOnTextChange
     end
-    object edtHeaderFileStates: TEdit
+    object edtTemplateFileStates: TEdit
       Left = 311
       Top = 86
       Width = 175
@@ -223,7 +223,7 @@ object Form1: TForm1
       TabOrder = 10
       OnChange = edtOnTextChange
     end
-    object edtHeaderFileUtils: TEdit
+    object edtTemplateFileUtils: TEdit
       Left = 311
       Top = 113
       Width = 175

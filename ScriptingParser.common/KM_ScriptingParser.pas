@@ -16,15 +16,15 @@ type
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fText: array [TKMParsingArea] of string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure ParseSource(aArea: TKMParsingArea; const aInputFile, aHeaderFile, aOutputFile: string);
+    procedure ParseSource(aArea: TKMParsingArea; const aInputFile, aTemplateFile, aOutputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
 
     function GetText(aArea: TKMParsingArea): string;
 
-    procedure GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
-      aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
+    procedure GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActTempl, aActOut, aEventIn, aEventTempl, aEventOut,
+      aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut: string);
     procedure GenerateXML;
   end;
 
@@ -66,7 +66,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aInputFile, aHeaderFile, aOutputFile: string);
+procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aInputFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
@@ -82,7 +82,7 @@ begin
 
   sl := TStringList.Create;
 
-  fText[aArea] := fMethods[aArea].ExportWiki(aHeaderFile);
+  fText[aArea] := fMethods[aArea].ExportWiki(aTemplateFile);
   sl.Text := fText[aArea];
 
   exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
@@ -95,15 +95,15 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActHead, aActOut, aEventIn, aEventHead, aEventOut,
-  aStateIn, aStateHead, aStateOut, aUtilIn, aUtilHead, aUtilOut: string);
+procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActTempl, aActOut, aEventIn, aEventTempl, aEventOut,
+  aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut: string);
 begin
   fParsingGame := aParsingGame;
 
-  ParseSource(paActions, aActIn, aActHead, aActOut);
-  ParseSource(paEvents, aEventIn, aEventHead, aEventOut);
-  ParseSource(paStates, aStateIn, aStateHead, aStateOut);
-  ParseSource(paUtils, aUtilIn, aUtilHead, aUtilOut);
+  ParseSource(paActions, aActIn, aActTempl, aActOut);
+  ParseSource(paEvents, aEventIn, aEventTempl, aEventOut);
+  ParseSource(paStates, aStateIn, aStateTempl, aStateOut);
+  ParseSource(paUtils, aUtilIn, aUtilTempl, aUtilOut);
 
   if DBG_COPY_FOR_REFERENCE then
   begin
