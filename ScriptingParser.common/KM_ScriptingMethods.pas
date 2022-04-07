@@ -23,7 +23,7 @@ type
     fResultDesc: string;
   public
     constructor Create;
-    constructor CreateFromStringList(aSource: TStringList);
+    constructor LoadFromStringList(aSource: TStringList);
     destructor Destroy; override;
     function ExportBody(aNeedReturn: Boolean): string;
     function ExportLink: string;
@@ -35,8 +35,6 @@ type
   private
     fArea: TKMParsingArea;
     fList: TObjectList<TKMMethodInfo>;
-    procedure Append(aMethod: TKMMethodInfo);
-    procedure Clear;
     function ExportBody: string;
     function ExportLinks: string;
     function GetCount: Integer;
@@ -67,15 +65,13 @@ begin
 end;
 
 
-constructor TKMMethodInfo.CreateFromStringList(aSource: TStringList);
+constructor TKMMethodInfo.LoadFromStringList(aSource: TStringList);
 var
   I: Integer;
   srcLine, restStr, metName: string;
   strStatus: string;
   details: TStringList;
 begin
-  Create;
-
   details := TStringList.Create;
   try
     I := 0;
@@ -289,7 +285,7 @@ var
   sl: TStringList;
   sectionStarted, sectionTailEnded: Boolean;
 begin
-  Clear;
+  fList.Clear;
 
   slSource := TStringList.Create;
   try
@@ -339,7 +335,8 @@ begin
           sectionTailEnded := True;
           sectionStarted := False;
 
-          Append(TKMMethodInfo.CreateFromStringList(sl));
+          fList.Add(TKMMethodInfo.Create);
+          fList.Last.LoadFromStringList(sl);
         end;
       end;
     end;
@@ -359,18 +356,6 @@ end;
 function TKMScriptMethods.GetItem(aIndex: Integer): TKMMethodInfo;
 begin
   Result := fList[aIndex];
-end;
-
-
-procedure TKMScriptMethods.Append(aMethod: TKMMethodInfo);
-begin
-  fList.Add(aMethod);
-end;
-
-
-procedure TKMScriptMethods.Clear;
-begin
-  fList.Clear;
 end;
 
 
