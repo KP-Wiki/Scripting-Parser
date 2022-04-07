@@ -108,8 +108,8 @@ begin
     if StartsStr('//* Result:', srcLine) then
       ReturnDesc := Trim(RightStrAfter(srcLine, ':'))
     else
-      Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
-      //Details.Add(Trim(RightStrAfter(srcLine, '*')));
+      // Do not trim, we want to preseve the padding (especially in <pre> sections)
+      Details.Add(RightStrAfter(srcLine, '* '));
     Inc(I);
     srcLine := aSource[I];
   end;

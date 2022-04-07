@@ -16,7 +16,7 @@ implementation
 
 function RightStrAfter(const aStr, aSubStr: string): string;
 begin
-  Result := Copy(aStr, Pos(aSubStr, aStr) + 1, MaxInt);
+  Result := Copy(aStr, Pos(aSubStr, aStr) + Length(aSubStr), MaxInt);
 end;
 
 
