@@ -12,11 +12,11 @@ type
   private const
     DBG_COPY_FOR_REFERENCE = True;
   private
-    fListActions, fListEvents, fListStates, fListUtils: TStringList;
     fParsingGame: TKMParsingGame;
     fCommands: array [TKMParsingArea] of TKMScriptCommands;
+    fText: array [TKMParsingArea] of string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure ParseSource(aArea: TKMParsingArea; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
+    procedure ParseSource(aArea: TKMParsingArea; const aInputFile, aHeaderFile, aOutputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -41,11 +41,6 @@ var
 begin
   inherited;
 
-  fListActions := TStringList.Create;
-  fListEvents := TStringList.Create;
-  fListStates := TStringList.Create;
-  fListUtils := TStringList.Create;
-
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
     fCommands[I] := TKMScriptCommands.Create(I);
 end;
@@ -55,11 +50,6 @@ destructor TKMScriptingParser.Destroy;
 var
   I: TKMParsingArea;
 begin
-  FreeAndNil(fListActions);
-  FreeAndNil(fListEvents);
-  FreeAndNil(fListStates);
-  FreeAndNil(fListUtils);
-
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
     FreeAndNil(fCommands[I]);
 
@@ -76,8 +66,9 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; aResultList: TStringList; const aInputFile, aHeaderFile, aOutputFile: string);
+procedure TKMScriptingParser.ParseSource(aArea: TKMParsingArea; const aInputFile, aHeaderFile, aOutputFile: string);
 var
+  sl: TStringList;
   exportPath: string;
 begin
   if not FileExists(aInputFile) then Exit;
@@ -87,16 +78,20 @@ begin
   // Sort for neat order
   fCommands[aArea].SortByName;
 
-  aResultList.Text := fCommands[aArea].ExportWiki(aHeaderFile);
+  if aOutputFile = '' then Exit;
 
-  if aOutputFile <> '' then
-  begin
-    exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
-    if not DirectoryExists(ExtractFileDir(exportPath)) then
-      ForceDirectories(ExtractFileDir(exportPath));
+  sl := TStringList.Create;
 
-    aResultList.SaveToFile(aOutputFile);
-  end;
+  fText[aArea] := fCommands[aArea].ExportWiki(aHeaderFile);
+  sl.Text := fText[aArea];
+
+  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+  if not DirectoryExists(ExtractFileDir(exportPath)) then
+    ForceDirectories(ExtractFileDir(exportPath));
+
+  sl.SaveToFile(aOutputFile);
+
+  sl.Free;
 end;
 
 
@@ -105,10 +100,10 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aA
 begin
   fParsingGame := aParsingGame;
 
-  ParseSource(paActions, fListActions, aActIn, aActHead, aActOut);
-  ParseSource(paEvents, fListEvents, aEventIn, aEventHead, aEventOut);
-  ParseSource(paStates, fListStates, aStateIn, aStateHead, aStateOut);
-  ParseSource(paUtils, fListUtils, aUtilIn, aUtilHead, aUtilOut);
+  ParseSource(paActions, aActIn, aActHead, aActOut);
+  ParseSource(paEvents, aEventIn, aEventHead, aEventOut);
+  ParseSource(paStates, aStateIn, aStateHead, aStateOut);
+  ParseSource(paUtils, aUtilIn, aUtilHead, aUtilOut);
 
   if DBG_COPY_FOR_REFERENCE then
   begin
@@ -128,12 +123,7 @@ end;
 
 function TKMScriptingParser.GetText(aArea: TKMParsingArea): string;
 begin
-  case aArea of
-    paActions:  Result := fListActions.Text;
-    paEvents:   Result := fListEvents.Text;
-    paStates:   Result := fListStates.Text;
-    paUtils:    Result := fListUtils.Text;
-  end;
+  Result := fText[aArea];
 end;
 
 
