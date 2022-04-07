@@ -84,6 +84,8 @@ Dynamic scripts usefull info:
 * <a href="#GiveWaresEx">GiveWaresEx</a>
 * <a href="#GiveWeapons">GiveWeapons</a>
 * <a href="#GiveWeaponsEx">GiveWeaponsEx</a>
+* <a href="#GiveWineField">GiveWineField</a>
+* <a href="#GiveWineFieldAged">GiveWineFieldAged</a>
 * <a href="#GroupAllowAllyToSelect">GroupAllowAllyToSelect</a>
 * <a href="#GroupBlockOrders">GroupBlockOrders</a>
 * <a href="#GroupDisableHungryMessage">GroupDisableHungryMessage</a>
@@ -272,6 +274,8 @@ Dynamic scripts usefull info:
 | 14000 | <a id="GiveWaresEx">GiveWaresEx</a><sub><br/>Adds amount of wares to players 1st Store<br/>Wares are added to first Store</sub> | <sub>**aHand**: Integer; <br/> **aType**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub></sub> |
 | 5165 | <a id="GiveWeapons">GiveWeapons</a><sub><br/>Adds amount of weapons to players 1st Barracks<br/>Weapons are added to first Barracks</sub> | <sub>**aHand**: Integer; <br/> **aType**: Integer; <br/> **aCount**: Integer;</sub> | <sub></sub> |
 | 14000 | <a id="GiveWeaponsEx">GiveWeaponsEx</a><sub><br/>Adds amount of weapons to players 1st Barracks<br/>Weapons are added to first Barracks</sub> | <sub>**aHand**: Integer; <br/> **aType**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub></sub> |
+| 6311 | <a id="GiveWineField">GiveWineField</a><sub><br/>Adds finished winefield and returns true if winefield was successfully added</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer;</sub> | <sub>Boolean</sub> |
+| 7000+ | <a id="GiveWineFieldAged">GiveWineFieldAged</a><sub><br/>Sets winefield age if tile is winefield, or adds finished winefield and sets its age if tile is empty, and returns true if this was successfully done</sub> | <sub>**aHand**: Integer; <br/> **X**: Integer; <br/> **Y**: Integer; <br/> **aStage**: Byte; //_0..3, sets the field growth stage. 0 = new fruits; 3 = grapes are ready to be harvested; according to WINE_STAGES_COUNT_ <br/> **aRandomAge**: Boolean; //_sets FieldAge to random, according to specified stage. Makes fields more realistic_</sub> | <sub>Boolean</sub> |
 | 12600 | <a id="GroupAllowAllyToSelect">GroupAllowAllyToSelect</a><sub><br/>Allows allies to select and view specified group</sub> | <sub>**aGroupID**: Integer; <br/> **aAllow**: Boolean;</sub> | <sub></sub> |
 | 6277 | <a id="GroupBlockOrders">GroupBlockOrders</a><sub><br/>Disables (Disable = True) or enables (Disable = False) control over specifed warriors group</sub> | <sub>**aGroupID**: Integer; <br/> **aBlock**: Boolean;</sub> | <sub></sub> |
 | 5993 | <a id="GroupDisableHungryMessage">GroupDisableHungryMessage</a><sub><br/>Sets whether the specified group will alert the player when they become hungry<br/>(true to disable hunger messages, false to enable them)</sub> | <sub>**aGroupID**: Integer; <br/> **aDisable**: Boolean;</sub> | <sub></sub> |
