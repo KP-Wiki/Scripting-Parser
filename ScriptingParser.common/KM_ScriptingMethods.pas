@@ -12,22 +12,21 @@ type
   // Single method info
   TKMMethodInfo = class
   private
+    fName: string;
+    fType: TKMMethodType;
+    fVersion: string; // Version in which the method was added/changed
+    fStatus: TKMMethodStatus;
+    fReplacement: string;
+    fDescription: string;
     fParameters: TKMScriptParameters; // Parameters parsed from declaration
+    fResultType: string;
+    fResultDesc: string;
   public
-    Name: string;
-    &Type: TKMMethodType;
-    Version: string; // Version in which the method was added/changed
-    Status: TKMMethodStatus;
-    Replacement: string;
-    Description: string;
-    Return: string; // Result type
-    ReturnDesc: string; // Result comment
     constructor Create;
     constructor CreateFromStringList(aSource: TStringList);
     destructor Destroy; override;
-    property Parameters: TKMScriptParameters read fParameters;
-    function GetBody(aNeedReturn: Boolean): string;
-    function GetLink: string;
+    function ExportBody(aNeedReturn: Boolean): string;
+    function ExportLink: string;
   end;
 
 
@@ -38,6 +37,8 @@ type
     fList: TObjectList<TKMMethodInfo>;
     procedure Append(aMethod: TKMMethodInfo);
     procedure Clear;
+    function ExportBody: string;
+    function ExportLinks: string;
     function GetCount: Integer;
     function GetItem(aIndex: Integer): TKMMethodInfo;
   public
@@ -48,8 +49,6 @@ type
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMMethodInfo read GetItem; default;
     procedure SortByName;
-    function GetBody: string;
-    function GetLinks: string;
     function ExportWiki(aHeaderFile: string): string;
   end;
 
@@ -84,7 +83,7 @@ begin
 
     if StartsStr('//* Version:', srcLine) then
     begin
-      Version := Trim(RightStrAfter(srcLine, ':'));
+      fVersion := Trim(RightStrAfter(srcLine, ':'));
       Inc(I);
       srcLine := aSource[I];
     end;
@@ -97,17 +96,17 @@ begin
       begin
         strStatus := Trim(RightStrAfter(srcLine, ':'));
         if StartsStr('Deprecated', strStatus) then
-          Status := msDeprecated
+          fStatus := msDeprecated
         else
         if StartsStr('Removed', strStatus) then
-          Status := msRemoved;
+          fStatus := msRemoved;
       end else
       if StartsStr('//* Replacement:', srcLine) then
-        Replacement := Trim(RightStrAfter(srcLine, ':'))
+        fReplacement := Trim(RightStrAfter(srcLine, ':'))
       else
       // Handle Result description separately to keep the output clean
       if StartsStr('//* Result:', srcLine) then
-        ReturnDesc := Trim(RightStrAfter(srcLine, ':'))
+        fResultDesc := Trim(RightStrAfter(srcLine, ':'))
       else
         // Do not trim, we want to preseve the padding (especially in <pre> sections)
         details.Add(RightStrAfter(srcLine, '* '));
@@ -126,14 +125,14 @@ begin
     // Parse procedure
     if StartsStr('procedure', srcLine) then
     begin
-      &Type := mtProc;
+      fType := mtProc;
 
       if Pos('(', srcLine) <> 0 then
       begin
-        // Procedure with parameters
+        // Procedure with fParameters
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
 
-        // Parameters could go for several lines
+        // fParameters could go for several lines
         restStr := '';
         while Pos(')', srcLine) = 0 do
         begin
@@ -143,26 +142,26 @@ begin
         end;
         restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-        Parameters.ParseFromString(restStr, details);
+        fParameters.ParseFromString(restStr, details);
       end else
-        // Procedure without parameters (ends with ";")
+        // Procedure without fParameters (ends with ";")
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
 
       metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
-      Name := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
+      fName := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
     end;
 
     // Parse function
     if StartsStr('function', srcLine) then
     begin
-      &Type := mtFunc;
+      fType := mtFunc;
 
       if Pos('(', srcLine) <> 0 then
       begin
-        // Function with parameters
+        // Function with fParameters
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
 
-        // Parameters could go for several lines
+        // fParameters could go for several lines
         restStr := '';
         while Pos(')', srcLine) = 0 do
         begin
@@ -172,26 +171,26 @@ begin
         end;
         restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-        Parameters.ParseFromString(restStr, details);
+        fParameters.ParseFromString(restStr, details);
       end else
-        // Function without parameters (ends with ":")
+        // Function without fParameters (ends with ":")
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
 
       metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
-      Name := ReplaceStr(metName, 'Func', 'On');   // For the KMR
+      fName := ReplaceStr(metName, 'Func', 'On');   // For the KMR
 
       // Function result
       restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-      Return := TryTypeToAlias(restStr);
+      fResultType := TryTypeToAlias(restStr);
     end;
 
-    // Now we can assemble Description, after we have detected and removed parameters descriptions from it
+    // Now we can assemble Description, after we have detected and removed fParameters descriptions from it
     for I := 0 to details.Count - 1 do
       // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
       if (I > 0) and (EndsStr('</pre>', details[I-1])) then
-        Description := Description + details[I]
+        fDescription := fDescription + details[I]
       else
-        Description := Description + '<br/>' + details[I];
+        fDescription := fDescription + '<br/>' + details[I];
   finally
     details.Free;
   end;
@@ -206,22 +205,22 @@ begin
 end;
 
 
-function TKMMethodInfo.GetBody(aNeedReturn: Boolean): string;
+function TKMMethodInfo.ExportBody(aNeedReturn: Boolean): string;
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
   deprStr: string;
 begin
-  case Status of
+  case fStatus of
     msDeprecated: begin
                     deprStr := '<br/>' + UNICODE_RED_CROSS + '`Deprecated`<br/>' +
                                '<sub>*Method could be removed in the future game versions';
 
-                    if Replacement <> '' then
-                      if Replacement = StringReplace(Replacement, ' ', '', [rfReplaceAll]) then
-                        deprStr := deprStr + ', use <a href="#' + Replacement + '">' + Replacement + '</a> instead'
+                    if fReplacement <> '' then
+                      if fReplacement = StringReplace(fReplacement, ' ', '', [rfReplaceAll]) then
+                        deprStr := deprStr + ', use <a href="#' + fReplacement + '">' + fReplacement + '</a> instead'
                       else
-                        deprStr := deprStr + ', ' + Replacement;
+                        deprStr := deprStr + ', ' + fReplacement;
 
                     deprStr := deprStr + '*</sub>';
                   end;
@@ -229,11 +228,11 @@ begin
                     deprStr := '<br/>' + UNICODE_RED_CROSS + '`Removed`<br/>' +
                                '<sub>*Method was removed';
 
-                    if Replacement <> '' then
-                      if Replacement = StringReplace(Replacement, ' ', '', [rfReplaceAll]) then
-                        deprStr := deprStr + ', use <a href="#' + Replacement + '">' + Replacement + '</a> instead'
+                    if fReplacement <> '' then
+                      if fReplacement = StringReplace(fReplacement, ' ', '', [rfReplaceAll]) then
+                        deprStr := deprStr + ', use <a href="#' + fReplacement + '">' + fReplacement + '</a> instead'
                       else
-                        deprStr := deprStr + ', ' + Replacement;
+                        deprStr := deprStr + ', ' + fReplacement;
 
                     deprStr := deprStr + '*</sub>';
                   end;
@@ -241,18 +240,18 @@ begin
     deprStr := '';
   end;
 
-  Result := '| ' + IfThen(Version <> '', Version, '-') + ' | <a id="' + Name + '">' + Name + '</a>' +
+  Result := '| ' + IfThen(fVersion <> '', fVersion, '-') + ' | <a id="' + fName + '">' + fName + '</a>' +
               deprStr +
-              '<sub>' + Description + '</sub>' +
-              ' | <sub>' + Parameters.GetText + '</sub>' +
-              IfThen(aNeedReturn, ' | <sub>' + Return + IfThen(ReturnDesc <> '', ' // ' + ReturnDesc) + '</sub>') +
+              '<sub>' + fDescription + '</sub>' +
+              ' | <sub>' + fParameters.GetText + '</sub>' +
+              IfThen(aNeedReturn, ' | <sub>' + fResultType + IfThen(fResultDesc <> '', ' // ' + fResultDesc) + '</sub>') +
               ' |';
 end;
 
 
-function TKMMethodInfo.GetLink: string;
+function TKMMethodInfo.ExportLink: string;
 begin
-  Result := '* <a href="#' + Name + '">' + Name + '</a>';
+  Result := '* <a href="#' + fName + '">' + fName + '</a>';
 end;
 
 
@@ -268,7 +267,7 @@ begin
       function(const A, B: TKMMethodInfo): Integer
       begin
         // Case-sensitive compare, since we use CamelCase and it looks nicer that way
-        Result := CompareText(A.Name, B.Name);
+        Result := CompareText(A.fName, B.fName);
       end));
 end;
 
@@ -375,25 +374,25 @@ begin
 end;
 
 
-function TKMScriptMethods.GetBody: string;
+function TKMScriptMethods.ExportBody: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetBody(AREA_NEED_RETURN[fArea]);
+    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].ExportBody(AREA_NEED_RETURN[fArea]);
 end;
 
 
-function TKMScriptMethods.GetLinks: string;
+function TKMScriptMethods.ExportLinks: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].GetLink;
+    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].ExportLink;
 end;
 
 
@@ -416,7 +415,7 @@ begin
   sl.Add('***');
   sl.Add('');
 
-  sl.Append(GetLinks);
+  sl.Append(ExportLinks);
 
   sl.Add('<br />');
   sl.Add('');
@@ -430,7 +429,7 @@ begin
     sl.Add('| ------- | ------------------------------------ | -------------- |');
   end;
 
-  sl.Append(GetBody);
+  sl.Append(ExportBody);
 
   Result := sl.Text;
 
