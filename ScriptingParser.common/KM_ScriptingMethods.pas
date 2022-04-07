@@ -49,7 +49,7 @@ type
     property Count: Integer read GetCount;
     property Items[aIndex: Integer]: TKMMethodInfo read GetItem; default;
     procedure SortByName;
-    function ExportWiki(aHeaderFile: string): string;
+    function ExportWiki(const aTemplateFile: string): string;
   end;
 
 
@@ -402,34 +402,17 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportWiki(aHeaderFile: string): string;
+function TKMScriptMethods.ExportWiki(const aTemplateFile: string): string;
 var
   sl: TStringList;
 begin
   sl := TStringList.Create;
 
-  if FileExists(aHeaderFile) then
-    sl.LoadFromFile(aHeaderFile);
+  sl.LoadFromFile(aTemplateFile);
 
-  sl.Add('');
-  sl.Add('***');
-  sl.Add('');
-
-  sl.Append(ExportLinks);
-
-  sl.Add('<br />');
-  sl.Add('');
-
-  if AREA_NEED_RETURN[fArea] then
-  begin
-    sl.Add('| Ver<br/>sion | ' + AREA_TITLE[fArea] + ' description | Parameters<br/>and types | Returns |');
-    sl.Add('| ------- | ------------------------------------ | -------------- | ------- |');
-  end else begin
-    sl.Add('| Ver<br/>sion | ' + AREA_TITLE[fArea] + ' description | Parameters<br/>and types |');
-    sl.Add('| ------- | ------------------------------------ | -------------- |');
-  end;
-
-  sl.Append(ExportBody);
+  sl.Text := StringReplace(sl.Text, '{LINKS}', ExportLinks, []);
+  sl.Text := StringReplace(sl.Text, '{TITLE}', AREA_TITLE[fArea], []);
+  sl.Text := StringReplace(sl.Text, '{BODY}', ExportBody, []);
 
   Result := sl.Text;
 

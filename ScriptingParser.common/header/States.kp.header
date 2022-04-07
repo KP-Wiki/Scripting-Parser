@@ -11,3 +11,12 @@ Version column description:
 <sub>"5678" Means this state was introduced in revision 5678.</sub>  
 <sub>"-5678" Means this state was removed in revision 5678.</sub>
 
+
+***
+
+{LINKS}
+<br />
+
+| Ver<br/>sion | {TITLE} description | Parameters<br/>and types | Returns |
+| ------- | ------------------------------------ | -------------- | ------- |
+{BODY}

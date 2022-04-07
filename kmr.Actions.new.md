@@ -28,6 +28,7 @@ Dynamic scripts usefull info:
 * [Advanced Features](https://github.com/reyandme/kam_remake/wiki/Advanced-Features-(Mission-Script-Dynamic))
 * [Custom Console Commands](https://github.com/reyandme/kam_remake/wiki/Custom-Console-Commands-(Mission-Script-Dynamic))
 
+
 ***
 
 * <a href="#AIArmyType">AIArmyType</a>
