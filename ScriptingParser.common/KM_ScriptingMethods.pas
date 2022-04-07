@@ -109,7 +109,7 @@ begin
       ReturnDesc := Trim(RightStrAfter(srcLine, ':'))
     else
       Details.Add(StrSubstring(srcLine, Pos('*', srcLine) + 1));
-      //todo: Details.Add(RightStrAfter(srcLine, '*'));
+      //Details.Add(Trim(RightStrAfter(srcLine, '*')));
     Inc(I);
     srcLine := aSource[I];
   end;
@@ -136,7 +136,7 @@ begin
       restStr := '';
       while Pos(')', srcLine) = 0 do
       begin
-        restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
         Inc(I);
         srcLine := aSource[I];
       end;
@@ -166,7 +166,7 @@ begin
       restStr := '';
       while Pos(')', srcLine) = 0 do
       begin
-        restStr := Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
         Inc(I);
         srcLine := aSource[I];
       end;
