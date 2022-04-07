@@ -7,8 +7,13 @@ uses
 type
   // Single parameter info
   TKMScriptParameter = class
+  strict private
+    fName: string;
+    fModifier: string;
+    fVarType: string;
+    fDesc: string;
   public
-    Name, Modifier, VarType, Desc: string;
+    constructor Create(const aName, aModifier, aVarType, aDesc: string);
     function GetText: string;
   end;
 
@@ -16,8 +21,6 @@ type
   TKMScriptParameters = class
   private
     fList: TObjectList<TKMScriptParameter>;
-    function GetCount: Integer;
-    function GetItem(aIndex: Integer): TKMScriptParameter;
     procedure SplitArguments(const aArguments: string; aTokenList: TStringList);
     function FindDescription(const aName: string; aDescriptions: TStringList): string;
     procedure CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
@@ -25,9 +28,6 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    procedure Append(aName, aModifier, aVarType, aDesc: string);
-    property Count: Integer read GetCount;
-    property Items[aIndex: Integer]: TKMScriptParameter read GetItem; default;
     function GetText: string;
 
     procedure ParseFromString(const aArguments: string; aDescriptions: TStringList);
@@ -40,9 +40,20 @@ uses
 
 
 { TKMScriptParameter }
+constructor TKMScriptParameter.Create(const aName, aModifier, aVarType, aDesc: string);
+begin
+  inherited Create;
+
+  fName := aName;
+  fModifier := aModifier;
+  fVarType := aVarType;
+  fDesc := aDesc;
+end;
+
+
 function TKMScriptParameter.GetText: string;
 begin
-  Result := '**' + IfThen(Modifier <> '', Modifier + ' ') + Name + '**: ' + VarType + ';' + IfThen(Desc <> '', ' // _' + Desc + '_');
+  Result := '**' + IfThen(fModifier <> '', fModifier + ' ') + fName + '**: ' + fVarType + ';' + IfThen(fDesc <> '', ' // _' + fDesc + '_');
 end;
 
 
@@ -63,39 +74,14 @@ begin
 end;
 
 
-function TKMScriptParameters.GetItem(aIndex: Integer): TKMScriptParameter;
-begin
-  Result := fList[aIndex];
-end;
-
-
 function TKMScriptParameters.GetText: string;
 var
   I: Integer;
 begin
   Result := '';
 
-  for I := 0 to Count - 1 do
-    Result := Result + Items[I].GetText + IfThen(I <> Count - 1, ' <br/> ');
-end;
-
-
-procedure TKMScriptParameters.Append(aName, aModifier, aVarType, aDesc: string);
-var
-  sp: TKMScriptParameter;
-begin
-  sp := TKMScriptParameter.Create;
-  sp.Name := aName;
-  sp.Modifier := aModifier;
-  sp.VarType := aVarType;
-  sp.Desc := aDesc;
-  fList.Add(sp);
-end;
-
-
-function TKMScriptParameters.GetCount: Integer;
-begin
-  Result := fList.Count;
+  for I := 0 to fList.Count - 1 do
+    Result := Result + fList[I].GetText + IfThen(I <> fList.Count - 1, ' <br/> ');
 end;
 
 
@@ -177,7 +163,7 @@ begin
   for I := 0 to aTokenList.Count - 1 do
   if not TokenIsModifier(aTokenList[I], newModifier)
   and not TokenIsType(aTokenList[I], newType) then
-    Append(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions));
+    fList.Add(TKMScriptParameter.Create(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
 end;
 
 

@@ -37,15 +37,11 @@ type
     fList: TObjectList<TKMMethodInfo>;
     function ExportBody: string;
     function ExportLinks: string;
-    function GetCount: Integer;
-    function GetItem(aIndex: Integer): TKMMethodInfo;
   public
     constructor Create(aArea: TKMParsingArea);
     destructor Destroy; override;
 
     procedure LoadFromFile(const aInputFile: string);
-    property Count: Integer read GetCount;
-    property Items[aIndex: Integer]: TKMMethodInfo read GetItem; default;
     procedure SortByName;
     function ExportWiki(const aTemplateFile: string): string;
   end;
@@ -347,26 +343,14 @@ begin
 end;
 
 
-function TKMScriptMethods.GetCount: Integer;
-begin
-  Result := fList.Count;
-end;
-
-
-function TKMScriptMethods.GetItem(aIndex: Integer): TKMMethodInfo;
-begin
-  Result := fList[aIndex];
-end;
-
-
 function TKMScriptMethods.ExportBody: string;
 var
   I: Integer;
 begin
   Result := '';
 
-  for I := 0 to Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].ExportBody(AREA_NEED_RETURN[fArea]);
+  for I := 0 to fList.Count - 1 do
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportBody(AREA_NEED_RETURN[fArea]);
 end;
 
 
@@ -376,8 +360,8 @@ var
 begin
   Result := '';
 
-  for I := 0 to Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + Items[I].ExportLink;
+  for I := 0 to fList.Count - 1 do
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportLink;
 end;
 
 
