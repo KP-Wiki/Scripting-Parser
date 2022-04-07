@@ -253,7 +253,7 @@ var
   I: Integer;
   srcLine: string;
   sl: TStringList;
-  sectionStarted, sectionTailEnded: Boolean;
+  sectionStarted: Boolean;
 begin
   fList.Clear;
 
@@ -263,51 +263,37 @@ begin
 
     // Assemble method sections 1 by 1
       {
-      //* Version: 1234
-      //* Status: -/Deprecated/Removed [optional]
-      //* Replacement: Link to the replacement method [optional]
-      //* Large description of the method [optional]
-      //* aX: Small optional description of parameter
-      //* aY: Small optional description of parameter
-      //* Result: Small optional description of returned value
-      function Something(something, something, something
-        something): something
+      //* Scripting type
+      TKMFenceType = (fctNone,
+        //
+
+        'fctWood, fctWoodStone,
+        'fctHouseArea, fctHouseAreaGates
+        );
       }
 
-
     sectionStarted := False;
-    sectionTailEnded := True;
 
     sl := TStringList.Create;
     for I := 0 to slSource.Count - 1 do
     begin
       srcLine := slSource[I];
 
-      if not sectionStarted and StartsStr('//*', srcLine) then
+      if not sectionStarted and StartsStr('//* Scripting type', srcLine) then
       begin
         sectionStarted := True;
-        sectionTailEnded := True;
         sl.Clear;
       end;
 
       if sectionStarted then
         sl.Append(slSource[I]);
 
-      if sectionStarted and (StartsStr('procedure', srcLine) or StartsStr('function', srcLine) or not sectionTailEnded) then
+      if sectionStarted and (Pos(';', srcLine) > 0) then
       begin
-        if (Pos('(', srcLine) > 0)  then
-          sectionTailEnded := False;
-        if (Pos(')', srcLine) > 0)  then
-          sectionTailEnded := True;
+        sectionStarted := False;
 
-        if sectionTailEnded then
-        begin
-          sectionTailEnded := True;
-          sectionStarted := False;
-
-          fList.Add(TKMTypeInfo.Create);
-          fList.Last.LoadFromStringList(sl);
-        end;
+        fList.Add(TKMTypeInfo.Create);
+        fList.Last.LoadFromStringList(sl);
       end;
     end;
     sl.Free;
