@@ -82,7 +82,7 @@ object Form1: TForm1
     Left = 8
     Top = 8
     Width = 697
-    Height = 145
+    Height = 169
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Settings '
     TabOrder = 4
@@ -135,7 +135,14 @@ object Form1: TForm1
       Height = 13
       Caption = 'Output file'
     end
-    object edtActionsFile: TEdit
+    object Label7: TLabel
+      Left = 12
+      Top = 140
+      Width = 33
+      Height = 13
+      Caption = 'Types:'
+    end
+    object edActionsIn: TEdit
       Left = 55
       Top = 32
       Width = 250
@@ -143,7 +150,7 @@ object Form1: TForm1
       TabOrder = 0
       OnChange = edtOnTextChange
     end
-    object edtEventsFile: TEdit
+    object edEventsIn: TEdit
       Left = 55
       Top = 59
       Width = 250
@@ -151,7 +158,7 @@ object Form1: TForm1
       TabOrder = 1
       OnChange = edtOnTextChange
     end
-    object edtStatesFile: TEdit
+    object edStatesIn: TEdit
       Left = 55
       Top = 86
       Width = 250
@@ -159,7 +166,7 @@ object Form1: TForm1
       TabOrder = 2
       OnChange = edtOnTextChange
     end
-    object edtOutputFileActions: TEdit
+    object edActionsOut: TEdit
       Left = 492
       Top = 32
       Width = 200
@@ -167,7 +174,7 @@ object Form1: TForm1
       TabOrder = 4
       OnChange = edtOnTextChange
     end
-    object edtOutputFileEvents: TEdit
+    object edEventsOut: TEdit
       Left = 492
       Top = 59
       Width = 200
@@ -175,7 +182,7 @@ object Form1: TForm1
       TabOrder = 5
       OnChange = edtOnTextChange
     end
-    object edtOutputFileStates: TEdit
+    object edStatesOut: TEdit
       Left = 492
       Top = 86
       Width = 200
@@ -183,7 +190,7 @@ object Form1: TForm1
       TabOrder = 6
       OnChange = edtOnTextChange
     end
-    object edtOutputFileUtils: TEdit
+    object edUtilsOut: TEdit
       Left = 492
       Top = 113
       Width = 200
@@ -191,7 +198,7 @@ object Form1: TForm1
       TabOrder = 7
       OnChange = edtOnTextChange
     end
-    object edtUtilsFile: TEdit
+    object edUtilsIn: TEdit
       Left = 55
       Top = 113
       Width = 250
@@ -199,7 +206,7 @@ object Form1: TForm1
       TabOrder = 3
       OnChange = edtOnTextChange
     end
-    object edtTemplateFileActions: TEdit
+    object edActionsTemplate: TEdit
       Left = 311
       Top = 32
       Width = 175
@@ -207,7 +214,7 @@ object Form1: TForm1
       TabOrder = 8
       OnChange = edtOnTextChange
     end
-    object edtTemplateFileEvents: TEdit
+    object edEventsTemplate: TEdit
       Left = 311
       Top = 59
       Width = 175
@@ -215,7 +222,7 @@ object Form1: TForm1
       TabOrder = 9
       OnChange = edtOnTextChange
     end
-    object edtTemplateFileStates: TEdit
+    object edStatesTemplate: TEdit
       Left = 311
       Top = 86
       Width = 175
@@ -223,7 +230,7 @@ object Form1: TForm1
       TabOrder = 10
       OnChange = edtOnTextChange
     end
-    object edtTemplateFileUtils: TEdit
+    object edUtilsTemplate: TEdit
       Left = 311
       Top = 113
       Width = 175
@@ -231,12 +238,36 @@ object Form1: TForm1
       TabOrder = 11
       OnChange = edtOnTextChange
     end
+    object edTypesOut: TEdit
+      Left = 492
+      Top = 137
+      Width = 200
+      Height = 21
+      TabOrder = 12
+      OnChange = edtOnTextChange
+    end
+    object edTypesIn: TEdit
+      Left = 55
+      Top = 137
+      Width = 250
+      Height = 21
+      TabOrder = 13
+      OnChange = edtOnTextChange
+    end
+    object edTypesTemplate: TEdit
+      Left = 311
+      Top = 137
+      Width = 175
+      Height = 21
+      TabOrder = 14
+      OnChange = edtOnTextChange
+    end
   end
   object TabControl1: TTabControl
     Left = 8
-    Top = 159
+    Top = 184
     Width = 802
-    Height = 481
+    Height = 456
     TabOrder = 5
     Tabs.Strings = (
       'Actions'
@@ -247,17 +278,18 @@ object Form1: TForm1
     OnChange = TabControl1Change
     DesignSize = (
       802
-      481)
+      456)
     object txtParserOutput: TMemo
       Left = 3
       Top = 27
       Width = 790
-      Height = 451
+      Height = 426
       Anchors = [akLeft, akTop, akRight, akBottom]
       ReadOnly = True
       ScrollBars = ssVertical
       TabOrder = 0
       OnKeyPress = txtParserOutputKeyPress
+      ExplicitHeight = 451
     end
   end
   object btnKromKMR: TButton

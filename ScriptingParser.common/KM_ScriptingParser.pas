@@ -24,7 +24,7 @@ type
     function GetText(aArea: TKMParsingArea): string;
 
     procedure GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActTempl, aActOut, aEventIn, aEventTempl, aEventOut,
-      aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut: string);
+      aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut, aTypeIn, aTypeTempl, aTypeOut: string);
     procedure GenerateXML;
   end;
 
@@ -96,7 +96,7 @@ end;
 
 
 procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActTempl, aActOut, aEventIn, aEventTempl, aEventOut,
-  aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut: string);
+  aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut, aTypeIn, aTypeTempl, aTypeOut: string);
 begin
   fParsingGame := aParsingGame;
 
