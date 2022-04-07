@@ -6,15 +6,16 @@ uses
   KM_ScriptingParameters, KM_ScriptingTypes;
 
 type
+  TKMMethodType = (mtFunc, mtProc);
   TKMMethodStatus = (msOk, msDeprecated, msRemoved);
 
   // Single method info
   TKMMethodInfo = class
   private
-    fDetails: TStringList; // Method description and parameters comments
     fParameters: TKMScriptParameters; // Parameters parsed from declaration
   public
     Name: string;
+    &Type: TKMMethodType;
     Version: string; // Version in which the method was added/changed
     Status: TKMMethodStatus;
     Replacement: string;
@@ -24,7 +25,6 @@ type
     constructor Create;
     constructor CreateFromStringList(aSource: TStringList);
     destructor Destroy; override;
-    property Details: TStringList read fDetails;
     property Parameters: TKMScriptParameters read fParameters;
     function GetBody(aNeedReturn: Boolean): string;
     function GetLink: string;
@@ -64,7 +64,6 @@ constructor TKMMethodInfo.Create;
 begin
   inherited;
 
-  fDetails := TStringList.Create;
   fParameters := TKMScriptParameters.Create;
 end;
 
@@ -74,124 +73,133 @@ var
   I: Integer;
   srcLine, restStr, metName: string;
   strStatus: string;
+  details: TStringList;
 begin
   Create;
 
-  I := 0;
-  srcLine := aSource[I];
-
-  if StartsStr('//* Version:', srcLine) then
-  begin
-    Version := Trim(RightStrAfter(srcLine, ':'));
-    Inc(I);
+  details := TStringList.Create;
+  try
+    I := 0;
     srcLine := aSource[I];
-  end;
 
-  // Descriptions are only added by lines starting with "//*"
-  // Repeat until no description tags are found
-  while StartsStr('//*', srcLine) do
-  begin
-    if StartsStr('//* Status:', srcLine) then
+    if StartsStr('//* Version:', srcLine) then
     begin
-      strStatus := Trim(RightStrAfter(srcLine, ':'));
-      if StartsStr('Deprecated', strStatus) then
-        Status := msDeprecated
+      Version := Trim(RightStrAfter(srcLine, ':'));
+      Inc(I);
+      srcLine := aSource[I];
+    end;
+
+    // Descriptions are only added by lines starting with "//*"
+    // Repeat until no description tags are found
+    while StartsStr('//*', srcLine) do
+    begin
+      if StartsStr('//* Status:', srcLine) then
+      begin
+        strStatus := Trim(RightStrAfter(srcLine, ':'));
+        if StartsStr('Deprecated', strStatus) then
+          Status := msDeprecated
+        else
+        if StartsStr('Removed', strStatus) then
+          Status := msRemoved;
+      end else
+      if StartsStr('//* Replacement:', srcLine) then
+        Replacement := Trim(RightStrAfter(srcLine, ':'))
       else
-      if StartsStr('Removed', strStatus) then
-        Status := msRemoved;
-    end else
-    if StartsStr('//* Replacement:', srcLine) then
-      Replacement := Trim(RightStrAfter(srcLine, ':'))
-    else
-    // Handle Result description separately to keep the output clean
-    if StartsStr('//* Result:', srcLine) then
-      ReturnDesc := Trim(RightStrAfter(srcLine, ':'))
-    else
-      // Do not trim, we want to preseve the padding (especially in <pre> sections)
-      Details.Add(RightStrAfter(srcLine, '* '));
-    Inc(I);
-    srcLine := aSource[I];
-  end;
+      // Handle Result description separately to keep the output clean
+      if StartsStr('//* Result:', srcLine) then
+        ReturnDesc := Trim(RightStrAfter(srcLine, ':'))
+      else
+        // Do not trim, we want to preseve the padding (especially in <pre> sections)
+        details.Add(RightStrAfter(srcLine, '* '));
+      Inc(I);
+      srcLine := aSource[I];
+    end;
 
-  // Skip empty or "faulty" lines (e.g. comments not intended for wiki)
-  while not StartsStr('procedure', srcLine)
-  and not StartsStr('function', srcLine) do
-  begin
-    Inc(I);
-    srcLine := aSource[I];
-  end;
-
-  // Parse procedure
-  if StartsStr('procedure', srcLine) then
-  begin
-    if Pos('(', srcLine) <> 0 then
+    // Skip empty or "faulty" lines (e.g. comments not intended for wiki)
+    while not StartsStr('procedure', srcLine)
+    and not StartsStr('function', srcLine) do
     begin
-      // Procedure with parameters
-      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
+      Inc(I);
+      srcLine := aSource[I];
+    end;
 
-      // Parameters could go for several lines
-      restStr := '';
-      while Pos(')', srcLine) = 0 do
-      begin
-        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
-        Inc(I);
-        srcLine := aSource[I];
-      end;
-      restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
-
-      Parameters.ParseFromString(restStr, Details);
-    end else
-      // Procedure without parameters (ends with ";")
-      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
-
-    metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
-    Name := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
-  end;
-
-  // Parse function
-  if StartsStr('function', srcLine) then
-  begin
-    if Pos('(', srcLine) <> 0 then
+    // Parse procedure
+    if StartsStr('procedure', srcLine) then
     begin
-      // Function with parameters
-      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
+      &Type := mtProc;
 
-      // Parameters could go for several lines
-      restStr := '';
-      while Pos(')', srcLine) = 0 do
+      if Pos('(', srcLine) <> 0 then
       begin
-        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
-        Inc(I);
-        srcLine := aSource[I];
-      end;
-      restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
+        // Procedure with parameters
+        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
 
-      Parameters.ParseFromString(restStr, Details);
-    end else
-      // Function without parameters (ends with ":")
-      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
+        // Parameters could go for several lines
+        restStr := '';
+        while Pos(')', srcLine) = 0 do
+        begin
+          restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+          Inc(I);
+          srcLine := aSource[I];
+        end;
+        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
 
-    metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
-    Name := ReplaceStr(metName, 'Func', 'On');   // For the KMR
+        Parameters.ParseFromString(restStr, details);
+      end else
+        // Procedure without parameters (ends with ";")
+        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
 
-    // Function result
-    restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-    Return := TryTypeToAlias(restStr);
+      metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
+      Name := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
+    end;
+
+    // Parse function
+    if StartsStr('function', srcLine) then
+    begin
+      &Type := mtFunc;
+
+      if Pos('(', srcLine) <> 0 then
+      begin
+        // Function with parameters
+        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
+
+        // Parameters could go for several lines
+        restStr := '';
+        while Pos(')', srcLine) = 0 do
+        begin
+          restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
+          Inc(I);
+          srcLine := aSource[I];
+        end;
+        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
+
+        Parameters.ParseFromString(restStr, details);
+      end else
+        // Function without parameters (ends with ":")
+        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
+
+      metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
+      Name := ReplaceStr(metName, 'Func', 'On');   // For the KMR
+
+      // Function result
+      restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
+      Return := TryTypeToAlias(restStr);
+    end;
+
+    // Now we can assemble Description, after we have detected and removed parameters descriptions from it
+    for I := 0 to details.Count - 1 do
+      // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
+      if (I > 0) and (EndsStr('</pre>', details[I-1])) then
+        Description := Description + details[I]
+      else
+        Description := Description + '<br/>' + details[I];
+  finally
+    details.Free;
   end;
-
-  // Now we can assemble Description, after we have detected and removed parameters descriptions from it
-  for I := 0 to Details.Count - 1 do
-    // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-    if (I > 0) and (EndsStr('</pre>', Details[I-1])) then
-      Description := Description + Details[I]
-    else
-      Description := Description + '<br/>' + Details[I];
 end;
 
 
 destructor TKMMethodInfo.Destroy;
 begin
-  FreeAndNil(fDetails);
   FreeAndNil(fParameters);
 
   inherited;
