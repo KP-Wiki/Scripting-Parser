@@ -72,8 +72,7 @@ end;
 constructor TKMMethodInfo.CreateFromStringList(aSource: TStringList);
 var
   I: Integer;
-  srcLine: string;
-  restStr: string;
+  srcLine, restStr, metName: string;
   strStatus: string;
 begin
   Create;
@@ -122,15 +121,13 @@ begin
     srcLine := aSource[I];
   end;
 
-  // Format procedures
+  // Parse procedure
   if StartsStr('procedure', srcLine) then
   begin
     if Pos('(', srcLine) <> 0 then
     begin
       // Procedure with parameters
-      restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-      restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
-      Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
+      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
 
       // Parameters could go for several lines
       restStr := '';
@@ -144,23 +141,20 @@ begin
 
       Parameters.ParseFromString(restStr, Details);
     end else
-    begin
-      // Procedure without parameters
-      restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
-      restStr := ReplaceStr(restStr, 'ProcOn', 'On'); // For the KP
-      Name := ReplaceStr(restStr, 'Proc', 'On');   // For the KMR
-    end;
+      // Procedure without parameters (ends with ";")
+      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
+
+    metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
+    Name := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
   end;
 
-  // Format functions
+  // Parse function
   if StartsStr('function', srcLine) then
   begin
     if Pos('(', srcLine) <> 0 then
     begin
       // Function with parameters
-      restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-      restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
-      Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
+      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
 
       // Parameters could go for several lines
       restStr := '';
@@ -174,12 +168,11 @@ begin
 
       Parameters.ParseFromString(restStr, Details);
     end else
-    begin
-      // Function without parameters
-      restStr := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
-      restStr := ReplaceStr(restStr, 'FuncOn', 'On'); // For the KP
-      Name := ReplaceStr(restStr, 'Func', 'On');   // For the KMR
-    end;
+      // Function without parameters (ends with ":")
+      metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
+
+    metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
+    Name := ReplaceStr(metName, 'Func', 'On');   // For the KMR
 
     // Function result
     restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
@@ -189,7 +182,7 @@ begin
   // Now we can assemble Description, after we have detected and removed parameters descriptions from it
   for I := 0 to Details.Count - 1 do
     // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-    if (I > 0) and (RightStr(Details[I-1], 6) = '</pre>') then
+    if (I > 0) and (EndsStr('</pre>', Details[I-1])) then
       Description := Description + Details[I]
     else
       Description := Description + '<br/>' + Details[I];
