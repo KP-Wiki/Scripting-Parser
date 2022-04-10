@@ -133,10 +133,10 @@ Version column description:
 | - | <a id="PlayerDefeated">PlayerDefeated</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerEnabled">PlayerEnabled</a><sub><br/>Check if hand is enabled (chosen to be played by anyone on mission start)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
 | 8743 | <a id="PlayerFogRevealed">PlayerFogRevealed</a><sub><br/>See if tile is revealed to the player (known or live)</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="PlayerGetAllGroups">PlayerGetAllGroups</a><sub><br/>Get list of all players groups</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>array of Integer</sub> |
-| - | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Return all players houses that are not destroyed</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>array of Integer</sub> |
+| - | <a id="PlayerGetAllGroups">PlayerGetAllGroups</a><sub><br/>Get list of all players groups</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
+| - | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Return all players houses that are not destroyed</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | - | <a id="PlayerGetAllRoads">PlayerGetAllRoads</a><sub><br/>Get list of all players roads</sub> | <sub>**aPlayer**: Integer; // _player to whom roads must belong. 0..N-1_</sub> | <sub>TKMPointArray</sub> |
-| - | <a id="PlayerGetAllUnits">PlayerGetAllUnits</a><sub><br/>Return all players units that are not dead and not in training</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>array of Integer</sub> |
+| - | <a id="PlayerGetAllUnits">PlayerGetAllUnits</a><sub><br/>Return all players units that are not dead and not in training</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | 10697 | <a id="PlayerHouseBlocked">PlayerHouseBlocked</a><sub><br/>Check if Player has the house type explicitly blocked from being built</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerHouseCanBuild">PlayerHouseCanBuild</a><sub><br/>Check if Player can build certain house type</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
 | 10697 | <a id="PlayerHouseGranted">PlayerHouseGranted</a><sub><br/>Check if Player has the house explicitly granted (allowed to be built<br/>If house is both granted and blocked - it will be blocked</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |

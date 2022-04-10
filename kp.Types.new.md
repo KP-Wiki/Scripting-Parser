@@ -3,11 +3,11 @@
 
 ***
 
-* <a href="#TIntegerArray">TIntegerArray</a>
 * <a href="#TKMFenceType">TKMFenceType</a>
 * <a href="#TKMGroupType">TKMGroupType</a>
 * <a href="#TKMHouseFace">TKMHouseFace</a>
 * <a href="#TKMHouseType">TKMHouseType</a>
+* <a href="#TKMIntegerArray">TKMIntegerArray</a>
 * <a href="#TKMObjectiveStatus">TKMObjectiveStatus</a>
 * <a href="#TKMObjectiveType">TKMObjectiveType</a>
 * <a href="#TKMPoint">TKMPoint</a>
@@ -17,11 +17,11 @@
 
 | Version | Type name | Elements |
 | ------- | ------------------------------------ | -------------- |
-| - | <a id="TIntegerArray">TIntegerArray</a><sub><br/>array of integers</sub> | <sub>**array of Integer;**</sub>
 | - | <a id="TKMFenceType">TKMFenceType</a><sub><br/>Player buildable fences</sub> | <sub>**fctNone**</sub><br/><sub>**fctWood**</sub><br/><sub>**fctWoodStone**</sub><br/><sub>**fctHouseArea**</sub><br/><sub>**fctHouseAreaGates**</sub>
 | - | <a id="TKMGroupType">TKMGroupType</a><sub><br/>Warrior group type</sub> | <sub>**gtNone**</sub><br/><sub>**gtMelee**</sub><br/><sub>**gtAntiHorse**</sub><br/><sub>**gtRanged**</sub><br/><sub>**gtMounted**</sub>
 | - | <a id="TKMHouseFace">TKMHouseFace</a><sub><br/>Direction to which house shall face</sub> | <sub>**toSouth**</sub><br/><sub>**toWest**</sub><br/><sub>**toNorth**</sub><br/><sub>**toEast**</sub>
 | - | <a id="TKMHouseType">TKMHouseType</a><sub><br/>Type of the house</sub> | <sub>**htNone** // First element should be None for all uninitialized cases</sub><br/><sub>**htFoundry**</sub><br/><sub>**htWeaponSmithy**</sub><br/><sub>**htCoalmakers**</sub><br/><sub>**htIronMine**</sub><br/><sub>**htGoldMine**</sub><br/><sub>**htFisherHut**</sub><br/><sub>**htBakery**</sub><br/><sub>**htFarm**</sub><br/><sub>**htWoodcutters**</sub><br/><sub>**htArmorSmithy**</sub><br/><sub>**htCamp**</sub><br/><sub>**htStables**</sub><br/><sub>**htSchool**</sub><br/><sub>**htStonecutters**</sub><br/><sub>**htMint**</sub><br/><sub>**htCattleFarm**</sub><br/><sub>**htTowerArrow**</sub><br/><sub>**htRangerShop**</sub><br/><sub>**htWeaponWorkshop**</sub><br/><sub>**htArmorWorkshop**</sub><br/><sub>**htBarracks**</sub><br/><sub>**htMill**</sub><br/><sub>**htSiegeWorkshop**</sub><br/><sub>**htButchers**</sub><br/><sub>**htTannery**</sub><br/><sub>**htStore**</sub><br/><sub>**htTavern**</sub><br/><sub>**htBrewery**</sub><br/><sub>**htMarketplace**</sub><br/><sub>**htFort**</sub><br/><sub>**htTowerBolt**</sub><br/><sub>**htCiderMaker**</sub><br/><sub>**htSawmill**</sub><br/><sub>**htSheepyard**</sub><br/><sub>**htClothMaker**</sub><br/><sub>**htCampfire**</sub><br/><sub>**htCottage**</sub><br/><sub>**htWolfsDen**</sub><br/><sub>**htBearsDen**</sub><br/><sub>**htAny** // Abstract type used in requests, when any house will do</sub>
+| - | <a id="TKMIntegerArray">TKMIntegerArray</a><sub><br/>array of integers</sub> | <sub>**array of Integer;**</sub>
 | - | <a id="TKMObjectiveStatus">TKMObjectiveStatus</a><sub><br/>Status of the objective</sub> | <sub>**osHidden** // Objective is not displayed</sub><br/><sub>**osActive** // Objective is active</sub><br/><sub>**osFailed** // Objective has been failed</sub><br/><sub>**osCompleted** // Objective has been completed</sub>
 | - | <a id="TKMObjectiveType">TKMObjectiveType</a><sub><br/>Type of the objective</sub> | <sub>**otMain** // Shown in main section</sub><br/><sub>**otAdditional** // Shown in additional section</sub>
 | - | <a id="TKMPoint">TKMPoint</a><sub><br/>Point<br/>Typically gets used with tile coordinates</sub> | <sub>**X,Y: Integer;**</sub>
