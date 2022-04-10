@@ -1,5 +1,7 @@
-### Types
+### Dynamic Mission Script Types
 
+
+There are several KMR types that could be used in the Mission Dynamic scripts and that are required for some [Actions](https://github.com/reyandme/kam_remake/wiki/Actions-(Mission-Script-Dynamic)), [States](https://github.com/reyandme/kam_remake/wiki/States-(Mission-Script-Dynamic)) or [Events](https://github.com/reyandme/kam_remake/wiki/Events-(Mission-Script-Dynamic)).
 
 ***
 
