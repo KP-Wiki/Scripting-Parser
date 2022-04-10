@@ -1,9 +1,9 @@
 unit KM_ScriptingTypes;
 interface
 uses
-  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, Generics.Defaults,
+  Classes, SysUtils, Types, Generics.Collections, Generics.Defaults,
   Math, StrUtils,
-  KM_ScriptingParameters, KM_ParserTypes;
+  KM_ParserTypes;
 
 type
   // There are these base types:
@@ -29,7 +29,7 @@ type
   end;
 
   // Single type info
-  TKMTypeInfo = class
+  TKMScriptType = class
   private
     fName: string;
     fType: TKMTypeType;
@@ -46,7 +46,7 @@ type
   // List of types
   TKMScriptTypes = class
   private
-    fList: TObjectList<TKMTypeInfo>;
+    fList: TObjectList<TKMScriptType>;
     function ExportBody: string;
     function ExportLinks: string;
   public
@@ -77,7 +77,7 @@ end;
 
 function TKMScriptTypeElement.ExportBody: string;
 begin
-  Result := '<sub>' + fName + IfThen(fDesc <> '', ' // ' + fDesc) + '</sub>';
+  Result := '<sub>**' + fName + '**' + IfThen(fDesc <> '', ' // ' + fDesc) + '</sub>';
 end;
 
 
@@ -204,8 +204,8 @@ begin
 end;
 
 
-{ TKMTypeInfo }
-constructor TKMTypeInfo.Create;
+{ TKMScriptType }
+constructor TKMScriptType.Create;
 begin
   inherited;
 
@@ -213,7 +213,7 @@ begin
 end;
 
 
-destructor TKMTypeInfo.Destroy;
+destructor TKMScriptType.Destroy;
 begin
   FreeAndNil(fElements);
 
@@ -221,7 +221,7 @@ begin
 end;
 
 
-procedure TKMTypeInfo.LoadFromStringList(aSource: TStringList);
+procedure TKMScriptType.LoadFromStringList(aSource: TStringList);
 var
   I: Integer;
   srcLine: string;
@@ -316,7 +316,7 @@ begin
 end;
 
 
-function TKMTypeInfo.ExportBody: string;
+function TKMScriptType.ExportBody: string;
 begin
   Result :=
     '| - | <a id="' + fName + '">' + fName + '</a>' +
@@ -326,7 +326,7 @@ begin
 end;
 
 
-function TKMTypeInfo.ExportLink: string;
+function TKMScriptType.ExportLink: string;
 begin
   Result := '* <a href="#' + fName + '">' + fName + '</a>';
 end;
@@ -343,9 +343,9 @@ constructor TKMScriptTypes.Create;
 begin
   inherited Create;
 
-  fList := TObjectList<TKMTypeInfo>.Create(
-    TComparer<TKMTypeInfo>.Construct(
-      function(const A, B: TKMTypeInfo): Integer
+  fList := TObjectList<TKMScriptType>.Create(
+    TComparer<TKMScriptType>.Construct(
+      function(const A, B: TKMScriptType): Integer
       begin
         // Case-sensitive compare, since we use CamelCase and it looks nicer that way
         Result := CompareText(A.fName, B.fName);
@@ -432,7 +432,7 @@ begin
       begin
         sectionStarted := False;
 
-        fList.Add(TKMTypeInfo.Create);
+        fList.Add(TKMScriptType.Create);
         fList.Last.LoadFromStringList(sl);
       end;
     end;
