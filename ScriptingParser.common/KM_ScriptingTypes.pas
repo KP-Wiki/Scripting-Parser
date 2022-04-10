@@ -172,6 +172,8 @@ begin
                 declaration := aStrings[0];
               end;
 
+              declaration := Trim(ReplaceStr(declaration, ';', ''));
+
               fList.Add(TKMScriptTypeElement.Create(declaration, comment));
             end;
     tSet:   begin
