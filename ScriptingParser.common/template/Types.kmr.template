@@ -6,7 +6,9 @@ There are several KMR types that could be used in the Mission Dynamic scripts an
 ***
 
 {LINKS}
+* <a href="#TReplaceFlags">TReplaceFlags</a>
 
 | Version | Type name | Elements |
 | ------- | ------------------------------------ | -------------- |
 {BODY}
+| - | <a id="TReplaceFlags">TReplaceFlags</a><sub><br/>Replace flags</sub> | <sub>**rfReplaceAll**</sub><br/><sub>**rfIgnoreCase**</sub>
