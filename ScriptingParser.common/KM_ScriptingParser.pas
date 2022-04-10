@@ -1,7 +1,7 @@
 unit KM_ScriptingParser;
 interface
 uses
-  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections,
+  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, System.IOUtils,
   StrUtils,
   KM_ScriptingMethods,
   KM_ScriptingParameters,
@@ -106,10 +106,17 @@ procedure TKMScriptingParser.ParseTypes(const aInputFile, aTemplateFile, aOutput
 var
   sl: TStringList;
   exportPath: string;
+  s: TStringDynArray;
+  I: Integer;
 begin
-  if not FileExists(aInputFile) then Exit;
+  if not DirectoryExists(aInputFile) then Exit;
 
-  fTypes.LoadFromFile(aInputFile);
+  fTypes.Clear;
+
+  // Get all files matching the mask
+  s := TDirectory.GetFiles(aInputFile, 'KM_*.pas', TSearchOption.soAllDirectories);
+  for I := Low(s) to High(s) do
+    fTypes.LoadFromFile(s[I]);
 
   // Sort for neat order
   fTypes.SortByName;

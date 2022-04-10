@@ -2,27 +2,30 @@ unit KM_ScriptingTypes;
 interface
 uses
   Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, Generics.Defaults,
-  StrUtils,
+  Math, StrUtils,
   KM_ScriptingParameters, KM_ParserTypes;
 
 type
   // There are these base types:
-  TKMTypeType = (
-     tEnum,
-     tRecord,
-     tArray,
-     tSet
-    );
-  // Enum
-  // Record
-  // Array of
-  // Set of
+  TKMTypeType = (tEnum, tRecord, tArray, tSet);
 
-  TKMScriptTypeElement = record
+  TKMScriptTypeElement = class
+  private
+    fName: string;
+    fDesc: string;
   public
-    Name: string;
-    &Type: string;
-    Desc: string;
+    constructor Create(const aName, aDesc: string);
+    function ExportBody: string;
+  end;
+
+  TKMScriptTypeElements = class
+  private
+    fList: TList<TKMScriptTypeElement>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure ParseFromStringList(aType: TKMTypeType; aStrings: TStringList);
+    function ExportBody: string;
   end;
 
   // Single type info
@@ -31,7 +34,7 @@ type
     fName: string;
     fType: TKMTypeType;
     fDescription: string;
-    fElements: TList<TKMScriptTypeElement>;
+    fElements: TKMScriptTypeElements;
   public
     constructor Create;
     destructor Destroy; override;
@@ -50,6 +53,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure Clear;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
     function ExportWiki(const aTemplateFile: string): string;
@@ -61,12 +65,151 @@ uses
   KM_ScriptingConsts, KM_StringUtils;
 
 
+{ TKMScriptTypeElement }
+constructor TKMScriptTypeElement.Create(const aName, aDesc: string);
+begin
+  inherited Create;
+
+  fName := aName;
+  fDesc := aDesc;
+end;
+
+
+function TKMScriptTypeElement.ExportBody: string;
+begin
+  Result := '<sub>' + fName + IfThen(fDesc <> '', ' // ' + fDesc) + '</sub>';
+end;
+
+
+{ TKMScriptTypeElements }
+constructor TKMScriptTypeElements.Create;
+begin
+  inherited;
+
+  fList := TList<TKMScriptTypeElement>.Create;
+end;
+
+
+destructor TKMScriptTypeElements.Destroy;
+begin
+  FreeAndNil(fList);
+
+  inherited;
+end;
+
+
+procedure TKMScriptTypeElements.ParseFromStringList(aType: TKMTypeType; aStrings: TStringList);
+var
+  I: Integer;
+  comment: string;
+  colonPos, commentPos: Integer;
+  declaration: string;
+  elements: TStringDynArray;
+  K: Integer;
+begin
+  case aType of
+    tEnum:  begin
+              aStrings[0] := ReplaceStr(aStrings[0], '(', '');
+              aStrings[aStrings.Count - 1] := ReplaceStr(aStrings[aStrings.Count - 1], ');', '');
+
+              for I := 0 to aStrings.Count - 1 do
+              if aStrings[I] <> '' then
+              begin
+                commentPos := Pos('//', aStrings[I]);
+                if commentPos > 0 then
+                begin
+                  comment := Trim(RightStr(aStrings[I], Length(aStrings[I]) - commentPos - 1));
+                  declaration := LeftStr(aStrings[I], commentPos - 1);
+                end else
+                begin
+                  comment := '';
+                  declaration := aStrings[I];
+                end;
+
+                elements := SplitString(declaration, ',');
+
+                for K := Low(elements) to High(elements) do
+                if Trim(elements[K]) <> '' then
+                  fList.Add(TKMScriptTypeElement.Create(Trim(elements[K]), comment));
+              end;
+            end;
+    tRecord:for I := 0 to aStrings.Count - 1 do
+            if (aStrings[I] <> '')
+            and (Pos(':', aStrings[I]) > 0) then
+            begin
+              colonPos := Pos(':', aStrings[I]);
+              commentPos := Pos('//', aStrings[I]);
+
+              if (Pos('(', aStrings[I]) > colonPos)
+              or (Pos(')', aStrings[I]) > colonPos)
+              or InRange(Pos('function', aStrings[I]), 1, colonPos)
+              or InRange(Pos('procedure', aStrings[I]), 1, colonPos) then
+                Continue;
+
+              if commentPos > 0 then
+              begin
+                comment := Trim(RightStr(aStrings[I], Length(aStrings[I]) - commentPos - 1));
+                declaration := LeftStr(aStrings[I], commentPos - 1);
+              end else
+              begin
+                comment := '';
+                declaration := aStrings[I];
+              end;
+
+              fList.Add(TKMScriptTypeElement.Create(declaration, comment));
+            end;
+    tArray: begin
+              Assert(aStrings.Count = 1);
+              commentPos := Pos('//', aStrings[0]);
+
+              if commentPos > 0 then
+              begin
+                comment := Trim(RightStr(aStrings[0], Length(aStrings[0]) - commentPos - 1));
+                declaration := LeftStr(aStrings[0], commentPos - 1);
+              end else
+              begin
+                comment := '';
+                declaration := aStrings[0];
+              end;
+
+              fList.Add(TKMScriptTypeElement.Create(declaration, comment));
+            end;
+    tSet:   begin
+              Assert(aStrings.Count = 1);
+              commentPos := Pos('//', aStrings[0]);
+
+              if commentPos > 0 then
+              begin
+                comment := Trim(RightStr(aStrings[0], Length(aStrings[0]) - commentPos - 1));
+                declaration := LeftStr(aStrings[0], commentPos - 1);
+              end else
+              begin
+                comment := '';
+                declaration := aStrings[0];
+              end;
+
+              fList.Add(TKMScriptTypeElement.Create(declaration, comment));
+            end;
+  end;
+end;
+
+
+function TKMScriptTypeElements.ExportBody: string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to fList.Count - 1 do
+    Result := Result + IfThen(I > 0, '<br/>') + fList[I].ExportBody;
+end;
+
+
 { TKMTypeInfo }
 constructor TKMTypeInfo.Create;
 begin
   inherited;
 
-  fElements := TList<TKMScriptTypeElement>.Create;
+  fElements := TKMScriptTypeElements.Create;
 end;
 
 
@@ -81,139 +224,105 @@ end;
 procedure TKMTypeInfo.LoadFromStringList(aSource: TStringList);
 var
   I: Integer;
-  srcLine, restStr, metName: string;
-  strStatus: string;
+  srcLine: string;
+  enumStr: TStringList; // Needs to be a list because of comments
   details: TStringList;
 begin
-  {details := TStringList.Create;
+  details := TStringList.Create;
+  enumStr := TStringList.Create;
   try
     I := 0;
     srcLine := aSource[I];
 
-    if StartsStr('//* Version:', srcLine) then
-    begin
-      fVersion := Trim(RightStrAfter(srcLine, ':'));
-      Inc(I);
-      srcLine := aSource[I];
-    end;
+//    if StartsStr('//* Version:', srcLine) then
+//    begin
+//      fVersion := Trim(RightStrAfter(srcLine, ':'));
+//      Inc(I);
+//      srcLine := aSource[I];
+//    end;
 
     // Descriptions are only added by lines starting with "//*"
     // Repeat until no description tags are found
     while StartsStr('//*', srcLine) do
     begin
-      if StartsStr('//* Status:', srcLine) then
-      begin
-        strStatus := Trim(RightStrAfter(srcLine, ':'));
-        if StartsStr('Deprecated', strStatus) then
-          fStatus := msDeprecated
-        else
-        if StartsStr('Removed', strStatus) then
-          fStatus := msRemoved;
-      end else
-      if StartsStr('//* Replacement:', srcLine) then
-        fReplacement := Trim(RightStrAfter(srcLine, ':'))
-      else
-      // Handle Result description separately to keep the output clean
-      if StartsStr('//* Result:', srcLine) then
-        fResultDesc := Trim(RightStrAfter(srcLine, ':'))
-      else
-        // Do not trim, we want to preseve the padding (especially in <pre> sections)
-        details.Add(RightStrAfter(srcLine, '* '));
+      details.Add(RightStrAfter(srcLine, '* '));
       Inc(I);
       srcLine := aSource[I];
     end;
 
     // Skip empty or "faulty" lines (e.g. comments not intended for wiki)
-    while not StartsStr('procedure', srcLine)
-    and not StartsStr('function', srcLine) do
+    // until we get a type declaration (must start with T)
+    while not StartsStr('T', srcLine) do
     begin
       Inc(I);
       srcLine := aSource[I];
     end;
 
-    // Parse procedure
-    if StartsStr('procedure', srcLine) then
+    // Parse enum - detected by "("
+    if Pos('(', srcLine) > 0 then
     begin
-      fType := mtProc;
+      fType := tEnum;
 
-      if Pos('(', srcLine) <> 0 then
-      begin
-        // Procedure with fParameters
-        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-
-        // fParameters could go for several lines
-        restStr := '';
-        while Pos(')', srcLine) = 0 do
-        begin
-          restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
-          Inc(I);
-          srcLine := aSource[I];
-        end;
-        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
-
-        fParameters.ParseFromString(restStr, details);
-      end else
-        // Procedure without fParameters (ends with ";")
-        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
-
-      metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
-      fName := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
+      enumStr.Text := srcLine;
+      if I < aSource.Count - 1 then
+      repeat
+        Inc(I);
+        srcLine := aSource[I];
+        enumStr.Append(srcLine);
+      until Pos(')', srcLine) <> 0;
     end;
 
-    // Parse function
-    if StartsStr('function', srcLine) then
+    // Parse record - detected by "record"
+    if Pos('record', srcLine) > 0 then
     begin
-      fType := mtFunc;
+      fType := tRecord;
 
-      if Pos('(', srcLine) <> 0 then
-      begin
-        // Function with fParameters
-        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos('(', srcLine) - 1 - Pos('.', srcLine));
-
-        // fParameters could go for several lines
-        restStr := '';
-        while Pos(')', srcLine) = 0 do
-        begin
-          restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Length(srcLine));
-          Inc(I);
-          srcLine := aSource[I];
-        end;
-        restStr := restStr + Copy(srcLine, Pos('(', srcLine) + 1, Pos(')', srcLine) - 1 - Pos('(', srcLine));
-
-        fParameters.ParseFromString(restStr, details);
-      end else
-        // Function without fParameters (ends with ":")
-        metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
-
-      metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
-      fName := ReplaceStr(metName, 'Func', 'On');   // For the KMR
-
-      // Function result
-      restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-      fResultType := TryTypeToAlias(restStr);
+      enumStr.Text := srcLine;
+      if I < aSource.Count - 1 then
+      repeat
+        Inc(I);
+        srcLine := aSource[I];
+        enumStr.Append(srcLine);
+      until Pos('end;', srcLine) <> 0;
     end;
+
+    // Parse array - detected by "array of"
+    if Pos('array of', srcLine) > 0 then
+    begin
+      fType := tArray;
+      enumStr.Text := srcLine;
+    end;
+
+    // Parse array - detected by "set of"
+    if Pos('set of', srcLine) > 0 then
+    begin
+      fType := tSet;
+      enumStr.Text := srcLine;
+    end;
+
+    // Name is the first word
+    fName := Trim(LeftStr(enumStr[0], Pos('=', enumStr[0]) - 1));
+    enumStr[0] := Trim(RightStrAfter(enumStr[0], '='));
+
+    fElements.ParseFromStringList(fType, enumStr);
 
     // Now we can assemble Description, after we have detected and removed fParameters descriptions from it
     for I := 0 to details.Count - 1 do
-      // We don't need <br/> after </pre> since </pre> has an automatic visual "br" after it
-      if (I > 0) and (EndsStr('</pre>', details[I-1])) then
-        fDescription := fDescription + details[I]
-      else
-        fDescription := fDescription + '<br/>' + details[I];
+      fDescription := fDescription + '<br/>' + details[I];
   finally
     details.Free;
-  end;}
+    enumStr.Free;
+  end;
 end;
 
 
 function TKMTypeInfo.ExportBody: string;
-var
-  I: Integer;
 begin
-  Result := '<a id="' + fName + '">' + fName + '</a>' + '<sub>' + fDescription + '</sub>';
+  Result :=
+    '| - | <a id="' + fName + '">' + fName + '</a>' +
+    '<sub>' + fDescription + '</sub>' + ' | ';
 
-  for I := 0 to fElements.Count - 1 do
-    Result := Result + '<sub>' + fElements[I].Name + ' // ' + fElements[I].Desc + '</sub>';
+  Result := Result + fElements.ExportBody;
 end;
 
 
@@ -224,6 +333,12 @@ end;
 
 
 { TKMScriptTypes }
+procedure TKMScriptTypes.Clear;
+begin
+  fList.Clear;
+end;
+
+
 constructor TKMScriptTypes.Create;
 begin
   inherited Create;
@@ -254,41 +369,66 @@ var
   srcLine: string;
   sl: TStringList;
   sectionStarted: Boolean;
+  recordStarted: Boolean;
 begin
-  fList.Clear;
-
   slSource := TStringList.Create;
   try
     slSource.LoadFromFile(aInputFile);
 
     // Assemble method sections 1 by 1
-      {
-      //* Scripting type
-      TKMFenceType = (fctNone,
-        //
 
-        'fctWood, fctWoodStone,
-        'fctHouseArea, fctHouseAreaGates
-        );
-      }
+    {
+    //* Enum
+    TKMSomeType = (stNone,
+      //
+      stSomething);
+
+    //* Record
+    // ignore this comment
+    TKMSomeType = record
+      A,B: Integer;
+      function Some: Byte;
+    end;
+
+    //* Array of
+    TKMSomeType = array of TKMSomething;
+
+    //* Set of
+    TKMSomeType = set of TKMSomething;
+    }
 
     sectionStarted := False;
+    recordStarted := False;
 
     sl := TStringList.Create;
     for I := 0 to slSource.Count - 1 do
     begin
-      srcLine := slSource[I];
+      srcLine := Trim(slSource[I]);
 
-      if not sectionStarted and StartsStr('//* Scripting type', srcLine) then
+      if not sectionStarted and StartsStr('//* ', srcLine) then
       begin
         sectionStarted := True;
         sl.Clear;
       end;
 
-      if sectionStarted then
-        sl.Append(slSource[I]);
+      //if aInputFile = '..\..\..\..\kam_remake.rey\src\scripting\KM_ScriptingActions.pas' then
+      //if I = 1350 then
+      //  Sleep(0);
 
-      if sectionStarted and (Pos(';', srcLine) > 0) then
+      if sectionStarted then
+        if not StartsStr('//', srcLine) or StartsStr('//*', srcLine) then
+          sl.Append(srcLine);
+
+      if sectionStarted and not StartsStr('//', srcLine) and (Pos('record', srcLine) > 0) then
+        recordStarted := True;
+
+      if sectionStarted and not recordStarted and (StartsStr('procedure', srcLine) or StartsStr('function', srcLine)) then
+        sectionStarted := False;
+
+      if sectionStarted and recordStarted and (Pos('end;', srcLine) > 0) then
+        recordStarted := False;
+
+      if sectionStarted and not recordStarted and not StartsStr('//*', srcLine) and (Pos(';', srcLine) > 0) then
       begin
         sectionStarted := False;
 
