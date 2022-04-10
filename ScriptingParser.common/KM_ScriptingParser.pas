@@ -109,12 +109,10 @@ var
   s: TStringDynArray;
   I: Integer;
 begin
-  if not DirectoryExists(aInputFile) then Exit;
-
   fTypes.Clear;
 
   // Get all files matching the mask
-  s := TDirectory.GetFiles(aInputFile, 'KM_*.pas', TSearchOption.soAllDirectories);
+  s := TDirectory.GetFiles(ExtractFilePath(aInputFile), ExtractFileName(aInputFile), TSearchOption.soAllDirectories);
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
