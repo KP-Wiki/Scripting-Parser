@@ -25,6 +25,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ParseFromStringList(aType: TKMTypeType; aStrings: TStringList);
+    function ExportCode(aType: TKMTypeType): string;
     function ExportWikiBody: string;
   end;
 
@@ -39,6 +40,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromStringList(aSource: TStringList);
+    function ExportCode: string;
     function ExportWikiBody: string;
     function ExportWikiLink: string;
   end;
@@ -156,6 +158,9 @@ begin
                     declaration := aStrings[I];
                   end;
 
+                  // Trim trailing ";" for nicer look
+                  declaration := Trim(ReplaceStr(declaration, ';', ''));
+
                   fList.Add(TKMScriptTypeElement.Create(declaration, comment));
                 end;
     ttArray:    begin
@@ -210,6 +215,39 @@ begin
                       fList.Add(TKMScriptTypeElement.Create(Trim(elements[K]), comment));
                   end;
                 end;
+  end;
+end;
+
+
+function TKMScriptTypeElements.ExportCode(aType: TKMTypeType): string;
+const
+  WRAP_AROUND_COUNT = 5;
+var
+  I: Integer;
+begin
+  case aType of
+    ttEnum:       begin
+                    Result := #39'(';
+                    for I := 0 to fList.Count - 1 do
+                    begin
+                      if (I > 0) and (I mod WRAP_AROUND_COUNT = 0) then
+                        Result := Result + #39' +' + sLineBreak + '      '#39;
+
+                      Result := Result + fList[I].fName + IfThen(I < fList.Count - 1, ', ');
+                    end;
+                    Result := Result + ')'#39;
+                  end;
+    ttRecord:     begin
+                    Result := #39 + 'record '#39 + ' +' + sLineBreak;
+
+                    for I := 0 to fList.Count - 1 do
+                      Result := Result + '      '#39 + fList[I].fName + '; '#39 + ' +' + sLineBreak;
+
+                    Result := Result + '      '#39'end;'#39;
+                  end;
+    ttArray:      Result := #39 + fList[0].fName + #39;
+    ttSetOfType: ; //todo: ttSetOfType
+    ttSetOfEnum: ; //todo: ttSetOfEnum
   end;
 end;
 
@@ -340,6 +378,12 @@ begin
     details.Free;
     enumStr.Free;
   end;
+end;
+
+
+function TKMScriptType.ExportCode: string;
+begin
+  Result := #39 + fName + #39', ' + fElements.ExportCode(fType);
 end;
 
 
@@ -503,8 +547,29 @@ end;
 
 
 procedure TKMScriptTypes.ExportCode(const aCodeFile: string);
+var
+  sl: TStringList;
+  secStart, secEnd, pad: Integer;
+  I: Integer;
 begin
-  //todo: TKMScriptTypes.ExportCode
+  if not FileExists(aCodeFile) then Exit;
+
+  sl := TStringList.Create;
+  try
+    sl.LoadFromFile(aCodeFile);
+
+    FindStartAndFinish(sl, AREA_REG_TAG[paTypes], secStart, secEnd, pad);
+
+    for I := secEnd downto secStart do
+      sl.Delete(I);
+
+    for I := fList.Count - 1 downto 0 do
+      sl.Insert(secStart, DupeString(' ', pad) + 'Sender.AddTypeS(' + fList[I].ExportCode + ');');
+
+    sl.SaveToFile(aCodeFile);
+  finally
+    sl.Free;
+  end;
 end;
 
 

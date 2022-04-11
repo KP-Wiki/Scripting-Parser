@@ -391,9 +391,8 @@ end;
 procedure TKMScriptMethods.ExportCode(const aCodeFile: string);
 var
   sl: TStringList;
-  secStart, secEnd: Integer;
-  pad: Integer;
-  K: Integer;
+  secStart, secEnd, pad: Integer;
+  I: Integer;
 begin
   //todo: Events check needs to be handled differently
   if fArea = paEvents then Exit;
@@ -406,26 +405,26 @@ begin
     begin
       FindStartAndFinish(sl, AREA_CHECK_TAG[fArea], secStart, secEnd, pad);
 
-      for K := secEnd downto secStart do
-        sl.Delete(K);
+      for I := secEnd downto secStart do
+        sl.Delete(I);
 
       // Insert in reverse so we could skip "removed" methods
-      for K := fList.Count - 1 downto 0 do
-      if fList[K].fStatus <> msRemoved then
-        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[K].ExportCodeCheck + #39');');
+      for I := fList.Count - 1 downto 0 do
+      if fList[I].fStatus <> msRemoved then
+        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
     end;
 
     // Regenerate registrations
     begin
       FindStartAndFinish(sl, AREA_REG_TAG[fArea], secStart, secEnd, pad);
 
-      for K := secEnd downto secStart do
-        sl.Delete(K);
+      for I := secEnd downto secStart do
+        sl.Delete(I);
 
       // Insert in reverse so we could skip "removed" methods
-      for K := fList.Count - 1 downto 0 do
-      if fList[K].fStatus <> msRemoved then
-        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fArea] + '.' + fList[K].ExportCodeReg + ');');
+      for I := fList.Count - 1 downto 0 do
+      if fList[I].fStatus <> msRemoved then
+        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fArea] + '.' + fList[I].ExportCodeReg + ');');
     end;
 
     sl.SaveToFile(aCodeFile);
