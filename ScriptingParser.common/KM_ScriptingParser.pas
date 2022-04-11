@@ -26,8 +26,7 @@ type
 
     function GetText(aArea: TKMParsingArea): string;
 
-    procedure GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActTempl, aActOut, aEventIn, aEventTempl, aEventOut,
-      aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut, aTypeIn, aTypeTempl, aTypeOut: string);
+    procedure GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aIn, aTempl, aOut: string);
     procedure GenerateXML;
   end;
 
@@ -136,25 +135,14 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; const aActIn, aActTempl, aActOut, aEventIn, aEventTempl, aEventOut,
-  aStateIn, aStateTempl, aStateOut, aUtilIn, aUtilTempl, aUtilOut, aTypeIn, aTypeTempl, aTypeOut: string);
+procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aIn, aTempl, aOut: string);
 begin
   fParsingGame := aParsingGame;
 
-  ParseMethods(paActions, aActIn, aActTempl, aActOut);
-  ParseMethods(paEvents, aEventIn, aEventTempl, aEventOut);
-  ParseMethods(paStates, aStateIn, aStateTempl, aStateOut);
-  ParseMethods(paUtils, aUtilIn, aUtilTempl, aUtilOut);
-  ParseTypes(aTypeIn, aTypeTempl, aTypeOut);
+  ParseMethods(aArea, aIn, aTempl, aOut);
 
   if DBG_COPY_FOR_REFERENCE then
-  begin
-    CopyForReference(aActOut, paActions);
-    CopyForReference(aEventOut, paEvents);
-    CopyForReference(aStateOut, paStates);
-    CopyForReference(aUtilOut, paUtils);
-    CopyForReference(aTypeOut, paTypes);
-  end;
+    CopyForReference(aOut, aArea);
 end;
 
 

@@ -38,6 +38,12 @@ type
     edTypesOut: TEdit;
     edTypesIn: TEdit;
     edTypesTemplate: TEdit;
+    Label9: TLabel;
+    edActionsVerify: TEdit;
+    edEventsVerify: TEdit;
+    edStatesVerify: TEdit;
+    edUtilsVerify: TEdit;
+    edTypesVerify: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
@@ -103,6 +109,11 @@ begin
   edStatesOut.Text  := ini.ReadString('OUTPUT', 'States',  'States.wiki');
   edUtilsOut.Text   := ini.ReadString('OUTPUT', 'Utils',   'Utils.wiki');
   edTypesOut.Text   := ini.ReadString('OUTPUT', 'Types',   'Types.wiki');
+  edActionsVerify.Text := ini.ReadString('VERIFY', 'Actions', '.pas');
+  edEventsVerify.Text  := ini.ReadString('VERIFY', 'Events',  '.pas');
+  edStatesVerify.Text  := ini.ReadString('VERIFY', 'States',  '.pas');
+  edUtilsVerify.Text   := ini.ReadString('VERIFY', 'Utils',   '.pas');
+  edTypesVerify.Text   := ini.ReadString('VERIFY', 'Types',   '.pas');
 
   FreeAndNil(ini);
 
@@ -121,14 +132,11 @@ end;
 
 procedure TForm1.btnGenerateWikiClick(Sender: TObject);
 begin
-  fScriptingParser.GenerateWiki(
-    fParsingGame,
-    edActionsIn.Text, edActionsTemplate.Text, edActionsOut.Text,
-    edEventsIn.Text, edEventsTemplate.Text, edEventsOut.Text,
-    edStatesIn.Text, edStatesTemplate.Text, edStatesOut.Text,
-    edUtilsIn.Text, edUtilsTemplate.Text, edUtilsOut.Text,
-    edTypesIn.Text, edTypesTemplate.Text, edTypesOut.Text
-  );
+  fScriptingParser.GenerateWiki(fParsingGame, paActions, edActionsIn.Text, edActionsTemplate.Text, edActionsOut.Text);
+  fScriptingParser.GenerateWiki(fParsingGame, paEvents, edEventsIn.Text, edEventsTemplate.Text, edEventsOut.Text);
+  fScriptingParser.GenerateWiki(fParsingGame, paStates, edStatesIn.Text, edStatesTemplate.Text, edStatesOut.Text);
+  fScriptingParser.GenerateWiki(fParsingGame, paUtils, edUtilsIn.Text, edUtilsTemplate.Text, edUtilsOut.Text);
+  fScriptingParser.GenerateWiki(fParsingGame, paTypes, edTypesIn.Text, edTypesTemplate.Text, edTypesOut.Text);
 
   TabControl1Change(nil);
 end;
@@ -206,6 +214,11 @@ begin
   ini.WriteString('OUTPUT', 'States',  edStatesOut.Text);
   ini.WriteString('OUTPUT', 'Utils',   edUtilsOut.Text);
   ini.WriteString('OUTPUT', 'Types',   edTypesOut.Text);
+  ini.WriteString('VERIFY', 'Actions', edActionsVerify.Text);
+  ini.WriteString('VERIFY', 'Events',  edEventsVerify.Text);
+  ini.WriteString('VERIFY', 'States',  edStatesVerify.Text);
+  ini.WriteString('VERIFY', 'Utils',   edUtilsVerify.Text);
+  ini.WriteString('VERIFY', 'Types',   edTypesVerify.Text);
 
   FreeAndNil(ini);
 end;

@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'Pascal To Wiki Parser'
   ClientHeight = 648
-  ClientWidth = 818
+  ClientWidth = 945
   Color = clBtnFace
   Constraints.MinHeight = 400
   Constraints.MinWidth = 500
@@ -16,36 +16,38 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    818
+    945
     648)
   PixelsPerInch = 96
   TextHeight = 13
   object btnReyKMR: TButton
-    Left = 712
+    Left = 840
     Top = 16
     Width = 33
     Height = 33
+    Anchors = [akTop, akRight]
     Caption = 'Rey KMR'
     TabOrder = 0
     WordWrap = True
     OnClick = btnReyKMRClick
   end
   object btnKromKP: TButton
-    Left = 776
+    Left = 904
     Top = 16
     Width = 33
     Height = 33
+    Anchors = [akTop, akRight]
     Caption = 'Krom KP'
     TabOrder = 1
     WordWrap = True
     OnClick = btnKromKPClick
   end
   object btnGenerateWiki: TButton
-    Left = 712
+    Left = 838
     Top = 56
     Width = 98
     Height = 49
-    Anchors = [akTop, akRight]
+    Anchors = [akTop]
     Caption = 'Generate Wiki'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -60,11 +62,11 @@ object Form1: TForm1
     OnClick = btnGenerateWikiClick
   end
   object btnGenerateXML: TButton
-    Left = 712
+    Left = 838
     Top = 104
     Width = 98
     Height = 49
-    Anchors = [akTop, akRight]
+    Anchors = [akTop]
     Caption = 'Generate XML'
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
@@ -82,185 +84,231 @@ object Form1: TForm1
   object gbSettings: TGroupBox
     Left = 8
     Top = 8
-    Width = 697
+    Width = 825
     Height = 169
-    Anchors = [akLeft, akTop, akRight]
     Caption = ' Settings '
     TabOrder = 4
     object Label1: TLabel
-      Left = 11
-      Top = 35
+      Left = 8
+      Top = 32
       Width = 39
       Height = 13
       Caption = 'Actions:'
     end
     object Label2: TLabel
-      Left = 11
-      Top = 62
+      Left = 8
+      Top = 56
       Width = 37
       Height = 13
       Caption = 'Events:'
     end
     object Label3: TLabel
-      Left = 12
-      Top = 116
+      Left = 8
+      Top = 104
       Width = 24
       Height = 13
       Caption = 'Utils:'
     end
     object Label8: TLabel
-      Left = 12
-      Top = 89
+      Left = 8
+      Top = 80
       Width = 35
       Height = 13
       Caption = 'States:'
     end
     object Label4: TLabel
-      Left = 155
-      Top = 13
+      Left = 144
+      Top = 16
       Width = 43
       Height = 13
       Caption = 'Input file'
     end
     object Label5: TLabel
-      Left = 371
-      Top = 13
+      Left = 344
+      Top = 16
       Width = 61
       Height = 13
       Caption = 'Template file'
     end
     object Label6: TLabel
-      Left = 563
-      Top = 13
+      Left = 528
+      Top = 16
       Width = 51
       Height = 13
       Caption = 'Output file'
     end
     object Label7: TLabel
-      Left = 12
-      Top = 140
+      Left = 8
+      Top = 128
       Width = 33
       Height = 13
       Caption = 'Types:'
     end
+    object Label9: TLabel
+      Left = 704
+      Top = 16
+      Width = 39
+      Height = 13
+      Caption = 'Verify in'
+    end
     object edActionsIn: TEdit
-      Left = 55
+      Left = 48
       Top = 32
-      Width = 250
+      Width = 249
       Height = 21
       TabOrder = 0
       OnChange = edtOnTextChange
     end
     object edEventsIn: TEdit
-      Left = 55
-      Top = 59
-      Width = 250
+      Left = 48
+      Top = 56
+      Width = 249
       Height = 21
       TabOrder = 1
       OnChange = edtOnTextChange
     end
     object edStatesIn: TEdit
-      Left = 55
-      Top = 86
-      Width = 250
+      Left = 48
+      Top = 80
+      Width = 249
       Height = 21
       TabOrder = 2
       OnChange = edtOnTextChange
     end
     object edActionsOut: TEdit
-      Left = 492
+      Left = 464
       Top = 32
-      Width = 200
+      Width = 193
       Height = 21
       TabOrder = 4
       OnChange = edtOnTextChange
     end
     object edEventsOut: TEdit
-      Left = 492
-      Top = 59
-      Width = 200
+      Left = 464
+      Top = 56
+      Width = 193
       Height = 21
       TabOrder = 5
       OnChange = edtOnTextChange
     end
     object edStatesOut: TEdit
-      Left = 492
-      Top = 86
-      Width = 200
+      Left = 464
+      Top = 80
+      Width = 193
       Height = 21
       TabOrder = 6
       OnChange = edtOnTextChange
     end
     object edUtilsOut: TEdit
-      Left = 492
-      Top = 113
-      Width = 200
+      Left = 464
+      Top = 104
+      Width = 193
       Height = 21
       TabOrder = 7
       OnChange = edtOnTextChange
     end
     object edUtilsIn: TEdit
-      Left = 55
-      Top = 113
-      Width = 250
+      Left = 48
+      Top = 104
+      Width = 249
       Height = 21
       TabOrder = 3
       OnChange = edtOnTextChange
     end
     object edActionsTemplate: TEdit
-      Left = 311
+      Left = 304
       Top = 32
-      Width = 175
+      Width = 153
       Height = 21
       TabOrder = 8
       OnChange = edtOnTextChange
     end
     object edEventsTemplate: TEdit
-      Left = 311
-      Top = 59
-      Width = 175
+      Left = 304
+      Top = 56
+      Width = 153
       Height = 21
       TabOrder = 9
       OnChange = edtOnTextChange
     end
     object edStatesTemplate: TEdit
-      Left = 311
-      Top = 86
-      Width = 175
+      Left = 304
+      Top = 80
+      Width = 153
       Height = 21
       TabOrder = 10
       OnChange = edtOnTextChange
     end
     object edUtilsTemplate: TEdit
-      Left = 311
-      Top = 113
-      Width = 175
+      Left = 304
+      Top = 104
+      Width = 153
       Height = 21
       TabOrder = 11
       OnChange = edtOnTextChange
     end
     object edTypesOut: TEdit
-      Left = 492
-      Top = 137
-      Width = 200
+      Left = 464
+      Top = 128
+      Width = 193
       Height = 21
       TabOrder = 12
       OnChange = edtOnTextChange
     end
     object edTypesIn: TEdit
-      Left = 55
-      Top = 137
-      Width = 250
+      Left = 48
+      Top = 128
+      Width = 249
       Height = 21
       TabOrder = 13
       OnChange = edtOnTextChange
     end
     object edTypesTemplate: TEdit
-      Left = 311
-      Top = 137
-      Width = 175
+      Left = 304
+      Top = 128
+      Width = 153
       Height = 21
       TabOrder = 14
+      OnChange = edtOnTextChange
+    end
+    object edActionsVerify: TEdit
+      Left = 664
+      Top = 32
+      Width = 153
+      Height = 21
+      TabOrder = 15
+      OnChange = edtOnTextChange
+    end
+    object edEventsVerify: TEdit
+      Left = 664
+      Top = 56
+      Width = 153
+      Height = 21
+      TabOrder = 16
+      OnChange = edtOnTextChange
+    end
+    object edStatesVerify: TEdit
+      Left = 664
+      Top = 80
+      Width = 153
+      Height = 21
+      TabOrder = 17
+      OnChange = edtOnTextChange
+    end
+    object edUtilsVerify: TEdit
+      Left = 664
+      Top = 104
+      Width = 153
+      Height = 21
+      TabOrder = 18
+      OnChange = edtOnTextChange
+    end
+    object edTypesVerify: TEdit
+      Left = 664
+      Top = 128
+      Width = 153
+      Height = 21
+      TabOrder = 19
       OnChange = edtOnTextChange
     end
   end
@@ -294,10 +342,11 @@ object Form1: TForm1
     end
   end
   object btnKromKMR: TButton
-    Left = 744
+    Left = 872
     Top = 16
     Width = 33
     Height = 33
+    Anchors = [akTop, akRight]
     Caption = 'Krom KMR'
     TabOrder = 6
     WordWrap = True
