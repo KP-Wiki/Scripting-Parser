@@ -343,10 +343,14 @@ end;
 
 
 function TKMScriptType.ExportBody: string;
+const
+  TYPE_NAME: array [TKMTypeType] of string = ('enum', 'record', 'array', 'set', 'set');
 begin
   Result :=
-    '| - | <a id="' + fName + '">' + fName + '</a>' +
-    '<sub>' + fDescription + '</sub>' + ' | ';
+    '| - ' +
+    '| <sub>' + TYPE_NAME[fType] + '</sub> ' +
+    '| <a id="' + fName + '">' + fName + '</a>' + '<sub>' + fDescription + '</sub> ' +
+    '|';
 
   Result := Result + fElements.ExportBody;
 end;
