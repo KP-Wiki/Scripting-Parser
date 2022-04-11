@@ -139,7 +139,10 @@ procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; aArea: T
 begin
   fParsingGame := aParsingGame;
 
-  ParseMethods(aArea, aIn, aTempl, aOut);
+  if aArea in [paActions..paUtils] then
+    ParseMethods(aArea, aIn, aTempl, aOut)
+  else
+    ParseTypes(aIn, aTempl, aOut);
 
   if DBG_COPY_FOR_REFERENCE then
     CopyForReference(aOut, aArea);
