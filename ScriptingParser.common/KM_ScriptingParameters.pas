@@ -7,7 +7,7 @@ uses
 type
   // Single parameter info
   TKMScriptParameter = class
-  strict private
+  private
     fName: string;
     fModifier: string;
     fVarType: string;
@@ -157,7 +157,7 @@ begin
   varModifier := '';
   varType := '';
 
-  // Forward pass to assign modifiers
+  // Forward pass to assign modifiers (modifier applies to all vars until type is met)
   for I := 0 to aTokenList.Count - 1 do
   begin
     if TokenIsModifier(aTokenList[I], newModifier) then
@@ -169,7 +169,7 @@ begin
     list[I].Modifier := varModifier;
   end;
 
-  // Backward pass to assign types
+  // Backward pass to assign types (type applies to all vars until new type is met)
   for I := aTokenList.Count - 1 downto 0 do
   begin
     if TokenIsType(aTokenList[I], newType) then
@@ -179,10 +179,21 @@ begin
   end;
 
   // Now we can collect names
+  //todo: We could glue together X,Y pairs if they are identical in type and comments
   for I := 0 to aTokenList.Count - 1 do
   if not TokenIsModifier(aTokenList[I], newModifier)
   and not TokenIsType(aTokenList[I], newType) then
     fList.Add(TKMScriptParameter.Create(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
+
+  // Adjoin X and Y pairs wherever possible
+  for I := fList.Count - 1 downto 1 do
+  if ((fList[I].fName = 'Y') and (fList[I-1].fName = 'X')
+  or (fList[I].fName = 'aY') and (fList[I-1].fName = 'aX'))
+  and (fList[I].fDesc = fList[I-1].fDesc) then
+  begin
+    fList[I-1].fName := fList[I-1].fName + ', ' + fList[I].fName;
+    fList.Delete(I);
+  end;
 end;
 
 

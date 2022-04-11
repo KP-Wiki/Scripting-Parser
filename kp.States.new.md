@@ -97,16 +97,16 @@ Version column description:
 | 8721 | <a id="CampaignMissionCount">CampaignMissionCount</a><sub><br/>Get total number of missions in the current campaign. Campaign-only action!</sub> | <sub></sub> | <sub>Integer</sub> |
 | 8723 | <a id="CampaignMissionWon">CampaignMissionWon</a><sub><br/>See if the mission was won. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to check_</sub> | <sub>Boolean</sub> |
 | 7969 | <a id="EntityType">EntityType</a><sub><br/>Get the entity type by its UID (0 - unknown or none, 1 - Unit, 2 - House, 3 - UnitGroup, 4 - Stockpile)</sub> | <sub>**aEntityID**: Integer;</sub> | <sub>Integer</sub> |
-| -8743 | <a id="FogRevealed">FogRevealed</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerFogRevealed">PlayerFogRevealed</a> instead*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
+| -8743 | <a id="FogRevealed">FogRevealed</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerFogRevealed">PlayerFogRevealed</a> instead*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="GameTime">GameTime</a><sub><br/>Deprecated. Please use the time provided by OnTick event</sub> | <sub></sub> | <sub>Cardinal</sub> |
-| - | <a id="GroupAt">GroupAt</a><sub><br/>Return UID of a group at requested coordinates</sub> | <sub>**aX**: Word; <br/> **aY**: Word;</sub> | <sub>Integer</sub> |
+| - | <a id="GroupAt">GroupAt</a><sub><br/>Return UID of a group at requested coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupColumnCount">GroupColumnCount</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupDead">GroupDead</a><sub><br/>See if the group is dead (all members are dead)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5632 | <a id="GroupIsIdle">GroupIsIdle</a><sub><br/>See if the group is idle (ready to take orders)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="GroupMember">GroupMember</a><sub><br/>Get N-th group member</sub> | <sub>**aGroupID**: Integer; <br/> **aMemberIndex**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupMemberCount">GroupMemberCount</a><sub><br/>Returns how many member there are in this group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupOwner">GroupOwner</a><sub><br/>Returns to which Hand this group belongs</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="HouseAt">HouseAt</a><sub><br/>Get the house at coordinates</sub> | <sub>**aX**: Word; <br/> **aY**: Word;</sub> | <sub>Integer</sub> |
+| - | <a id="HouseAt">HouseAt</a><sub><br/>Get the house at coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseDamage">HouseDamage</a><sub><br/>Check house damage</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
 | -7015 | <a id="HouseDeliveryBlocked">HouseDeliveryBlocked</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseWareBlock">HouseWareBlock</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean</sub> |
 | - | <a id="HouseDestroyed">HouseDestroyed</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
@@ -124,15 +124,15 @@ Version column description:
 | 10399 | <a id="HouseWaresBlock">HouseWaresBlock</a><sub><br/>Lookup common ware delivery policy. Works only for common houses</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // 0 - allow, 1 - block</sub> |
 | - | <a id="HouseWeaponsOrdered">HouseWeaponsOrdered</a><sub><br/>Get the amount of weapons ordered in the house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseWoodcutterChopOnly">HouseWoodcutterChopOnly</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
-| - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom field must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="IsOrchardAt">IsOrchardAt</a><sub><br/>Check if there is a orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom orchard must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Check if there is a road owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom road must belong. -1 stands for any player_ <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom field must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsOrchardAt">IsOrchardAt</a><sub><br/>Check if there is a orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom orchard must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Check if there is a road owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom road must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="PeaceTime">PeaceTime</a><sub><br/>Get the peacetime (in game ticks)</sub> | <sub></sub> | <sub>Cardinal</sub> |
 | - | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub></sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerColorText">PlayerColorText</a><sub><br/>Get the string with color code of the player (adjusted brighter for text display)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>UnicodeString</sub> |
 | - | <a id="PlayerDefeated">PlayerDefeated</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerEnabled">PlayerEnabled</a><sub><br/>Check if hand is enabled (chosen to be played by anyone on mission start)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
-| 8743 | <a id="PlayerFogRevealed">PlayerFogRevealed</a><sub><br/>See if tile is revealed to the player (known or live)</sub> | <sub>**aPlayer**: Integer; <br/> **aX**: Word; <br/> **aY**: Word;</sub> | <sub>Boolean</sub> |
+| 8743 | <a id="PlayerFogRevealed">PlayerFogRevealed</a><sub><br/>See if tile is revealed to the player (known or live)</sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerGetAllGroups">PlayerGetAllGroups</a><sub><br/>Get list of all players groups</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | - | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Return all players houses that are not destroyed</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | - | <a id="PlayerGetAllRoads">PlayerGetAllRoads</a><sub><br/>Get list of all players roads</sub> | <sub>**aPlayer**: Integer; // _player to whom roads must belong. 0..N-1_</sub> | <sub>TKMPointArray</sub> |
@@ -157,7 +157,7 @@ Version column description:
 | 8785 | <a id="StatWaresProducedValue">StatWaresProducedValue</a><sub><br/>Get total value of all wares produced by player</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
 | -6683 | <a id="SysRandom">SysRandom</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#Utils.Random">Utils.Random</a> instead*</sub><sub></sub> | <sub></sub> | <sub>Single</sub> |
 | -6683 | <a id="SysRandomI">SysRandomI</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#Utils.RandomI">Utils.RandomI</a> instead*</sub><sub></sub> | <sub>**aMax**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="UnitAt">UnitAt</a><sub><br/>Return UID of the unit on requested coordinates</sub> | <sub>**aX**: Word; <br/> **aY**: Word;</sub> | <sub>Integer</sub> |
+| - | <a id="UnitAt">UnitAt</a><sub><br/>Return UID of the unit on requested coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitCarryCount">UnitCarryCount</a><sub><br/>See how many wares that unit is carrying</sub> | <sub>**aUnitID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitCarryType">UnitCarryType</a><sub><br/>See ware type that unit is carrying</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMWareType</sub> |
 | - | <a id="UnitDead">UnitDead</a><sub><br/>Check if unit is dead</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean</sub> |
