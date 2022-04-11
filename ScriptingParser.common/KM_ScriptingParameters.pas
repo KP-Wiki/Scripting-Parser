@@ -94,13 +94,26 @@ end;
 
 
 function TKMScriptParameters.ExportCodeCheck: string;
+const
+  ROUGH_LINE_LIMIT = 60;
 var
   I: Integer;
+  line: Integer;
 begin
   Result := '';
 
+  line := 0;
   for I := 0 to fList.Count - 1 do
+  begin
     Result := Result + IfThen(I = 0, '(') + fList[I].ExportCodeCheck + IfThen(I <> fList.Count - 1, '; ', ')');
+    Inc(line, Length(fList[I].ExportCodeCheck));
+
+    if (I <> fList.Count - 1) and (line > ROUGH_LINE_LIMIT) then
+    begin
+      Result := Result + #39' +' + sLineBreak + '      '#39;
+      line := 0;
+    end;
+  end;
 end;
 
 
