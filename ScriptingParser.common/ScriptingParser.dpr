@@ -3,6 +3,7 @@ program ScriptingParser;
 uses
   Vcl.Forms,
   Main in 'Main.pas' {Form1},
+  KM_ParserTypes in 'KM_ParserTypes.pas',
   KM_ScriptingConsts in 'KM_ScriptingConsts.pas',
   KM_ScriptingMethods in 'KM_ScriptingMethods.pas',
   KM_ScriptingParameters in 'KM_ScriptingParameters.pas',

@@ -15,6 +15,7 @@ type
   public
     constructor Create(const aName, aModifier, aVarType, aDesc: string);
     function GetText: string;
+    function ExportCode: string;
   end;
 
   // List of parameters of a method
@@ -29,6 +30,7 @@ type
     destructor Destroy; override;
 
     function GetText: string;
+    function ExportCode: string;
 
     procedure ParseFromString(const aArguments: string; aDescriptions: TStringList);
   end;
@@ -48,6 +50,12 @@ begin
   fModifier := aModifier;
   fVarType := aVarType;
   fDesc := aDesc;
+end;
+
+
+function TKMScriptParameter.ExportCode: string;
+begin
+  Result := IfThen(fModifier <> '', fModifier + ' ') + fName + ': ' + fVarType;
 end;
 
 
@@ -82,6 +90,17 @@ begin
 
   for I := 0 to fList.Count - 1 do
     Result := Result + fList[I].GetText + IfThen(I <> fList.Count - 1, ' <br/> ');
+end;
+
+
+function TKMScriptParameters.ExportCode: string;
+var
+  I: Integer;
+begin
+  Result := '';
+
+  for I := 0 to fList.Count - 1 do
+    Result := Result + IfThen(I = 0, '(') + fList[I].ExportCode + IfThen(I <> fList.Count - 1, '; ', ')');
 end;
 
 

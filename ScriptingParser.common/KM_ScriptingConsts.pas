@@ -19,7 +19,7 @@ type
   end;
 
 const
-  VAR_TYPE_COUNT = 66;
+  VAR_TYPE_COUNT = 67;
 
   VAR_MODIFIERS: array[0..1] of string = ('out', 'var');
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
@@ -45,7 +45,7 @@ const
     (Name: 'TKMUnitTypeSet'), (Name: 'TKMWareTypeSet'), (Name: 'TReplaceFlags'),
     (Name: 'TKMFont'),
     // KP
-    (Name: 'TKMHouseFace'), (Name: 'TKMObjectiveStatus'), (Name: 'TKMObjectiveType'),
+    (Name: 'TKMHouseFace'), (Name: 'TKMObjectiveStatus'), (Name: 'TKMObjectiveType'), (Name: 'TKMFenceType'),
     // Werewolf types
     (Name: 'TByteSet'; Alias: 'set of Byte'), (Name: 'TIntegerArray'; Alias: 'array of Integer'), (Name: 'TAnsiStringArray'; Alias: 'array of AnsiString'),
     (Name: 'TKMHouse'; Alias: 'Integer'), (Name: 'TKMUnit'; Alias: 'Integer'), (Name: 'TKMUnitGroup'; Alias: 'Integer'),

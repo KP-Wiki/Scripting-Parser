@@ -27,6 +27,7 @@ type
     procedure LoadFromStringList(aSource: TStringList);
     function ExportBody(aNeedReturn: Boolean): string;
     function ExportLink: string;
+    function ExportCode: string;
   end;
 
 
@@ -43,6 +44,7 @@ type
 
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
+    procedure VerifyAgainst(const aVerifyFile: string);
     function ExportWiki(const aTemplateFile: string): string;
   end;
 
@@ -241,6 +243,14 @@ begin
 end;
 
 
+function TKMMethodInfo.ExportCode: string;
+begin
+  Result := IfThen(fResultType = '', 'procedure', 'function ') + ' ' + fName +
+    fParameters.ExportCode +
+    IfThen(fResultType <> '', ': ' + fResultType);
+end;
+
+
 function TKMMethodInfo.ExportLink: string;
 begin
   Result := '* <a href="#' + fName + '">' + fName + '</a>';
@@ -368,6 +378,56 @@ end;
 procedure TKMScriptMethods.SortByName;
 begin
   fList.Sort;
+end;
+
+
+procedure TKMScriptMethods.VerifyAgainst(const aVerifyFile: string);
+var
+  sl: TStringList;
+  secStart, secEnd: Integer;
+  pad: Integer;
+  K: Integer;
+begin
+  if fArea <> paActions then Exit;
+
+  sl := TStringList.Create;
+  try
+    sl.LoadFromFile(aVerifyFile);
+
+    secStart := 0;
+    repeat
+      Inc(secStart);
+      if secStart >= sl.Count then
+        Exit;
+    until (Trim(sl[secStart]) = AREA_TAG[fArea]);
+
+    pad := Pos(AREA_TAG[fArea], sl[secStart]) - 1;
+    Inc(secStart);
+
+    secEnd := secStart;
+    repeat
+      Inc(secEnd);
+
+      if secEnd >= sl.Count then
+        Exit;
+    until (Trim(sl[secEnd]) <> '') and not StartsStr('RegisterMethodCheck', Trim(sl[secEnd]));
+    Dec(secEnd);
+
+    for K := secEnd downto secStart do
+      sl.Delete(K);
+
+    // Pad below for neats
+    sl.Insert(secStart, '');
+
+    // Insert in reverse so we could skip "removed" methods
+    for K := fList.Count - 1 downto 0 do
+    if fList[K].fStatus <> msRemoved then
+      sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[K].ExportCode + #39');');
+
+    sl.SaveToFile(aVerifyFile);
+  finally
+    sl.Free;
+  end;
 end;
 
 
