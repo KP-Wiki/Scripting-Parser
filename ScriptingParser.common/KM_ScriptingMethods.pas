@@ -389,6 +389,7 @@ var
   K: Integer;
 begin
   if fArea <> paActions then Exit;
+  if not FileExists(aVerifyFile) then Exit;
 
   sl := TStringList.Create;
   try
