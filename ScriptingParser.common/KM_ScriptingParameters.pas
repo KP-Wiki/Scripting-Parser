@@ -197,10 +197,12 @@ begin
   and not TokenIsType(aTokenList[I], newType) then
     fList.Add(TKMScriptParameter.Create(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
 
-  // Adjoin X and Y pairs wherever possible
+  // Adjoin pairs wherever possible
   for I := fList.Count - 1 downto 1 do
   if ((fList[I].fName = 'Y') and (fList[I-1].fName = 'X')
-  or (fList[I].fName = 'aY') and (fList[I-1].fName = 'aX'))
+  or (fList[I].fName = 'aY') and (fList[I-1].fName = 'aX')
+  or (fList[I].fName = 'B') and (fList[I-1].fName = 'A')
+  or (fList[I].fName = 'aMax') and (fList[I-1].fName = 'aMin'))
   and (fList[I].fDesc = fList[I-1].fDesc) then
   begin
     fList[I-1].fName := fList[I-1].fName + ', ' + fList[I].fName;

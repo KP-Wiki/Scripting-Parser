@@ -45,7 +45,7 @@ type
 
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure ExportCode(const aCodeFile: string);
+    procedure ExportCode(const aCodeFile: string; aGame: TKMParsingGame);
     function ExportWiki(const aTemplateFile: string): string;
   end;
 
@@ -388,7 +388,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aCodeFile: string);
+procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame);
 var
   sl: TStringList;
   secStart, secEnd, pad: Integer;
@@ -423,7 +423,7 @@ begin
       // Insert in reverse so we could skip "removed" methods
       for I := fList.Count - 1 downto 0 do
       if fList[I].fStatus <> msRemoved then
-        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fArea] + '.' + fList[I].ExportCodeReg + ');');
+        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
     end;
 
     sl.SaveToFile(aCodeFile);

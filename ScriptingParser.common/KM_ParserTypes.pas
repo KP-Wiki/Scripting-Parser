@@ -14,7 +14,10 @@ const
   AREA_TITLE: array [TKMParsingArea] of string = ('Action', 'Event', 'State', 'Utility function<br/>', 'Types');
   AREA_CHECK_TAG: array [TKMParsingArea] of string = ('//*Actions-Check*//', '//*Events-Check*//', '//*States-Check*//', '//*Utils-Check*//', '//*Types*//');
   AREA_REG_TAG: array [TKMParsingArea] of string = ('//*Actions-Reg*//', '//*Events-Reg*//', '//*States-Reg*//', '//*Utils-Reg*//', '//*Types-Reg*//');
-  AREA_REG_CLASS: array [TKMParsingArea] of string = ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptUtils', '');
+  AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
+    ('TKMScriptActions', '', 'TKMScriptStates', 'TKMScriptUtils', ''),
+    ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptUtils', '')
+  );
 
 
 implementation

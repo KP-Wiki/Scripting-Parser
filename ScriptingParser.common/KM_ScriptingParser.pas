@@ -84,7 +84,7 @@ begin
   // Sort for neat order
   fMethods[aArea].SortByName;
 
-  fMethods[aArea].ExportCode(aCodeFile);
+  fMethods[aArea].ExportCode(aCodeFile, fParsingGame);
 end;
 
 

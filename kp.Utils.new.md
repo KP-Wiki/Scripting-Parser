@@ -54,8 +54,8 @@ Version column description:
 | 5422 | <a id="ArrayHasElement">ArrayHasElement</a><sub><br/>Checks whether requested array has specified string</sub> | <sub>**aElement**: String; <br/> **aArray**: array of String;</sub> | <sub>Boolean</sub> |
 | 5422 | <a id="ArrayHasElementI">ArrayHasElementI</a><sub><br/>Checks whether requested array has specified integer</sub> | <sub>**aElement**: Integer; <br/> **aArray**: array of Integer;</sub> | <sub>Boolean</sub> |
 | 5422 | <a id="ArrayHasElementS">ArrayHasElementS</a><sub><br/>Checks whether requested array has specified single number</sub> | <sub>**aElement**: Single; <br/> **aArray**: array of Single;</sub> | <sub>Boolean</sub> |
-| 5422 | <a id="EnsureRangeI">EnsureRangeI</a><sub><br/>Returns the closest to aValue integer that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Integer; <br/> **aMin**: Integer; <br/> **aMax**: Integer;</sub> | <sub>Integer</sub> |
-| 5422 | <a id="EnsureRangeS">EnsureRangeS</a><sub><br/>Returns the closest to aValue single number that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin**: Single; <br/> **aMax**: Single;</sub> | <sub>Single</sub> |
+| 5422 | <a id="EnsureRangeI">EnsureRangeI</a><sub><br/>Returns the closest to aValue integer that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Integer; <br/> **aMin, aMax**: Integer;</sub> | <sub>Integer</sub> |
+| 5422 | <a id="EnsureRangeS">EnsureRangeS</a><sub><br/>Returns the closest to aValue single number that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin, aMax**: Single;</sub> | <sub>Single</sub> |
 | 5422 | <a id="Format">Format</a><sub><br/>Wrapper for pascal Format function<br/>Formats aFormat string with specified aArgs array of arguments</sub> | <sub>**aFormat**: String; <br/> **aArgs**: array of const;</sub> | <sub>string</sub> |
 | 5422 | <a id="HexToInt">HexToInt</a><sub><br/>Converts hex string into a number</sub> | <sub>**aHexString**: String; // _should be in form "1234AB", without $ or 0x prefix_</sub> | <sub>Integer</sub> |
 | 5422 | <a id="IfThen">IfThen</a><sub><br/>Checks condition aBool and returns aTrue/aFalse string depending on check result</sub> | <sub>**aBool**: Boolean; <br/> **aTrue**: String; <br/> **aFalse**: String;</sub> | <sub>string</sub> |
@@ -63,16 +63,16 @@ Version column description:
 | 5422 | <a id="IfThenS">IfThenS</a><sub><br/>Checks condition aBool and returns aTrue/aFalse single number depending on check result</sub> | <sub>**aBool**: Boolean; <br/> **aTrue**: Single; <br/> **aFalse**: Single;</sub> | <sub>Single</sub> |
 | 5422 | <a id="InAreaI">InAreaI</a><sub><br/>2D variant of InRange, can be used for unit locs checks</sub> | <sub>**aX, aY**: Integer; <br/> **aXMin**: Integer; <br/> **aYMin**: Integer; <br/> **aXMax**: Integer; <br/> **aYMax**: Integer;</sub> | <sub>Boolean</sub> |
 | 5422 | <a id="InAreaS">InAreaS</a><sub><br/>2D variant of InRange</sub> | <sub>**aX, aY**: Single; <br/> **aXMin**: Single; <br/> **aYMin**: Single; <br/> **aXMax**: Single; <br/> **aYMax**: Single;</sub> | <sub>Boolean</sub> |
-| 5422 | <a id="InRangeI">InRangeI</a><sub><br/>Checks whether specified aValue is in interval [aMin..aMax]</sub> | <sub>**aValue**: Integer; <br/> **aMin**: Integer; <br/> **aMax**: Integer;</sub> | <sub>Boolean</sub> |
-| 5422 | <a id="InRangeS">InRangeS</a><sub><br/>Checks whether specified aValue is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin**: Single; <br/> **aMax**: Single;</sub> | <sub>Boolean</sub> |
-| 5422 | <a id="MaxI">MaxI</a><sub><br/>Returns max number of two specified</sub> | <sub>**A**: Integer; <br/> **B**: Integer;</sub> | <sub>Integer</sub> |
+| 5422 | <a id="InRangeI">InRangeI</a><sub><br/>Checks whether specified aValue is in interval [aMin..aMax]</sub> | <sub>**aValue**: Integer; <br/> **aMin, aMax**: Integer;</sub> | <sub>Boolean</sub> |
+| 5422 | <a id="InRangeS">InRangeS</a><sub><br/>Checks whether specified aValue is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin, aMax**: Single;</sub> | <sub>Boolean</sub> |
+| 5422 | <a id="MaxI">MaxI</a><sub><br/>Returns max number of two specified</sub> | <sub>**A, B**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="MaxInArrayI">MaxInArrayI</a><sub><br/>Returns max number of array elements</sub> | <sub>**aArray**: array of Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="MaxInArrayS">MaxInArrayS</a><sub><br/>Returns max number of array elements</sub> | <sub>**aArray**: array of Single;</sub> | <sub>Single</sub> |
-| 5422 | <a id="MaxS">MaxS</a><sub><br/>Returns max number of two specified</sub> | <sub>**A**: Single; <br/> **B**: Single;</sub> | <sub>Single</sub> |
-| 5422 | <a id="MinI">MinI</a><sub><br/>Returns min number of two specified</sub> | <sub>**A**: Integer; <br/> **B**: Integer;</sub> | <sub>Integer</sub> |
+| 5422 | <a id="MaxS">MaxS</a><sub><br/>Returns max number of two specified</sub> | <sub>**A, B**: Single;</sub> | <sub>Single</sub> |
+| 5422 | <a id="MinI">MinI</a><sub><br/>Returns min number of two specified</sub> | <sub>**A, B**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="MinInArrayI">MinInArrayI</a><sub><br/>Returns min number of array elements</sub> | <sub>**aArray**: array of Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="MinInArrayS">MinInArrayS</a><sub><br/>Returns min number of array elements</sub> | <sub>**aArray**: array of Single;</sub> | <sub>Single</sub> |
-| 5422 | <a id="MinS">MinS</a><sub><br/>Returns min number of two specified</sub> | <sub>**A**: Single; <br/> **B**: Single;</sub> | <sub>Single</sub> |
+| 5422 | <a id="MinS">MinS</a><sub><br/>Returns min number of two specified</sub> | <sub>**A, B**: Single;</sub> | <sub>Single</sub> |
 | 5422 | <a id="Power">Power</a><sub><br/>Exponentation, returns base "Base" raised to power "Exp". F.e. Power(3, 2) = 3^2 = 9</sub> | <sub>**Base**: Extended; <br/> **Exp**: Extended;</sub> | <sub>Extended</sub> |
 | 6683 | <a id="Random">Random</a><sub><br/>Returns random float within 0..1</sub> | <sub></sub> | <sub>Single</sub> |
 | 6683 | <a id="RandomI">RandomI</a><sub><br/>Returns random integer within 0..aMax-1</sub> | <sub>**aMax**: Integer;</sub> | <sub>Integer</sub> |
