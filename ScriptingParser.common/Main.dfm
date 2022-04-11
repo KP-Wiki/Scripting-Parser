@@ -66,6 +66,7 @@ object Form1: TForm1
     Height = 49
     Anchors = [akTop, akRight]
     Caption = 'Generate XML'
+    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
@@ -129,7 +130,7 @@ object Form1: TForm1
       Caption = 'Template file'
     end
     object Label6: TLabel
-      Left = 571
+      Left = 563
       Top = 13
       Width = 51
       Height = 13
@@ -290,7 +291,6 @@ object Form1: TForm1
       ScrollBars = ssVertical
       TabOrder = 0
       OnKeyPress = txtParserOutputKeyPress
-      ExplicitHeight = 451
     end
   end
   object btnKromKMR: TButton
