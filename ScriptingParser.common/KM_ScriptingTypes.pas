@@ -7,7 +7,7 @@ uses
 
 type
   // There are these base types:
-  TKMTypeType = (tEnum, tRecord, tArray, tSet);
+  TKMTypeType = (ttEnum, ttRecord, ttArray, ttSetOfType, ttSetOfEnum);
 
   TKMScriptTypeElement = class
   private
@@ -108,90 +108,107 @@ var
   K: Integer;
 begin
   case aType of
-    tEnum:  begin
-              aStrings[0] := ReplaceStr(aStrings[0], '(', '');
-              aStrings[aStrings.Count - 1] := ReplaceStr(aStrings[aStrings.Count - 1], ');', '');
+    ttEnum:     begin
+                  aStrings[0] := ReplaceStr(aStrings[0], '(', '');
+                  aStrings[aStrings.Count - 1] := ReplaceStr(aStrings[aStrings.Count - 1], ');', '');
 
-              for I := 0 to aStrings.Count - 1 do
-              if aStrings[I] <> '' then
-              begin
-                commentPos := Pos('//', aStrings[I]);
-                if commentPos > 0 then
-                begin
-                  comment := Trim(RightStr(aStrings[I], Length(aStrings[I]) - commentPos - 1));
-                  declaration := LeftStr(aStrings[I], commentPos - 1);
-                end else
-                begin
-                  comment := '';
-                  declaration := aStrings[I];
+                  for I := 0 to aStrings.Count - 1 do
+                  if aStrings[I] <> '' then
+                  begin
+                    commentPos := Pos('//', aStrings[I]);
+                    if commentPos > 0 then
+                    begin
+                      comment := Trim(RightStr(aStrings[I], Length(aStrings[I]) - commentPos - 1));
+                      declaration := LeftStr(aStrings[I], commentPos - 1);
+                    end else
+                    begin
+                      comment := '';
+                      declaration := aStrings[I];
+                    end;
+
+                    elements := SplitString(declaration, ',');
+
+                    for K := Low(elements) to High(elements) do
+                    if Trim(elements[K]) <> '' then
+                      fList.Add(TKMScriptTypeElement.Create(Trim(elements[K]), comment));
+                  end;
                 end;
+    ttRecord:   for I := 0 to aStrings.Count - 1 do
+                if (aStrings[I] <> '') and (Pos(':', aStrings[I]) > 0) then
+                begin
+                  colonPos := Pos(':', aStrings[I]);
+                  commentPos := Pos('//', aStrings[I]);
 
-                elements := SplitString(declaration, ',');
+                  if (Pos('(', aStrings[I]) > colonPos)
+                  or (Pos(')', aStrings[I]) > colonPos)
+                  or InRange(Pos('function', aStrings[I]), 1, colonPos)
+                  or InRange(Pos('procedure', aStrings[I]), 1, colonPos) then
+                    Continue;
 
-                for K := Low(elements) to High(elements) do
-                if Trim(elements[K]) <> '' then
-                  fList.Add(TKMScriptTypeElement.Create(Trim(elements[K]), comment));
-              end;
-            end;
-    tRecord:for I := 0 to aStrings.Count - 1 do
-            if (aStrings[I] <> '')
-            and (Pos(':', aStrings[I]) > 0) then
-            begin
-              colonPos := Pos(':', aStrings[I]);
-              commentPos := Pos('//', aStrings[I]);
+                  if commentPos > 0 then
+                  begin
+                    comment := Trim(RightStr(aStrings[I], Length(aStrings[I]) - commentPos - 1));
+                    declaration := LeftStr(aStrings[I], commentPos - 1);
+                  end else
+                  begin
+                    comment := '';
+                    declaration := aStrings[I];
+                  end;
 
-              if (Pos('(', aStrings[I]) > colonPos)
-              or (Pos(')', aStrings[I]) > colonPos)
-              or InRange(Pos('function', aStrings[I]), 1, colonPos)
-              or InRange(Pos('procedure', aStrings[I]), 1, colonPos) then
-                Continue;
+                  fList.Add(TKMScriptTypeElement.Create(declaration, comment));
+                end;
+    ttArray:    begin
+                  Assert(aStrings.Count = 1);
+                  commentPos := Pos('//', aStrings[0]);
 
-              if commentPos > 0 then
-              begin
-                comment := Trim(RightStr(aStrings[I], Length(aStrings[I]) - commentPos - 1));
-                declaration := LeftStr(aStrings[I], commentPos - 1);
-              end else
-              begin
-                comment := '';
-                declaration := aStrings[I];
-              end;
+                  if commentPos > 0 then
+                  begin
+                    comment := Trim(RightStr(aStrings[0], Length(aStrings[0]) - commentPos - 1));
+                    declaration := LeftStr(aStrings[0], commentPos - 1);
+                  end else
+                  begin
+                    comment := '';
+                    declaration := aStrings[0];
+                  end;
 
-              fList.Add(TKMScriptTypeElement.Create(declaration, comment));
-            end;
-    tArray: begin
-              Assert(aStrings.Count = 1);
-              commentPos := Pos('//', aStrings[0]);
+                  declaration := Trim(ReplaceStr(declaration, ';', ''));
 
-              if commentPos > 0 then
-              begin
-                comment := Trim(RightStr(aStrings[0], Length(aStrings[0]) - commentPos - 1));
-                declaration := LeftStr(aStrings[0], commentPos - 1);
-              end else
-              begin
-                comment := '';
-                declaration := aStrings[0];
-              end;
+                  fList.Add(TKMScriptTypeElement.Create(declaration, comment));
+                end;
+    ttSetOfType:begin
+                  Assert(aStrings.Count = 1);
 
-              declaration := Trim(ReplaceStr(declaration, ';', ''));
+                  // Single type declaration needs no comments
+                  declaration := aStrings[0];
 
-              fList.Add(TKMScriptTypeElement.Create(declaration, comment));
-            end;
-    tSet:   begin
-              Assert(aStrings.Count = 1);
-              commentPos := Pos('//', aStrings[0]);
+                  fList.Add(TKMScriptTypeElement.Create(declaration, ''));
+                end;
+    ttSetOfEnum:begin
+                  aStrings[0] := ReplaceStr(aStrings[0], 'set of', '');
+                  aStrings[0] := ReplaceStr(aStrings[0], '(', '');
+                  aStrings[aStrings.Count - 1] := ReplaceStr(aStrings[aStrings.Count - 1], ');', '');
 
-              if commentPos > 0 then
-              begin
-                comment := Trim(RightStr(aStrings[0], Length(aStrings[0]) - commentPos - 1));
-                declaration := LeftStr(aStrings[0], commentPos - 1);
-              end else
-              begin
-                comment := '';
-                declaration := aStrings[0];
-              end;
+                  for I := 0 to aStrings.Count - 1 do
+                  if aStrings[I] <> '' then
+                  begin
+                    commentPos := Pos('//', aStrings[I]);
+                    if commentPos > 0 then
+                    begin
+                      comment := Trim(RightStr(aStrings[I], Length(aStrings[I]) - commentPos - 1));
+                      declaration := LeftStr(aStrings[I], commentPos - 1);
+                    end else
+                    begin
+                      comment := '';
+                      declaration := aStrings[I];
+                    end;
 
-              fList.Add(TKMScriptTypeElement.Create(declaration, comment));
-            end;
+                    elements := SplitString(declaration, ',');
+
+                    for K := Low(elements) to High(elements) do
+                    if Trim(elements[K]) <> '' then
+                      fList.Add(TKMScriptTypeElement.Create(Trim(elements[K]), comment));
+                  end;
+                end;
   end;
 end;
 
@@ -263,7 +280,7 @@ begin
     // Parse enum - detected by "("
     if Pos('(', srcLine) > 0 then
     begin
-      fType := tEnum;
+      fType := ttEnum;
 
       enumStr.Text := srcLine;
       if I < aSource.Count - 1 then
@@ -277,7 +294,7 @@ begin
     // Parse record - detected by "record"
     if Pos('record', srcLine) > 0 then
     begin
-      fType := tRecord;
+      fType := ttRecord;
 
       enumStr.Text := srcLine;
       if I < aSource.Count - 1 then
@@ -291,14 +308,21 @@ begin
     // Parse array - detected by "array of"
     if Pos('array of', srcLine) > 0 then
     begin
-      fType := tArray;
+      fType := ttArray;
       enumStr.Text := srcLine;
     end;
 
-    // Parse array - detected by "set of"
-    if Pos('set of', srcLine) > 0 then
+    // Parse set of type - detected by "set of A;"
+    if (Pos('set of', srcLine) > 0) and ((Pos('(', srcLine) = 0)) then
     begin
-      fType := tSet;
+      fType := ttSetOfType;
+      enumStr.Text := srcLine;
+    end;
+
+    // Parse set of enum - detected by "set of (a, b);"
+    if (Pos('set of', srcLine) > 0) and ((Pos('(', srcLine) > 0)) then
+    begin
+      fType := ttSetOfEnum;
       enumStr.Text := srcLine;
     end;
 
