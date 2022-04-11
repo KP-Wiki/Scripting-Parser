@@ -25,9 +25,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromStringList(aSource: TStringList);
-    function ExportBody(aNeedReturn: Boolean): string;
-    function ExportLink: string;
-    function ExportCode: string;
+    function ExportWikiBody(aNeedReturn: Boolean): string;
+    function ExportWikiLink: string;
+    function ExportCodeCheck: string;
+    function ExportCodeReg: string;
   end;
 
 
@@ -36,8 +37,8 @@ type
   private
     fArea: TKMParsingArea;
     fList: TObjectList<TKMMethodInfo>;
-    function ExportBody: string;
-    function ExportLinks: string;
+    function ExportWikiBody: string;
+    function ExportWikiLinks: string;
   public
     constructor Create(aArea: TKMParsingArea);
     destructor Destroy; override;
@@ -199,7 +200,7 @@ begin
 end;
 
 
-function TKMMethodInfo.ExportBody(aNeedReturn: Boolean): string;
+function TKMMethodInfo.ExportWikiBody(aNeedReturn: Boolean): string;
 const
   UNICODE_RED_CROSS = '&#x274C;';
 var
@@ -243,15 +244,21 @@ begin
 end;
 
 
-function TKMMethodInfo.ExportCode: string;
+function TKMMethodInfo.ExportCodeCheck: string;
 begin
   Result := IfThen(fResultType = '', 'procedure', 'function ') + ' ' + fName +
-    fParameters.ExportCode +
+    fParameters.ExportCodeCheck +
     IfThen(fResultType <> '', ': ' + fResultType);
 end;
 
 
-function TKMMethodInfo.ExportLink: string;
+function TKMMethodInfo.ExportCodeReg: string;
+begin
+  Result := fName + ', '#39 + fName + #39;
+end;
+
+
+function TKMMethodInfo.ExportWikiLink: string;
 begin
   Result := '* <a href="#' + fName + '">' + fName + '</a>';
 end;
@@ -353,25 +360,25 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportBody: string;
+function TKMScriptMethods.ExportWikiBody: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportBody(AREA_NEED_RETURN[fArea]);
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody(AREA_NEED_RETURN[fArea]);
 end;
 
 
-function TKMScriptMethods.ExportLinks: string;
+function TKMScriptMethods.ExportWikiLinks: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportLink;
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiLink;
 end;
 
 
@@ -388,42 +395,82 @@ var
   pad: Integer;
   K: Integer;
 begin
-  if fArea <> paActions then Exit;
+  //todo: Events check needs to be handled differently
+  if fArea = paEvents then Exit;
   if not FileExists(aVerifyFile) then Exit;
 
   sl := TStringList.Create;
   try
     sl.LoadFromFile(aVerifyFile);
 
-    secStart := 0;
-    repeat
+    // Regenerate checks
+    begin
+      secStart := 0;
+      repeat
+        Inc(secStart);
+        if secStart >= sl.Count then
+        begin
+          Assert(False, 'Section start not found');
+          Exit;
+        end;
+      until (Trim(sl[secStart]) = AREA_CHECK_TAG[fArea]);
+
+      pad := Pos(AREA_CHECK_TAG[fArea], sl[secStart]) - 1;
       Inc(secStart);
-      if secStart >= sl.Count then
-        Exit;
-    until (Trim(sl[secStart]) = AREA_TAG[fArea]);
 
-    pad := Pos(AREA_TAG[fArea], sl[secStart]) - 1;
-    Inc(secStart);
+      secEnd := secStart;
+      repeat
+        Inc(secEnd);
 
-    secEnd := secStart;
-    repeat
-      Inc(secEnd);
+        if secEnd >= sl.Count then
+          Exit;
+      until (Trim(sl[secEnd]) <> '') and not StartsStr('RegisterMethodCheck', Trim(sl[secEnd]));
+      Dec(secEnd);
 
-      if secEnd >= sl.Count then
-        Exit;
-    until (Trim(sl[secEnd]) <> '') and not StartsStr('RegisterMethodCheck', Trim(sl[secEnd]));
-    Dec(secEnd);
+      for K := secEnd downto secStart do
+        sl.Delete(K);
 
-    for K := secEnd downto secStart do
-      sl.Delete(K);
+      // Pad below for neats
+      sl.Insert(secStart, '');
 
-    // Pad below for neats
-    sl.Insert(secStart, '');
+      // Insert in reverse so we could skip "removed" methods
+      for K := fList.Count - 1 downto 0 do
+      if fList[K].fStatus <> msRemoved then
+        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[K].ExportCodeCheck + #39');');
+    end;
 
-    // Insert in reverse so we could skip "removed" methods
-    for K := fList.Count - 1 downto 0 do
-    if fList[K].fStatus <> msRemoved then
-      sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[K].ExportCode + #39');');
+    // Regenerate registrations
+    begin
+      secStart := 0;
+      repeat
+        Inc(secStart);
+        if secStart >= sl.Count then
+        begin
+          Assert(False, 'Section start not found');
+          Exit;
+        end;
+      until (Trim(sl[secStart]) = AREA_REG_TAG[fArea]);
+
+      pad := Pos(AREA_REG_TAG[fArea], sl[secStart]) - 1;
+      Inc(secStart);
+
+      secEnd := secStart;
+      repeat
+        Inc(secEnd);
+
+        if secEnd >= sl.Count then
+          Exit;
+      until (Trim(sl[secEnd]) <> '') and not StartsStr('RegisterMethod', Trim(sl[secEnd]));
+      Dec(secEnd);
+
+      for K := secEnd downto secStart do
+        sl.Delete(K);
+
+      // Insert in reverse so we could skip "removed" methods
+      for K := fList.Count - 1 downto 0 do
+      if fList[K].fStatus <> msRemoved then
+        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fArea] + '.' + fList[K].ExportCodeReg + ');');
+    end;
 
     sl.SaveToFile(aVerifyFile);
   finally
@@ -440,9 +487,9 @@ begin
 
   sl.LoadFromFile(aTemplateFile);
 
-  sl.Text := StringReplace(sl.Text, '{LINKS}', ExportLinks, []);
+  sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
   sl.Text := StringReplace(sl.Text, '{TITLE}', AREA_TITLE[fArea], []);
-  sl.Text := StringReplace(sl.Text, '{BODY}', ExportBody, []);
+  sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
   Result := sl.Text;
 

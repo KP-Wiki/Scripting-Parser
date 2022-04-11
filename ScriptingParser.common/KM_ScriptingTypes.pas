@@ -15,7 +15,7 @@ type
     fDesc: string;
   public
     constructor Create(const aName, aDesc: string);
-    function ExportBody: string;
+    function ExportWikiBody: string;
   end;
 
   TKMScriptTypeElements = class
@@ -25,7 +25,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ParseFromStringList(aType: TKMTypeType; aStrings: TStringList);
-    function ExportBody: string;
+    function ExportWikiBody: string;
   end;
 
   // Single type info
@@ -39,16 +39,16 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromStringList(aSource: TStringList);
-    function ExportBody: string;
-    function ExportLink: string;
+    function ExportWikiBody: string;
+    function ExportWikiLink: string;
   end;
 
   // List of types
   TKMScriptTypes = class
   private
     fList: TObjectList<TKMScriptType>;
-    function ExportBody: string;
-    function ExportLinks: string;
+    function ExportWikiBody: string;
+    function ExportWikiLinks: string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -75,7 +75,7 @@ begin
 end;
 
 
-function TKMScriptTypeElement.ExportBody: string;
+function TKMScriptTypeElement.ExportWikiBody: string;
 begin
   Result := '<sub>**' + fName + '**' + IfThen(fDesc <> '', ' // ' + fDesc) + '</sub>';
 end;
@@ -213,13 +213,13 @@ begin
 end;
 
 
-function TKMScriptTypeElements.ExportBody: string;
+function TKMScriptTypeElements.ExportWikiBody: string;
 var
   I: Integer;
 begin
   Result := '';
   for I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, '<br/>') + fList[I].ExportBody;
+    Result := Result + IfThen(I > 0, '<br/>') + fList[I].ExportWikiBody;
 end;
 
 
@@ -342,7 +342,7 @@ begin
 end;
 
 
-function TKMScriptType.ExportBody: string;
+function TKMScriptType.ExportWikiBody: string;
 const
   TYPE_NAME: array [TKMTypeType] of string = ('enum', 'record', 'array', 'set', 'set');
 begin
@@ -352,11 +352,11 @@ begin
     '| <a id="' + fName + '">' + fName + '</a>' + '<sub>' + fDescription + '</sub> ' +
     '|';
 
-  Result := Result + fElements.ExportBody;
+  Result := Result + fElements.ExportWikiBody;
 end;
 
 
-function TKMScriptType.ExportLink: string;
+function TKMScriptType.ExportWikiLink: string;
 begin
   Result := '* <a href="#' + fName + '">' + fName + '</a>';
 end;
@@ -473,25 +473,25 @@ begin
 end;
 
 
-function TKMScriptTypes.ExportBody: string;
+function TKMScriptTypes.ExportWikiBody: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportBody;
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody;
 end;
 
 
-function TKMScriptTypes.ExportLinks: string;
+function TKMScriptTypes.ExportWikiLinks: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportLink;
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiLink;
 end;
 
 
@@ -509,9 +509,9 @@ begin
 
   sl.LoadFromFile(aTemplateFile);
 
-  sl.Text := StringReplace(sl.Text, '{LINKS}', ExportLinks, []);
+  sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
   sl.Text := StringReplace(sl.Text, '{TITLE}', AREA_TITLE[paTypes], []);
-  sl.Text := StringReplace(sl.Text, '{BODY}', ExportBody, []);
+  sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
   Result := sl.Text;
 
