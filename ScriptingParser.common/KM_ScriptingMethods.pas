@@ -402,9 +402,9 @@ begin
   try
     sl.LoadFromFile(aCodeFile);
 
+    FindStartAndFinish(sl, AREA_CHECK_TAG[fArea], secStart, secEnd, pad);
+    if secStart <> -1 then
     begin
-      FindStartAndFinish(sl, AREA_CHECK_TAG[fArea], secStart, secEnd, pad);
-
       for I := secEnd downto secStart do
         sl.Delete(I);
 
@@ -414,10 +414,9 @@ begin
         sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
     end;
 
-    // Regenerate registrations
+    FindStartAndFinish(sl, AREA_REG_TAG[fArea], secStart, secEnd, pad);
+    if secStart <> -1 then
     begin
-      FindStartAndFinish(sl, AREA_REG_TAG[fArea], secStart, secEnd, pad);
-
       for I := secEnd downto secStart do
         sl.Delete(I);
 

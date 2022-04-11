@@ -560,11 +560,14 @@ begin
 
     FindStartAndFinish(sl, AREA_REG_TAG[paTypes], secStart, secEnd, pad);
 
-    for I := secEnd downto secStart do
-      sl.Delete(I);
+    if secStart <> -1 then
+    begin
+      for I := secEnd downto secStart do
+        sl.Delete(I);
 
-    for I := fList.Count - 1 downto 0 do
-      sl.Insert(secStart, DupeString(' ', pad) + 'Sender.AddTypeS(' + fList[I].ExportCode + ');');
+      for I := fList.Count - 1 downto 0 do
+        sl.Insert(secStart, DupeString(' ', pad) + 'Sender.AddTypeS(' + fList[I].ExportCode + ');');
+    end;
 
     sl.SaveToFile(aCodeFile);
   finally

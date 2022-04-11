@@ -61,10 +61,11 @@ function TryTypeToAlias(const aType: string): string;
 var
   I: Integer;
 begin
-  Result := aType;
+  //#Rey: Actually, it looks like we do not need aliases in wiki
+  Result := aType;      {
   for I := 0 to High(VAR_TYPE_INFO) do
     if (VAR_TYPE_INFO[I].Alias <> '') and SameText(VAR_TYPE_INFO[I].Name, aType) then
-      Exit(VAR_TYPE_INFO[I].Alias);
+      Exit(VAR_TYPE_INFO[I].Alias);        }
 end;
 
 
@@ -95,6 +96,15 @@ begin
       aName := IfThen(VAR_TYPE_INFO[I].Alias <> '', VAR_TYPE_INFO[I].Alias, VAR_TYPE_INFO[I].Name);
       Exit(True);
     end;
+
+  // Rarely there can be an "array of TKMSomeListedType"
+  // Despite the type being listed in the VAR_TYPE_INFO, "array of " may be not
+  // But we are certain, it is a Type
+  if StartsStr('array of T', aToken) then
+  begin
+    aName := aToken;
+    Exit(True);
+  end;
 end;
 
 

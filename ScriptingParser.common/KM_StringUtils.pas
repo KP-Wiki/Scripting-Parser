@@ -71,12 +71,12 @@ end;
 
 procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer);
 begin
-  aLineStart := 0;
+  aLineStart := -1;
   repeat
     Inc(aLineStart);
     if aLineStart >= aStringList.Count then
     begin
-      Assert(False, 'Section start not found');
+      aLineStart := -1;
       Exit;
     end;
   until (Trim(aStringList[aLineStart]) = aMarker);
