@@ -63,7 +63,7 @@ object Form1: TForm1
   end
   object btnGenerateXML: TButton
     Left = 838
-    Top = 104
+    Top = 152
     Width = 98
     Height = 49
     Anchors = [akTop]
@@ -351,5 +351,24 @@ object Form1: TForm1
     TabOrder = 6
     WordWrap = True
     OnClick = btnKromKMRClick
+  end
+  object btnGenerateCode: TButton
+    Left = 838
+    Top = 104
+    Width = 98
+    Height = 49
+    Anchors = [akTop]
+    Caption = 'Generate Code'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
+    TabOrder = 7
+    WordWrap = True
+    OnClick = btnGenerateCodeClick
   end
 end

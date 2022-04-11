@@ -18,15 +18,18 @@ type
     fTypes: TKMScriptTypes;
     fText: array [TKMParsingArea] of string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure ParseMethods(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile, aVerifyFile: string);
-    procedure ParseTypes(const aSourceMask, aTemplateFile, aOutputFile: string);
+    procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+    procedure ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+    procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
+    procedure ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
 
     function GetText(aArea: TKMParsingArea): string;
 
-    procedure GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aIn, aTempl, aOut, aVerifyFile: string);
+    procedure GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+    procedure GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure GenerateXML;
   end;
 
@@ -72,7 +75,20 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseMethods(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile, aVerifyFile: string);
+procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+begin
+  if not FileExists(aSourceFile) then Exit;
+
+  fMethods[aArea].LoadFromFile(aSourceFile);
+
+  // Sort for neat order
+  fMethods[aArea].SortByName;
+
+  fMethods[aArea].VerifyAgainst(aCodeFile);
+end;
+
+
+procedure TKMScriptingParser.ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
@@ -83,8 +99,6 @@ begin
 
   // Sort for neat order
   fMethods[aArea].SortByName;
-
-  fMethods[aArea].VerifyAgainst(aVerifyFile);
 
   if aOutputFile = '' then Exit;
 
@@ -103,7 +117,26 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseTypes(const aSourceMask, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingParser.ExportTypesToCode(const aSourceMask, aCodeFile: string);
+var
+  s: TStringDynArray;
+  I: Integer;
+begin
+  fTypes.Clear;
+
+  // Get all files matching the mask
+  s := TDirectory.GetFiles(ExtractFilePath(aSourceMask), ExtractFileName(aSourceMask), TSearchOption.soAllDirectories);
+  for I := Low(s) to High(s) do
+    fTypes.LoadFromFile(s[I]);
+
+  // Sort for neat order
+  fTypes.SortByName;
+
+  //todo: fTypes.VerifyAgainst(aCodeFile);
+end;
+
+
+procedure TKMScriptingParser.ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
@@ -137,17 +170,28 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aIn, aTempl, aOut, aVerifyFile: string);
+procedure TKMScriptingParser.GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
 begin
   fParsingGame := aParsingGame;
 
   if aArea in [paActions..paUtils] then
-    ParseMethods(aArea, aIn, aTempl, aOut, aVerifyFile)
+    ExportMethodsToCode(aArea, aSourceFile, aCodeFile)
   else
-    ParseTypes(aIn, aTempl, aOut);
+    ExportTypesToCode(aSourceFile, aCodeFile);
+end;
+
+
+procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+begin
+  fParsingGame := aParsingGame;
+
+  if aArea in [paActions..paUtils] then
+    ExportMethodsToWiki(aArea, aSourceFile, aTemplateFile, aOutputFile)
+  else
+    ExportTypesToWiki(aSourceFile, aTemplateFile, aOutputFile);
 
   if DBG_COPY_FOR_REFERENCE then
-    CopyForReference(aOut, aArea);
+    CopyForReference(aOutputFile, aArea);
 end;
 
 
