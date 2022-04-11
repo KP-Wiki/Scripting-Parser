@@ -22,6 +22,9 @@ const
   VAR_TYPE_COUNT = 67;
 
   VAR_MODIFIERS: array[0..1] of string = ('out', 'var');
+
+  //@Rey: We need to specify aliases only for those types that are not exported into Wiki
+
   VAR_TYPE_INFO: array[0..VAR_TYPE_COUNT-1] of TKMTypeInfo = (
     // Simple types
     (Name: 'Byte'),       (Name: 'Shortint'),   (Name: 'Smallint'),   (Name: 'Word'),
@@ -33,6 +36,7 @@ const
     (Name: 'array of Extended'),
     // Custom types
     (Name: 'TKMPoint'), (Name: 'TKMWareType'), (Name: 'TKMFieldType'), (Name: 'TKMUnitType'),
+    (Name: 'TByteSet'), (Name: 'TIntegerArray'), (Name: 'TAnsiStringArray'),
     // KMR
     (Name: 'TKMArmyType'), (Name: 'TKMGroupOrder'), (Name: 'TKMHouseType'),
     (Name: 'TKMTerrainTileBrief'), (Name: 'TKMMissionDifficulty'), (Name: 'TKMMissionDifficultySet'),
@@ -47,7 +51,6 @@ const
     // KP
     (Name: 'TKMHouseFace'), (Name: 'TKMObjectiveStatus'), (Name: 'TKMObjectiveType'), (Name: 'TKMFenceType'),
     // Werewolf types
-    (Name: 'TByteSet'; Alias: 'set of Byte'), (Name: 'TIntegerArray'; Alias: 'array of Integer'), (Name: 'TAnsiStringArray'; Alias: 'array of AnsiString'),
     (Name: 'TKMHouse'; Alias: 'Integer'), (Name: 'TKMUnit'; Alias: 'Integer'), (Name: 'TKMUnitGroup'; Alias: 'Integer'),
     // KMR
     (Name: 'TKMHandID'; Alias: 'Integer'), (Name: 'array of TKMHandID'; Alias: 'array of Integer'),
@@ -61,11 +64,10 @@ function TryTypeToAlias(const aType: string): string;
 var
   I: Integer;
 begin
-  //#Rey: Actually, it looks like we do not need aliases in wiki
-  Result := aType;      {
+  Result := aType;
   for I := 0 to High(VAR_TYPE_INFO) do
     if (VAR_TYPE_INFO[I].Alias <> '') and SameText(VAR_TYPE_INFO[I].Name, aType) then
-      Exit(VAR_TYPE_INFO[I].Alias);        }
+      Exit(VAR_TYPE_INFO[I].Alias);
 end;
 
 
