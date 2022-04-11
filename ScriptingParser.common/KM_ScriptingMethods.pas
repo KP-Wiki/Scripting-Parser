@@ -45,7 +45,7 @@ type
 
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure VerifyAgainst(const aVerifyFile: string);
+    procedure ExportCode(const aCodeFile: string);
     function ExportWiki(const aTemplateFile: string): string;
   end;
 
@@ -388,7 +388,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.VerifyAgainst(const aVerifyFile: string);
+procedure TKMScriptMethods.ExportCode(const aCodeFile: string);
 var
   sl: TStringList;
   secStart, secEnd: Integer;
@@ -397,41 +397,17 @@ var
 begin
   //todo: Events check needs to be handled differently
   if fArea = paEvents then Exit;
-  if not FileExists(aVerifyFile) then Exit;
+  if not FileExists(aCodeFile) then Exit;
 
   sl := TStringList.Create;
   try
-    sl.LoadFromFile(aVerifyFile);
+    sl.LoadFromFile(aCodeFile);
 
-    // Regenerate checks
     begin
-      secStart := 0;
-      repeat
-        Inc(secStart);
-        if secStart >= sl.Count then
-        begin
-          Assert(False, 'Section start not found');
-          Exit;
-        end;
-      until (Trim(sl[secStart]) = AREA_CHECK_TAG[fArea]);
-
-      pad := Pos(AREA_CHECK_TAG[fArea], sl[secStart]) - 1;
-      Inc(secStart);
-
-      secEnd := secStart;
-      repeat
-        Inc(secEnd);
-
-        if secEnd >= sl.Count then
-          Exit;
-      until (Trim(sl[secEnd]) <> '') and not StartsStr('RegisterMethodCheck', Trim(sl[secEnd]));
-      Dec(secEnd);
+      FindStartAndFinish(sl, AREA_CHECK_TAG[fArea], secStart, secEnd, pad);
 
       for K := secEnd downto secStart do
         sl.Delete(K);
-
-      // Pad below for neats
-      sl.Insert(secStart, '');
 
       // Insert in reverse so we could skip "removed" methods
       for K := fList.Count - 1 downto 0 do
@@ -441,27 +417,7 @@ begin
 
     // Regenerate registrations
     begin
-      secStart := 0;
-      repeat
-        Inc(secStart);
-        if secStart >= sl.Count then
-        begin
-          Assert(False, 'Section start not found');
-          Exit;
-        end;
-      until (Trim(sl[secStart]) = AREA_REG_TAG[fArea]);
-
-      pad := Pos(AREA_REG_TAG[fArea], sl[secStart]) - 1;
-      Inc(secStart);
-
-      secEnd := secStart;
-      repeat
-        Inc(secEnd);
-
-        if secEnd >= sl.Count then
-          Exit;
-      until (Trim(sl[secEnd]) <> '') and not StartsStr('RegisterMethod', Trim(sl[secEnd]));
-      Dec(secEnd);
+      FindStartAndFinish(sl, AREA_REG_TAG[fArea], secStart, secEnd, pad);
 
       for K := secEnd downto secStart do
         sl.Delete(K);
@@ -472,7 +428,7 @@ begin
         sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fArea] + '.' + fList[K].ExportCodeReg + ');');
     end;
 
-    sl.SaveToFile(aVerifyFile);
+    sl.SaveToFile(aCodeFile);
   finally
     sl.Free;
   end;

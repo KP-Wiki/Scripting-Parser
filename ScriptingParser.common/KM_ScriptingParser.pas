@@ -84,7 +84,7 @@ begin
   // Sort for neat order
   fMethods[aArea].SortByName;
 
-  fMethods[aArea].VerifyAgainst(aCodeFile);
+  fMethods[aArea].ExportCode(aCodeFile);
 end;
 
 
@@ -132,7 +132,7 @@ begin
   // Sort for neat order
   fTypes.SortByName;
 
-  //todo: fTypes.VerifyAgainst(aCodeFile);
+  fTypes.ExportCode(aCodeFile);
 end;
 
 
@@ -197,7 +197,7 @@ end;
 
 procedure TKMScriptingParser.GenerateXML;
 begin
-  //
+  //todo: GenerateXML for ScriptingEditor
 end;
 
 

@@ -56,6 +56,7 @@ type
     procedure Clear;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
+    procedure ExportCode(const aCodeFile: string);
     function ExportWiki(const aTemplateFile: string): string;
   end;
 
@@ -498,6 +499,12 @@ end;
 procedure TKMScriptTypes.SortByName;
 begin
   fList.Sort;
+end;
+
+
+procedure TKMScriptTypes.ExportCode(const aCodeFile: string);
+begin
+  //todo: TKMScriptTypes.ExportCode
 end;
 
 

@@ -10,6 +10,7 @@ function StrLastIndexOf(const aStr, aSubStr: string): Integer;
 function StrTrimRightSeparators(const aStr: string): string;
 procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList);
 
+procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer);
 
 implementation
 
@@ -65,6 +66,34 @@ begin
   for I := Low(StrArray) to High(StrArray) do
   if StrArray[I] <> '' then
     aStrings.Add(StrArray[I]);
+end;
+
+
+procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer);
+begin
+  aLineStart := 0;
+  repeat
+    Inc(aLineStart);
+    if aLineStart >= aStringList.Count then
+    begin
+      Assert(False, 'Section start not found');
+      Exit;
+    end;
+  until (Trim(aStringList[aLineStart]) = aMarker);
+
+  aPad := Pos(aMarker, aStringList[aLineStart]) - 1;
+
+  Inc(aLineStart);
+
+  aLineFinish := aLineStart;
+  repeat
+    Inc(aLineFinish);
+
+    if aLineFinish >= aStringList.Count then
+      Exit;
+  until (Trim(aStringList[aLineFinish]) = aMarker);
+
+  Dec(aLineFinish);
 end;
 
 
