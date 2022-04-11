@@ -1,4 +1,4 @@
-### Dynamic Mission Script Types
+#### Dynamic Mission Script Types
 
 
 There are several KMR types that could be used in the Mission Dynamic scripts and that are required for some [Actions](https://github.com/reyandme/kam_remake/wiki/Actions-(Mission-Script-Dynamic)), [States](https://github.com/reyandme/kam_remake/wiki/States-(Mission-Script-Dynamic)) or [Events](https://github.com/reyandme/kam_remake/wiki/Events-(Mission-Script-Dynamic)).
@@ -40,12 +40,13 @@ There are several KMR types that could be used in the Mission Dynamic scripts an
 * <a href="#TKMWareTypeSet">TKMWareTypeSet</a>
 * <a href="#TKMWoodcutterMode">TKMWoodcutterMode</a>
 * <a href="#TReplaceFlags">TReplaceFlags</a>
+<br />
 
 | Version | Type name | Elements |
 | ------- | ------------------------------------ | -------------- |
-| - | <a id="TAnsiStringArray">TAnsiStringArray</a><sub><br/>array of string values</sub> | <sub>**array of AnsiString;**</sub>
+| - | <a id="TAnsiStringArray">TAnsiStringArray</a><sub><br/>array of string values</sub> | <sub>**array of AnsiString**</sub>
 | - | <a id="TByteSet">TByteSet</a><sub><br/>Array of bytes</sub> | <sub>**set of Byte; ** // Legacy support for old scripts</sub>
-| - | <a id="TIntegerArray">TIntegerArray</a><sub><br/>array of integer values</sub> | <sub>**array of Integer;**</sub>
+| - | <a id="TIntegerArray">TIntegerArray</a><sub><br/>array of integer values</sub> | <sub>**array of Integer**</sub>
 | - | <a id="TKMAIAttackInfo">TKMAIAttackInfo</a><sub><br/>AI attack setup</sub> | <sub>**UID: Integer;**</sub><br/><sub>**AttackType: TKMAIAttackType;**</sub><br/><sub>**HasOccured: Boolean;**</sub><br/><sub>**Delay: Cardinal;**</sub><br/><sub>**TotalMen: Integer;**</sub><br/><sub>**MeleeGroupCount: Integer;**</sub><br/><sub>**AntiHorseGroupCount: Integer;**</sub><br/><sub>**RangedGroupCount: Integer;**</sub><br/><sub>**MountedGroupCount: Integer;**</sub><br/><sub>**RandomGroups: Boolean;**</sub><br/><sub>**Target: TKMAIAttackTarget;**</sub><br/><sub>**CustomPosition: TKMPoint;**</sub>
 | - | <a id="TKMAIAttackTarget">TKMAIAttackTarget</a><sub><br/>AI attack target</sub> | <sub>**attClosestUnit** // Closest enemy unit untested as to whether this is relative to army or start position)</sub><br/><sub>**attClosestBuildingFromArmy** // Closest building from the group(s) lauching the attack</sub>
 | - | <a id="TKMAIAttackType">TKMAIAttackType</a><sub><br/>AI attack type</sub> | <sub>**aatOnce** // Attack will occur once (after the set time has passed and if they have enough troops</sub><br/><sub>**aatRepeating** // Attack will happen multiple times, (after delay time) whenever the AI has enough troops</sub>
