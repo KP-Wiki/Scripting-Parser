@@ -179,7 +179,6 @@ begin
   end;
 
   // Now we can collect names
-  //todo: We could glue together X,Y pairs if they are identical in type and comments
   for I := 0 to aTokenList.Count - 1 do
   if not TokenIsModifier(aTokenList[I], newModifier)
   and not TokenIsType(aTokenList[I], newType) then
