@@ -37,6 +37,7 @@ type
     function ExportWikiBody: string;
     function ExportCodeCheck: string;
     procedure AdjoinPairs;
+    procedure DowngradeTypes;
 
     procedure ParseFromString(const aArguments: string; aDescriptions: TStringList);
   end;
@@ -232,6 +233,15 @@ begin
       fList[I-1].fName := fList[I-1].fName + ', ' + fList[I].fName;
       fList.Delete(I);
     end;
+end;
+
+
+procedure TKMScriptParameters.DowngradeTypes;
+var
+  I: Integer;
+begin
+  for I := 0 to fList.Count - 1 do
+    fList[I].fVarType := TryEventTypeToAlias(fList[I].fVarType);
 end;
 
 

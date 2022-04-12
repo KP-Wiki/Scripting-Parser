@@ -196,10 +196,13 @@ begin
       // Function result
       restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
       if aArea = paEvents then
-        fResultType := TryTypeToAlias(restStr)
+        fResultType := TryEventTypeToAlias(restStr)
       else
         fResultType := restStr;
     end;
+
+    if aArea = paEvents then
+      fParameters.DowngradeTypes;
 
     // Now we can assemble Description, after we have detected and removed fParameters descriptions from it
     for I := 0 to details.Count - 1 do
@@ -268,19 +271,20 @@ end;
 
 function TKMMethodInfo.ExportCodeCheckEvent(aGame: TKMParsingGame): string;
 const
+  CNT = 5;
   TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (pmIn, pmIn, pmIn, pmIn, pmIn)) // %s';
   TEMPLATE_KP = '(Name: ''%s'';       ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (pmIn, pmIn, pmIn, pmIn, pmIn))';
 var
-  p: array [0..4] of string;
+  p: array [0..CNT-1] of string;
   n: string;
   I: Integer;
 begin
-  Assert(fParameters.Count <= 5);
+  Assert(fParameters.Count <= CNT);
 
   for I := 0 to High(p) do
   begin
     if I < fParameters.Count then
-      p[I] := TryTypeToTyp(fParameters[I].VarType)
+      p[I] := TryEventTypeToTyp(fParameters[I].VarType)
     else
       p[I] := '0';
 
