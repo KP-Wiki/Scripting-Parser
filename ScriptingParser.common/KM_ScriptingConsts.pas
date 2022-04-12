@@ -29,29 +29,29 @@ type
   end;
 
 const
-  VAR_MODIFIERS: array[0..1] of string = ('out', 'var');
+  VAR_MODIFIERS: array [0..1] of string = ('out', 'var');
 
   //@Rey: We need to specify aliases only for those types that are not exported into Wiki
 
   // PascalScript types of event variable types
   VAR_TYPES_FOR_EVENTS: array [0..14] of TKMEventTypesInfo = (
-    (Name: 'Byte'; Typ: 'btS32'),
-    (Name: 'Shortint'; Typ: 'btS32'),
-    (Name: 'Smallint'; Typ: 'btS32'),
-    (Name: 'Word'; Typ: 'btS32'),
-    (Name: 'Integer'; Typ: 'btS32'),
-    (Name: 'Cardinal'; Typ: 'btS32'),
-    (Name: 'Boolean'; Typ: 'btEnum'),
-    (Name: 'TKMWareType'; Typ: 'btEnum'),
-    (Name: 'TKMFieldType'; Typ: 'btEnum'),
-    (Name: 'TKMUnitType'; Typ: 'btEnum'),
-    (Name: 'TKMHouseType'; Typ: 'btEnum'),
+    (Name: 'Byte';          Typ: 'btS32'),
+    (Name: 'Shortint';      Typ: 'btS32'),
+    (Name: 'Smallint';      Typ: 'btS32'),
+    (Name: 'Word';          Typ: 'btS32'),
+    (Name: 'Integer';       Typ: 'btS32'),
+    (Name: 'Cardinal';      Typ: 'btS32'),
+    (Name: 'Boolean';       Typ: 'btEnum'),
+    (Name: 'TKMWareType';   Typ: 'btEnum'),
+    (Name: 'TKMFieldType';  Typ: 'btEnum'),
+    (Name: 'TKMUnitType';   Typ: 'btEnum'),
+    (Name: 'TKMHouseType';  Typ: 'btEnum'),
 
     // KP
-    (Name: 'TKMHouseFace'; Typ: 'btEnum'),
-    (Name: 'TKMObjectiveStatus'; Typ: 'btEnum'),
-    (Name: 'TKMObjectiveType'; Typ: 'btEnum'),
-    (Name: 'TKMFenceType'; Typ: 'btEnum')
+    (Name: 'TKMHouseFace';        Typ: 'btEnum'),
+    (Name: 'TKMObjectiveStatus';  Typ: 'btEnum'),
+    (Name: 'TKMObjectiveType';    Typ: 'btEnum'),
+    (Name: 'TKMFenceType';        Typ: 'btEnum')
   );
 
   // Aliases for Event variable types
@@ -64,7 +64,7 @@ const
   );
 
   // Known types
-  VAR_TYPE_INFO: array[0..58] of TKMTypeInfo = (
+  VAR_TYPE_INFO: array [0..58] of TKMTypeInfo = (
     // Simple types
     (Name: 'Byte'),    (Name: 'Shortint'),   (Name: 'Smallint'), (Name: 'Word'),
     (Name: 'Integer'), (Name: 'Cardinal'),   (Name: 'Single'),   (Name: 'Extended'),
