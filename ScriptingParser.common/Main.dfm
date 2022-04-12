@@ -348,8 +348,6 @@ object Form1: TForm1
     Width = 825
     Height = 457
     Anchors = [akLeft, akTop, akRight, akBottom]
-    Lines.Strings = (
-      'meLog')
     TabOrder = 7
   end
 end

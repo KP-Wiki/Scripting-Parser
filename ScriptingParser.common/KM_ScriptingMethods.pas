@@ -24,10 +24,11 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure LoadFromStringList(aSource: TStringList);
+    procedure LoadFromStringList(aSource: TStringList; aArea: TKMParsingArea);
     function ExportWikiBody(aNeedReturn: Boolean): string;
     function ExportWikiLink: string;
     function ExportCodeCheck: string;
+    function ExportCodeCheckEvent(aGame: TKMParsingGame): string;
     function ExportCodeReg: string;
   end;
 
@@ -74,7 +75,7 @@ begin
 end;
 
 
-procedure TKMMethodInfo.LoadFromStringList(aSource: TStringList);
+procedure TKMMethodInfo.LoadFromStringList(aSource: TStringList; aArea: TKMParsingArea);
 var
   I: Integer;
   srcLine, restStr, metName: string;
@@ -152,8 +153,12 @@ begin
         // Procedure without fParameters (ends with ";")
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
 
-      metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
-      fName := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
+      if aArea = paEvents then
+      begin
+        metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
+        fName := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
+      end else
+        fName := metName;
     end;
 
     // Parse function
@@ -181,12 +186,19 @@ begin
         // Function without fParameters (ends with ":")
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
 
-      metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
-      fName := ReplaceStr(metName, 'Func', 'On');   // For the KMR
+      if aArea = paEvents then
+      begin
+        metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
+        fName := ReplaceStr(metName, 'Func', 'On');   // For the KMR
+      end else
+        fName := metName;
 
       // Function result
       restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
-      fResultType := TryTypeToAlias(restStr);
+      if aArea = paEvents then
+        fResultType := TryTypeToAlias(restStr)
+      else
+        fResultType := restStr;
     end;
 
     // Now we can assemble Description, after we have detected and removed fParameters descriptions from it
@@ -240,7 +252,7 @@ begin
   Result := '| ' + IfThen(fVersion <> '', fVersion, '-') + ' | <a id="' + fName + '">' + fName + '</a>' +
               deprStr +
               '<sub>' + fDescription + '</sub>' +
-              ' | <sub>' + fParameters.GetText + '</sub>' +
+              ' | <sub>' + fParameters.ExportWikiBody + '</sub>' +
               IfThen(aNeedReturn, ' | <sub>' + fResultType + IfThen(fResultDesc <> '', ' // ' + fResultDesc) + '</sub>') +
               ' |';
 end;
@@ -251,6 +263,36 @@ begin
   Result := IfThen(fResultType = '', 'procedure', 'function ') + ' ' + fName +
     fParameters.ExportCodeCheck +
     IfThen(fResultType <> '', ': ' + fResultType);
+end;
+
+
+function TKMMethodInfo.ExportCodeCheckEvent(aGame: TKMParsingGame): string;
+const
+  TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (pmIn, pmIn, pmIn, pmIn, pmIn)) // %s';
+  TEMPLATE_KP = '(Name: ''%s'';       ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (pmIn, pmIn, pmIn, pmIn, pmIn))';
+var
+  p: array [0..4] of string;
+  n: string;
+  I: Integer;
+begin
+  Assert(fParameters.Count <= 5);
+
+  for I := 0 to High(p) do
+  begin
+    if I < fParameters.Count then
+      p[I] := TryTypeToTyp(fParameters[I].VarType)
+    else
+      p[I] := '0';
+
+    p[I] := p[I] + DupeString(' ', 6 - Length(p[I]));
+  end;
+
+  n := fName + DupeString(' ', 32 - Length(fName));
+
+  case aGame of
+    pgKaMRemake:        Result := Format(TEMPLATE_KMR, [fParameters.Count, p[0], p[1], p[2], p[3], p[4], fName]);
+    pgKnightsProvince:  Result := Format(TEMPLATE_KP, [n, fParameters.Count, p[0], p[1], p[2], p[3], p[4]]);
+  end;
 end;
 
 
@@ -351,7 +393,7 @@ begin
           sectionStarted := False;
 
           fList.Add(TKMMethodInfo.Create);
-          fList.Last.LoadFromStringList(sl);
+          fList.Last.LoadFromStringList(sl, fArea);
         end;
       end;
     end;
@@ -369,7 +411,10 @@ begin
   Result := '';
 
   for I := 0 to fList.Count - 1 do
+  begin
+    fList[I].fParameters.AdjoinPairs;
     Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody(AREA_NEED_RETURN[fArea]);
+  end;
 end;
 
 
@@ -406,7 +451,7 @@ begin
   aCountReg := 0;
 
   //todo: Events check needs to be handled differently
-  if fArea = paEvents then Exit;
+  if (aGame = pgKaMRemake) and (fArea = paEvents) then Exit;
   if not FileExists(aCodeFile) then Exit;
 
   sl := TStringList.Create;
@@ -423,7 +468,18 @@ begin
       for I := fList.Count - 1 downto 0 do
       begin
         if fList[I].fStatus <> msRemoved then
-          sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
+        case fArea of
+          paActions,
+          paStates,
+          paUtils:    begin
+                        // We can write more compact code with AdjoinPairs
+                        fList[I].fParameters.AdjoinPairs;
+                        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
+                      end;
+          paEvents:   // Can not use AdjoinPairs here. All vars must be separate
+                      sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeCheckEvent(aGame) + IfThen(I <> fList.Count-1, ','));
+        end;
+
         Inc(aCountCheck);
       end;
     end;

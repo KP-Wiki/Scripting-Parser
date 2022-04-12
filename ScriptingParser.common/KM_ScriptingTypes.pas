@@ -391,15 +391,10 @@ end;
 
 function TKMScriptType.ExportWikiBody: string;
 const
+  TEMPLATE = '| - | <sub>%s</sub> | <a id="%s">%s</a><sub>%s</sub> |';
   TYPE_NAME: array [TKMTypeType] of string = ('enum', 'record', 'array', 'set', 'set');
 begin
-  Result :=
-    '| - ' +
-    '| <sub>' + TYPE_NAME[fType] + '</sub> ' +
-    '| <a id="' + fName + '">' + fName + '</a>' + '<sub>' + fDescription + '</sub> ' +
-    '|';
-
-  Result := Result + fElements.ExportWikiBody;
+  Result := Format(TEMPLATE, [TYPE_NAME[fType], fName, fName, fDescription]) + fElements.ExportWikiBody;
 end;
 
 

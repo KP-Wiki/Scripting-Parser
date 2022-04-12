@@ -14,7 +14,8 @@ type
     fDesc: string;
   public
     constructor Create(const aName, aModifier, aVarType, aDesc: string);
-    function GetText: string;
+    property VarType: string read fVarType;
+    function ExportWikiBody: string;
     function ExportCodeCheck: string;
   end;
 
@@ -22,15 +23,20 @@ type
   TKMScriptParameters = class
   private
     fList: TObjectList<TKMScriptParameter>;
-    procedure SplitArguments(const aArguments: string; aTokenList: TStringList);
+    procedure SplitIntoTokens(const aArguments: string; aTokenList: TStringList);
     function FindDescription(const aName: string; aDescriptions: TStringList): string;
     procedure CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
+    function GetCount: Integer;
+    function GetParameter(aIndex: Integer): TKMScriptParameter;
   public
     constructor Create;
     destructor Destroy; override;
 
-    function GetText: string;
+    property Count: Integer read GetCount;
+    property Parameters[aIndex: Integer]: TKMScriptParameter read GetParameter; default;
+    function ExportWikiBody: string;
     function ExportCodeCheck: string;
+    procedure AdjoinPairs;
 
     procedure ParseFromString(const aArguments: string; aDescriptions: TStringList);
   end;
@@ -59,7 +65,7 @@ begin
 end;
 
 
-function TKMScriptParameter.GetText: string;
+function TKMScriptParameter.ExportWikiBody: string;
 begin
   Result := '**' + IfThen(fModifier <> '', fModifier + ' ') + fName + '**: ' + fVarType + ';' + IfThen(fDesc <> '', ' // _' + fDesc + '_');
 end;
@@ -82,14 +88,26 @@ begin
 end;
 
 
-function TKMScriptParameters.GetText: string;
+function TKMScriptParameters.GetCount: Integer;
+begin
+  Result := fList.Count;
+end;
+
+
+function TKMScriptParameters.GetParameter(aIndex: Integer): TKMScriptParameter;
+begin
+  Result := fList[aIndex];
+end;
+
+
+function TKMScriptParameters.ExportWikiBody: string;
 var
   I: Integer;
 begin
   Result := '';
 
   for I := 0 to fList.Count - 1 do
-    Result := Result + fList[I].GetText + IfThen(I <> fList.Count - 1, ' <br/> ');
+    Result := Result + fList[I].ExportWikiBody + IfThen(I <> fList.Count - 1, ' <br/> ');
 end;
 
 
@@ -118,7 +136,7 @@ end;
 
 
 // Take a string of arguments and split it into list of tokens
-procedure TKMScriptParameters.SplitArguments(const aArguments: string; aTokenList: TStringList);
+procedure TKMScriptParameters.SplitIntoTokens(const aArguments: string; aTokenList: TStringList);
 var
   I: Integer;
 begin
@@ -196,18 +214,24 @@ begin
   if not TokenIsModifier(aTokenList[I], newModifier)
   and not TokenIsType(aTokenList[I], newType) then
     fList.Add(TKMScriptParameter.Create(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
+end;
 
-  // Adjoin pairs wherever possible
+
+// Adjoin pairs wherever possible
+procedure TKMScriptParameters.AdjoinPairs;
+var
+  I: Integer;
+begin
   for I := fList.Count - 1 downto 1 do
-  if ((fList[I].fName = 'Y') and (fList[I-1].fName = 'X')
-  or (fList[I].fName = 'aY') and (fList[I-1].fName = 'aX')
-  or (fList[I].fName = 'B') and (fList[I-1].fName = 'A')
-  or (fList[I].fName = 'aMax') and (fList[I-1].fName = 'aMin'))
-  and (fList[I].fDesc = fList[I-1].fDesc) then
-  begin
-    fList[I-1].fName := fList[I-1].fName + ', ' + fList[I].fName;
-    fList.Delete(I);
-  end;
+    if ((fList[I].fName = 'Y') and (fList[I-1].fName = 'X')
+    or (fList[I].fName = 'aY') and (fList[I-1].fName = 'aX')
+    or (fList[I].fName = 'B') and (fList[I-1].fName = 'A')
+    or (fList[I].fName = 'aMax') and (fList[I-1].fName = 'aMin'))
+    and (fList[I].fDesc = fList[I-1].fDesc) then
+    begin
+      fList[I-1].fName := fList[I-1].fName + ', ' + fList[I].fName;
+      fList.Delete(I);
+    end;
 end;
 
 
@@ -217,8 +241,7 @@ var
 begin
   tokenList := TStringList.Create;
   try
-    // Split into tokens
-    SplitArguments(aArguments, tokenList);
+    SplitIntoTokens(aArguments, tokenList);
 
     CollectParameters(tokenList, aDescriptions);
   finally
