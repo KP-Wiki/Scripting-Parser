@@ -9,6 +9,7 @@ type
 
 const
   GAME_EXT: array [TKMParsingGame] of string = ('kmr', 'kp');
+  GAME_NAME: array [TKMParsingGame] of string = ('KaM Remake', 'Knights Province');
   AREA_SHORT: array [TKMParsingArea] of string = ('Actions', 'Events', 'States', 'Utils', 'Types');
   AREA_NEED_RETURN: array [TKMParsingArea] of Boolean = (True, False, True, True, False);
   AREA_TITLE: array [TKMParsingArea] of string = ('Action', 'Event', 'State', 'Utility function<br/>', 'Types');
