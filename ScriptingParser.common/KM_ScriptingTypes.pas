@@ -51,15 +51,17 @@ type
     fList: TObjectList<TKMScriptType>;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
+    function GetCount: Integer;
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure Clear;
+    property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure ExportCode(const aCodeFile: string);
-    function ExportWiki(const aTemplateFile: string): string;
+    procedure ExportCode(const aCodeFile: string; out aCountReg: Integer);
+    function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
 
 
@@ -540,18 +542,26 @@ begin
 end;
 
 
+function TKMScriptTypes.GetCount: Integer;
+begin
+  Result := fList.Count;
+end;
+
+
 procedure TKMScriptTypes.SortByName;
 begin
   fList.Sort;
 end;
 
 
-procedure TKMScriptTypes.ExportCode(const aCodeFile: string);
+procedure TKMScriptTypes.ExportCode(const aCodeFile: string; out aCountReg: Integer);
 var
   sl: TStringList;
   secStart, secEnd, pad: Integer;
   I: Integer;
 begin
+  aCountReg := 0;
+
   if not FileExists(aCodeFile) then Exit;
 
   sl := TStringList.Create;
@@ -566,7 +576,10 @@ begin
         sl.Delete(I);
 
       for I := fList.Count - 1 downto 0 do
+      begin
         sl.Insert(secStart, DupeString(' ', pad) + 'Sender.AddTypeS(' + fList[I].ExportCode + ');');
+        Inc(aCountReg);
+      end;
     end;
 
     sl.SaveToFile(aCodeFile);
@@ -576,7 +589,7 @@ begin
 end;
 
 
-function TKMScriptTypes.ExportWiki(const aTemplateFile: string): string;
+function TKMScriptTypes.ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
 var
   sl: TStringList;
 begin
@@ -591,6 +604,9 @@ begin
   Result := sl.Text;
 
   sl.Free;
+
+  // No surprises here, everything gets exported
+  aCountWiki := Count;
 end;
 
 

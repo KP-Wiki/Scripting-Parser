@@ -312,35 +312,6 @@ object Form1: TForm1
       OnChange = edtOnTextChange
     end
   end
-  object TabControl1: TTabControl
-    Left = 8
-    Top = 184
-    Width = 802
-    Height = 456
-    TabOrder = 5
-    Tabs.Strings = (
-      'Actions'
-      'Events'
-      'States'
-      'Utils'
-      'Types')
-    TabIndex = 0
-    OnChange = TabControl1Change
-    DesignSize = (
-      802
-      456)
-    object txtParserOutput: TMemo
-      Left = 3
-      Top = 27
-      Width = 790
-      Height = 426
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      ReadOnly = True
-      ScrollBars = ssVertical
-      TabOrder = 0
-      OnKeyPress = txtParserOutputKeyPress
-    end
-  end
   object btnKromKMR: TButton
     Left = 872
     Top = 16
@@ -348,7 +319,7 @@ object Form1: TForm1
     Height = 33
     Anchors = [akTop, akRight]
     Caption = 'Krom KMR'
-    TabOrder = 6
+    TabOrder = 5
     WordWrap = True
     OnClick = btnKromKMRClick
   end
@@ -367,8 +338,18 @@ object Form1: TForm1
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 7
+    TabOrder = 6
     WordWrap = True
     OnClick = btnGenerateCodeClick
+  end
+  object meLog: TMemo
+    Left = 8
+    Top = 184
+    Width = 825
+    Height = 457
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Lines.Strings = (
+      'meLog')
+    TabOrder = 7
   end
 end

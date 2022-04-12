@@ -39,14 +39,16 @@ type
     fList: TObjectList<TKMMethodInfo>;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
+    function GetCount: Integer;
   public
     constructor Create(aArea: TKMParsingArea);
     destructor Destroy; override;
 
     procedure LoadFromFile(const aInputFile: string);
+    property Count: Integer read GetCount;
     procedure SortByName;
-    procedure ExportCode(const aCodeFile: string; aGame: TKMParsingGame);
-    function ExportWiki(const aTemplateFile: string): string;
+    procedure ExportCode(const aCodeFile: string; aGame: TKMParsingGame; out aCountCheck, aCountReg: Integer);
+    function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
 
 
@@ -382,18 +384,27 @@ begin
 end;
 
 
+function TKMScriptMethods.GetCount: Integer;
+begin
+  Result := fList.Count;
+end;
+
+
 procedure TKMScriptMethods.SortByName;
 begin
   fList.Sort;
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame);
+procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame; out aCountCheck, aCountReg: Integer);
 var
   sl: TStringList;
   secStart, secEnd, pad: Integer;
   I: Integer;
 begin
+  aCountCheck := 0;
+  aCountReg := 0;
+
   //todo: Events check needs to be handled differently
   if fArea = paEvents then Exit;
   if not FileExists(aCodeFile) then Exit;
@@ -410,8 +421,11 @@ begin
 
       // Insert in reverse so we could skip "removed" methods
       for I := fList.Count - 1 downto 0 do
-      if fList[I].fStatus <> msRemoved then
-        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
+      begin
+        if fList[I].fStatus <> msRemoved then
+          sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
+        Inc(aCountCheck);
+      end;
     end;
 
     FindStartAndFinish(sl, AREA_REG_TAG[fArea], secStart, secEnd, pad);
@@ -422,8 +436,11 @@ begin
 
       // Insert in reverse so we could skip "removed" methods
       for I := fList.Count - 1 downto 0 do
-      if fList[I].fStatus <> msRemoved then
-        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
+      begin
+        if fList[I].fStatus <> msRemoved then
+          sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
+        Inc(aCountReg);
+      end;
     end;
 
     sl.SaveToFile(aCodeFile);
@@ -433,7 +450,7 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportWiki(const aTemplateFile: string): string;
+function TKMScriptMethods.ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
 var
   sl: TStringList;
 begin
@@ -448,6 +465,9 @@ begin
   Result := sl.Text;
 
   sl.Free;
+
+  // No surprises here, everything gets exported
+  aCountWiki := Count;
 end;
 
 

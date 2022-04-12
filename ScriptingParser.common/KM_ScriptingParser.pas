@@ -16,17 +16,15 @@ type
     fParsingGame: TKMParsingGame;
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fTypes: TKMScriptTypes;
-    fText: array [TKMParsingArea] of string;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
     procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
     procedure ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
     procedure ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
   public
-    constructor Create;
+    OnLog: TProc<string>;
+    constructor Create(aOnLog: TProc<string>);
     destructor Destroy; override;
-
-    function GetText(aArea: TKMParsingArea): string;
 
     procedure GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
     procedure GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
@@ -40,11 +38,13 @@ uses
 
 
 { TKMScriptingParser }
-constructor TKMScriptingParser.Create;
+constructor TKMScriptingParser.Create(aOnLog: TProc<string>);
 var
   I: TKMParsingArea;
 begin
-  inherited;
+  inherited Create;
+
+  OnLog := aOnLog;
 
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
     fMethods[I] := TKMScriptMethods.Create(I);
@@ -76,15 +76,23 @@ end;
 
 
 procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+var
+  countCheck, countReg: Integer;
 begin
   if not FileExists(aSourceFile) then Exit;
 
   fMethods[aArea].LoadFromFile(aSourceFile);
 
+  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_SHORT[aArea]]));
+
   // Sort for neat order
   fMethods[aArea].SortByName;
 
-  fMethods[aArea].ExportCode(aCodeFile, fParsingGame);
+  fMethods[aArea].ExportCode(aCodeFile, fParsingGame, countCheck, countReg);
+
+  OnLog(Format('%d %s exported into Code checks', [countCheck, AREA_SHORT[aArea]]));
+  OnLog(Format('%d %s exported into Code regs', [countReg, AREA_SHORT[aArea]]));
+  OnLog('');
 end;
 
 
@@ -92,10 +100,13 @@ procedure TKMScriptingParser.ExportMethodsToWiki(aArea: TKMParsingArea; const aS
 var
   sl: TStringList;
   exportPath: string;
+  countWiki: Integer;
 begin
   if not FileExists(aSourceFile) then Exit;
 
   fMethods[aArea].LoadFromFile(aSourceFile);
+
+  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_SHORT[aArea]]));
 
   // Sort for neat order
   fMethods[aArea].SortByName;
@@ -104,8 +115,7 @@ begin
 
   sl := TStringList.Create;
 
-  fText[aArea] := fMethods[aArea].ExportWiki(aTemplateFile);
-  sl.Text := fText[aArea];
+  sl.Text := fMethods[aArea].ExportWiki(aTemplateFile, countWiki);
 
   exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
   if not DirectoryExists(ExtractFileDir(exportPath)) then
@@ -114,6 +124,9 @@ begin
   sl.SaveToFile(aOutputFile);
 
   sl.Free;
+
+  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_SHORT[aArea]]));
+  OnLog('');
 end;
 
 
@@ -121,6 +134,7 @@ procedure TKMScriptingParser.ExportTypesToCode(const aSourceMask, aCodeFile: str
 var
   s: TStringDynArray;
   I: Integer;
+  countReg: Integer;
 begin
   fTypes.Clear;
 
@@ -129,10 +143,15 @@ begin
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
+  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_SHORT[paTypes]]));
+
   // Sort for neat order
   fTypes.SortByName;
 
-  fTypes.ExportCode(aCodeFile);
+  fTypes.ExportCode(aCodeFile, countReg);
+
+  OnLog(Format('%d %s exported into Code', [countReg, AREA_SHORT[paTypes]]));
+  OnLog('');
 end;
 
 
@@ -142,6 +161,7 @@ var
   exportPath: string;
   s: TStringDynArray;
   I: Integer;
+  countWiki: Integer;
 begin
   fTypes.Clear;
 
@@ -150,6 +170,8 @@ begin
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
+  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_SHORT[paTypes]]));
+
   // Sort for neat order
   fTypes.SortByName;
 
@@ -157,8 +179,7 @@ begin
 
   sl := TStringList.Create;
 
-  fText[paTypes] := fTypes.ExportWiki(aTemplateFile);
-  sl.Text := fText[paTypes];
+  sl.Text := fTypes.ExportWiki(aTemplateFile, countWiki);
 
   exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
   if not DirectoryExists(ExtractFileDir(exportPath)) then
@@ -167,6 +188,9 @@ begin
   sl.SaveToFile(aOutputFile);
 
   sl.Free;
+
+  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_SHORT[paTypes]]));
+  OnLog('');
 end;
 
 
@@ -198,12 +222,6 @@ end;
 procedure TKMScriptingParser.GenerateXML;
 begin
   //todo: GenerateXML for ScriptingEditor
-end;
-
-
-function TKMScriptingParser.GetText(aArea: TKMParsingArea): string;
-begin
-  Result := fText[aArea];
 end;
 
 

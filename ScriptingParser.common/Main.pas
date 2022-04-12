@@ -32,8 +32,6 @@ type
     edEventsTemplate: TEdit;
     edStatesTemplate: TEdit;
     edUtilsTemplate: TEdit;
-    TabControl1: TTabControl;
-    txtParserOutput: TMemo;
     Label7: TLabel;
     edTypesOut: TEdit;
     edTypesIn: TEdit;
@@ -45,6 +43,7 @@ type
     edUtilsVerify: TEdit;
     edTypesVerify: TEdit;
     btnGenerateCode: TButton;
+    meLog: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
@@ -53,7 +52,6 @@ type
     procedure btnKromKPClick(Sender: TObject);
     procedure btnKromKMRClick(Sender: TObject);
     procedure btnGenerateXMLClick(Sender: TObject);
-    procedure TabControl1Change(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnGenerateCodeClick(Sender: TObject);
   private
@@ -76,7 +74,11 @@ implementation
 { TForm1 }
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  fScriptingParser := TKMScriptingParser.Create;
+  fScriptingParser := TKMScriptingParser.Create(
+    procedure (aMsg: string)
+    begin
+      meLog.Lines.Append(aMsg);
+    end);
 
   btnReyKMR.Click;
 end;
@@ -126,14 +128,10 @@ begin
 end;
 
 
-procedure TForm1.TabControl1Change(Sender: TObject);
-begin
-  txtParserOutput.Text := fScriptingParser.GetText(TKMParsingArea(TabControl1.TabIndex));
-end;
-
-
 procedure TForm1.btnGenerateCodeClick(Sender: TObject);
 begin
+  meLog.Clear;
+
   fScriptingParser.GenerateCode(fParsingGame, paActions, edActionsIn.Text, edActionsVerify.Text);
   fScriptingParser.GenerateCode(fParsingGame, paEvents,  edEventsIn.Text,  edEventsVerify.Text);
   fScriptingParser.GenerateCode(fParsingGame, paStates,  edStatesIn.Text,  edStatesVerify.Text);
@@ -144,18 +142,20 @@ end;
 
 procedure TForm1.btnGenerateWikiClick(Sender: TObject);
 begin
+  meLog.Clear;
+
   fScriptingParser.GenerateWiki(fParsingGame, paActions, edActionsIn.Text, edActionsTemplate.Text, edActionsOut.Text);
   fScriptingParser.GenerateWiki(fParsingGame, paEvents,  edEventsIn.Text,  edEventsTemplate.Text,  edEventsOut.Text);
   fScriptingParser.GenerateWiki(fParsingGame, paStates,  edStatesIn.Text,  edStatesTemplate.Text,  edStatesOut.Text);
   fScriptingParser.GenerateWiki(fParsingGame, paUtils,   edUtilsIn.Text,   edUtilsTemplate.Text,   edUtilsOut.Text);
   fScriptingParser.GenerateWiki(fParsingGame, paTypes,   edTypesIn.Text,   edTypesTemplate.Text,   edTypesOut.Text);
-
-  TabControl1Change(nil);
 end;
 
 
 procedure TForm1.btnGenerateXMLClick(Sender: TObject);
 begin
+  meLog.Clear;
+
   fScriptingParser.GenerateXML;
 end;
 
