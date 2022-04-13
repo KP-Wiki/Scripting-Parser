@@ -45,8 +45,8 @@ type
     constructor Create(aArea: TKMParsingArea);
     destructor Destroy; override;
 
-    procedure LoadFromFile(const aInputFile: string);
     property Count: Integer read GetCount;
+    procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
     procedure ExportCode(const aCodeFile: string; aGame: TKMParsingGame; out aCountCheck, aCountReg: Integer);
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
