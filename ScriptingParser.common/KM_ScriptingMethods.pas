@@ -37,12 +37,13 @@ type
   TKMScriptMethods = class
   private
     fArea: TKMParsingArea;
+    fOnLog: TProc<string>;
     fList: TObjectList<TKMMethodInfo>;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function GetCount: Integer;
   public
-    constructor Create(aArea: TKMParsingArea);
+    constructor Create(aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
     property Count: Integer read GetCount;
@@ -315,11 +316,12 @@ end;
 
 
 { TKMScriptMethods }
-constructor TKMScriptMethods.Create(aArea: TKMParsingArea);
+constructor TKMScriptMethods.Create(aArea: TKMParsingArea; aOnLog: TProc<string>);
 begin
   inherited Create;
 
   fArea := aArea;
+  fOnLog := aOnLog;
 
   fList := TObjectList<TKMMethodInfo>.Create(
     TComparer<TKMMethodInfo>.Construct(
@@ -493,21 +495,26 @@ begin
 
         Inc(aCountCheck);
       end;
-    end;
+    end else
+      fOnLog(Format('%s tag not found in %s', [AREA_INFO[fArea].CheckTag, aCodeFile]));
 
-    FindStartAndFinish(sl, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
-    if secStart <> -1 then
+    if AREA_INFO[fArea].RegTag <> '' then
     begin
-      for I := secEnd downto secStart do
-        sl.Delete(I);
-
-      // Insert in reverse so we could skip "removed" methods
-      for I := fList.Count - 1 downto 0 do
+      FindStartAndFinish(sl, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
+      if secStart <> -1 then
       begin
-        if fList[I].fStatus <> msRemoved then
-          sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
-        Inc(aCountReg);
-      end;
+        for I := secEnd downto secStart do
+          sl.Delete(I);
+
+        // Insert in reverse so we could skip "removed" methods
+        for I := fList.Count - 1 downto 0 do
+        begin
+          if fList[I].fStatus <> msRemoved then
+            sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
+          Inc(aCountReg);
+        end;
+      end else
+        fOnLog(Format('%s tag not found in %s', [AREA_INFO[fArea].RegTag, aCodeFile]));
     end;
 
     sl.SaveToFile(aCodeFile);

@@ -15,7 +15,7 @@ const
 
   AREA_INFO: array [TKMParsingArea] of record Short, CheckTag, RegTag: string; NeedsReturn: Boolean; end = (
     (Short: 'Actions'; CheckTag: '//*Actions-Check*//'; RegTag:'//*Actions-Reg*//'; NeedsReturn: True),
-    (Short: 'Events';  CheckTag: '//*Events-Check*//';  RegTag:'//*Events-Reg*//';  NeedsReturn: False),
+    (Short: 'Events';  CheckTag: '//*Events-Check*//';  RegTag:'';                  NeedsReturn: False),
     (Short: 'States';  CheckTag: '//*States-Check*//';  RegTag:'//*States-Reg*//';  NeedsReturn: True),
     (Short: 'Utils';   CheckTag: '//*Utils-Check*//';   RegTag:'//*Utils-Reg*//';   NeedsReturn: True),
     (Short: 'Types';   CheckTag: '//*Types-Check*//';   RegTag:'//*Types-Reg*//';   NeedsReturn: False)

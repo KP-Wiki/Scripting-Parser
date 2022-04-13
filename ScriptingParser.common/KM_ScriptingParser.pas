@@ -47,7 +47,7 @@ begin
   OnLog := aOnLog;
 
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fMethods[I] := TKMScriptMethods.Create(I);
+    fMethods[I] := TKMScriptMethods.Create(I, OnLog);
 
   fTypes := TKMScriptTypes.Create;
 end;
