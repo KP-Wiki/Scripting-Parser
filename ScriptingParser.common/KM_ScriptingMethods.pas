@@ -454,7 +454,7 @@ begin
   aCountCheck := 0;
   aCountReg := 0;
 
-  //todo: Events check needs to be handled differently
+  //todo: Events check in KMR needs to be handled differently (account for evt***)
   if (aGame = pgKaMRemake) and (fArea = paEvents) then Exit;
   if not FileExists(aCodeFile) then Exit;
 
