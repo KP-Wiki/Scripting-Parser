@@ -37,14 +37,14 @@ type
     edTypesIn: TEdit;
     edTypesTemplate: TEdit;
     Label9: TLabel;
-    edActionsVerify: TEdit;
-    edEventsVerify: TEdit;
-    edStatesVerify: TEdit;
-    edUtilsVerify: TEdit;
-    edTypesVerify: TEdit;
+    edActionsCode: TEdit;
+    edEventsCode: TEdit;
+    edStatesCode: TEdit;
+    edUtilsCode: TEdit;
+    edTypesCode: TEdit;
     btnGenerateCode: TButton;
     meLog: TMemo;
-    edEventsVerify2: TEdit;
+    edEventsCode2: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
@@ -114,12 +114,12 @@ begin
   edStatesOut.Text  := ini.ReadString('OUTPUT', 'States',  'States.wiki');
   edUtilsOut.Text   := ini.ReadString('OUTPUT', 'Utils',   'Utils.wiki');
   edTypesOut.Text   := ini.ReadString('OUTPUT', 'Types',   'Types.wiki');
-  edActionsVerify.Text := ini.ReadString('VERIFY', 'Actions', '.pas');
-  edEventsVerify.Text  := ini.ReadString('VERIFY', 'Events',  '.pas');
-  edEventsVerify2.Text  := ini.ReadString('VERIFY', 'Events2',  '.pas');
-  edStatesVerify.Text  := ini.ReadString('VERIFY', 'States',  '.pas');
-  edUtilsVerify.Text   := ini.ReadString('VERIFY', 'Utils',   '.pas');
-  edTypesVerify.Text   := ini.ReadString('VERIFY', 'Types',   '.pas');
+  edActionsCode.Text := ini.ReadString('CODE', 'Actions', '.pas');
+  edEventsCode.Text  := ini.ReadString('CODE', 'Events',  '.pas');
+  edEventsCode2.Text  := ini.ReadString('CODE', 'Events2',  '.pas');
+  edStatesCode.Text  := ini.ReadString('CODE', 'States',  '.pas');
+  edUtilsCode.Text   := ini.ReadString('CODE', 'Utils',   '.pas');
+  edTypesCode.Text   := ini.ReadString('CODE', 'Types',   '.pas');
 
   FreeAndNil(ini);
 
@@ -136,11 +136,11 @@ begin
   meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' code export:');
   meLog.Lines.Append(DupeString('-', 50));
 
-  fScriptingParser.GenerateCode(fParsingGame, paActions, edActionsIn.Text, edActionsVerify.Text, '');
-  fScriptingParser.GenerateCode(fParsingGame, paEvents,  edEventsIn.Text,  edEventsVerify.Text, edEventsVerify2.Text);
-  fScriptingParser.GenerateCode(fParsingGame, paStates,  edStatesIn.Text,  edStatesVerify.Text, '');
-  fScriptingParser.GenerateCode(fParsingGame, paUtils,   edUtilsIn.Text,   edUtilsVerify.Text, '');
-  fScriptingParser.GenerateCode(fParsingGame, paTypes,   edTypesIn.Text,   edTypesVerify.Text, '');
+  fScriptingParser.GenerateCode(fParsingGame, paActions, edActionsIn.Text, edActionsCode.Text, '');
+  fScriptingParser.GenerateCode(fParsingGame, paEvents,  edEventsIn.Text,  edEventsCode.Text, edEventsCode2.Text);
+  fScriptingParser.GenerateCode(fParsingGame, paStates,  edStatesIn.Text,  edStatesCode.Text, '');
+  fScriptingParser.GenerateCode(fParsingGame, paUtils,   edUtilsIn.Text,   edUtilsCode.Text, '');
+  fScriptingParser.GenerateCode(fParsingGame, paTypes,   edTypesIn.Text,   edTypesCode.Text, '');
 end;
 
 
@@ -232,12 +232,12 @@ begin
   ini.WriteString('OUTPUT', 'States',  edStatesOut.Text);
   ini.WriteString('OUTPUT', 'Utils',   edUtilsOut.Text);
   ini.WriteString('OUTPUT', 'Types',   edTypesOut.Text);
-  ini.WriteString('VERIFY', 'Actions', edActionsVerify.Text);
-  ini.WriteString('VERIFY', 'Events',  edEventsVerify.Text);
-  ini.WriteString('VERIFY', 'Events2',  edEventsVerify2.Text);
-  ini.WriteString('VERIFY', 'States',  edStatesVerify.Text);
-  ini.WriteString('VERIFY', 'Utils',   edUtilsVerify.Text);
-  ini.WriteString('VERIFY', 'Types',   edTypesVerify.Text);
+  ini.WriteString('CODE', 'Actions', edActionsCode.Text);
+  ini.WriteString('CODE', 'Events',  edEventsCode.Text);
+  ini.WriteString('CODE', 'Events2',  edEventsCode2.Text);
+  ini.WriteString('CODE', 'States',  edStatesCode.Text);
+  ini.WriteString('CODE', 'Utils',   edUtilsCode.Text);
+  ini.WriteString('CODE', 'Types',   edTypesCode.Text);
 
   FreeAndNil(ini);
 end;

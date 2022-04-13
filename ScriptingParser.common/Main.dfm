@@ -271,7 +271,7 @@ object Form1: TForm1
       TabOrder = 14
       OnChange = edtOnTextChange
     end
-    object edActionsVerify: TEdit
+    object edActionsCode: TEdit
       Left = 664
       Top = 32
       Width = 153
@@ -279,7 +279,7 @@ object Form1: TForm1
       TabOrder = 15
       OnChange = edtOnTextChange
     end
-    object edEventsVerify: TEdit
+    object edEventsCode: TEdit
       Left = 664
       Top = 56
       Width = 153
@@ -287,7 +287,7 @@ object Form1: TForm1
       TabOrder = 16
       OnChange = edtOnTextChange
     end
-    object edStatesVerify: TEdit
+    object edStatesCode: TEdit
       Left = 664
       Top = 104
       Width = 153
@@ -295,7 +295,7 @@ object Form1: TForm1
       TabOrder = 17
       OnChange = edtOnTextChange
     end
-    object edUtilsVerify: TEdit
+    object edUtilsCode: TEdit
       Left = 664
       Top = 128
       Width = 153
@@ -303,7 +303,7 @@ object Form1: TForm1
       TabOrder = 18
       OnChange = edtOnTextChange
     end
-    object edTypesVerify: TEdit
+    object edTypesCode: TEdit
       Left = 664
       Top = 152
       Width = 153
@@ -311,7 +311,7 @@ object Form1: TForm1
       TabOrder = 19
       OnChange = edtOnTextChange
     end
-    object edEventsVerify2: TEdit
+    object edEventsCode2: TEdit
       Left = 664
       Top = 80
       Width = 153

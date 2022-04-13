@@ -275,7 +275,7 @@ function TKMMethodInfo.ExportCodeCheckEvent(aGame: TKMParsingGame; aLastLine: Bo
 const
   CNT: array [TKMParsingGame] of Byte = (4, 5);
   TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %s, %s, %s, %s); Dir: (%s, %s, %s, %s))%s // %s';
-  TEMPLATE_KP = '(Name: ''%s'';       ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (%s, %s, %s, %s, %s))%s';
+  TEMPLATE_KP = '(Name: ''%s''; ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (%s, %s, %s, %s, %s))%s';
 var
   typ: array [0..5] of string;
   dir: array [0..5] of string;
@@ -302,10 +302,10 @@ begin
   n := fName + DupeString(' ', 32 - Length(fName));
 
   case aGame of
-    pgKaMRemake:        Result := Format(TEMPLATE_KMR, [
-      fParameters.Count, typ[0], typ[1], typ[2], typ[3], dir[0], dir[1], dir[2], dir[3], IfThen(not aLastLine, ','), fName]);
-    pgKnightsProvince:  Result := Format(TEMPLATE_KP, [
-      n, fParameters.Count, typ[0], typ[1], typ[2], typ[3], typ[4], dir[0], dir[1], dir[2], dir[3], dir[4], IfThen(not aLastLine, ',')]);
+    pgKaMRemake:        Result := Format(TEMPLATE_KMR,
+      [fParameters.Count, typ[0], typ[1], typ[2], typ[3], dir[0], dir[1], dir[2], dir[3], IfThen(not aLastLine, ','), fName]);
+    pgKnightsProvince:  Result := Format(TEMPLATE_KP,
+      [n, fParameters.Count, typ[0], typ[1], typ[2], typ[3], typ[4], dir[0], dir[1], dir[2], dir[3], dir[4], IfThen(not aLastLine, ',')]);
   end;
 end;
 
