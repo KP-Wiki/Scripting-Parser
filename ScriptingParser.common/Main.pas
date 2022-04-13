@@ -47,7 +47,6 @@ type
     edEventsCode2: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
-    procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
     procedure edtOnTextChange(Sender: TObject);
     procedure btnReyKMRClick(Sender: TObject);
     procedure btnKromKPClick(Sender: TObject);
@@ -163,16 +162,6 @@ begin
   meLog.Clear;
 
   fScriptingParser.GenerateXML;
-end;
-
-
-procedure TForm1.txtParserOutputKeyPress(Sender: TObject; var Key: Char);
-begin
-  if Key = ^A then
-  begin
-    (Sender as TMemo).SelectAll;
-    Key := #0;
-  end;
 end;
 
 
