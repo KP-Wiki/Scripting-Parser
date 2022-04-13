@@ -419,7 +419,7 @@ begin
   for I := 0 to fList.Count - 1 do
   begin
     fList[I].fParameters.AdjoinPairs;
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody(AREA_NEED_RETURN[fArea]);
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody(AREA_INFO[fArea].NeedsReturn);
   end;
 end;
 
@@ -448,6 +448,11 @@ end;
 
 
 procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame; out aCountCheck, aCountReg: Integer);
+const
+  AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
+    ('TKMScriptActions', '', 'TKMScriptStates', 'TKMScriptUtils', ''),
+    ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptUtils', '')
+  );
 var
   sl: TStringList;
   secStart, secEnd, pad: Integer;
@@ -464,7 +469,7 @@ begin
   try
     sl.LoadFromFile(aCodeFile);
 
-    FindStartAndFinish(sl, AREA_CHECK_TAG[fArea], secStart, secEnd, pad);
+    FindStartAndFinish(sl, AREA_INFO[fArea].CheckTag, secStart, secEnd, pad);
     if secStart <> -1 then
     begin
       for I := secEnd downto secStart do
@@ -490,7 +495,7 @@ begin
       end;
     end;
 
-    FindStartAndFinish(sl, AREA_REG_TAG[fArea], secStart, secEnd, pad);
+    FindStartAndFinish(sl, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
     if secStart <> -1 then
     begin
       for I := secEnd downto secStart do
@@ -521,7 +526,6 @@ begin
   sl.LoadFromFile(aTemplateFile);
 
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
-  sl.Text := StringReplace(sl.Text, '{TITLE}', AREA_TITLE[fArea], []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
   Result := sl.Text;

@@ -44,7 +44,7 @@ Version column description:
 * <a href="#TimeToString">TimeToString</a>
 <br />
 
-| Ver<br/>sion | Utility function<br/> description | Parameters<br/>and types | Returns |
+| Ver<br/>sion | Utility function<br/>description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
 | 5422 | <a id="AbsI">AbsI</a><sub><br/>Returns absolute value of specified integer</sub> | <sub>**aValue**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="AbsS">AbsS</a><sub><br/>Returns absolute value of specified single number</sub> | <sub>**aValue**: Single;</sub> | <sub>Single</sub> |

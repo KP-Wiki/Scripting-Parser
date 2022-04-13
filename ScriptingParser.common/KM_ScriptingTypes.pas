@@ -399,8 +399,10 @@ end;
 
 
 function TKMScriptType.ExportWikiLink: string;
+const
+  TEMPLATE = '* <a href="#%s">%s</a>';
 begin
-  Result := '* <a href="#' + fName + '">' + fName + '</a>';
+  Result := Format(TEMPLATE, [fName, fName]);
 end;
 
 
@@ -483,10 +485,6 @@ begin
         sl.Clear;
       end;
 
-      //if aInputFile = '..\..\..\..\kam_remake.rey\src\scripting\KM_ScriptingActions.pas' then
-      //if I = 1350 then
-      //  Sleep(0);
-
       if sectionStarted then
         if not StartsStr('//', srcLine) or StartsStr('//*', srcLine) then
           sl.Append(srcLine);
@@ -563,7 +561,7 @@ begin
   try
     sl.LoadFromFile(aCodeFile);
 
-    FindStartAndFinish(sl, AREA_REG_TAG[paTypes], secStart, secEnd, pad);
+    FindStartAndFinish(sl, AREA_INFO[paTypes].RegTag, secStart, secEnd, pad);
 
     if secStart <> -1 then
     begin
@@ -593,7 +591,6 @@ begin
   sl.LoadFromFile(aTemplateFile);
 
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
-  sl.Text := StringReplace(sl.Text, '{TITLE}', AREA_TITLE[paTypes], []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
   Result := sl.Text;

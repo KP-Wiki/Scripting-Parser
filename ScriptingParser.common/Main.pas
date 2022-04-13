@@ -131,7 +131,7 @@ end;
 procedure TForm1.btnGenerateCodeClick(Sender: TObject);
 begin
   meLog.Clear;
-  meLog.Lines.Append(GAME_NAME[fParsingGame] + ' code export:');
+  meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' code export:');
   meLog.Lines.Append(DupeString('-', 50));
 
   fScriptingParser.GenerateCode(fParsingGame, paActions, edActionsIn.Text, edActionsVerify.Text);
@@ -145,7 +145,7 @@ end;
 procedure TForm1.btnGenerateWikiClick(Sender: TObject);
 begin
   meLog.Clear;
-  meLog.Lines.Append(GAME_NAME[fParsingGame] + ' wiki export:');
+  meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' wiki export:');
   meLog.Lines.Append(DupeString('-', 50));
 
   fScriptingParser.GenerateWiki(fParsingGame, paActions, edActionsIn.Text, edActionsTemplate.Text, edActionsOut.Text);

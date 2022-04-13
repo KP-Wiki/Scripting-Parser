@@ -70,7 +70,7 @@ procedure TKMScriptingParser.CopyForReference(aFilename: string; aArea: TKMParsi
 var
   tgtPath: string;
 begin
-  tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_EXT[fParsingGame] + '.' + AREA_SHORT[aArea] + '.new.md';
+  tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_INFO[fParsingGame].Ext + '.' + AREA_INFO[aArea].Short + '.new.md';
   Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
 end;
 
@@ -83,15 +83,15 @@ begin
 
   fMethods[aArea].LoadFromFile(aSourceFile);
 
-  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_SHORT[aArea]]));
+  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
 
   // Sort for neat order
   fMethods[aArea].SortByName;
 
   fMethods[aArea].ExportCode(aCodeFile, fParsingGame, countCheck, countReg);
 
-  OnLog(Format('%d %s exported into Code checks', [countCheck, AREA_SHORT[aArea]]));
-  OnLog(Format('%d %s exported into Code regs', [countReg, AREA_SHORT[aArea]]));
+  OnLog(Format('%d %s exported into Code checks', [countCheck, AREA_INFO[aArea].Short]));
+  OnLog(Format('%d %s exported into Code regs', [countReg, AREA_INFO[aArea].Short]));
   OnLog('');
 end;
 
@@ -106,7 +106,7 @@ begin
 
   fMethods[aArea].LoadFromFile(aSourceFile);
 
-  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_SHORT[aArea]]));
+  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
 
   // Sort for neat order
   fMethods[aArea].SortByName;
@@ -125,7 +125,7 @@ begin
 
   sl.Free;
 
-  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_SHORT[aArea]]));
+  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[aArea].Short]));
   OnLog('');
 end;
 
@@ -143,14 +143,14 @@ begin
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
-  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_SHORT[paTypes]]));
+  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
 
   // Sort for neat order
   fTypes.SortByName;
 
   fTypes.ExportCode(aCodeFile, countReg);
 
-  OnLog(Format('%d %s exported into Code', [countReg, AREA_SHORT[paTypes]]));
+  OnLog(Format('%d %s exported into Code', [countReg, AREA_INFO[paTypes].Short]));
   OnLog('');
 end;
 
@@ -170,7 +170,7 @@ begin
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
-  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_SHORT[paTypes]]));
+  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
 
   // Sort for neat order
   fTypes.SortByName;
@@ -189,7 +189,7 @@ begin
 
   sl.Free;
 
-  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_SHORT[paTypes]]));
+  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[paTypes].Short]));
   OnLog('');
 end;
 
