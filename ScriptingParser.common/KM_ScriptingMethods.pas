@@ -220,6 +220,8 @@ end;
 function TKMMethodInfo.ExportWikiBody(aNeedReturn: Boolean): string;
 const
   UNICODE_RED_CROSS = '&#x274C;';
+  TEMPLATE = '| %s | <a id="%s">%s</a>%s<sub>%s</sub> | <sub>%s</sub> |';
+  TEMPLATE_RET = ' <sub>%s%s</sub> |';
 var
   deprStr: string;
 begin
@@ -252,12 +254,10 @@ begin
     deprStr := '';
   end;
 
-  Result := '| ' + IfThen(fVersion <> '', fVersion, '-') + ' | <a id="' + fName + '">' + fName + '</a>' +
-              deprStr +
-              '<sub>' + fDescription + '</sub>' +
-              ' | <sub>' + fParameters.ExportWikiBody + '</sub>' +
-              IfThen(aNeedReturn, ' | <sub>' + fResultType + IfThen(fResultDesc <> '', ' // ' + fResultDesc) + '</sub>') +
-              ' |';
+  Result := Format(TEMPLATE, [
+    IfThen(fVersion <> '', fVersion, '-'), fName, fName, deprStr, fDescription, fParameters.ExportWikiBody]);
+  if aNeedReturn then
+    Result := Result + Format(TEMPLATE_RET, [fResultType, IfThen(fResultDesc <> '', ' // ' + fResultDesc)]);
 end;
 
 
