@@ -140,8 +140,12 @@ end;
 procedure TKMScriptParameters.SplitIntoTokens(const aArguments: string; aTokenList: TStringList);
 var
   I: Integer;
+  args: string;
 begin
-  StrSplit(aArguments, ',:; ', aTokenList);
+  args := ReplaceStr(aArguments, ',', ' , ');
+  args := ReplaceStr(args, ':', ' : ');
+  args := ReplaceStr(args, ';', ' ; ');
+  StrSplit(args, ' ', aTokenList);
 
   // Assemble the "[array] + [of] + [something]"
   // Do it first, cos we can have [array of const]
@@ -180,41 +184,49 @@ end;
 procedure TKMScriptParameters.CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
 var
   I: Integer;
-  varModifier, newModifier: string;
-  varType, newType: string;
-  list: array of record Modifier, &Type: string; end;
+  varModifier, varType: string;
+  list: array of record Modifier, Name, &Type: string; end;
 begin
   SetLength(list, aTokenList.Count);
 
   varModifier := '';
   varType := '';
 
-  // Forward pass to assign modifiers (modifier applies to all vars until type is met)
-  for I := 0 to aTokenList.Count - 1 do
+  // Forward pass to assign modifiers (modifier applies to all vars until ":")
+  for I := 1 to aTokenList.Count - 1 do
   begin
-    if TokenIsModifier(aTokenList[I], newModifier) then
-      varModifier := newModifier;
+    if TokenIsModifier(aTokenList[I-1]) then
+      varModifier := FixModifierCase(aTokenList[I-1]);
 
-    if TokenIsType(aTokenList[I], newType) then
+    if aTokenList[I] = ':' then
       varModifier := '';
 
     list[I].Modifier := varModifier;
   end;
 
-  // Backward pass to assign types (type applies to all vars until new type is met)
+  // Backward pass to assign types (type applies to all vars until ";")
   for I := aTokenList.Count - 1 downto 0 do
   begin
-    if TokenIsType(aTokenList[I], newType) then
-      varType := newType;
+    if (I < aTokenList.Count - 1)and (aTokenList[I+1] = ':') then
+      varType := FixTypeCase(aTokenList[I+2]);
+
+    if (aTokenList[I] = ';')
+    or TokenIsModifier(aTokenList[I]) then
+      varType := '';
 
     list[I].&Type := varType;
   end;
 
-  // Now we can collect names
+  // Now we can collect names (separate step to simplify the debug process)
   for I := 0 to aTokenList.Count - 1 do
-  if not TokenIsModifier(aTokenList[I], newModifier)
-  and not TokenIsType(aTokenList[I], newType) then
-    fList.Add(TKMScriptParameter.Create(aTokenList[I], list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
+  if (aTokenList[I] <> ',')
+  and (list[I].&Type <> '') then
+    list[I].Name := aTokenList[I];
+
+  // Finally add to the list
+  for I := 0 to aTokenList.Count - 1 do
+  if (list[I].Name <> '') then
+    fList.Add(TKMScriptParameter.Create(list[I].Name, list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
 end;
 
 
