@@ -67,8 +67,10 @@ end;
 
 
 function TKMScriptParameter.ExportWikiBody: string;
+const
+  TEMPLATE = '**%s%s**: %s;%s';
 begin
-  Result := '**' + IfThen(fModifier <> '', fModifier + ' ') + fName + '**: ' + fVarType + ';' + IfThen(fDesc <> '', ' // _' + fDesc + '_');
+  Result := Format(TEMPLATE, [IfThen(fModifier <> '', fModifier + ' '), fName, fVarType, IfThen(fDesc <> '', ' // _' + fDesc + '_')]);
 end;
 
 

@@ -307,8 +307,10 @@ end;
 
 
 function TKMMethodInfo.ExportWikiLink: string;
+const
+  TEMPLATE = '* <a href="#%s">%s</a>';
 begin
-  Result := '* <a href="#' + fName + '">' + fName + '</a>';
+  Result := Format(TEMPLATE, [fName, fName]);
 end;
 
 
