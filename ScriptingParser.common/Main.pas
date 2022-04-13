@@ -44,6 +44,7 @@ type
     edTypesVerify: TEdit;
     btnGenerateCode: TButton;
     meLog: TMemo;
+    edEventsVerify2: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure txtParserOutputKeyPress(Sender: TObject; var Key: Char);
@@ -115,6 +116,7 @@ begin
   edTypesOut.Text   := ini.ReadString('OUTPUT', 'Types',   'Types.wiki');
   edActionsVerify.Text := ini.ReadString('VERIFY', 'Actions', '.pas');
   edEventsVerify.Text  := ini.ReadString('VERIFY', 'Events',  '.pas');
+  edEventsVerify2.Text  := ini.ReadString('VERIFY', 'Events2',  '.pas');
   edStatesVerify.Text  := ini.ReadString('VERIFY', 'States',  '.pas');
   edUtilsVerify.Text   := ini.ReadString('VERIFY', 'Utils',   '.pas');
   edTypesVerify.Text   := ini.ReadString('VERIFY', 'Types',   '.pas');
@@ -134,11 +136,11 @@ begin
   meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' code export:');
   meLog.Lines.Append(DupeString('-', 50));
 
-  fScriptingParser.GenerateCode(fParsingGame, paActions, edActionsIn.Text, edActionsVerify.Text);
-  fScriptingParser.GenerateCode(fParsingGame, paEvents,  edEventsIn.Text,  edEventsVerify.Text);
-  fScriptingParser.GenerateCode(fParsingGame, paStates,  edStatesIn.Text,  edStatesVerify.Text);
-  fScriptingParser.GenerateCode(fParsingGame, paUtils,   edUtilsIn.Text,   edUtilsVerify.Text);
-  fScriptingParser.GenerateCode(fParsingGame, paTypes,   edTypesIn.Text,   edTypesVerify.Text);
+  fScriptingParser.GenerateCode(fParsingGame, paActions, edActionsIn.Text, edActionsVerify.Text, '');
+  fScriptingParser.GenerateCode(fParsingGame, paEvents,  edEventsIn.Text,  edEventsVerify.Text, edEventsVerify2.Text);
+  fScriptingParser.GenerateCode(fParsingGame, paStates,  edStatesIn.Text,  edStatesVerify.Text, '');
+  fScriptingParser.GenerateCode(fParsingGame, paUtils,   edUtilsIn.Text,   edUtilsVerify.Text, '');
+  fScriptingParser.GenerateCode(fParsingGame, paTypes,   edTypesIn.Text,   edTypesVerify.Text, '');
 end;
 
 
@@ -232,6 +234,7 @@ begin
   ini.WriteString('OUTPUT', 'Types',   edTypesOut.Text);
   ini.WriteString('VERIFY', 'Actions', edActionsVerify.Text);
   ini.WriteString('VERIFY', 'Events',  edEventsVerify.Text);
+  ini.WriteString('VERIFY', 'Events2',  edEventsVerify2.Text);
   ini.WriteString('VERIFY', 'States',  edStatesVerify.Text);
   ini.WriteString('VERIFY', 'Utils',   edUtilsVerify.Text);
   ini.WriteString('VERIFY', 'Types',   edTypesVerify.Text);

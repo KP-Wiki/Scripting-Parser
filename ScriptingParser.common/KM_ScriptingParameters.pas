@@ -14,6 +14,7 @@ type
     fDesc: string;
   public
     constructor Create(const aName, aModifier, aVarType, aDesc: string);
+    property Modifier: string read fModifier;
     property VarType: string read fVarType;
     function ExportWikiBody: string;
     function ExportCodeCheck: string;

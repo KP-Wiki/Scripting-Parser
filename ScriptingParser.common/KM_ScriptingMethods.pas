@@ -28,8 +28,9 @@ type
     function ExportWikiBody(aNeedReturn: Boolean): string;
     function ExportWikiLink: string;
     function ExportCodeCheck: string;
-    function ExportCodeCheckEvent(aGame: TKMParsingGame): string;
+    function ExportCodeCheckEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
     function ExportCodeReg: string;
+    function ExportCodeRegEvent(aGame: TKMParsingGame): string;
   end;
 
 
@@ -270,33 +271,41 @@ begin
 end;
 
 
-function TKMMethodInfo.ExportCodeCheckEvent(aGame: TKMParsingGame): string;
+function TKMMethodInfo.ExportCodeCheckEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
 const
-  CNT = 5;
-  TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (pmIn, pmIn, pmIn, pmIn, pmIn)) // %s';
-  TEMPLATE_KP = '(Name: ''%s'';       ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (pmIn, pmIn, pmIn, pmIn, pmIn))';
+  CNT: array [TKMParsingGame] of Byte = (4, 5);
+  TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %s, %s, %s, %s); Dir: (%s, %s, %s, %s))%s // %s';
+  TEMPLATE_KP = '(Name: ''%s'';       ParamCount: %d; Typ: (0, %s, %s, %s, %s, %s); Dir: (%s, %s, %s, %s, %s))%s';
 var
-  p: array [0..CNT-1] of string;
+  typ: array [0..5] of string;
+  dir: array [0..5] of string;
   n: string;
   I: Integer;
 begin
-  Assert(fParameters.Count <= CNT);
+  Assert(fParameters.Count <= CNT[aGame]);
 
-  for I := 0 to High(p) do
+  for I := 0 to CNT[aGame] - 1 do
   begin
     if I < fParameters.Count then
-      p[I] := TryEventTypeToTyp(fParameters[I].VarType)
-    else
-      p[I] := '0';
+    begin
+      typ[I] := TryEventTypeToTyp(fParameters[I].VarType);
+      dir[I] := TryEventModifierToDir(fParameters[I].Modifier);
+    end else
+    begin
+      typ[I] := '0';
+      dir[I] := 'pmIn';
+    end;
 
-    p[I] := p[I] + DupeString(' ', 6 - Length(p[I]));
+    typ[I] := typ[I] + DupeString(' ', 6 - Length(typ[I]));
   end;
 
   n := fName + DupeString(' ', 32 - Length(fName));
 
   case aGame of
-    pgKaMRemake:        Result := Format(TEMPLATE_KMR, [fParameters.Count, p[0], p[1], p[2], p[3], p[4], fName]);
-    pgKnightsProvince:  Result := Format(TEMPLATE_KP, [n, fParameters.Count, p[0], p[1], p[2], p[3], p[4]]);
+    pgKaMRemake:        Result := Format(TEMPLATE_KMR, [
+      fParameters.Count, typ[0], typ[1], typ[2], typ[3], dir[0], dir[1], dir[2], dir[3], IfThen(not aLastLine, ','), fName]);
+    pgKnightsProvince:  Result := Format(TEMPLATE_KP, [
+      n, fParameters.Count, typ[0], typ[1], typ[2], typ[3], typ[4], dir[0], dir[1], dir[2], dir[3], dir[4], IfThen(not aLastLine, ',')]);
   end;
 end;
 
@@ -304,6 +313,15 @@ end;
 function TKMMethodInfo.ExportCodeReg: string;
 begin
   Result := fName + ', '#39 + fName + #39;
+end;
+
+
+function TKMMethodInfo.ExportCodeRegEvent(aGame: TKMParsingGame): string;
+begin
+  case aGame of
+    pgKaMRemake:        Result := 'evt' + Copy(fName, 3, Length(fName));
+    pgKnightsProvince:  Assert(False);
+  end;
 end;
 
 
@@ -463,8 +481,6 @@ begin
   aCountCheck := 0;
   aCountReg := 0;
 
-  //todo: Events check in KMR needs to be handled differently (account for evt***)
-  if (aGame = pgKaMRemake) and (fArea = paEvents) then Exit;
   if not FileExists(aCodeFile) then Exit;
 
   sl := TStringList.Create;
@@ -490,7 +506,7 @@ begin
                         sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
                       end;
           paEvents:   // Can not use AdjoinPairs here. All vars must be separate
-                      sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeCheckEvent(aGame) + IfThen(I <> fList.Count-1, ','));
+                      sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeCheckEvent(aGame, I = fList.Count-1));
         end;
 
         Inc(aCountCheck);
@@ -498,24 +514,27 @@ begin
     end else
       fOnLog(Format('%s tag not found in %s', [AREA_INFO[fArea].CheckTag, aCodeFile]));
 
-    if AREA_INFO[fArea].RegTag <> '' then
+    FindStartAndFinish(sl, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
+    if secStart <> -1 then
     begin
-      FindStartAndFinish(sl, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
-      if secStart <> -1 then
-      begin
-        for I := secEnd downto secStart do
-          sl.Delete(I);
+      for I := secEnd downto secStart do
+        sl.Delete(I);
 
-        // Insert in reverse so we could skip "removed" methods
-        for I := fList.Count - 1 downto 0 do
-        begin
-          if fList[I].fStatus <> msRemoved then
-            sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
-          Inc(aCountReg);
+      // Insert in reverse so we could skip "removed" methods
+      for I := fList.Count - 1 downto 0 do
+      begin
+        if fList[I].fStatus <> msRemoved then
+        case fArea of
+          paActions,
+          paStates,
+          paUtils:    sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
+          paEvents:   sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeRegEvent(aGame) + IfThen(I <> fList.Count-1, ','));
         end;
-      end else
-        fOnLog(Format('%s tag not found in %s', [AREA_INFO[fArea].RegTag, aCodeFile]));
-    end;
+
+        Inc(aCountReg);
+      end;
+    end else
+      fOnLog(Format('%s tag not found in %s', [AREA_INFO[fArea].RegTag, aCodeFile]));
 
     sl.SaveToFile(aCodeFile);
   finally

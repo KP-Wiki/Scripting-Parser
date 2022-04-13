@@ -85,7 +85,7 @@ object Form1: TForm1
     Left = 8
     Top = 8
     Width = 825
-    Height = 169
+    Height = 185
     Caption = ' Settings '
     TabOrder = 4
     object Label1: TLabel
@@ -104,14 +104,14 @@ object Form1: TForm1
     end
     object Label3: TLabel
       Left = 8
-      Top = 104
+      Top = 128
       Width = 24
       Height = 13
       Caption = 'Utils:'
     end
     object Label8: TLabel
       Left = 8
-      Top = 80
+      Top = 104
       Width = 35
       Height = 13
       Caption = 'States:'
@@ -139,17 +139,17 @@ object Form1: TForm1
     end
     object Label7: TLabel
       Left = 8
-      Top = 128
+      Top = 152
       Width = 33
       Height = 13
       Caption = 'Types:'
     end
     object Label9: TLabel
-      Left = 704
+      Left = 720
       Top = 16
-      Width = 39
+      Width = 36
       Height = 13
-      Caption = 'Verify in'
+      Caption = 'Code in'
     end
     object edActionsIn: TEdit
       Left = 48
@@ -169,7 +169,7 @@ object Form1: TForm1
     end
     object edStatesIn: TEdit
       Left = 48
-      Top = 80
+      Top = 104
       Width = 249
       Height = 21
       TabOrder = 2
@@ -193,7 +193,7 @@ object Form1: TForm1
     end
     object edStatesOut: TEdit
       Left = 464
-      Top = 80
+      Top = 104
       Width = 193
       Height = 21
       TabOrder = 6
@@ -201,7 +201,7 @@ object Form1: TForm1
     end
     object edUtilsOut: TEdit
       Left = 464
-      Top = 104
+      Top = 128
       Width = 193
       Height = 21
       TabOrder = 7
@@ -209,7 +209,7 @@ object Form1: TForm1
     end
     object edUtilsIn: TEdit
       Left = 48
-      Top = 104
+      Top = 128
       Width = 249
       Height = 21
       TabOrder = 3
@@ -233,7 +233,7 @@ object Form1: TForm1
     end
     object edStatesTemplate: TEdit
       Left = 304
-      Top = 80
+      Top = 104
       Width = 153
       Height = 21
       TabOrder = 10
@@ -241,7 +241,7 @@ object Form1: TForm1
     end
     object edUtilsTemplate: TEdit
       Left = 304
-      Top = 104
+      Top = 128
       Width = 153
       Height = 21
       TabOrder = 11
@@ -249,7 +249,7 @@ object Form1: TForm1
     end
     object edTypesOut: TEdit
       Left = 464
-      Top = 128
+      Top = 152
       Width = 193
       Height = 21
       TabOrder = 12
@@ -257,7 +257,7 @@ object Form1: TForm1
     end
     object edTypesIn: TEdit
       Left = 48
-      Top = 128
+      Top = 152
       Width = 249
       Height = 21
       TabOrder = 13
@@ -265,7 +265,7 @@ object Form1: TForm1
     end
     object edTypesTemplate: TEdit
       Left = 304
-      Top = 128
+      Top = 152
       Width = 153
       Height = 21
       TabOrder = 14
@@ -289,7 +289,7 @@ object Form1: TForm1
     end
     object edStatesVerify: TEdit
       Left = 664
-      Top = 80
+      Top = 104
       Width = 153
       Height = 21
       TabOrder = 17
@@ -297,7 +297,7 @@ object Form1: TForm1
     end
     object edUtilsVerify: TEdit
       Left = 664
-      Top = 104
+      Top = 128
       Width = 153
       Height = 21
       TabOrder = 18
@@ -305,10 +305,18 @@ object Form1: TForm1
     end
     object edTypesVerify: TEdit
       Left = 664
-      Top = 128
+      Top = 152
       Width = 153
       Height = 21
       TabOrder = 19
+      OnChange = edtOnTextChange
+    end
+    object edEventsVerify2: TEdit
+      Left = 664
+      Top = 80
+      Width = 153
+      Height = 21
+      TabOrder = 20
       OnChange = edtOnTextChange
     end
   end
@@ -344,9 +352,9 @@ object Form1: TForm1
   end
   object meLog: TMemo
     Left = 8
-    Top = 184
+    Top = 200
     Width = 825
-    Height = 457
+    Height = 441
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 7
   end

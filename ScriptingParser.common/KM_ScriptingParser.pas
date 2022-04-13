@@ -17,7 +17,7 @@ type
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fTypes: TKMScriptTypes;
     procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
-    procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+    procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
     procedure ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
     procedure ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
@@ -26,7 +26,7 @@ type
     constructor Create(aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+    procedure GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
     procedure GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure GenerateXML;
   end;
@@ -75,7 +75,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
 var
   countCheck, countReg: Integer;
 begin
@@ -89,6 +89,7 @@ begin
   fMethods[aArea].SortByName;
 
   fMethods[aArea].ExportCode(aCodeFile, fParsingGame, countCheck, countReg);
+  fMethods[aArea].ExportCode(aCodeFile2, fParsingGame, countCheck, countReg);
 
   OnLog(Format('%d %s exported into Code checks', [countCheck, AREA_INFO[aArea].Short]));
   OnLog(Format('%d %s exported into Code regs', [countReg, AREA_INFO[aArea].Short]));
@@ -194,12 +195,12 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile: string);
+procedure TKMScriptingParser.GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
 begin
   fParsingGame := aParsingGame;
 
   if aArea in [paActions..paUtils] then
-    ExportMethodsToCode(aArea, aSourceFile, aCodeFile)
+    ExportMethodsToCode(aArea, aSourceFile, aCodeFile, aCodeFile2)
   else
     ExportTypesToCode(aSourceFile, aCodeFile);
 end;
