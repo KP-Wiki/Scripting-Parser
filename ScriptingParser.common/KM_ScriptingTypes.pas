@@ -384,8 +384,10 @@ end;
 
 
 function TKMScriptType.ExportCode: string;
+const
+  TEMPLATE = 'Sender.AddTypeS(''%s'', %s);';
 begin
-  Result := #39 + fName + #39', ' + fElements.ExportCode(fType);
+  Result := Format(TEMPLATE, [fName, fElements.ExportCode(fType)]);
 end;
 
 
@@ -570,7 +572,7 @@ begin
 
       for I := fList.Count - 1 downto 0 do
       begin
-        sl.Insert(secStart, DupeString(' ', pad) + 'Sender.AddTypeS(' + fList[I].ExportCode + ');');
+        sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCode);
         Inc(aCountReg);
       end;
     end;
