@@ -187,7 +187,7 @@ begin
                   Assert(aStrings.Count = 1);
 
                   // Single type declaration needs no comments
-                  declaration := aStrings[0];
+                  declaration := ReplaceStr(aStrings[0], ';', '');
 
                   fList.Add(TKMScriptTypeElement.Create(declaration, ''));
                 end;
@@ -248,8 +248,18 @@ begin
                     Result := Result + '      '#39'end;'#39;
                   end;
     ttArray:      Result := #39 + fList[0].fName + #39;
-    ttSetOfType: ; //todo: ttSetOfType
-    ttSetOfEnum: ; //todo: ttSetOfEnum
+    ttSetOfType:  Result := #39 + fList[0].fName + #39;
+    ttSetOfEnum:  begin
+                    Result := #39'set of (';
+                    for I := 0 to fList.Count - 1 do
+                    begin
+                      if (I > 0) and (I mod WRAP_AROUND_COUNT = 0) then
+                        Result := Result + #39' +' + sLineBreak + '      '#39;
+
+                      Result := Result + fList[I].fName + IfThen(I < fList.Count - 1, ', ');
+                    end;
+                    Result := Result + ')'#39;
+                  end;
   end;
 end;
 
@@ -422,9 +432,16 @@ begin
   fList := TObjectList<TKMScriptType>.Create(
     TComparer<TKMScriptType>.Construct(
       function(const A, B: TKMScriptType): Integer
+      const
+        // We should add types in 'simple to complex' order to allow the latter to use the former
+        // Enum first, then others, record last
+        TYPE_ORDER: array[TKMTypeType] of Integer = (0, 4, 3, 2, 1);
       begin
-        // Case-sensitive compare, since we use CamelCase and it looks nicer that way
-        Result := CompareText(A.fName, B.fName);
+        if A.fType = B.fType then
+          // Case-sensitive compare, since we use CamelCase and it looks nicer that way
+          Result := CompareText(A.fName, B.fName)
+        else
+          Result := TYPE_ORDER[A.fType] - TYPE_ORDER[B.fType];
       end));
 end;
 
