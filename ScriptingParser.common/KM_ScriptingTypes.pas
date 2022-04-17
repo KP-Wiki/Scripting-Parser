@@ -34,6 +34,7 @@ type
   private
     fName: string;
     fType: TKMTypeType;
+    fPriority: Integer;
     fDescription: string;
     fElements: TKMScriptTypeElements;
   public
@@ -280,6 +281,7 @@ begin
   inherited;
 
   fElements := TKMScriptTypeElements.Create;
+  fPriority := 0;
 end;
 
 
@@ -293,8 +295,8 @@ end;
 
 procedure TKMScriptType.LoadFromStringList(aSource: TStringList);
 var
-  I: Integer;
-  srcLine: string;
+  I, priority: Integer;
+  srcLine, prioStr: string;
   enumStr: TStringList; // Needs to be a list because of comments
   details: TStringList;
 begin
@@ -315,7 +317,15 @@ begin
     // Repeat until no description tags are found
     while StartsStr('//*', srcLine) do
     begin
-      details.Add(RightStrAfter(srcLine, '* '));
+      if StartsStr('//* Priority:', srcLine) then
+      begin
+        prioStr := Trim(RightStrAfter(srcLine, ':'));
+        if TryStrToInt(prioStr, priority) then
+          fPriority := priority;
+      end
+      else
+        details.Add(RightStrAfter(srcLine, '* '));
+
       Inc(I);
       srcLine := aSource[I];
     end;
@@ -437,11 +447,21 @@ begin
         // Enum first, then others, record last
         TYPE_ORDER: array[TKMTypeType] of Integer = (0, 4, 3, 2, 1);
       begin
-        if A.fType = B.fType then
-          // Case-sensitive compare, since we use CamelCase and it looks nicer that way
-          Result := CompareText(A.fName, B.fName)
-        else
-          Result := TYPE_ORDER[A.fType] - TYPE_ORDER[B.fType];
+        Result := TYPE_ORDER[A.fType] - TYPE_ORDER[B.fType];
+
+        if Result <> 0 then Exit;
+
+        // Types are equal
+
+        // Opposite order - higher value first
+        Result := B.fPriority - A.fPriority;
+
+        if Result <> 0 then Exit;
+
+        // Priorities are equal
+
+        // Case-sensitive compare, since we use CamelCase and it looks nicer that way
+        Result := CompareText(A.fName, B.fName)
       end));
 end;
 
