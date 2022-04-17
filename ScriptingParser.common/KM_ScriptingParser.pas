@@ -88,6 +88,8 @@ begin
   // Sort for neat order
   fMethods[aArea].SortByName;
 
+  countCheck := 0;
+  countReg := 0;
   fMethods[aArea].ExportCode(aCodeFile, fParsingGame, countCheck, countReg);
   fMethods[aArea].ExportCode(aCodeFile2, fParsingGame, countCheck, countReg);
 

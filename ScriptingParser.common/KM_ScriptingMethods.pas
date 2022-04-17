@@ -50,7 +50,7 @@ type
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure ExportCode(const aCodeFile: string; aGame: TKMParsingGame; out aCountCheck, aCountReg: Integer);
+    procedure ExportCode(const aCodeFile: string; aGame: TKMParsingGame; var aCountCheck, aCountReg: Integer);
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
 
@@ -467,7 +467,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame; out aCountCheck, aCountReg: Integer);
+procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame; var aCountCheck, aCountReg: Integer);
 const
   AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
     ('TKMScriptActions', '', 'TKMScriptStates', 'TKMScriptUtils', ''),
@@ -478,9 +478,6 @@ var
   secStart, secEnd, pad: Integer;
   I: Integer;
 begin
-  aCountCheck := 0;
-  aCountReg := 0;
-
   if not FileExists(aCodeFile) then Exit;
 
   sl := TStringList.Create;
