@@ -18,7 +18,7 @@ Version column description:
 * <a href="#CampaignMissionWon">CampaignMissionWon</a>
 * <a href="#EntityType">EntityType</a>
 * <a href="#FogRevealed">FogRevealed</a>
-* <a href="#GameTime">GameTime</a>
+* <a href="#GamePeaceTime">GamePeaceTime</a>
 * <a href="#GroupAt">GroupAt</a>
 * <a href="#GroupColumnCount">GroupColumnCount</a>
 * <a href="#GroupDead">GroupDead</a>
@@ -47,7 +47,6 @@ Version column description:
 * <a href="#IsFieldAt">IsFieldAt</a>
 * <a href="#IsOrchardAt">IsOrchardAt</a>
 * <a href="#IsRoadAt">IsRoadAt</a>
-* <a href="#PeaceTime">PeaceTime</a>
 * <a href="#PlayerAllianceCheck">PlayerAllianceCheck</a>
 * <a href="#PlayerColorText">PlayerColorText</a>
 * <a href="#PlayerDefeated">PlayerDefeated</a>
@@ -98,7 +97,7 @@ Version column description:
 | 8723 | <a id="CampaignMissionWon">CampaignMissionWon</a><sub><br/>See if the mission was won. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to check_</sub> | <sub>Boolean</sub> |
 | 7969 | <a id="EntityType">EntityType</a><sub><br/>Get the entity type by its UID (0 - unknown or none, 1 - Unit, 2 - House, 3 - UnitGroup, 4 - Stockpile)</sub> | <sub>**aEntityID**: Integer;</sub> | <sub>Integer</sub> |
 | -8743 | <a id="FogRevealed">FogRevealed</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerFogRevealed">PlayerFogRevealed</a> instead*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="GameTime">GameTime</a><sub><br/>Deprecated. Please use the time provided by OnTick event</sub> | <sub></sub> | <sub>Cardinal</sub> |
+| - | <a id="GamePeaceTime">GamePeaceTime</a><sub><br/>Get the peacetime duration (in game ticks)</sub> | <sub></sub> | <sub>Cardinal</sub> |
 | - | <a id="GroupAt">GroupAt</a><sub><br/>Return UID of a group at requested coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupColumnCount">GroupColumnCount</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupDead">GroupDead</a><sub><br/>See if the group is dead (all members are dead)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
@@ -127,7 +126,6 @@ Version column description:
 | - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom field must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="IsOrchardAt">IsOrchardAt</a><sub><br/>Check if there is a orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom orchard must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Check if there is a road owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom road must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="PeaceTime">PeaceTime</a><sub><br/>Get the peacetime (in game ticks)</sub> | <sub></sub> | <sub>Cardinal</sub> |
 | - | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub></sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerColorText">PlayerColorText</a><sub><br/>Get the string with color code of the player (adjusted brighter for text display)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>string</sub> |
 | - | <a id="PlayerDefeated">PlayerDefeated</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
