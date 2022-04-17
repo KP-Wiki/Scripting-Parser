@@ -243,7 +243,7 @@ begin
                     Result := #39 + 'record '#39 + ' +' + sLineBreak;
 
                     for I := 0 to fList.Count - 1 do
-                      Result := Result + '      '#39 + fList[I].fName + '; '#39 + ' +' + sLineBreak;
+                      Result := Result + '        '#39 + fList[I].fName + '; '#39 + ' +' + sLineBreak;
 
                     Result := Result + '      '#39'end;'#39;
                   end;
