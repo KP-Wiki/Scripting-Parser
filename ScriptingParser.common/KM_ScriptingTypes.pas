@@ -439,6 +439,7 @@ constructor TKMScriptTypes.Create;
 begin
   inherited Create;
 
+  // todo: add sorting of records from simple to complex
   fList := TObjectList<TKMScriptType>.Create(
     TComparer<TKMScriptType>.Construct(
       function(const A, B: TKMScriptType): Integer
