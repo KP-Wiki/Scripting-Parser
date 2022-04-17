@@ -5,6 +5,7 @@ uses
 
 
 function RightStrAfter(const aStr, aSubStr: string): string;
+function LeftStrBefore(const aStr, aSubStr: string): string;
 function StrSubstring(const aStr: string; aFrom: Integer): string;
 function StrLastIndexOf(const aStr, aSubStr: string): Integer;
 function StrTrimRightSeparators(const aStr: string): string;
@@ -18,6 +19,18 @@ implementation
 function RightStrAfter(const aStr, aSubStr: string): string;
 begin
   Result := Copy(aStr, Pos(aSubStr, aStr) + Length(aSubStr), MaxInt);
+end;
+
+
+function LeftStrBefore(const aStr, aSubStr: string): string;
+var
+  position: Integer;
+begin
+  position := Pos(aSubStr, aStr);
+  if position = 0 then
+    Result := aStr
+  else
+    Result := Copy(aStr, 1, position - 1);
 end;
 
 

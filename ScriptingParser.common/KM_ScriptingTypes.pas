@@ -347,7 +347,7 @@ begin
       if I < aSource.Count - 1 then
       repeat
         Inc(I);
-        srcLine := aSource[I];
+        srcLine := LeftStrBefore(aSource[I], '//');
         enumStr.Append(srcLine);
       until Pos(')', srcLine) <> 0;
     end;
