@@ -34,10 +34,10 @@ type
   private
     fName: string;
     fType: TKMTypeType;
-    fPriority: Integer;
     fDescription: string;
     fElements: TKMScriptTypeElements;
   public
+    SortPriority: Integer;
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromStringList(aSource: TStringList);
@@ -50,6 +50,7 @@ type
   TKMScriptTypes = class
   private
     fList: TObjectList<TKMScriptType>;
+    procedure AssignSortOrder;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function GetCount: Integer;
@@ -281,7 +282,6 @@ begin
   inherited;
 
   fElements := TKMScriptTypeElements.Create;
-  fPriority := 0;
 end;
 
 
@@ -295,8 +295,8 @@ end;
 
 procedure TKMScriptType.LoadFromStringList(aSource: TStringList);
 var
-  I, priority: Integer;
-  srcLine, prioStr: string;
+  I: Integer;
+  srcLine: string;
   enumStr: TStringList; // Needs to be a list because of comments
   details: TStringList;
 begin
@@ -317,14 +317,7 @@ begin
     // Repeat until no description tags are found
     while StartsStr('//*', srcLine) do
     begin
-      if StartsStr('//* Priority:', srcLine) then
-      begin
-        prioStr := Trim(RightStrAfter(srcLine, ':'));
-        if TryStrToInt(prioStr, priority) then
-          fPriority := priority;
-      end
-      else
-        details.Add(RightStrAfter(srcLine, '* '));
+      details.Add(RightStrAfter(srcLine, '* '));
 
       Inc(I);
       srcLine := aSource[I];
@@ -347,9 +340,12 @@ begin
       if I < aSource.Count - 1 then
       repeat
         Inc(I);
-        srcLine := LeftStrBefore(aSource[I], '//');
+        srcLine := aSource[I];
         enumStr.Append(srcLine);
-      until Pos(')', srcLine) <> 0;
+
+        // Ignore closing brackets if they are in comments
+      until ((Pos(')', srcLine) <> 0) and (Pos('//', srcLine) = 0))
+         or ((Pos(')', srcLine) <> 0) and (Pos('//', srcLine) <> 0) and (Pos(')', srcLine) < Pos('//', srcLine)));
     end;
 
     // Parse record - detected by "record"
@@ -439,30 +435,14 @@ constructor TKMScriptTypes.Create;
 begin
   inherited Create;
 
-  // todo: add sorting of records from simple to complex
   fList := TObjectList<TKMScriptType>.Create(
     TComparer<TKMScriptType>.Construct(
       function(const A, B: TKMScriptType): Integer
-      const
-        // We should add types in 'simple to complex' order to allow the latter to use the former
-        // Enum first, then others, record last
-        TYPE_ORDER: array[TKMTypeType] of Integer = (0, 4, 3, 2, 1);
       begin
-        Result := TYPE_ORDER[A.fType] - TYPE_ORDER[B.fType];
-
-        if Result <> 0 then Exit;
-
-        // Types are equal
-
-        // Opposite order - higher value first
-        Result := B.fPriority - A.fPriority;
-
-        if Result <> 0 then Exit;
-
-        // Priorities are equal
-
-        // Case-sensitive compare, since we use CamelCase and it looks nicer that way
-        Result := CompareText(A.fName, B.fName)
+        Result := CompareValue(A.SortPriority, B.SortPriority);
+        if Result = 0 then
+          // Case-sensitive compare, since we use CamelCase and it looks nicer that way
+          Result := CompareText(A.fName, B.fName);
       end));
 end;
 
@@ -581,8 +561,88 @@ begin
 end;
 
 
+procedure TKMScriptTypes.AssignSortOrder;
+  function FindType(aName: string): Integer;
+  var
+    I: Integer;
+  begin
+    Result := -1;
+    for I := 0 to fList.Count - 1 do
+      if fList[I].fName = aName then
+        Exit(I);
+  end;
+var
+  I, K: Integer;
+  use: array of TList<Integer>;
+  order: array of Integer;
+  id: Integer;
+  s: string;
+  orderLoop: Integer;
+  needsAnotherLoop: Boolean;
+begin
+  SetLength(use, fList.Count);
+  for I := 0 to fList.Count - 1 do
+    use[I] := TList<Integer>.Create;
+
+  SetLength(order, fList.Count);
+  for I := 0 to fList.Count - 1 do
+    order[I] := -1;
+
+  for I := 0 to fList.Count - 1 do
+  case fList[I].fType of
+    ttRecord:     begin
+                    for K := 0 to fList[I].fElements.fList.Count - 1 do
+                    begin
+                      s := RightStrAfter(fList[I].fElements.fList[K].fName, ': ');
+                      id := FindType(s);
+                      if id <> -1 then
+                        use[I].Add(id);
+                    end;
+                  end;
+    ttArray:      begin
+                    s := ReplaceStr(fList[I].fElements.fList[0].fName, 'array of ', '');
+                    id := FindType(s);
+                    if id <> -1 then
+                      use[I].Add(id);
+                  end;
+    ttSetOfType:  begin
+                    s := ReplaceStr(fList[I].fElements.fList[0].fName, 'set of ', '');
+                    id := FindType(s);
+                    if id <> -1 then
+                      use[I].Add(id);
+                  end;
+  end;
+
+  orderLoop := 0;
+  repeat
+    // Demark items without dependencies
+    for I := 0 to fList.Count - 1 do
+      if (order[I] = -1) and (use[I].Count = 0) then
+        order[I] := orderLoop;
+
+    // Trim demarked items
+    for I := 0 to fList.Count - 1 do
+    for K := use[I].Count - 1 downto 0 do
+      if order[use[I][K]] = 0 then
+        use[I].Delete(K);
+
+    // Check if all items are demarked
+    needsAnotherLoop := False;
+    for I := 0 to fList.Count - 1 do
+      if (order[I] = -1) then
+        needsAnotherLoop := True;
+    Inc(orderLoop);
+  until not needsAnotherLoop or (orderLoop = 9);
+
+  for I := 0 to fList.Count - 1 do
+    fList[I].SortPriority := order[I];
+end;
+
+
 procedure TKMScriptTypes.SortByName;
 begin
+  AssignSortOrder;
+
   fList.Sort;
 end;
 
@@ -611,6 +671,10 @@ begin
       for I := fList.Count - 1 downto 0 do
       begin
         sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCode);
+
+        if (I > 0) and (fList[I].SortPriority <> fList[I-1].SortPriority) then
+          sl.Insert(secStart, DupeString(' ', pad) + '// Dependent types of level ' + IntToStr(fList[I].SortPriority));
+
         Inc(aCountReg);
       end;
     end;
