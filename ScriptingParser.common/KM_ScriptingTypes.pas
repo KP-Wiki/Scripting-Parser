@@ -9,6 +9,8 @@ type
   // There are these base types:
   TKMTypeType = (ttEnum, ttRecord, ttArray, ttSetOfType, ttSetOfEnum);
 
+  TKMSortType = (stByAlphabet, stByDependancy);
+
   TKMScriptTypeElement = class
   private
     fName: string;
@@ -61,7 +63,7 @@ type
     procedure Clear;
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
-    procedure SortByName;
+    procedure SortByName(aSortBy: TKMSortType);
     procedure ExportCode(const aCodeFile: string; out aCountReg: Integer);
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
@@ -639,9 +641,12 @@ begin
 end;
 
 
-procedure TKMScriptTypes.SortByName;
+procedure TKMScriptTypes.SortByName(aSortBy: TKMSortType);
 begin
-  AssignSortOrder;
+  case aSortBy of
+    stByAlphabet:   ; // Already sorted by default
+    stByDependancy: AssignSortOrder;
+  end;
 
   fList.Sort;
 end;
