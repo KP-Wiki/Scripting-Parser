@@ -31,6 +31,7 @@ Dynamic scripts usefull info:
 
 ***
 
+* <a href="#AAIAttackHouseTypesSet">AAIAttackHouseTypesSet</a>
 * <a href="#AIArmyType">AIArmyType</a>
 * <a href="#AIAttackAdd">AIAttackAdd</a>
 * <a href="#AIAttackAddEx">AIAttackAddEx</a>
@@ -221,6 +222,7 @@ Dynamic scripts usefull info:
 
 | Ver<br/>sion | Action description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
+| 14600 | <a id="AAIAttackHouseTypesSet">AAIAttackHouseTypesSet</a><sub><br/>Sets set of house types, houses of which Advanced AI should attack<br/>By default those house types are [htBarracks, htStore, htSchool, htTownhall]</sub> | <sub>**aHand**: Byte; <br/> **aHouses**: TKMHouseTypeSet;</sub> | <sub></sub> |
 | 7000+ | <a id="AIArmyType">AIArmyType</a><sub><br/>Sets AI army type</sub> | <sub>**aHand**: Byte; <br/> **aType**: TKMArmyType; // _(atIronThenLeather, atLeather, atIron, atIronAndLeather)_</sub> | <sub></sub> |
 | 7000+ | <a id="AIAttackAdd">AIAttackAdd</a><sub><br/>Add AI attack <br/>aMeleeGroupCount, aAntiHorseGroupCount, aRangedGroupCount, aMountedGroupCount: soldiers groups count</sub> | <sub>**aHand**: Integer; // _handID_ <br/> **aRepeating**: Boolean; // _is attack repeating_ <br/> **aDelay**: Cardinal; // _attack delay from the game start (in ticks)_ <br/> **aTotalMen**: Integer; // _total soldiers to attack_ <br/> **aMeleeGroupCount**: Integer; <br/> **aAntiHorseGroupCount**: Integer; <br/> **aRangedGroupCount**: Integer; <br/> **aMountedGroupCount**: Integer; <br/> **aRandomGroups**: Boolean; // _ use random groups for attack_ <br/> **aTarget**: TKMAIAttackTarget; // _attack target of TKMAIAttackTarget type_ <br/> **aCustomPosition**: TKMPoint; // _custom position of attack. Used if attCustomPosition was set up as attack target_</sub> | <sub>Integer // Attack UID, that could be used to remove this attack later on</sub> |
 | 13900 | <a id="AIAttackAddEx">AIAttackAddEx</a><sub><br/>Add AI attack for a specified hand (player)<br/>Attack info is set via TKMAIAttackInfo record.</sub> | <sub>**aHand**: Integer; <br/> **var aAttackInfo**: TKMAIAttackInfo;</sub> | <sub>Integer // Attack UID, that could be used to remove this attack later on</sub> |

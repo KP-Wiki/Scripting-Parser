@@ -29,6 +29,7 @@ Dynamic scripts usefull info:
 
 ***
 
+* <a href="#AAIAttackHouseTypesGet">AAIAttackHouseTypesGet</a>
 * <a href="#AIArmyType">AIArmyType</a>
 * <a href="#AIAutoAttack">AIAutoAttack</a>
 * <a href="#AIAutoAttackRange">AIAutoAttackRange</a>
@@ -259,6 +260,7 @@ Dynamic scripts usefull info:
 
 | Ver<br/>sion | State description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
+| 14600 | <a id="AAIAttackHouseTypesGet">AAIAttackHouseTypesGet</a><sub><br/>Gets set of house types, houses of which Advanced AI should attack<br/>Returns empty set if wrong handId was passed</sub> | <sub>**aHand**: Byte; // _HandID_</sub> | <sub>TKMHouseTypeSet</sub> |
 | 7000+ | <a id="AIArmyType">AIArmyType</a><sub><br/>Gets AI army type</sub> | <sub>**aHand**: Byte;</sub> | <sub>TKMArmyType</sub> |
 | 13000 | <a id="AIAutoAttack">AIAutoAttack</a><sub><br/>Gets AI AutoAttack (True or False)</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean</sub> |
 | 7000+ | <a id="AIAutoAttackRange">AIAutoAttackRange</a><sub><br/>Gets AI auto attack range.<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
