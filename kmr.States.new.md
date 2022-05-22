@@ -83,10 +83,6 @@ Dynamic scripts usefull info:
 * <a href="#GroupOwner">GroupOwner</a>
 * <a href="#GroupType">GroupType</a>
 * <a href="#GroupTypeEx">GroupTypeEx</a>
-* <a href="#HandHouseCanBuild">HandHouseCanBuild</a>
-* <a href="#HandHouseLock">HandHouseLock</a>
-* <a href="#HandUnitCanTrain">HandUnitCanTrain</a>
-* <a href="#HandWareDistribution">HandWareDistribution</a>
 * <a href="#HouseAllowAllyToSelect">HouseAllowAllyToSelect</a>
 * <a href="#HouseAt">HouseAt</a>
 * <a href="#HouseBarracksRallyPointX">HouseBarracksRallyPointX</a>
@@ -194,10 +190,16 @@ Dynamic scripts usefull info:
 * <a href="#PlayerGetAllGroups">PlayerGetAllGroups</a>
 * <a href="#PlayerGetAllHouses">PlayerGetAllHouses</a>
 * <a href="#PlayerGetAllUnits">PlayerGetAllUnits</a>
+* <a href="#PlayerHouseTypeCanBuild">PlayerHouseTypeCanBuild</a>
+* <a href="#PlayerHouseTypeLock">PlayerHouseTypeLock</a>
+* <a href="#PlayerIsAdvancedAI">PlayerIsAdvancedAI</a>
 * <a href="#PlayerIsAI">PlayerIsAI</a>
+* <a href="#PlayerIsClassicAI">PlayerIsClassicAI</a>
 * <a href="#PlayerName">PlayerName</a>
+* <a href="#PlayerUnitTypeCanTrain">PlayerUnitTypeCanTrain</a>
 * <a href="#PlayerVictorious">PlayerVictorious</a>
 * <a href="#PlayerWareDistribution">PlayerWareDistribution</a>
+* <a href="#PlayerWareDistributionEx">PlayerWareDistributionEx</a>
 * <a href="#StatAIDefencePositionsCount">StatAIDefencePositionsCount</a>
 * <a href="#StatArmyCount">StatArmyCount</a>
 * <a href="#StatArmyPower">StatArmyPower</a>
@@ -314,10 +316,6 @@ Dynamic scripts usefull info:
 | 5057 | <a id="GroupOwner">GroupOwner</a><sub><br/>Returns the owner of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // Player ID</sub> |
 | 5932 | <a id="GroupType">GroupType</a><sub><br/>Returns the type of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // Group type</sub> |
 | 13900 | <a id="GroupTypeEx">GroupTypeEx</a><sub><br/>Returns the type of the specified group or gtNone if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>TKMGroupType // Group type</sub> |
-| 13900 | <a id="HandHouseCanBuild">HandHouseCanBuild</a><sub><br/>Returns True if the specified hand (player) can build the specified house type</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean // House can build</sub> |
-| 13900 | <a id="HandHouseLock">HandHouseLock</a><sub><br/>Returns hand (player) house lock as enum value of TKMHandHouseLock = (hlDefault, hlBlocked, hlGranted)</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>TKMHandHouseLock // Hand house lock</sub> |
-| 13900 | <a id="HandUnitCanTrain">HandUnitCanTrain</a><sub><br/>Returns True if the specified player can train/equip the specified unit type</sub> | <sub>**aHand**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Boolean // Unit unlocked</sub> |
-| 13900 | <a id="HandWareDistribution">HandWareDistribution</a><sub><br/>Returns the ware distribution for the specified resource, house and player</sub> | <sub>**aHand**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer // Ware distribution [0..5]</sub> |
 | 10940 | <a id="HouseAllowAllyToSelect">HouseAllowAllyToSelect</a><sub><br/>Return if specified house is allowed to be selected and viewed by his allies</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5057 | <a id="HouseAt">HouseAt</a><sub><br/>Returns the ID of the house at the specified location or -1 if no house exists there</sub> | <sub>**aX, aY**: Integer;</sub> | <sub>Integer // House ID</sub> |
 | 6516 | <a id="HouseBarracksRallyPointX">HouseBarracksRallyPointX</a><sub><br/>Returns X coordinate of Rally Point of specified barracks or 0 if BarracksID is invalid</sub> | <sub>**aBarracks**: Integer;</sub> | <sub>Integer // X coordinate</sub> |
@@ -425,10 +423,16 @@ Dynamic scripts usefull info:
 | 5209 | <a id="PlayerGetAllGroups">PlayerGetAllGroups</a><sub><br/>Returns an array with IDs for all the groups of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>TIntegerArray // Array of group IDs</sub> |
 | 5209 | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Returns an array with IDs for all the houses of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>TIntegerArray // Array of house IDs</sub> |
 | 5165 | <a id="PlayerGetAllUnits">PlayerGetAllUnits</a><sub><br/>Returns an array with IDs for all the units of the specified player</sub> | <sub>**aHand**: Byte;</sub> | <sub>TIntegerArray // Array of unit IDs</sub> |
+| 14600 | <a id="PlayerHouseTypeCanBuild">PlayerHouseTypeCanBuild</a><sub><br/>Returns True if the specified player can build the specified house type</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean // House can be build</sub> |
+| 14600 | <a id="PlayerHouseTypeLock">PlayerHouseTypeLock</a><sub><br/>Returns player house type lock as enum value of TKMHandHouseLock = (hlDefault, hlBlocked, hlGranted)</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>TKMHandHouseLock // Player house type lock</sub> |
+| 14600 | <a id="PlayerIsAdvancedAI">PlayerIsAdvancedAI</a><sub><br/>Wherever player is controlled by Advanced AI</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean // Player is Advanced AI</sub> |
 | 5927 | <a id="PlayerIsAI">PlayerIsAI</a><sub><br/>Wherever player is controlled by AI</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean // Player is AI</sub> |
+| - | <a id="PlayerIsClassicAI">PlayerIsClassicAI</a><sub><br/>Verson: 14600<br/>Wherever player is controlled by Classic AI</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean // Player is Classic AI</sub> |
 | 5057 | <a id="PlayerName">PlayerName</a><sub><br/>Get name of player as a string (for multiplayer)</sub> | <sub>**aHand**: Byte;</sub> | <sub>AnsiString // Player name</sub> |
+| 14600 | <a id="PlayerUnitTypeCanTrain">PlayerUnitTypeCanTrain</a><sub><br/>Returns True if the specified player can train / equip the specified unit type</sub> | <sub>**aHand**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Boolean // Unit could be trained / equipped</sub> |
 | 4545 | <a id="PlayerVictorious">PlayerVictorious</a><sub><br/>See if player is victorious</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean // Victorious</sub> |
 | 5345 | <a id="PlayerWareDistribution">PlayerWareDistribution</a><sub><br/>Returns the ware distribution for the specified resource, house and player</sub> | <sub>**aHand**: Byte; <br/> **aWareType**: Byte; <br/> **aHouseType**: Byte;</sub> | <sub>Byte // Ware distribution [0..5]</sub> |
+| 14600 | <a id="PlayerWareDistributionEx">PlayerWareDistributionEx</a><sub><br/>Returns the ware distribution for the specified resource, house and player</sub> | <sub>**aHand**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer // Ware distribution [0..5]</sub> |
 | 6323 | <a id="StatAIDefencePositionsCount">StatAIDefencePositionsCount</a><sub><br/>How many defence positions AI player has.<br/>Useful for scripts like "if not enough positions and too much groups then add a new position"</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer // Defence position count</sub> |
 | 5057 | <a id="StatArmyCount">StatArmyCount</a><sub><br/>How many military units player has</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer // Army count</sub> |
 | 13660 | <a id="StatArmyPower">StatArmyPower</a><sub><br/>The power factor of a player's army</sub> | <sub>**aHand**: Byte;</sub> | <sub>Single // Army power</sub> |
