@@ -57,6 +57,7 @@ Dynamic scripts usefull info:
 * <a href="#AISerfsPerHouse">AISerfsPerHouse</a>
 * <a href="#AISoldiersLimit">AISoldiersLimit</a>
 * <a href="#AIStartPosition">AIStartPosition</a>
+* <a href="#AIUnlimitedEquip">AIUnlimitedEquip</a>
 * <a href="#AIWorkerLimit">AIWorkerLimit</a>
 * <a href="#CinematicEnd">CinematicEnd</a>
 * <a href="#CinematicPanTo">CinematicPanTo</a>
@@ -248,6 +249,7 @@ Dynamic scripts usefull info:
 | 5924 | <a id="AISerfsPerHouse">AISerfsPerHouse</a><sub><br/>Sets the number of serfs the AI will train per house.<br/>Can be a decimal (0.25 for 1 serf per 4 houses)</sub> | <sub>**aHand**: Byte; <br/> **aSerfs**: Single;</sub> | <sub></sub> |
 | 5932 | <a id="AISoldiersLimit">AISoldiersLimit</a><sub><br/>Sets the maximum number of soldiers the AI will train, or -1 for unlimited</sub> | <sub>**aHand**: Byte; <br/> **aLimit**: Integer;</sub> | <sub></sub> |
 | 6251 | <a id="AIStartPosition">AIStartPosition</a><sub><br/>Sets the AI start position which is used for targeting AI attacks</sub> | <sub>**aHand**: Byte; <br/> **X, Y**: Integer;</sub> | <sub></sub> |
+| 14800 | <a id="AIUnlimitedEquip">AIUnlimitedEquip</a><sub><br/>Sets AI unlimited equip parameter</sub> | <sub>**aHand**: Byte; <br/> **aUnlimitedEquip**: Boolean;</sub> | <sub></sub> |
 | 5924 | <a id="AIWorkerLimit">AIWorkerLimit</a><sub><br/>Sets the maximum number of laborers the AI will train</sub> | <sub>**aHand**: Byte; <br/> **aLimit**: Byte;</sub> | <sub></sub> |
 | 5938 | <a id="CinematicEnd">CinematicEnd</a><sub><br/>Exits cinematic mode</sub> | <sub>**aHand**: Byte;</sub> | <sub></sub> |
 | 5938 | <a id="CinematicPanTo">CinematicPanTo</a><sub><br/>Pans the center of the player's screen to the given location over a set number of ticks.<br/>If Duration = 0 then the screen moves instantly.</sub> | <sub>**aHand**: Byte; <br/> **X, Y**: Integer; <br/> **Duration**: Integer;</sub> | <sub></sub> |

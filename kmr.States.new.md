@@ -48,6 +48,7 @@ Dynamic scripts usefull info:
 * <a href="#AISerfsPerHouse">AISerfsPerHouse</a>
 * <a href="#AISoldiersLimit">AISoldiersLimit</a>
 * <a href="#AIStartPosition">AIStartPosition</a>
+* <a href="#AIUnlimitedEquip">AIUnlimitedEquip</a>
 * <a href="#AIWorkerLimit">AIWorkerLimit</a>
 * <a href="#CampaignMissionID">CampaignMissionID</a>
 * <a href="#CampaignMissionsCount">CampaignMissionsCount</a>
@@ -118,6 +119,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseTypeToOccupantType">HouseTypeToOccupantType</a>
 * <a href="#HouseTypeToWorkerType">HouseTypeToWorkerType</a>
 * <a href="#HouseUnlocked">HouseUnlocked</a>
+* <a href="#HouseWareAmount">HouseWareAmount</a>
 * <a href="#HouseWareBlocked">HouseWareBlocked</a>
 * <a href="#HouseWareBlockedEx">HouseWareBlockedEx</a>
 * <a href="#HouseWareBlockedTakeOut">HouseWareBlockedTakeOut</a>
@@ -281,6 +283,7 @@ Dynamic scripts usefull info:
 | 7000+ | <a id="AISerfsPerHouse">AISerfsPerHouse</a><sub><br/>Gets the number of serfs the AI will train per house.<br/>Can be a decimal (0.25 for 1 serf per 4 houses)<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Single</sub> |
 | 7000+ | <a id="AISoldiersLimit">AISoldiersLimit</a><sub><br/>Gets the maximum number of soldiers the AI will train, or -1 for unlimited<br/>Returns -2 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
 | 7000+ | <a id="AIStartPosition">AIStartPosition</a><sub><br/>Gets the AI start position which is used for targeting AI attacks<br/>Returns (-1;-1) if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>TKMPoint</sub> |
+| 14800 | <a id="AIUnlimitedEquip">AIUnlimitedEquip</a><sub><br/>Gets AI unlimited equip parameter or False if aHand parameter is not valid</sub> | <sub>**aHand**: Byte;</sub> | <sub>Boolean</sub> |
 | 7000+ | <a id="AIWorkerLimit">AIWorkerLimit</a><sub><br/>Gets the maximum number of laborers the AI will train<br/>Returns -1 if used with wrong parameters</sub> | <sub>**aHand**: Byte;</sub> | <sub>Integer</sub> |
 | 12600 | <a id="CampaignMissionID">CampaignMissionID</a><sub><br/>Returns current campaing mission number or -1 if this is not a campaign mission<br/>First mission got ID = 1</sub> | <sub></sub> | <sub>Integer</sub> |
 | 12600 | <a id="CampaignMissionsCount">CampaignMissionsCount</a><sub><br/>Returns current campaign missions count or -1 if this is not a campaign mission</sub> | <sub></sub> | <sub>Integer</sub> |
@@ -338,7 +341,7 @@ Dynamic scripts usefull info:
 | 5057 | <a id="HousePositionX">HousePositionX</a><sub><br/>Returns the X coordinate of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // X coordinate</sub> |
 | 5057 | <a id="HousePositionY">HousePositionY</a><sub><br/>Returns the Y coordinate of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // Y coordinate</sub> |
 | 5057 | <a id="HouseRepair">HouseRepair</a><sub><br/>Returns True if the specified house has repair enabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean // Repair enabled</sub> |
-| 5057 | <a id="HouseResourceAmount">HouseResourceAmount</a><sub><br/>Returns the amount of the specified resource in the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aResource**: Integer;</sub> | <sub>Integer // Number of resources</sub> |
+| 5057 | <a id="HouseResourceAmount">HouseResourceAmount</a><sub><br/>Returns the amount of the specified resource in the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aResource**: Integer;</sub> | <sub>Integer // Number of resources or -1 if aHouseID is invalid</sub> |
 | 5165 | <a id="HouseSchoolQueue">HouseSchoolQueue</a><sub><br/>Returns the unit type in the specified slot of the school queue.<br/>Slot 0 is the unit currently training, slots 1..5 are the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer; // _Queue index (0..5)_</sub> | <sub>Integer // Unit type</sub> |
 | 6510 | <a id="HouseSiteIsDigged">HouseSiteIsDigged</a><sub><br/>Returns True if specified WIP house area is digged</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean // Digged</sub> |
 | 7000+ | <a id="HouseTownHallMaxGold">HouseTownHallMaxGold</a><sub><br/>Returns Max amount of gold which is possible to deliver into the TownHall<br/>or -1 if TownHall house was not found</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // Max gold for specified TownHall</sub> |
@@ -351,6 +354,7 @@ Dynamic scripts usefull info:
 | 5345 | <a id="HouseTypeToOccupantType">HouseTypeToOccupantType</a><br/>&#x274C;`Deprecated`<br/><sub>*Method could be removed in the future game versions, use <a href="#HouseTypeToWorkerType">HouseTypeToWorkerType</a> instead*</sub><sub><br/>Returns the type of unit that should work in the specified type of house, or -1 if no unit should work in it.</sub> | <sub>**aHouseType**: Integer;</sub> | <sub>Integer // Unit type</sub> |
 | 13900 | <a id="HouseTypeToWorkerType">HouseTypeToWorkerType</a><sub><br/>Returns the type of unit that should work in the specified type of house, or utNone if no unit should work in it.</sub> | <sub>**aHouseType**: TKMHouseType;</sub> | <sub>TKMUnitType // Unit type</sub> |
 | 6220 | <a id="HouseUnlocked">HouseUnlocked</a><sub><br/>Returns True if the specified player can build the specified house type (unlocked and allowed).</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: Integer;</sub> | <sub>Boolean // House unlocked</sub> |
+| 14800 | <a id="HouseWareAmount">HouseWareAmount</a><sub><br/>Returns the amount of the specified ware in the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aWare**: TKMWareType;</sub> | <sub>Integer // Number of wares or -1 if aHouseID is invalid</sub> |
 | 5099 | <a id="HouseWareBlocked">HouseWareBlocked</a><sub><br/>Returns True if the specified ware in the specified storehouse or barracks is blocked</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: Integer;</sub> | <sub>Boolean // Ware blocked</sub> |
 | 13900 | <a id="HouseWareBlockedEx">HouseWareBlockedEx</a><sub><br/>Returns True if the specified ware in the specified storehouse or barracks is blocked</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean // Ware blocked</sub> |
 | 13900 | <a id="HouseWareBlockedTakeOut">HouseWareBlockedTakeOut</a><sub><br/>Returns True if the specified ware in the specified storehouse or barracks is blocked for taking out (yellow triangle)</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean // Ware blocked for taking out</sub> |
