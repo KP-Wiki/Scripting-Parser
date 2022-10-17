@@ -22,6 +22,7 @@ Version column description:
 * <a href="#CampaignMissionUnlock">CampaignMissionUnlock</a>
 * <a href="#CampaignMissionWon">CampaignMissionWon</a>
 * <a href="#CampaignProgress">CampaignProgress</a>
+* <a href="#CampaignSelect">CampaignSelect</a>
 * <a href="#CampaignSetup">CampaignSetup</a>
 * <a href="#CinematicBarsHide">CinematicBarsHide</a>
 * <a href="#CinematicBarsShow">CinematicBarsShow</a>
@@ -149,7 +150,8 @@ Version column description:
 | 8261 | <a id="CampaignMissionUnlock">CampaignMissionUnlock</a><sub><br/>Sets up unlocked status of a campaign mission in a campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to unlock_ <br/> **aUnlocked**: Boolean; // _Should it be available for selection and play_</sub> | <sub></sub> |
 | 8722 | <a id="CampaignMissionWon">CampaignMissionWon</a><sub><br/>Sets up won status of a campaign mission in a campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to set up_ <br/> **aWon**: Boolean; // _Won status_</sub> | <sub></sub> |
 | 8261 | <a id="CampaignProgress">CampaignProgress</a><sub><br/>Sets up progress campaign info in campaign selection menu. Campaign-only action!</sub> | <sub>**aProgress**: string; // _campaign progress displayed in the campaign selection menu_</sub> | <sub></sub> |
-| 8250 | <a id="CampaignSetup">CampaignSetup</a><sub><br/>Sets up generic campaign info in campaign selection menu. Campaign-only action!</sub> | <sub>**aProgress**: string; // _campaign progress displayed in the campaign selection menu_ <br/> **aNodeImg**: string; // _sprite to be used for the nodes between mission flags (*.png)_ <br/> **aMissionNext**: Integer; // _which mission will be selected by default to be played next_</sub> | <sub></sub> |
+| 11581 | <a id="CampaignSelect">CampaignSelect</a><sub><br/>Sets up whihc mission will be selected in campaign selection menu. Campaign-only action!</sub> | <sub>**aMissionNext**: Integer; // _which mission will be selected by default to be played next_</sub> | <sub></sub> |
+| 8250 | <a id="CampaignSetup">CampaignSetup</a><sub><br/>Sets up generic campaign info in campaign selection menu. Campaign-only action!</sub> | <sub>**aProgress**: string; // _campaign progress displayed in the campaign selection menu_ <br/> **aNodeImg**: string; // _sprite to be used for the nodes between mission flags (*.png)_</sub> | <sub></sub> |
 | 8155 | <a id="CinematicBarsHide">CinematicBarsHide</a><sub><br/>Hides cinematic black bars around the screen</sub> | <sub></sub> | <sub></sub> |
 | 8155 | <a id="CinematicBarsShow">CinematicBarsShow</a><sub><br/>Shows cinematic black bars around the screen</sub> | <sub></sub> | <sub></sub> |
 | 8155 | <a id="CinematicBegin">CinematicBegin</a><sub><br/>Starts cinematic mode. Blocks all viewport controls</sub> | <sub></sub> | <sub></sub> |

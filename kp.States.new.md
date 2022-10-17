@@ -126,7 +126,7 @@ Version column description:
 | - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom field must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="IsOrchardAt">IsOrchardAt</a><sub><br/>Check if there is a orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom orchard must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Check if there is a road owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom road must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub></sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer;</sub> | <sub>Boolean</sub> |
+| - | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub><br/>Checking alliances with Neutral will always return True (despite some animals being agressive)</sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerColorText">PlayerColorText</a><sub><br/>Get the string with color code of the player (adjusted brighter for text display)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>string</sub> |
 | - | <a id="PlayerDefeated">PlayerDefeated</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerEnabled">PlayerEnabled</a><sub><br/>Check if hand is enabled (chosen to be played by anyone on mission start)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
@@ -139,7 +139,7 @@ Version column description:
 | - | <a id="PlayerHouseCanBuild">PlayerHouseCanBuild</a><sub><br/>Check if Player can build certain house type</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
 | 10697 | <a id="PlayerHouseGranted">PlayerHouseGranted</a><sub><br/>Check if Player has the house explicitly granted (allowed to be built<br/>If house is both granted and blocked - it will be blocked</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
 | 10470 | <a id="PlayerIsNeutral">PlayerIsNeutral</a><sub><br/>Check if the player is neutral (animals)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
-| - | <a id="PlayerName">PlayerName</a><sub><br/>Get the players name</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>string</sub> |
+| - | <a id="PlayerName">PlayerName</a><sub><br/>Get the players full name</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>string</sub> |
 | - | <a id="PlayerVictorious">PlayerVictorious</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerWareDistribution">PlayerWareDistribution</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Byte</sub> |
 | - | <a id="StatArmyCount">StatArmyCount</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
