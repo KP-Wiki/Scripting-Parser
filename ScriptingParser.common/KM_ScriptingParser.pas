@@ -149,7 +149,7 @@ begin
   OnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
 
   // Sort for neat order
-  fTypes.SortByName;
+  fTypes.SortByName(stByDependancy);
 
   fTypes.ExportCode(aCodeFile, countReg);
 
@@ -176,7 +176,7 @@ begin
   OnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
 
   // Sort for neat order
-  fTypes.SortByName;
+  fTypes.SortByName(stByAlphabet);
 
   if aOutputFile = '' then Exit;
 
