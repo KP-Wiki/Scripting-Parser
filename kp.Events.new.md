@@ -34,6 +34,7 @@ Version column description:
 * <a href="#OnUnitGiven">OnUnitGiven</a>
 * <a href="#OnUnitOwnerChanged">OnUnitOwnerChanged</a>
 * <a href="#OnUnitTrained">OnUnitTrained</a>
+* <a href="#OnUnitWagonEnteredHouse">OnUnitWagonEnteredHouse</a>
 * <a href="#OnUnitWoundedByHouse">OnUnitWoundedByHouse</a>
 * <a href="#OnUnitWoundedByUnit">OnUnitWoundedByUnit</a>
 * <a href="#OnWarriorEquipped">OnWarriorEquipped</a>
@@ -59,6 +60,7 @@ Version column description:
 | 7023 | <a id="OnUnitGiven">OnUnitGiven</a><sub></sub> | <sub>**aUnit**: Integer;</sub> |
 | 10630 | <a id="OnUnitOwnerChanged">OnUnitOwnerChanged</a><sub><br/>Occurs after a unit changes owner.<br/>When a unit changes its owner it actually get silently killed and a new unit gets spawned for a new owner in its place.</sub> | <sub>**aOldUnit**: Integer; // _UID of the unit that was killed (should not be used for any states or actions)._ <br/> **aNewUnit**: Integer; // _UID of the new unit that was spawned (-1 if it failed)_</sub> |
 | - | <a id="OnUnitTrained">OnUnitTrained</a><sub></sub> | <sub>**aUnit**: Integer;</sub> |
+| 12050 | <a id="OnUnitWagonEnteredHouse">OnUnitWagonEnteredHouse</a><sub><br/>Occurs when wagon has successfully entered a house. Right before wares get transferred and the wagon is gone</sub> | <sub>**aUnit**: Integer; <br/> **aHouse**: Integer;</sub> |
 | 4349 | <a id="OnUnitWoundedByHouse">OnUnitWoundedByHouse</a><sub><br/>A unit was attacked by an enemy house (surely a Tower)</sub> | <sub>**aUnit**: Integer; <br/> **aAttackerHouse**: Integer;</sub> |
 | 4349 | <a id="OnUnitWoundedByUnit">OnUnitWoundedByUnit</a><sub><br/>A unit was attacked by an enemy unit</sub> | <sub>**aUnit**: Integer; <br/> **aAttackerUnit**: Integer;</sub> |
 | - | <a id="OnWarriorEquipped">OnWarriorEquipped</a><sub></sub> | <sub>**aUnit**: Integer; <br/> **aGroup**: Integer;</sub> |
