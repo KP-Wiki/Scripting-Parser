@@ -239,6 +239,7 @@ Dynamic scripts usefull info:
 * <a href="#UnitDirection">UnitDirection</a>
 * <a href="#UnitDirectionEx">UnitDirectionEx</a>
 * <a href="#UnitDismissable">UnitDismissable</a>
+* <a href="#UnitFishCount">UnitFishCount</a>
 * <a href="#UnitHome">UnitHome</a>
 * <a href="#UnitHPCurrent">UnitHPCurrent</a>
 * <a href="#UnitHPInvulnerable">UnitHPInvulnerable</a>
@@ -474,6 +475,7 @@ Dynamic scripts usefull info:
 | 5165 | <a id="UnitDirection">UnitDirection</a><sub><br/>Returns the direction the specified unit is facing</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer // Direction (0..7)</sub> |
 | 13900 | <a id="UnitDirectionEx">UnitDirectionEx</a><sub><br/>Returns the direction the specified unit is facing</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMDirection // Direction (dirNA, dirN, dirNE, dirE, dirSE, dirS, dirSW, dirW, dirNW)</sub> |
 | 7000+ | <a id="UnitDismissable">UnitDismissable</a><sub><br/>Returns the 'Dismissable' status of specified unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean // is unit dismissable</sub> |
+| 15000 | <a id="UnitFishCount">UnitFishCount</a><sub><br/>Returns number of available fish to catch on the specified fish unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | 5997 | <a id="UnitHome">UnitHome</a><sub><br/>Returns the ID of the house which is the home of the specified unit (house where he works) or -1 if the unit does not have a home</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer // House ID</sub> |
 | 7000+ | <a id="UnitHPCurrent">UnitHPCurrent</a><sub><br/>Returns current hitpoints for specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer // HitPoints</sub> |
 | 7000+ | <a id="UnitHPInvulnerable">UnitHPInvulnerable</a><sub><br/>See if unit is invulnerable</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean // True or False</sub> |
