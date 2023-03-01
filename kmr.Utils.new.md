@@ -63,6 +63,10 @@ Dynamic scripts usefull info:
 * <a href="#InRangeS">InRangeS</a>
 * <a href="#InsertString">InsertString</a>
 * <a href="#KMPoint">KMPoint</a>
+* <a href="#Ln">Ln</a>
+* <a href="#Log10">Log10</a>
+* <a href="#Log2">Log2</a>
+* <a href="#LogN">LogN</a>
 * <a href="#LowerCase">LowerCase</a>
 * <a href="#MaxI">MaxI</a>
 * <a href="#MaxInArrayI">MaxInArrayI</a>
@@ -127,6 +131,10 @@ Dynamic scripts usefull info:
 | 7000+ | <a id="InRangeS">InRangeS</a><sub><br/>Checks whether specified aValue is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin, aMax**: Single;</sub> | <sub>Boolean</sub> |
 | 11750 | <a id="InsertString">InsertString</a><sub><br/>Inserts one string, Source into another string, Target at the given position Index.<br/>The first character of a string has index = 1.<br/>The Target string characters from the Index character are moved right to make way for the Source string.<br/>The length of Target string is now the sum of the length of the two strings.<br/>To insert into the start of Target, set Index to 1 or less.<br/>To append to the end of Target, set Index after the last character of Target.</sub> | <sub>**Source**: string; <br/> **var Target**: string; <br/> **Index**: Integer;</sub> | <sub></sub> |
 | 7000+ | <a id="KMPoint">KMPoint</a><sub><br/>Returns point record with specified coordinates</sub> | <sub>**X, Y**: Integer;</sub> | <sub>TKMPoint</sub> |
+| 15000 | <a id="Ln">Ln</a><sub><br/>Returns the natural logarithm of X</sub> | <sub>**X**: Extended;</sub> | <sub>Extended</sub> |
+| 15000 | <a id="Log10">Log10</a><sub><br/>Returns log of X for a base of 10</sub> | <sub>**X**: Extended;</sub> | <sub>Extended</sub> |
+| 15000 | <a id="Log2">Log2</a><sub><br/>Returns log of X for a base of 2</sub> | <sub>**X**: Extended;</sub> | <sub>Extended</sub> |
+| 15000 | <a id="LogN">LogN</a><sub><br/>Returns log of X for a specified base</sub> | <sub>**Base**: Extended; <br/> **X**: Extended;</sub> | <sub>Extended</sub> |
 | 11750 | <a id="LowerCase">LowerCase</a><sub><br/>Changes upper case characters in a string Str to lower case</sub> | <sub>**Str**: string;</sub> | <sub>String</sub> |
 | 7000+ | <a id="MaxI">MaxI</a><sub><br/>Returns max number of two specified</sub> | <sub>**A, B**: Integer;</sub> | <sub>Integer</sub> |
 | 7000+ | <a id="MaxInArrayI">MaxInArrayI</a><sub><br/>Returns max number of array elements</sub> | <sub>**aArray**: array of Integer;</sub> | <sub>Integer</sub> |

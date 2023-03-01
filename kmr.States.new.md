@@ -100,6 +100,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseGetAllUnitsIn">HouseGetAllUnitsIn</a>
 * <a href="#HouseHasOccupant">HouseHasOccupant</a>
 * <a href="#HouseHasWorker">HouseHasWorker</a>
+* <a href="#HouseIsClosedForWorker">HouseIsClosedForWorker</a>
 * <a href="#HouseIsComplete">HouseIsComplete</a>
 * <a href="#HouseOwner">HouseOwner</a>
 * <a href="#HousePosition">HousePosition</a>
@@ -336,6 +337,7 @@ Dynamic scripts usefull info:
 | 12982 | <a id="HouseGetAllUnitsIn">HouseGetAllUnitsIn</a><sub><br/>Returns an array with IDs for all the units in the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TIntegerArray // Array of unit IDs</sub> |
 | 5057 | <a id="HouseHasOccupant">HouseHasOccupant</a><br/>&#x274C;`Deprecated`<br/><sub>*Method could be removed in the future game versions, use <a href="#HouseHasWorker">HouseHasWorker</a> instead*</sub><sub><br/>Returns True if the specified house currently has a worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean // Has worker</sub> |
 | 13050 | <a id="HouseHasWorker">HouseHasWorker</a><sub><br/>Returns True if the specified house currently has a worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean // Has worker</sub> |
+| 15000 | <a id="HouseIsClosedForWorker">HouseIsClosedForWorker</a><sub><br/>Returns True if the specified house is closed for worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5345 | <a id="HouseIsComplete">HouseIsComplete</a><sub><br/>Returns True if the specified house is fully built</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5057 | <a id="HouseOwner">HouseOwner</a><sub><br/>Returns the owner of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // Player ID</sub> |
 | 7000+ | <a id="HousePosition">HousePosition</a><sub><br/>Returns the Entrance Point of the specified house or (-1;-1) point if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMPoint // TKMPoint</sub> |

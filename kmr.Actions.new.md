@@ -130,6 +130,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseSchoolQueueAdd">HouseSchoolQueueAdd</a>
 * <a href="#HouseSchoolQueueAddEx">HouseSchoolQueueAddEx</a>
 * <a href="#HouseSchoolQueueRemove">HouseSchoolQueueRemove</a>
+* <a href="#HouseSetClosedForWorker">HouseSetClosedForWorker</a>
 * <a href="#HouseTakeWaresFrom">HouseTakeWaresFrom</a>
 * <a href="#HouseTakeWaresFromEx">HouseTakeWaresFromEx</a>
 * <a href="#HouseTownHallEquip">HouseTownHallEquip</a>
@@ -324,6 +325,7 @@ Dynamic scripts usefull info:
 | 5174 | <a id="HouseSchoolQueueAdd">HouseSchoolQueueAdd</a><sub><br/>Adds the specified unit to the specified school's queue.<br/>Returns the number of units successfully added to the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: Integer; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
 | 14000 | <a id="HouseSchoolQueueAddEx">HouseSchoolQueueAddEx</a><sub><br/>Adds the specified unit to the specified school's queue.<br/>Returns the number of units successfully added to the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
 | 5174 | <a id="HouseSchoolQueueRemove">HouseSchoolQueueRemove</a><sub><br/>Removes the unit from the specified slot of the school queue.<br/>Slot 0 is the unit currently training, slots 1..5 are the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer;</sub> | <sub></sub> |
+| 15000 | <a id="HouseSetClosedForWorker">HouseSetClosedForWorker</a><sub><br/>Sets whether the specified house would be closed for worker</sub> | <sub>**aHouseID**: Integer; <br/> **aClosedForWorker**: Boolean;</sub> | <sub></sub> |
 | 6015 | <a id="HouseTakeWaresFrom">HouseTakeWaresFrom</a><sub><br/>Remove wares from the specified house.<br/>If a serf was on the way to pick up the ware, the serf will abandon his task</sub> | <sub>**aHouseID**: Integer; <br/> **aType**: Integer; <br/> **aCount**: Integer;</sub> | <sub></sub> |
 | 14000 | <a id="HouseTakeWaresFromEx">HouseTakeWaresFromEx</a><sub><br/>Remove wares from the specified house.<br/>If a serf was on the way to pick up the ware, the serf will abandon his task</sub> | <sub>**aHouseID**: Integer; <br/> **aType**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub></sub> |
 | 7000+ | <a id="HouseTownHallEquip">HouseTownHallEquip</a><sub><br/>Equips the specified unit from the specified TownHall.<br/>Returns the number of units successfully equipped.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: Integer; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
