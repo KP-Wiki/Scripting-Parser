@@ -74,6 +74,7 @@ Dynamic scripts usefull info:
 * <a href="#GiveAnimalEx">GiveAnimalEx</a>
 * <a href="#GiveField">GiveField</a>
 * <a href="#GiveFieldAged">GiveFieldAged</a>
+* <a href="#GiveFish">GiveFish</a>
 * <a href="#GiveGroup">GiveGroup</a>
 * <a href="#GiveGroupEx">GiveGroupEx</a>
 * <a href="#GiveHouse">GiveHouse</a>
@@ -129,6 +130,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseSchoolQueueAdd">HouseSchoolQueueAdd</a>
 * <a href="#HouseSchoolQueueAddEx">HouseSchoolQueueAddEx</a>
 * <a href="#HouseSchoolQueueRemove">HouseSchoolQueueRemove</a>
+* <a href="#HouseSetClosedForWorker">HouseSetClosedForWorker</a>
 * <a href="#HouseTakeWaresFrom">HouseTakeWaresFrom</a>
 * <a href="#HouseTakeWaresFromEx">HouseTakeWaresFromEx</a>
 * <a href="#HouseTownHallEquip">HouseTownHallEquip</a>
@@ -214,6 +216,7 @@ Dynamic scripts usefull info:
 * <a href="#UnitDismiss">UnitDismiss</a>
 * <a href="#UnitDismissableSet">UnitDismissableSet</a>
 * <a href="#UnitDismissCancel">UnitDismissCancel</a>
+* <a href="#UnitFishCountSet">UnitFishCountSet</a>
 * <a href="#UnitHPChange">UnitHPChange</a>
 * <a href="#UnitHPSetInvulnerable">UnitHPSetInvulnerable</a>
 * <a href="#UnitHungerSet">UnitHungerSet</a>
@@ -266,6 +269,7 @@ Dynamic scripts usefull info:
 | 14000 | <a id="GiveAnimalEx">GiveAnimalEx</a><sub><br/>Adds an animal to the game and returns the unit ID or -1 if the animal was not able to be added</sub> | <sub>**aType**: TKMUnitType; <br/> **X, Y**: Integer;</sub> | <sub>Integer</sub> |
 | 6311 | <a id="GiveField">GiveField</a><sub><br/>Adds finished field and returns True if field was successfully added</sub> | <sub>**aHand**: Integer; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
 | 7000+ | <a id="GiveFieldAged">GiveFieldAged</a><sub><br/>Sets field age if tile is corn field, or adds finished field and sets its age if tile is empty, and returns True if this was successfully done</sub> | <sub>**aHand**: Integer; <br/> **X, Y**: Integer; <br/> **aStage**: Byte; // _0..6, sets the field growth stage. 0 = empty field; 6 = corn has been cut_ <br/> **aRandomAge**: Boolean; // _sets FieldAge to random, according to specified stage. Makes fields more realistic_</sub> | <sub>Boolean</sub> |
+| 15000 | <a id="GiveFish">GiveFish</a><sub><br/>Adds fish to a specified position with aCount fish available to catch<br/>aCount should be in range of 1 to 255<br/>Returns the unit ID or -1 if the fish was not able to be added</sub> | <sub>**X, Y**: Integer; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
 | 5057 | <a id="GiveGroup">GiveGroup</a><sub><br/>Give player group of warriors and return the group ID or -1 if the group was not able to be added</sub> | <sub>**aHand**: Integer; <br/> **aType**: Integer; <br/> **X, Y**: Integer; <br/> **aDir**: Integer; <br/> **aCount**: Integer; <br/> **aColumns**: Integer; // _Units per row_</sub> | <sub>Integer</sub> |
 | 14000 | <a id="GiveGroupEx">GiveGroupEx</a><sub><br/>Give player group of warriors and return the group ID or -1 if the group was not able to be added</sub> | <sub>**aHand**: Integer; <br/> **aType**: TKMUnitType; <br/> **X, Y**: Integer; <br/> **aDir**: TKMDirection; <br/> **aCount**: Integer; <br/> **aColumns**: Integer; // _Units per row_</sub> | <sub>Integer</sub> |
 | 5097 | <a id="GiveHouse">GiveHouse</a><sub><br/>Give player a built house and returns the house ID or -1 if the house was not able to be added</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: Integer; <br/> **X, Y**: Integer;</sub> | <sub>Integer</sub> |
@@ -321,6 +325,7 @@ Dynamic scripts usefull info:
 | 5174 | <a id="HouseSchoolQueueAdd">HouseSchoolQueueAdd</a><sub><br/>Adds the specified unit to the specified school's queue.<br/>Returns the number of units successfully added to the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: Integer; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
 | 14000 | <a id="HouseSchoolQueueAddEx">HouseSchoolQueueAddEx</a><sub><br/>Adds the specified unit to the specified school's queue.<br/>Returns the number of units successfully added to the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
 | 5174 | <a id="HouseSchoolQueueRemove">HouseSchoolQueueRemove</a><sub><br/>Removes the unit from the specified slot of the school queue.<br/>Slot 0 is the unit currently training, slots 1..5 are the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer;</sub> | <sub></sub> |
+| 15000 | <a id="HouseSetClosedForWorker">HouseSetClosedForWorker</a><sub><br/>Sets whether the specified house would be closed for worker</sub> | <sub>**aHouseID**: Integer; <br/> **aClosedForWorker**: Boolean;</sub> | <sub></sub> |
 | 6015 | <a id="HouseTakeWaresFrom">HouseTakeWaresFrom</a><sub><br/>Remove wares from the specified house.<br/>If a serf was on the way to pick up the ware, the serf will abandon his task</sub> | <sub>**aHouseID**: Integer; <br/> **aType**: Integer; <br/> **aCount**: Integer;</sub> | <sub></sub> |
 | 14000 | <a id="HouseTakeWaresFromEx">HouseTakeWaresFromEx</a><sub><br/>Remove wares from the specified house.<br/>If a serf was on the way to pick up the ware, the serf will abandon his task</sub> | <sub>**aHouseID**: Integer; <br/> **aType**: TKMWareType; <br/> **aCount**: Integer;</sub> | <sub></sub> |
 | 7000+ | <a id="HouseTownHallEquip">HouseTownHallEquip</a><sub><br/>Equips the specified unit from the specified TownHall.<br/>Returns the number of units successfully equipped.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: Integer; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
@@ -406,6 +411,7 @@ Dynamic scripts usefull info:
 | 7000+ | <a id="UnitDismiss">UnitDismiss</a><sub><br/>Dismiss the specified unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub></sub> |
 | 7000+ | <a id="UnitDismissableSet">UnitDismissableSet</a><sub><br/>Makes the specified unit 'dismiss' command available</sub> | <sub>**aUnitID**: Integer; <br/> **aDismissable**: Boolean;</sub> | <sub></sub> |
 | 7000+ | <a id="UnitDismissCancel">UnitDismissCancel</a><sub><br/>Cancel dismiss task for the specified unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub></sub> |
+| 15000 | <a id="UnitFishCountSet">UnitFishCountSet</a><sub><br/>Set fish count to be available to catch for a fish unit of specified aUnitID<br/>aCount should be in range of 0 to 255. If aCount set to 0 fish unit will be instantly killed</sub> | <sub>**aUnitID**: Integer; <br/> **aCount**: Integer;</sub> | <sub></sub> |
 | 7000+ | <a id="UnitHPChange">UnitHPChange</a><sub><br/>Heals/Wounds specified unit for aHP HP</sub> | <sub>**aUnitID**: Integer; <br/> **aHP**: Integer;</sub> | <sub></sub> |
 | 7000+ | <a id="UnitHPSetInvulnerable">UnitHPSetInvulnerable</a><sub><br/>Makes the unit invulnerable. Such unit can not be killed or die from hunger.</sub> | <sub>**aUnitID**: Integer; <br/> **aInvulnerable**: Boolean;</sub> | <sub></sub> |
 | 5057 | <a id="UnitHungerSet">UnitHungerSet</a><sub><br/>Sets the hunger level of the specified unit in ticks until death</sub> | <sub>**aUnitID**: Integer; <br/> **aHungerLevel**: Integer; // _Hunger level (ticks until death)_</sub> | <sub></sub> |

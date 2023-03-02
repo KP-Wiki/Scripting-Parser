@@ -100,6 +100,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseGetAllUnitsIn">HouseGetAllUnitsIn</a>
 * <a href="#HouseHasOccupant">HouseHasOccupant</a>
 * <a href="#HouseHasWorker">HouseHasWorker</a>
+* <a href="#HouseIsClosedForWorker">HouseIsClosedForWorker</a>
 * <a href="#HouseIsComplete">HouseIsComplete</a>
 * <a href="#HouseOwner">HouseOwner</a>
 * <a href="#HousePosition">HousePosition</a>
@@ -239,6 +240,7 @@ Dynamic scripts usefull info:
 * <a href="#UnitDirection">UnitDirection</a>
 * <a href="#UnitDirectionEx">UnitDirectionEx</a>
 * <a href="#UnitDismissable">UnitDismissable</a>
+* <a href="#UnitFishCount">UnitFishCount</a>
 * <a href="#UnitHome">UnitHome</a>
 * <a href="#UnitHPCurrent">UnitHPCurrent</a>
 * <a href="#UnitHPInvulnerable">UnitHPInvulnerable</a>
@@ -335,6 +337,7 @@ Dynamic scripts usefull info:
 | 12982 | <a id="HouseGetAllUnitsIn">HouseGetAllUnitsIn</a><sub><br/>Returns an array with IDs for all the units in the specified house</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TIntegerArray // Array of unit IDs</sub> |
 | 5057 | <a id="HouseHasOccupant">HouseHasOccupant</a><br/>&#x274C;`Deprecated`<br/><sub>*Method could be removed in the future game versions, use <a href="#HouseHasWorker">HouseHasWorker</a> instead*</sub><sub><br/>Returns True if the specified house currently has a worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean // Has worker</sub> |
 | 13050 | <a id="HouseHasWorker">HouseHasWorker</a><sub><br/>Returns True if the specified house currently has a worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean // Has worker</sub> |
+| 15000 | <a id="HouseIsClosedForWorker">HouseIsClosedForWorker</a><sub><br/>Returns True if the specified house is closed for worker</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5345 | <a id="HouseIsComplete">HouseIsComplete</a><sub><br/>Returns True if the specified house is fully built</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5057 | <a id="HouseOwner">HouseOwner</a><sub><br/>Returns the owner of the specified house or -1 if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // Player ID</sub> |
 | 7000+ | <a id="HousePosition">HousePosition</a><sub><br/>Returns the Entrance Point of the specified house or (-1;-1) point if House ID invalid</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMPoint // TKMPoint</sub> |
@@ -474,6 +477,7 @@ Dynamic scripts usefull info:
 | 5165 | <a id="UnitDirection">UnitDirection</a><sub><br/>Returns the direction the specified unit is facing</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer // Direction (0..7)</sub> |
 | 13900 | <a id="UnitDirectionEx">UnitDirectionEx</a><sub><br/>Returns the direction the specified unit is facing</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMDirection // Direction (dirNA, dirN, dirNE, dirE, dirSE, dirS, dirSW, dirW, dirNW)</sub> |
 | 7000+ | <a id="UnitDismissable">UnitDismissable</a><sub><br/>Returns the 'Dismissable' status of specified unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean // is unit dismissable</sub> |
+| 15000 | <a id="UnitFishCount">UnitFishCount</a><sub><br/>Returns number of available fish to catch on the specified fish unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | 5997 | <a id="UnitHome">UnitHome</a><sub><br/>Returns the ID of the house which is the home of the specified unit (house where he works) or -1 if the unit does not have a home</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer // House ID</sub> |
 | 7000+ | <a id="UnitHPCurrent">UnitHPCurrent</a><sub><br/>Returns current hitpoints for specified unit or -1 if Unit ID invalid</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer // HitPoints</sub> |
 | 7000+ | <a id="UnitHPInvulnerable">UnitHPInvulnerable</a><sub><br/>See if unit is invulnerable</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean // True or False</sub> |
