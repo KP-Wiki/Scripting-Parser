@@ -224,7 +224,7 @@ end;
 
 procedure TKMScriptingParser.GenerateXML;
 begin
-  //todo: GenerateXML for ScriptingEditor
+  //todo -cThink: GenerateXML for ScriptingEditor
 end;
 
 
