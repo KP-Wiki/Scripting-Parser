@@ -6,20 +6,22 @@ uses
   KM_ParserTypes;
 
 type
-  // There are these base types:
+  // There are these base types we want to share in the Wiki:
   TKMTypeType = (ttEnum, ttRecord, ttArray, ttSetOfType, ttSetOfEnum);
 
   TKMSortType = (stByAlphabet, stByDependancy);
 
+  // Single type element (
   TKMScriptTypeElement = class
   private
-    fName: string;
-    fDesc: string;
+    fName: string; // Name of the element
+    fDesc: string; // Description of the element
   public
     constructor Create(const aName, aDesc: string);
     function ExportWikiBody: string;
   end;
 
+  // Collection of elements (e.g. enum)
   TKMScriptTypeElements = class
   private
     fList: TList<TKMScriptTypeElement>;
@@ -109,12 +111,11 @@ end;
 
 procedure TKMScriptTypeElements.ParseFromStringList(aType: TKMTypeType; aStrings: TStringList);
 var
-  I: Integer;
+  I, K: Integer;
   comment: string;
   colonPos, commentPos: Integer;
   declaration: string;
   elements: TStringDynArray;
-  K: Integer;
 begin
   case aType of
     ttEnum:     begin
