@@ -37,6 +37,7 @@ Version column description:
 * <a href="#HousePositionX">HousePositionX</a>
 * <a href="#HousePositionY">HousePositionY</a>
 * <a href="#HouseRepair">HouseRepair</a>
+* <a href="#HouseSheepyardHasPasture">HouseSheepyardHasPasture</a>
 * <a href="#HouseTrainQueuePeek">HouseTrainQueuePeek</a>
 * <a href="#HouseType">HouseType</a>
 * <a href="#HouseWareBlock">HouseWareBlock</a>
@@ -56,6 +57,7 @@ Version column description:
 * <a href="#PlayerGetAllHouses">PlayerGetAllHouses</a>
 * <a href="#PlayerGetAllRoads">PlayerGetAllRoads</a>
 * <a href="#PlayerGetAllUnits">PlayerGetAllUnits</a>
+* <a href="#PlayerGetHouses">PlayerGetHouses</a>
 * <a href="#PlayerHouseBlocked">PlayerHouseBlocked</a>
 * <a href="#PlayerHouseCanBuild">PlayerHouseCanBuild</a>
 * <a href="#PlayerHouseGranted">PlayerHouseGranted</a>
@@ -106,20 +108,21 @@ Version column description:
 | - | <a id="GroupMemberCount">GroupMemberCount</a><sub><br/>Returns how many member there are in this group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupOwner">GroupOwner</a><sub><br/>Returns to which Hand this group belongs</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseAt">HouseAt</a><sub><br/>Get the house at coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
-| - | <a id="HouseDamage">HouseDamage</a><sub><br/>Check house damage</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
+| - | <a id="HouseDamage">HouseDamage</a><sub><br/>Check house damage<br/>-1 if house does not exist</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
 | -7015 | <a id="HouseDeliveryBlocked">HouseDeliveryBlocked</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseWareBlock">HouseWareBlock</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean</sub> |
 | - | <a id="HouseDestroyed">HouseDestroyed</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | -6102 | <a id="HouseHasOccupant">HouseHasOccupant</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseHasWorker">HouseHasWorker</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub></sub> |
 | 6102 | <a id="HouseHasWorker">HouseHasWorker</a><sub><br/>Check if the house has a worker assigned to it</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="HouseIsComplete">HouseIsComplete</a><sub><br/>Check if house is complete</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="HouseOwner">HouseOwner</a><sub><br/>See to which player the house belongs</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="HousePositionX">HousePositionX</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="HousePositionY">HousePositionY</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
+| - | <a id="HousePositionX">HousePositionX</a><sub><br/>-1 if house does not exist</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
+| - | <a id="HousePositionY">HousePositionY</a><sub><br/>-1 if house does not exist</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseRepair">HouseRepair</a><sub><br/>Check if house repair is enabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| 13134 | <a id="HouseSheepyardHasPasture">HouseSheepyardHasPasture</a><sub><br/>Check if the sheepyard has a pasture built (fenced area by the back door)</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 4820 | <a id="HouseTrainQueuePeek">HouseTrainQueuePeek</a><sub><br/>Get the unit type in the houses training queue (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer;</sub> | <sub>TKMUnitType</sub> |
 | - | <a id="HouseType">HouseType</a><sub><br/>Get the house type</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMHouseType</sub> |
 | 7021 | <a id="HouseWareBlock">HouseWareBlock</a><sub><br/>Lookup spacious house ware delivery policy. Works only for spacious houses (Camp, Fort, Store, Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer // 0 - allow, 1 - block, 2 - evacuate</sub> |
-| - | <a id="HouseWareInside">HouseWareInside</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
+| - | <a id="HouseWareInside">HouseWareInside</a><sub><br/>-1 if house does not exist or ware can not be in that house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | 10399 | <a id="HouseWaresBlock">HouseWaresBlock</a><sub><br/>Lookup common ware delivery policy. Works only for common houses</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer // 0 - allow, 1 - block</sub> |
 | - | <a id="HouseWeaponsOrdered">HouseWeaponsOrdered</a><sub><br/>Get the amount of weapons ordered in the house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseWoodcutterChopOnly">HouseWoodcutterChopOnly</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
@@ -135,6 +138,7 @@ Version column description:
 | - | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Return all players houses that are not destroyed</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | - | <a id="PlayerGetAllRoads">PlayerGetAllRoads</a><sub><br/>Get list of all players roads</sub> | <sub>**aPlayer**: Integer; // _player to whom roads must belong. 0..N-1_</sub> | <sub>TKMPointArray</sub> |
 | - | <a id="PlayerGetAllUnits">PlayerGetAllUnits</a><sub><br/>Return all players units that are not dead and not in training</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
+| 12942 | <a id="PlayerGetHouses">PlayerGetHouses</a><sub><br/>Return all players houses of certain type that are not destroyed</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; // _house type to return. htAny for all houses_ <br/> **aOnlyCompleted**: Boolean; // _return only completed houses_</sub> | <sub>TKMIntegerArray</sub> |
 | 10697 | <a id="PlayerHouseBlocked">PlayerHouseBlocked</a><sub><br/>Check if Player has the house type explicitly blocked from being built</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerHouseCanBuild">PlayerHouseCanBuild</a><sub><br/>Check if Player can build certain house type</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
 | 10697 | <a id="PlayerHouseGranted">PlayerHouseGranted</a><sub><br/>Check if Player has the house explicitly granted (allowed to be built<br/>If house is both granted and blocked - it will be blocked</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Boolean</sub> |
@@ -144,7 +148,7 @@ Version column description:
 | - | <a id="PlayerWareDistribution">PlayerWareDistribution</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Byte</sub> |
 | - | <a id="StatArmyCount">StatArmyCount</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="StatCitizenCount">StatCitizenCount</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="StatHouseTypeCount">StatHouseTypeCount</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer</sub> |
+| - | <a id="StatHouseTypeCount">StatHouseTypeCount</a><sub><br/>Return number of completed houses of specified type</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer</sub> |
 | - | <a id="StatPlayerCount">StatPlayerCount</a><sub><br/>See how many enabled players there are in the mission (chosen to be played by anyone on mission start)</sub> | <sub></sub> | <sub>Integer</sub> |
 | - | <a id="StatUnitCount">StatUnitCount</a><sub><br/>See how many units player has alive</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="StatUnitKilledCount">StatUnitKilledCount</a><sub><br/>See how many units player has killed</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub>Integer</sub> |
@@ -165,6 +169,6 @@ Version column description:
 | 6692 | <a id="UnitHungerLow">UnitHungerLow</a><sub><br/>Return fullness level of a unit when it becomes hungry, in seconds</sub> | <sub></sub> | <sub>Integer</sub> |
 | 6692 | <a id="UnitHungerMax">UnitHungerMax</a><sub><br/>Return maximum fullness level of a unit, in seconds</sub> | <sub></sub> | <sub>Integer</sub> |
 | - | <a id="UnitOwner">UnitOwner</a><sub><br/>See unit owner hand</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="UnitPositionX">UnitPositionX</a><sub><br/>Get rounded unit position X</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="UnitPositionY">UnitPositionY</a><sub><br/>Get rounded unit position Y</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
+| - | <a id="UnitPositionX">UnitPositionX</a><sub><br/>Get rounded unit position X<br/>-1 if unit does not exist</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
+| - | <a id="UnitPositionY">UnitPositionY</a><sub><br/>Get rounded unit position Y<br/>-1 if unit does not exist</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitType">UnitType</a><sub><br/>See unit type</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMUnitType</sub> |

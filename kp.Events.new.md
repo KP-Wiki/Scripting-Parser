@@ -27,6 +27,7 @@ Version column description:
 * <a href="#OnPlayerDefeated">OnPlayerDefeated</a>
 * <a href="#OnPlayerVictory">OnPlayerVictory</a>
 * <a href="#OnScriptButtonClick">OnScriptButtonClick</a>
+* <a href="#OnScriptMarkerClick">OnScriptMarkerClick</a>
 * <a href="#OnTerrainTrigger">OnTerrainTrigger</a>
 * <a href="#OnTick">OnTick</a>
 * <a href="#OnUnitBeforeDied">OnUnitBeforeDied</a>
@@ -53,6 +54,7 @@ Version column description:
 | - | <a id="OnPlayerDefeated">OnPlayerDefeated</a><sub><br/>Happens when player gets defeated</sub> | <sub>**aPlayer**: Integer;</sub> |
 | - | <a id="OnPlayerVictory">OnPlayerVictory</a><sub><br/>Event is fired right before victory gets registered.<br/>It's a good time to set the mission highscore or passing campaign data</sub> | <sub>**aPlayer**: Integer;</sub> |
 | 7996 | <a id="OnScriptButtonClick">OnScriptButtonClick</a><sub><br/>Occurs when player clicks on a button in the message.<br/>Note that click events may come in late and/or repeated.</sub> | <sub>**aPlayer**: Integer; // _Player who clicked the button_ <br/> **aTag**: Integer; // _Tag of the button_</sub> |
+| 12950 | <a id="OnScriptMarkerClick">OnScriptMarkerClick</a><sub><br/>Occurs when player clicks on an interaction marker<br/>Note that click events may come in late and/or repeated.</sub> | <sub>**aPlayer**: Integer; // _Player who clicked the marker_ <br/> **aMarkerId**: Integer;</sub> |
 | 5102 | <a id="OnTerrainTrigger">OnTerrainTrigger</a><sub><br/>Happens when a unit enters terrain trigger area (or gets spawned in to it, or exits a house)</sub> | <sub>**aTriggerId**: Integer; <br/> **aUnit**: Integer; <br/> **aX, aY**: Word;</sub> |
 | - | <a id="OnTick">OnTick</a><sub><br/>Happens right after OnMissionStart<br/>First tick is '1'</sub> | <sub>**aTick**: Integer;</sub> |
 | 10626 | <a id="OnUnitBeforeDied">OnUnitBeforeDied</a><sub><br/>Unit will cease to exist in a moment. The process is irreversible<br/>Most of the unit properties can still be accessed</sub> | <sub>**aUnit**: Integer; <br/> **aKillerOwner**: Integer;</sub> |
