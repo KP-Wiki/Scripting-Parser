@@ -16,7 +16,7 @@ type
     fParsingGame: TKMParsingGame;
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fTypes: TKMScriptTypes;
-    procedure CopyForReference(aFilename: string; aArea: TKMParsingArea);
+    procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
     procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
     procedure ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
@@ -66,7 +66,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.CopyForReference(aFilename: string; aArea: TKMParsingArea);
+procedure TKMScriptingParser.CopyForReference(const aFilename: string; aArea: TKMParsingArea);
 var
   tgtPath: string;
 begin
