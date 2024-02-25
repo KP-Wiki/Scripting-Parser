@@ -201,6 +201,8 @@ procedure TKMScriptingParser.GenerateCode(aParsingGame: TKMParsingGame; aArea: T
 begin
   fParsingGame := aParsingGame;
 
+  //todo: Verify that functions/procedures pose under the same name in LogMissionWarning
+
   if aArea in [paActions..paUtils] then
     ExportMethodsToCode(aArea, aSourceFile, aCodeFile, aCodeFile2)
   else
