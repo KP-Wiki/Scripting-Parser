@@ -17,7 +17,7 @@ type
     property Modifier: string read fModifier;
     property VarType: string read fVarType;
     function ExportWikiBody: string;
-    function ExportCodeCheck: string;
+    function ExportCodeSignature: string;
   end;
 
   // List of parameters of a method
@@ -36,7 +36,7 @@ type
     property Count: Integer read GetCount;
     property Parameters[aIndex: Integer]: TKMScriptParameter read GetParameter; default;
     function ExportWikiBody: string;
-    function ExportCodeCheck: string;
+    function ExportCodeSignature: string;
     procedure AdjoinPairs;
     procedure DowngradeTypes;
 
@@ -61,7 +61,7 @@ begin
 end;
 
 
-function TKMScriptParameter.ExportCodeCheck: string;
+function TKMScriptParameter.ExportCodeSignature: string;
 begin
   Result := IfThen(fModifier <> '', fModifier + ' ') + fName + ': ' + fVarType;
 end;
@@ -116,7 +116,8 @@ begin
 end;
 
 
-function TKMScriptParameters.ExportCodeCheck: string;
+// Method signature for the "RegisterMethodCheck(c, '...');" in PS engine
+function TKMScriptParameters.ExportCodeSignature: string;
 const
   ROUGH_LINE_LIMIT = 60;
 var
@@ -128,8 +129,8 @@ begin
   line := 0;
   for I := 0 to fList.Count - 1 do
   begin
-    Result := Result + IfThen(I = 0, '(') + fList[I].ExportCodeCheck + IfThen(I <> fList.Count - 1, '; ', ')');
-    Inc(line, Length(fList[I].ExportCodeCheck));
+    Result := Result + IfThen(I = 0, '(') + fList[I].ExportCodeSignature + IfThen(I <> fList.Count - 1, '; ', ')');
+    Inc(line, Length(fList[I].ExportCodeSignature));
 
     if (I <> fList.Count - 1) and (line > ROUGH_LINE_LIMIT) then
     begin

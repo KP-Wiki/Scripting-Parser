@@ -27,7 +27,7 @@ type
     procedure LoadFromStringList(aSource: TStringList; aArea: TKMParsingArea);
     function ExportWikiBody(aNeedReturn: Boolean): string;
     function ExportWikiLink: string;
-    function ExportCodeCheck: string;
+    function ExportCodeSignature: string;
     function ExportCodeCheckEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
     function ExportCodeReg: string;
     function ExportCodeRegEvent(aGame: TKMParsingGame): string;
@@ -264,10 +264,11 @@ begin
 end;
 
 
-function TKMMethodInfo.ExportCodeCheck: string;
+// Method signature for the "RegisterMethodCheck(c, '...');" in PS engine
+function TKMMethodInfo.ExportCodeSignature: string;
 begin
   Result := IfThen(fResultType = '', 'procedure', 'function ') + ' ' + fName +
-    fParameters.ExportCodeCheck +
+    fParameters.ExportCodeSignature +
     IfThen(fResultType <> '', ': ' + fResultType);
 end;
 
@@ -501,7 +502,7 @@ begin
           paUtils:    begin
                         // We can write more compact code with AdjoinPairs
                         fList[I].fParameters.AdjoinPairs;
-                        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeCheck + #39');');
+                        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
                       end;
           paEvents:   // Can not use AdjoinPairs here. All vars must be separate
                       sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeCheckEvent(aGame, I = fList.Count-1));
