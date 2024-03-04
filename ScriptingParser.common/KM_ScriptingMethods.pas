@@ -465,8 +465,8 @@ end;
 procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame; var aCountCheck, aCountReg: Integer);
 const
   AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
-    ('TKMScriptActions', '', 'TKMScriptStates', 'TKMScriptUtils', ''),
-    ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptUtils', '')
+    ('TKMScriptActions',    '', 'TKMScriptStates',    'TKMScriptUtils',    ''), // KMR
+    ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptingUtils', '')  // KP
   );
 var
   sl: TStringList;
