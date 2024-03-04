@@ -28,9 +28,9 @@ type
     function ExportWikiBody(aNeedReturn: Boolean): string;
     function ExportWikiLink: string;
     function ExportCodeSignature: string;
-    function ExportCodeCheckEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
-    function ExportCodeReg: string;
-    function ExportCodeRegEvent(aGame: TKMParsingGame): string;
+    function ExportCodeSignatureEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
+    function ExportCodeNameRegistration: string;
+    function ExportCodeNameRegistrationEvent(aGame: TKMParsingGame): string;
   end;
 
 
@@ -273,7 +273,7 @@ begin
 end;
 
 
-function TKMMethodInfo.ExportCodeCheckEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
+function TKMMethodInfo.ExportCodeSignatureEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
 const
   CNT: array [TKMParsingGame] of Byte = (4, 5);
   TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %s, %s, %s, %s); Dir: (%s, %s, %s, %s))%s // %s';
@@ -312,13 +312,13 @@ begin
 end;
 
 
-function TKMMethodInfo.ExportCodeReg: string;
+function TKMMethodInfo.ExportCodeNameRegistration: string;
 begin
   Result := fName + ', '#39 + fName + #39;
 end;
 
 
-function TKMMethodInfo.ExportCodeRegEvent(aGame: TKMParsingGame): string;
+function TKMMethodInfo.ExportCodeNameRegistrationEvent(aGame: TKMParsingGame): string;
 begin
   case aGame of
     pgKaMRemake:        Result := 'evt' + Copy(fName, 3, Length(fName));
@@ -505,7 +505,7 @@ begin
                         sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
                       end;
           paEvents:   // Can not use AdjoinPairs here. All vars must be separate
-                      sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeCheckEvent(aGame, I = fList.Count-1));
+                      sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeSignatureEvent(aGame, I = fList.Count-1));
         end;
 
         Inc(aCountCheck);
@@ -526,8 +526,8 @@ begin
         case fArea of
           paActions,
           paStates,
-          paUtils:    sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeReg + ');');
-          paEvents:   sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeRegEvent(aGame) + IfThen(I <> fList.Count-1, ','));
+          paUtils:    sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
+          paEvents:   sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(aGame) + IfThen(I <> fList.Count-1, ','));
         end;
 
         Inc(aCountReg);
