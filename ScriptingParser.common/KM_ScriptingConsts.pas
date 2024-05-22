@@ -30,7 +30,7 @@ const
   VAR_MODIFIERS: array [0..1] of string = ('out', 'var');
 
   // PascalScript types of event variable types
-  VAR_TYPES_FOR_EVENTS: array [0..15] of TKMEventTypesInfo = (
+  VAR_TYPES_FOR_EVENTS: array [0..16] of TKMEventTypesInfo = (
     (TypeName: 'Byte';          PSBaseType: 'btS32'),
     (TypeName: 'ShortInt';      PSBaseType: 'btS32'),
     (TypeName: 'SmallInt';      PSBaseType: 'btS32'),
@@ -45,6 +45,7 @@ const
     (TypeName: 'TKMUnitType';   PSBaseType: 'btEnum'),
     (TypeName: 'TKMWareType';   PSBaseType: 'btEnum'),
     // KP
+    (TypeName: 'AnsiString';          PSBaseType: 'btString'),
     (TypeName: 'TKMHouseFace';        PSBaseType: 'btEnum'),
     (TypeName: 'TKMObjectiveStatus';  PSBaseType: 'btEnum'),
     (TypeName: 'TKMObjectiveType';    PSBaseType: 'btEnum'),
