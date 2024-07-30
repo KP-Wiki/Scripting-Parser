@@ -7,7 +7,12 @@ uses
 
 type
   TKMMethodType = (mtFunc, mtProc);
-  TKMMethodStatus = (msOk, msDeprecated, msRemoved);
+  TKMMethodStatus = (
+    msOk,
+    msDeprecated, // Method is slated for removal
+    msRemoved,    // Method was removed (usually in favor of some other)
+    msChanged     // Method has changed (arguments order, etc.)
+  );
 
   // Single method info
   TKMMethodInfo = class
@@ -60,6 +65,11 @@ uses
   KM_ScriptingConsts, KM_StringUtils;
 
 
+const
+  UNICODE_RED_CROSS = '&#x274C;';
+  UNICODE_EXCLAMATION = '&#x26A0;';
+
+
 { TKMMethodInfo }
 constructor TKMMethodInfo.Create;
 begin
@@ -105,6 +115,9 @@ begin
         strStatus := Trim(RightStrAfter(srcLine, ':'));
         if StartsStr('Deprecated', strStatus) then
           fStatus := msDeprecated
+        else
+        if StartsStr('Changed', strStatus) then
+          fStatus := msChanged
         else
         if StartsStr('Removed', strStatus) then
           fStatus := msRemoved;
@@ -221,7 +234,6 @@ end;
 
 function TKMMethodInfo.ExportWikiBody(aNeedReturn: Boolean): string;
 const
-  UNICODE_RED_CROSS = '&#x274C;';
   TEMPLATE = '| %s | <a id="%s">%s</a>%s<sub>%s</sub> | <sub>%s</sub> |';
   TEMPLATE_RET = ' <sub>%s%s</sub> |';
 var
@@ -251,6 +263,10 @@ begin
                         deprStr := deprStr + ', ' + fReplacement;
 
                     deprStr := deprStr + '*</sub>';
+                  end;
+    msChanged:    begin
+                    deprStr := '<br/>' + UNICODE_EXCLAMATION + '`Changed`<br/>' +
+                               '<sub>*Method was changed*</sub>';
                   end;
   else
     deprStr := '';
@@ -322,9 +338,10 @@ end;
 
 function TKMMethodInfo.ExportWikiLink: string;
 const
-  TEMPLATE = '* <a href="#%s">%s</a>';
+  STATUS_ICON: array [TKMMethodStatus] of string = ('',  UNICODE_RED_CROSS + ' ', UNICODE_RED_CROSS + ' ', UNICODE_EXCLAMATION + ' ');
+  TEMPLATE = '* <a href="#%s">%s%s</a>';
 begin
-  Result := Format(TEMPLATE, [fName, fName]);
+  Result := Format(TEMPLATE, [fName, STATUS_ICON[fStatus], fName]);
 end;
 
 
@@ -342,6 +359,10 @@ begin
       begin
         // Case-sensitive compare, since we use CamelCase and it looks nicer that way
         Result := CompareText(A.fName, B.fName);
+
+        // Changed methods have same names, but need to be sorted from old to new
+        if Result = 0 then
+          Result := Ord(B.fStatus) - Ord(A.fStatus);
       end));
 end;
 
@@ -372,7 +393,7 @@ begin
     // Assemble method sections 1 by 1
       {
       //* Version: 1234
-      //* Status: -/Deprecated/Removed [optional]
+      //* Status: -/Deprecated/Removed/Changed [optional]
       //* Replacement: Link to the replacement method [optional]
       //* Large description of the method [optional]
       //* aX: Small optional description of parameter
@@ -488,7 +509,7 @@ begin
       // Insert in reverse so we could skip "removed" methods
       for I := fList.Count - 1 downto 0 do
       begin
-        if fList[I].fStatus <> msRemoved then
+        if fList[I].fStatus in [msOk, msDeprecated] then
         case fArea of
           paActions,
           paStates,
@@ -515,7 +536,7 @@ begin
       // Insert in reverse so we could skip "removed" methods
       for I := fList.Count - 1 downto 0 do
       begin
-        if fList[I].fStatus <> msRemoved then
+        if fList[I].fStatus in [msOk, msDeprecated] then
         case fArea of
           paActions,
           paStates,

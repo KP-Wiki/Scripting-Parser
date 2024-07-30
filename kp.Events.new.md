@@ -23,6 +23,7 @@ Version column description:
 * <a href="#OnHouseDamaged">OnHouseDamaged</a>
 * <a href="#OnHouseDestroyed">OnHouseDestroyed</a>
 * <a href="#OnHousePlanPlaced">OnHousePlanPlaced</a>
+* <a href="#OnMapObjectClick">OnMapObjectClick</a>
 * <a href="#OnMissionStart">OnMissionStart</a>
 * <a href="#OnPlayerDefeated">OnPlayerDefeated</a>
 * <a href="#OnPlayerVictory">OnPlayerVictory</a>
@@ -34,6 +35,7 @@ Version column description:
 * <a href="#OnUnitDied">OnUnitDied</a>
 * <a href="#OnUnitGiven">OnUnitGiven</a>
 * <a href="#OnUnitOwnerChanged">OnUnitOwnerChanged</a>
+* <a href="#OnUnitOwnerChanging">OnUnitOwnerChanging</a>
 * <a href="#OnUnitTrained">OnUnitTrained</a>
 * <a href="#OnUnitWagonEnteredHouse">OnUnitWagonEnteredHouse</a>
 * <a href="#OnUnitWoundedByHouse">OnUnitWoundedByHouse</a>
@@ -50,6 +52,7 @@ Version column description:
 | 7820 | <a id="OnHouseDamaged">OnHouseDamaged</a><sub><br/>A house got damaged</sub> | <sub>**aHouse**: Integer; <br/> **aAttacker**: Integer; // _UID of the attacked, can be a house, a unit or noone (e.g. if damage was applied from script)_</sub> |
 | - | <a id="OnHouseDestroyed">OnHouseDestroyed</a><sub><br/>Occurs right before house gets destroyed</sub> | <sub>**aHouse**: Integer; <br/> **aDestroyerIndex**: Integer;</sub> |
 | - | <a id="OnHousePlanPlaced">OnHousePlanPlaced</a><sub><br/>HouseFace added in r10532</sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Word; <br/> **aType**: TKMHouseType; <br/> **aFace**: TKMHouseFace; // _house facing direction_</sub> |
+| 14230 | <a id="OnMapObjectClick">OnMapObjectClick</a><sub></sub> | <sub>**aPlayer**: Integer; // _player who clicked the object_ <br/> **aX, aY**: Word; <br/> **aCoord**: Byte; <br/> **aEngName**: AnsiString; // _object name as it was when it was clicked (note, due to multiplayer lag it could have been different than right now)_</sub> |
 | - | <a id="OnMissionStart">OnMissionStart</a><sub><br/>Happens right before OnTick(1)</sub> | <sub></sub> |
 | - | <a id="OnPlayerDefeated">OnPlayerDefeated</a><sub><br/>Happens when player gets defeated</sub> | <sub>**aPlayer**: Integer;</sub> |
 | - | <a id="OnPlayerVictory">OnPlayerVictory</a><sub><br/>Event is fired right before victory gets registered.<br/>It's a good time to set the mission highscore or passing campaign data</sub> | <sub>**aPlayer**: Integer;</sub> |
@@ -60,7 +63,8 @@ Version column description:
 | 10626 | <a id="OnUnitBeforeDied">OnUnitBeforeDied</a><sub><br/>Unit will cease to exist in a moment. The process is irreversible<br/>Most of the unit properties can still be accessed</sub> | <sub>**aUnit**: Integer; <br/> **aKillerOwner**: Integer;</sub> |
 | - | <a id="OnUnitDied">OnUnitDied</a><sub><br/>Unit has died. The process is irreversible<br/>Most of unit properties can no longer be accessed</sub> | <sub>**aUnit**: Integer; <br/> **aKillerOwner**: Integer;</sub> |
 | 7023 | <a id="OnUnitGiven">OnUnitGiven</a><sub></sub> | <sub>**aUnit**: Integer;</sub> |
-| 10630 | <a id="OnUnitOwnerChanged">OnUnitOwnerChanged</a><sub><br/>Occurs after a unit changes owner.<br/>When a unit changes its owner it actually get silently killed and a new unit gets spawned for a new owner in its place.</sub> | <sub>**aOldUnit**: Integer; // _UID of the unit that was killed (should not be used for any states or actions)._ <br/> **aNewUnit**: Integer; // _UID of the new unit that was spawned (-1 if it failed)_</sub> |
+| 10630 | <a id="OnUnitOwnerChanged">OnUnitOwnerChanged</a><sub><br/>Occurs after a unit changes owner.<br/>When a unit changes its owner it actually get silently killed and a new unit gets spawned for a new owner in its place.</sub> | <sub>**aOldUnit**: Integer; // _UID of the unit that was killed (since it is already dead, it can't be used in any States or Actions)._ <br/> **aNewUnit**: Integer; // _UID of the new unit that was spawned (-1 if it failed)_</sub> |
+| 14474 | <a id="OnUnitOwnerChanging">OnUnitOwnerChanging</a><sub><br/>Occurs right before unit changes owner.<br/>When a unit changes its owner it actually get silently killed and a new unit gets spawned for a new owner in its place.</sub> | <sub>**aUnit**: Integer; // _UID of the unit that will be silently killed (since it is doomed, it must not be used in any Actions)._ <br/> **aNewOwner**: Integer; // _Player who will get the new identical unit_</sub> |
 | - | <a id="OnUnitTrained">OnUnitTrained</a><sub></sub> | <sub>**aUnit**: Integer;</sub> |
 | 12050 | <a id="OnUnitWagonEnteredHouse">OnUnitWagonEnteredHouse</a><sub><br/>Occurs when wagon has successfully entered a house. Right before wares get transferred and the wagon is gone</sub> | <sub>**aUnit**: Integer; <br/> **aHouse**: Integer;</sub> |
 | 4349 | <a id="OnUnitWoundedByHouse">OnUnitWoundedByHouse</a><sub><br/>A unit was attacked by an enemy house (surely a Tower)</sub> | <sub>**aUnit**: Integer; <br/> **aAttackerHouse**: Integer;</sub> |
