@@ -98,7 +98,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseDestroyed">HouseDestroyed</a>
 * <a href="#HouseFlagPoint">HouseFlagPoint</a>
 * <a href="#HouseGetAllUnitsIn">HouseGetAllUnitsIn</a>
-* <a href="#HouseHasOccupant">HouseHasOccupant</a>
+* <a href="#HouseHasOccupant">&#x274C; HouseHasOccupant</a>
 * <a href="#HouseHasWorker">HouseHasWorker</a>
 * <a href="#HouseIsClosedForWorker">HouseIsClosedForWorker</a>
 * <a href="#HouseIsComplete">HouseIsComplete</a>
@@ -117,7 +117,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseTypeMaxHealthEx">HouseTypeMaxHealthEx</a>
 * <a href="#HouseTypeName">HouseTypeName</a>
 * <a href="#HouseTypeNameEx">HouseTypeNameEx</a>
-* <a href="#HouseTypeToOccupantType">HouseTypeToOccupantType</a>
+* <a href="#HouseTypeToOccupantType">&#x274C; HouseTypeToOccupantType</a>
 * <a href="#HouseTypeToWorkerType">HouseTypeToWorkerType</a>
 * <a href="#HouseUnlocked">HouseUnlocked</a>
 * <a href="#HouseWareAmount">HouseWareAmount</a>
