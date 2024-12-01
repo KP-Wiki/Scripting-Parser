@@ -319,7 +319,7 @@ Dynamic scripts usefull info:
 | 5057 | <a id="GroupMemberCount">GroupMemberCount</a><sub><br/>Returns the total number of members of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // Member count</sub> |
 | 7000+ | <a id="GroupOrder">GroupOrder</a><sub><br/>Returns current order of the specified group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>TKMGroupOrder // TKMGroupOrder</sub> |
 | 5057 | <a id="GroupOwner">GroupOwner</a><sub><br/>Returns the owner of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // Player ID</sub> |
-| 5932 | <a id="GroupType">GroupType</a><sub><br/>Returns the type of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // Group type</sub> |
+| 5932 | <a id="GroupType">GroupType</a><sub><br/>Returns the type of the specified group or -1 if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // Group type, values are 0 - melee, 1 - antiHorse, 2 - ranged, 3 - mounted</sub> |
 | 13900 | <a id="GroupTypeEx">GroupTypeEx</a><sub><br/>Returns the type of the specified group or gtNone if Group ID invalid</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>TKMGroupType // Group type</sub> |
 | 10940 | <a id="HouseAllowAllyToSelect">HouseAllowAllyToSelect</a><sub><br/>Return if specified house is allowed to be selected and viewed by his allies</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5057 | <a id="HouseAt">HouseAt</a><sub><br/>Returns the ID of the house at the specified location or -1 if no house exists there</sub> | <sub>**aX, aY**: Integer;</sub> | <sub>Integer // House ID</sub> |
