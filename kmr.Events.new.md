@@ -63,7 +63,9 @@ Dynamic scripts usefull info:
 * <a href="#OnHouseAfterDestroyedEx">OnHouseAfterDestroyedEx</a>
 * <a href="#OnHouseBuilt">OnHouseBuilt</a>
 * <a href="#OnHouseDamaged">OnHouseDamaged</a>
+* <a href="#OnHouseDeliveryModeChanged">OnHouseDeliveryModeChanged</a>
 * <a href="#OnHouseDestroyed">OnHouseDestroyed</a>
+* <a href="#OnHouseFlagPointChanged">OnHouseFlagPointChanged</a>
 * <a href="#OnHousePlanDigged">OnHousePlanDigged</a>
 * <a href="#OnHousePlanPlaced">OnHousePlanPlaced</a>
 * <a href="#OnHousePlanPlacedEx">OnHousePlanPlacedEx</a>
@@ -91,12 +93,14 @@ Dynamic scripts usefull info:
 * <a href="#OnUnitAfterDiedEx">OnUnitAfterDiedEx</a>
 * <a href="#OnUnitAttacked">OnUnitAttacked</a>
 * <a href="#OnUnitDied">OnUnitDied</a>
+* <a href="#OnUnitDismissed">OnUnitDismissed</a>
 * <a href="#OnUnitTrained">OnUnitTrained</a>
 * <a href="#OnUnitWounded">OnUnitWounded</a>
 * <a href="#OnWareProduced">OnWareProduced</a>
 * <a href="#OnWarriorEquipped">OnWarriorEquipped</a>
 * <a href="#OnWarriorWalked">OnWarriorWalked</a>
 * <a href="#OnWinefieldBuilt">OnWinefieldBuilt</a>
+* <a href="#OnWoodcuttersModeChanged">OnWoodcuttersModeChanged</a>
 <br />
 
 | Ver<br/>sion | Event description | Parameters<br/>and types |
@@ -109,13 +113,15 @@ Dynamic scripts usefull info:
 | 7000+ | <a id="OnGroupOrderAttackHouse">OnGroupOrderAttackHouse</a><sub><br/>Occurs when the group gets order to attack house</sub> | <sub>**aGroup**: Integer; // _attackers group ID_ <br/> **aHouse**: Integer; // _target house ID_</sub> |
 | 7000+ | <a id="OnGroupOrderAttackUnit">OnGroupOrderAttackUnit</a><sub><br/>Occurs when the group gets order to attack unit</sub> | <sub>**aGroup**: Integer; // _attackers group ID_ <br/> **aUnit**: Integer; // _target unit ID_</sub> |
 | 7000+ | <a id="OnGroupOrderLink">OnGroupOrderLink</a><sub><br/>Occurs when the group1 gets order to link to group2</sub> | <sub>**aGroup1**: Integer; // _link group ID_ <br/> **aGroup2**: Integer; // _link target group ID_</sub> |
-| 7000+ | <a id="OnGroupOrderMove">OnGroupOrderMove</a><sub><br/>Occurs when the group gets order to move to some point<br/>aX, aY: Point coordinates</sub> | <sub>**aGroup**: Integer; // _group ID_ <br/> **aX, aY**: Integer;</sub> |
+| 7000+ | <a id="OnGroupOrderMove">OnGroupOrderMove</a><sub><br/>Occurs when the group gets order to move to some point<br/>aX, aY: Point coordinates</sub> | <sub>**aGroup**: Integer; // _group ID_ <br/> **aX, aY**: Integer; <br/> **aDir**: TKMDirection;</sub> |
 | 7000+ | <a id="OnGroupOrderSplit">OnGroupOrderSplit</a><sub><br/>Occurs when the group gets order to split</sub> | <sub>**aGroup**: Integer; // _group ID_ <br/> **aNewGroup**: Integer; // _splitted group ID_</sub> |
 | 6114 | <a id="OnHouseAfterDestroyed">OnHouseAfterDestroyed</a><sub><br/>Occurs after a house is destroyed and has been completely removed from the game,<br/>meaning the area it previously occupied can be used.<br/>If you need more information about the house use the OnHouseDestroyed event.<br/>aHouseType as Integer from Lookup table</sub> | <sub>**aHouseType**: Integer; <br/> **aOwner**: Integer; <br/> **aX, aY**: Integer;</sub> |
 | 14000 | <a id="OnHouseAfterDestroyedEx">OnHouseAfterDestroyedEx</a><sub><br/>Occurs after a house is destroyed and has been completely removed from the game,<br/>meaning the area it previously occupied can be used.<br/>If you need more information about the house use the OnHouseDestroyed event.</sub> | <sub>**aHouseType**: TKMHouseType; // _as TKMHouseType_ <br/> **aOwner**: Integer; <br/> **aX, aY**: Integer;</sub> |
 | 5057 | <a id="OnHouseBuilt">OnHouseBuilt</a><sub><br/>Occurs when player has built a house.</sub> | <sub>**aHouse**: Integer;</sub> |
 | 5882 | <a id="OnHouseDamaged">OnHouseDamaged</a><sub><br/>Occurs when a house gets damaged (e.g. by the enemy soldier).<br/>Attacker is -1 the house was damaged some other way, such as from Actions.HouseAddDamage.</sub> | <sub>**aHouse**: Integer; <br/> **aAttacker**: Integer;</sub> |
+| 15250 | <a id="OnHouseDeliveryModeChanged">OnHouseDeliveryModeChanged</a><sub><br/>Occurs when a house delivery mode changed.</sub> | <sub>**aHouse**: Integer; <br/> **aOldMode**: TKMDeliveryMode; <br/> **aNewMode**: TKMDeliveryMode;</sub> |
 | 5407 | <a id="OnHouseDestroyed">OnHouseDestroyed</a><sub><br/>Occurs when a house is destroyed.<br/>If DestroyerIndex is -1 the house was destroyed some other way, such as from Actions.HouseDestroy.<br/>If DestroyerIndex is the same as the house owner (States.HouseOwner), the house was demolished by the player who owns it.<br/>Otherwise it was destroyed by an enemy.<br/>Called just before the house is destroyed so HouseID is usable only during this event, and the area occupied by the house is still unusable.</sub> | <sub>**aHouse**: Integer; <br/> **aDestroyerIndex**: Integer; // _Index of player who destroyed it_</sub> |
+| 15250 | <a id="OnHouseFlagPointChanged">OnHouseFlagPointChanged</a><sub><br/>aOldX, aOldY - Coordinates of the previous FlagPoint position<br/>aNewX, aNewY - Coordinates of the new FlagPoint position<br/>Occurs when a house flag point position is changed</sub> | <sub>**aHouse**: Integer; <br/> **aOldX**: Integer; <br/> **aOldY**: Integer; <br/> **aNewX**: Integer; <br/> **aNewY**: Integer;</sub> |
 | 7000+ | <a id="OnHousePlanDigged">OnHousePlanDigged</a><sub><br/>Occurs when house plan is digged.</sub> | <sub>**aHouse**: Integer;</sub> |
 | 5871 | <a id="OnHousePlanPlaced">OnHousePlanPlaced</a><sub><br/>Occurs when player has placed a house plan.</sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Integer; <br/> **aHouseType**: Integer; // _as Integer from Lookup table_</sub> |
 | 14000 | <a id="OnHousePlanPlacedEx">OnHousePlanPlacedEx</a><sub><br/>Occurs when player has placed a house plan.</sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Integer; <br/> **aHouseType**: TKMHouseType; // _as TKMHouseType_</sub> |
@@ -141,11 +147,13 @@ Dynamic scripts usefull info:
 | 5057 | <a id="OnTick">OnTick</a><sub><br/>Occurs every game logic update.</sub> | <sub></sub> |
 | 6114 | <a id="OnUnitAfterDied">OnUnitAfterDied</a><sub><br/>Occurs after a unit has died and has been completely removed from the game, meaning the tile it previously occupied can be used.<br/>If you need more information about the unit use the OnUnitDied event.<br/>Note: Because units have a death animation there is a delay of several ticks between OnUnitDied and OnUnitAfterDied.</sub> | <sub>**aUnitType**: Integer; // _as Integer from Lookup table_ <br/> **aOwner**: Integer; <br/> **aX, aY**: Integer;</sub> |
 | 14000 | <a id="OnUnitAfterDiedEx">OnUnitAfterDiedEx</a><sub><br/>Occurs after a unit has died and has been completely removed from the game, meaning the tile it previously occupied can be used.<br/>If you need more information about the unit use the OnUnitDied event.<br/>Note: Because units have a death animation there is a delay of several ticks between OnUnitDied and OnUnitAfterDied.</sub> | <sub>**aUnitType**: TKMUnitType; // _as TKMUnitType_ <br/> **aOwner**: Integer; <br/> **aX, aY**: Integer;</sub> |
-| 6587 | <a id="OnUnitAttacked">OnUnitAttacked</a><sub><br/>Happens when a unit is attacked (shot at by archers or hit in melee).<br/>Attacker is always a warrior (could be archer or melee).<br/>This event will occur very frequently during battles.</sub> | <sub>**aUnit**: Integer; <br/> **aAttacker**: Integer; // _Warrior who attacked the unit_</sub> |
+| 6587 | <a id="OnUnitAttacked">OnUnitAttacked</a><sub><br/>Happens when a unit is attacked (shot at by archers, hit in melee, or shot by a tower).<br/>Attacker can be a warrior, recruit in tower or unknown (-1).<br/>This event will occur very frequently during battles.</sub> | <sub>**aUnit**: Integer; <br/> **aAttacker**: Integer; // _Unit who attacked the unit_</sub> |
 | 5407 | <a id="OnUnitDied">OnUnitDied</a><sub><br/>Occurs when a unit dies. If KillerIndex is -1 the unit died from another cause such as hunger or Actions.UnitKill.<br/>Called just before the unit is killed so UnitID is usable only during this event,<br/>and the tile occupied by the unit is still taken.</sub> | <sub>**aUnit**: Integer; <br/> **aKillerOwner**: Integer; // _Index of player who killed it_</sub> |
+| 15250 | <a id="OnUnitDismissed">OnUnitDismissed</a><sub><br/>Occurs when a unit is dissmised.<br/>Called just before the unit is dissmised so UnitID is usable only during this event,<br/>and the tile occupied by the unit is still taken.</sub> | <sub>**aUnit**: Integer;</sub> |
 | 5057 | <a id="OnUnitTrained">OnUnitTrained</a><sub><br/>Occurs when player trains a unit.</sub> | <sub>**aUnit**: Integer;</sub> |
 | 5884 | <a id="OnUnitWounded">OnUnitWounded</a><sub><br/>Happens when unit is wounded.<br/>Attacker can be a warrior, recruit in tower or unknown (-1).</sub> | <sub>**aUnit**: Integer; <br/> **aAttacker**: Integer; // _Unit who attacked the unit_</sub> |
 | 14000 | <a id="OnWareProduced">OnWareProduced</a><sub><br/>Occurs when resource is produced for specified house.</sub> | <sub>**aHouse**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Integer;</sub> |
 | 5057 | <a id="OnWarriorEquipped">OnWarriorEquipped</a><sub><br/>Occurs when player equips a warrior.</sub> | <sub>**aUnit**: Integer; <br/> **aGroup**: Integer;</sub> |
 | 7000+ | <a id="OnWarriorWalked">OnWarriorWalked</a><sub><br/>Occurs when warrior walk</sub> | <sub>**aUnit**: Integer; <br/> **aToX**: Integer; <br/> **aToY**: Integer;</sub> |
 | 7000+ | <a id="OnWinefieldBuilt">OnWinefieldBuilt</a><sub><br/>Occurs when player built a winefield.</sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Integer;</sub> |
+| 15250 | <a id="OnWoodcuttersModeChanged">OnWoodcuttersModeChanged</a><sub><br/>Occurs when woodcutters mode changed.</sub> | <sub>**aHouse**: Integer; <br/> **aOldMode**: TKMWoodcutterMode; <br/> **aNewMode**: TKMWoodcutterMode;</sub> |

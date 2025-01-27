@@ -126,6 +126,7 @@ Dynamic scripts usefull info:
 * <a href="#HouseDeliveryMode">HouseDeliveryMode</a>
 * <a href="#HouseDestroy">HouseDestroy</a>
 * <a href="#HouseDisableUnoccupiedMessage">HouseDisableUnoccupiedMessage</a>
+* <a href="#HouseFlagPointSet">HouseFlagPointSet</a>
 * <a href="#HouseRepairEnable">HouseRepairEnable</a>
 * <a href="#HouseSchoolQueueAdd">HouseSchoolQueueAdd</a>
 * <a href="#HouseSchoolQueueAddEx">HouseSchoolQueueAddEx</a>
@@ -321,6 +322,7 @@ Dynamic scripts usefull info:
 | 13900 | <a id="HouseDeliveryMode">HouseDeliveryMode</a><sub><br/>Sets delivery mode for the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aDeliveryMode**: TKMDeliveryMode;</sub> | <sub></sub> |
 | 5263 | <a id="HouseDestroy">HouseDestroy</a><sub><br/>Destroys the specified house.<br/>Silent means the house will not leave rubble or play destroy sound</sub> | <sub>**aHouseID**: Integer; <br/> **aSilent**: Boolean;</sub> | <sub></sub> |
 | 5345 | <a id="HouseDisableUnoccupiedMessage">HouseDisableUnoccupiedMessage</a><sub><br/>Sets whether the specified house displays unoccupied messages to the player</sub> | <sub>**aHouseID**: Integer; <br/> **aDisabled**: Boolean;</sub> | <sub></sub> |
+| 15250 | <a id="HouseFlagPointSet">HouseFlagPointSet</a><sub><br/>Sets flag point for the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aPosition**: TKMPoint;</sub> | <sub></sub> |
 | 5057 | <a id="HouseRepairEnable">HouseRepairEnable</a><sub><br/>Enables house repair for the specified house</sub> | <sub>**aHouseID**: Integer; <br/> **aRepairEnabled**: Boolean;</sub> | <sub></sub> |
 | 5174 | <a id="HouseSchoolQueueAdd">HouseSchoolQueueAdd</a><sub><br/>Adds the specified unit to the specified school's queue.<br/>Returns the number of units successfully added to the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: Integer; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
 | 14000 | <a id="HouseSchoolQueueAddEx">HouseSchoolQueueAddEx</a><sub><br/>Adds the specified unit to the specified school's queue.<br/>Returns the number of units successfully added to the queue.</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aCount**: Integer;</sub> | <sub>Integer</sub> |
@@ -363,8 +365,8 @@ Dynamic scripts usefull info:
 | 14000 | <a id="OverlayTextSetWordWrap">OverlayTextSetWordWrap</a><sub><br/>Sets or unsets text overlay word wrap<br/>If the player index is -1 it will be set for all players.</sub> | <sub>**aHand**: ShortInt; <br/> **aWordWrap**: Boolean;</sub> | <sub></sub> |
 | 11000 | <a id="Peacetime">Peacetime</a><sub><br/>Sets game peacetime. Peacetime will be set to the value of aPeacetime div 600</sub> | <sub>**aPeacetime**: Cardinal; // _game time in ticks_</sub> | <sub></sub> |
 | 5057 | <a id="PlanAddField">PlanAddField</a><sub><br/>Adds a corn field plan.<br/>Returns True if the plan was successfully added or False if it failed (e.g. tile blocked)</sub> | <sub>**aHand**: Integer; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
-| 5057 | <a id="PlanAddHouse">PlanAddHouse</a><sub><br/>Adds a road plan.<br/>Returns True if the plan was successfully added or False if it failed (e.g. tile blocked)</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: Integer; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
-| 14000 | <a id="PlanAddHouseEx">PlanAddHouseEx</a><sub><br/>Adds a road plan.<br/>Returns True if the plan was successfully added or False if it failed (e.g. tile blocked)</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
+| 5057 | <a id="PlanAddHouse">PlanAddHouse</a><sub><br/>Adds a house plan.<br/>Returns True if the plan was successfully added or False if it failed (e.g. tile is blocked)</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: Integer; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
+| 14000 | <a id="PlanAddHouseEx">PlanAddHouseEx</a><sub><br/>Adds a house plan.<br/>Returns True if the plan was successfully added or False if it failed (e.g. tile is blocked)</sub> | <sub>**aHand**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
 | 5057 | <a id="PlanAddRoad">PlanAddRoad</a><sub><br/>Adds a road plan.<br/>Returns True if the plan was successfully added or False if it failed (e.g. tile blocked)</sub> | <sub>**aHand**: Integer; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
 | 5057 | <a id="PlanAddWinefield">PlanAddWinefield</a><sub><br/>Adds a wine field plan.<br/>Returns True if the plan was successfully added or False if it failed (e.g. tile blocked)</sub> | <sub>**aHand**: Integer; <br/> **X, Y**: Integer;</sub> | <sub>Boolean</sub> |
 | 6303 | <a id="PlanConnectRoad">PlanConnectRoad</a><sub><br/>Connects road plans between two points like AI builder and returns True if road plan was successfully added.<br/>If CompletedRoad = True, road will be added instead of plans</sub> | <sub>**aHand**: Integer; <br/> **X1**: Integer; // _Left coordinate_ <br/> **Y1**: Integer; // _Top coordinate_ <br/> **X2**: Integer; // _Right coordinate_ <br/> **Y2**: Integer; // _Bottom coordinate_ <br/> **aCompleted**: Boolean; // _Completed road_</sub> | <sub>Boolean</sub> |

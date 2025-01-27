@@ -291,8 +291,8 @@ end;
 
 function TKMMethodInfo.ExportCodeSignatureEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
 const
-  CNT: array [TKMParsingGame] of Byte = (4, 5);
-  TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %-6s, %-6s, %-6s, %-6s); Dir: (%s, %s, %s, %s))%s // %s';
+  CNT: array [TKMParsingGame] of Byte = (5, 5);
+  TEMPLATE_KMR = '(ParamCount: %d; Typ: (0, %-8s, %-8s, %-8s, %-8s, %-8s); Dir: (%s, %s, %s, %s, %s))%s // %s';
   TEMPLATE_KP = '(Name: ''%-32s''; ParamCount: %d; Typ: (0, %-6s, %-6s, %-6s, %-6s, %-6s); Dir: (%s, %s, %s, %s, %s))%s';
 var
   typ: array [0..5] of string;
@@ -314,7 +314,7 @@ begin
 
   case aGame of
     pgKaMRemake:        Result := Format(TEMPLATE_KMR,
-      [fParameters.Count, typ[0], typ[1], typ[2], typ[3], dir[0], dir[1], dir[2], dir[3], IfThen(not aLastLine, ','), fName]);
+      [fParameters.Count, typ[0], typ[1], typ[2], typ[3], typ[4], dir[0], dir[1], dir[2], dir[3], dir[4], IfThen(not aLastLine, ','), fName]);
     pgKnightsProvince:  Result := Format(TEMPLATE_KP,
       [fName, fParameters.Count, typ[0], typ[1], typ[2], typ[3], typ[4], dir[0], dir[1], dir[2], dir[3], dir[4], IfThen(not aLastLine, ',')]);
   end;
