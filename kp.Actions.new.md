@@ -16,6 +16,11 @@ Version column description:
 
 ***
 
+* <a href="#AlertAdd">AlertAdd</a>
+* <a href="#AlertColor">AlertColor</a>
+* <a href="#AlertDuration">AlertDuration</a>
+* <a href="#AlertRemove">AlertRemove</a>
+* <a href="#AlertUpdate">AlertUpdate</a>
 * <a href="#CampaignChapterSetup">CampaignChapterSetup</a>
 * <a href="#CampaignMissionResult">CampaignMissionResult</a>
 * <a href="#CampaignMissionSetup">CampaignMissionSetup</a>
@@ -64,6 +69,7 @@ Version column description:
 * <a href="#GroupOrderHalt">GroupOrderHalt</a>
 * <a href="#GroupOrderLink">GroupOrderLink</a>
 * <a href="#GroupOrderSplit">GroupOrderSplit</a>
+* <a href="#GroupOrderSplitCount">GroupOrderSplitCount</a>
 * <a href="#GroupOrderStorm">GroupOrderStorm</a>
 * <a href="#GroupOrderWalk">GroupOrderWalk</a>
 * <a href="#GroupOwnerChange">GroupOwnerChange</a>
@@ -72,8 +78,10 @@ Version column description:
 * <a href="#HouseAddRepair">HouseAddRepair</a>
 * <a href="#HouseAddWaresTo">&#x274C; HouseAddWaresTo</a>
 * <a href="#HouseAllow">&#x274C; HouseAllow</a>
+* <a href="#HouseDenMaxBeasts">HouseDenMaxBeasts</a>
 * <a href="#HouseDestroy">HouseDestroy</a>
 * <a href="#HouseOwnerChange">HouseOwnerChange</a>
+* <a href="#HouseOwnerChangeWithWares">HouseOwnerChangeWithWares</a>
 * <a href="#HouseRepairEnable">HouseRepairEnable</a>
 * <a href="#HouseTrainQueueAdd">HouseTrainQueueAdd</a>
 * <a href="#HouseTrainQueueRemove">HouseTrainQueueRemove</a>
@@ -160,10 +168,12 @@ Version column description:
 * <a href="#UnitHungerChange">UnitHungerChange</a>
 * <a href="#UnitHungerSet">UnitHungerSet</a>
 * <a href="#UnitKill">UnitKill</a>
+* <a href="#UnitMoraleOverride">UnitMoraleOverride</a>
 * <a href="#UnitNameSet">UnitNameSet</a>
 * <a href="#UnitOrderWalk">UnitOrderWalk</a>
 * <a href="#UnitOwnerChange">UnitOwnerChange</a>
-* <a href="#UnitSight">UnitSight</a>
+* <a href="#UnitSightSet">UnitSightSet</a>
+* <a href="#UnitSpeedSet">UnitSpeedSet</a>
 * <a href="#UnitUnlock">UnitUnlock</a>
 * <a href="#UnitWagonOrderEnterHouse">UnitWagonOrderEnterHouse</a>
 * <a href="#UnitWagonOrderHalt">UnitWagonOrderHalt</a>
@@ -176,6 +186,11 @@ Version column description:
 
 | Ver<br/>sion | Action description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
+| 15690 | <a id="AlertAdd">AlertAdd</a><sub><br/>Creates alert on the minimap<br/>aX, aY: floating-point coordinates of the centerpoint of the alert</sub> | <sub>**aPlayer**: Integer; // _Player who will see the alert_ <br/> **aX, aY**: Single; <br/> **aImage**: string; // _alert icon filename from the mission folder (needs to be .png)_ <br/> **aScale**: Single; // _alert icon scale (needs to be within 0.0 and 10.0)_ <br/> **aPulse**: Boolean; // _pulse alert brightness_</sub> | <sub>Integer // alert id to be used to update or delete the alert</sub> |
+| 15692 | <a id="AlertColor">AlertColor</a><sub><br/>Sets alert color and opacity</sub> | <sub>**aAlertId**: Integer; <br/> **aColor**: Integer; // _RGB color of the alert icon. Color gets multiplied with the image_ <br/> **aOpacity**: Single; // _opasity of the icon (0.0. .. 1.0). Opacity gets multiplied with the image alpha_</sub> | <sub></sub> |
+| 15692 | <a id="AlertDuration">AlertDuration</a><sub><br/>Sets alert duration in game ticks. Alert will be automatically removed afterwards</sub> | <sub>**aAlertId**: Integer; <br/> **aDuration**: Integer; // _duration in game ticks. Set to 0 or negative for indefinite duration_</sub> | <sub></sub> |
+| 15690 | <a id="AlertRemove">AlertRemove</a><sub><br/>Deletes alert from the minimap</sub> | <sub>**aAlertId**: Integer;</sub> | <sub></sub> |
+| 15690 | <a id="AlertUpdate">AlertUpdate</a><sub><br/>Updates alert on the minimap<br/>aX, aY: floating-point coordinates of the centerpoint of the alert</sub> | <sub>**aAlertId**: Integer; <br/> **aX, aY**: Single; <br/> **aImage**: string; // _alert icon filename from the mission folder (needs to be .png)_ <br/> **aScale**: Single; // _alert icon scale (needs to be within 0.0 and 10.0)_ <br/> **aPulse**: Boolean; // _pulse alert brightness_</sub> | <sub></sub> |
 | 8250 | <a id="CampaignChapterSetup">CampaignChapterSetup</a><sub><br/>Sets up campaign chapter info in campaign menu. Campaign-only action!</sub> | <sub>**aChapter**: Integer; // _chapter index to set up_ <br/> **aTitle**: string; // _text to display for the chapter title_ <br/> **aShortTitle**: string; // _text to display for the chapter short title_ <br/> **aBackgroundImg**: string; // _sprite to be used for the chapter background map (*.png)_</sub> | <sub></sub> |
 | 8794 | <a id="CampaignMissionResult">CampaignMissionResult</a><sub><br/>Sets up mission result in campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to set up_ <br/> **aResult**: string; // _text to display for the mission result_</sub> | <sub></sub> |
 | 8250 | <a id="CampaignMissionSetup">CampaignMissionSetup</a><sub><br/>Sets up all of the campaign mission info in campaign menu. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to set up_ <br/> **aUnlocked**: Boolean; // _Should it be available for selection and play_ <br/> **aWon**: Boolean; // _should it be marked as won_ <br/> **aFlagImgLocked**: string; // _sprite to be used for the locked state flag (*.png)_ <br/> **aFlagImgNormal**: string; // _sprite to be used for the normal state flag (*.png)_ <br/> **aFlagImgWon**: string; // _sprite to be used for the won state flag (*.png)_ <br/> **aFlagPosX**: Integer; // _flag X position on the campaign map_ <br/> **aFlagPosY**: Integer; // _flag Y position on the campaign map_ <br/> **aTitle**: string; // _text to display for the mission title_ <br/> **aBriefing**: string; // _text to display for the mission briefing_</sub> | <sub></sub> |
@@ -193,8 +208,8 @@ Version column description:
 | 8585 | <a id="CinematicSpeechBubble">CinematicSpeechBubble</a><sub><br/>Shows speech bubble at specified location and height over terrain</sub> | <sub>**aX, aY**: Single; <br/> **aHeight**: Single; <br/> **aScale**: Byte; <br/> **aText**: string; <br/> **aDurationSec**: Single;</sub> | <sub></sub> |
 | 12776 | <a id="CinematicSpeechBubbleUnit">CinematicSpeechBubbleUnit</a><sub><br/>Shows speech bubble for specified unit</sub> | <sub>**aUnitID**: Integer; <br/> **aScale**: Byte; <br/> **aText**: string; <br/> **aDurationSec**: Single; // _for how many game seconds to show this bubble_</sub> | <sub></sub> |
 | 8155 | <a id="CinematicSubtitle">CinematicSubtitle</a><sub><br/>Shows the subtitles</sub> | <sub>**aText**: string;</sub> | <sub></sub> |
-| 12776 | <a id="CinematicTalkingHead">CinematicTalkingHead</a><sub><br/>Shows an avatar with a message</sub> | <sub>**aImage**: string; // _image names (need to be .png)_ <br/> **aText**: string; // _message text_ <br/> **aSound**: string; // _sound to play_</sub> | <sub></sub> |
-| 12947 | <a id="CinematicTalkingHeadWithButtons">CinematicTalkingHeadWithButtons</a><sub><br/>Shows an avatar with a message</sub> | <sub>**aImage**: string; // _image names (need to be .png)_ <br/> **aText**: string; // _message text_ <br/> **aSound**: string; // _sound to play_ <br/> **aButtons**: array of string; <br/> **aTags**: array of Integer;</sub> | <sub></sub> |
+| 12776 | <a id="CinematicTalkingHead">CinematicTalkingHead</a><sub><br/>Shows an avatar with a message</sub> | <sub>**aImage**: string; // _image name (needs to be .png)_ <br/> **aText**: string; // _message text_ <br/> **aSound**: string; // _sound to play_</sub> | <sub></sub> |
+| 12947 | <a id="CinematicTalkingHeadWithButtons">CinematicTalkingHeadWithButtons</a><sub><br/>Shows an avatar with a message and buttons player can choose from. Note that button clicks may return a few ticks later</sub> | <sub>**aImage**: string; // _image name (needs to be .png)_ <br/> **aText**: string; // _message text_ <br/> **aSound**: string; // _sound to play_ <br/> **aButtons**: array of string; <br/> **aTags**: array of Integer; // _tags returned by the buttons pressed in OnScriptButtonClick_</sub> | <sub></sub> |
 | 8155 | <a id="CinematicText">CinematicText</a><sub><br/>Shows the text in the middle of the screen</sub> | <sub>**aText**: string; <br/> **aScale**: Byte; // _Text scale 1..16_</sub> | <sub></sub> |
 | 8155 | <a id="CinematicViewMoveTo">CinematicViewMoveTo</a><sub><br/>Moves the camera</sub> | <sub>**aX, aY**: Single; <br/> **aHeading**: Single; <br/> **aZoom**: Single; <br/> **aDurationSec**: Single; // _move duration in seconds_</sub> | <sub></sub> |
 | 8155 | <a id="CinematicViewMoveToEx">CinematicViewMoveToEx</a><sub><br/>Moves the camera with more control over the setup</sub> | <sub>**aX, aY**: Single; <br/> **aHeading**: Single; <br/> **aPitch**: Single; <br/> **aDist**: Single; <br/> **aFOV**: Single; <br/> **aDurationSec**: Single; // _move duration in seconds_</sub> | <sub></sub> |
@@ -223,7 +238,8 @@ Version column description:
 | - | <a id="GroupOrderFood">GroupOrderFood</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
 | - | <a id="GroupOrderHalt">GroupOrderHalt</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
 | - | <a id="GroupOrderLink">GroupOrderLink</a><sub><br/>Order the group to link to another group (if possible)</sub> | <sub>**aGroupID**: Integer; <br/> **aDestGroupID**: Integer;</sub> | <sub></sub> |
-| - | <a id="GroupOrderSplit">GroupOrderSplit</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // UID of the separated group</sub> |
+| - | <a id="GroupOrderSplit">GroupOrderSplit</a><sub><br/>Split group in half (or split different unit types apart)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer // UID of the separated group</sub> |
+| 15650 | <a id="GroupOrderSplitCount">GroupOrderSplitCount</a><sub><br/>Split N warriors from the group</sub> | <sub>**aGroupID**: Integer; <br/> **aCount**: Integer;</sub> | <sub>Integer // UID of the separated group</sub> |
 | - | <a id="GroupOrderStorm">GroupOrderStorm</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub></sub> |
 | - | <a id="GroupOrderWalk">GroupOrderWalk</a><sub></sub> | <sub>**aGroupID**: Integer; <br/> **aX, aY**: Word; <br/> **aDirection**: Word;</sub> | <sub></sub> |
 | 6982 | <a id="GroupOwnerChange">GroupOwnerChange</a><sub><br/>Change owner of the group. Technically it kills old units and creates new ones with the same basic properties<br/>(type, position, direction, hp, condition). All the advanced props and states do not get copied over.<br/>If old group was moving/fighting, it is not guaranteed that new group units will be placed on the same positions</sub> | <sub>**aGroupID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer // UID of new group</sub> |
@@ -232,8 +248,10 @@ Version column description:
 | - | <a id="HouseAddRepair">HouseAddRepair</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aRepair**: Word; // _number of hitpoints to give to the house_</sub> | <sub></sub> |
 | -7981 | <a id="HouseAddWaresTo">HouseAddWaresTo</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseWareAdd">HouseWareAdd</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aCount**: Word;</sub> | <sub></sub> |
 | -10696 | <a id="HouseAllow">HouseAllow</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerHouseBlock">PlayerHouseBlock</a> instead*</sub><sub><br/>Allow or block the house from being built</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType; <br/> **aAllowed**: Boolean;</sub> | <sub></sub> |
+| 15606 | <a id="HouseDenMaxBeasts">HouseDenMaxBeasts</a><sub><br/>When reducing the value, old beasts do not get killed off.</sub> | <sub>**aHouseID**: Integer; <br/> **aMaxBeasts**: Integer; // _how many beasts the house should keep spawned. Valid values are 0..9. Set -1 to reset to default (3)_</sub> | <sub></sub> |
 | - | <a id="HouseDestroy">HouseDestroy</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aSilent**: Boolean; // _Wherever to play the sound and leave rubble on terrain or not_</sub> | <sub></sub> |
-| 5194 | <a id="HouseOwnerChange">HouseOwnerChange</a><sub><br/>Change owner of the House. Technically it destroys old House and creates a new one with the same basic props<br/>(type, position, direction, hp, ..). All the advanced props and states do not get copied over.<br/>Wares do not get copied over yet.</sub> | <sub>**aHouseID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer // UID of new House</sub> |
+| 5194 | <a id="HouseOwnerChange">HouseOwnerChange</a><sub><br/>Change owner of the House. Technically it destroys old House and creates a new one with the same basic props<br/>(type, position, direction, hp, etc.). All the advanced props and states do not get copied over.</sub> | <sub>**aHouseID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer // UID of new House</sub> |
+| 15642 | <a id="HouseOwnerChangeWithWares">HouseOwnerChangeWithWares</a><sub><br/>Change owner of the House and copy over wares it had. Technically it destroys old House and creates a new one with the same basic props<br/>All the advanced props and states do not get copied over.</sub> | <sub>**aHouseID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer // UID of new House</sub> |
 | - | <a id="HouseRepairEnable">HouseRepairEnable</a><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aRepairEnabled**: Boolean;</sub> | <sub></sub> |
 | 4820 | <a id="HouseTrainQueueAdd">HouseTrainQueueAdd</a><sub><br/>Train units in the house (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aUnitType**: TKMUnitType; <br/> **aCount**: Integer;</sub> | <sub>Integer // number of units added to the queue</sub> |
 | 4820 | <a id="HouseTrainQueueRemove">HouseTrainQueueRemove</a><sub><br/>Try to remove units from training queue in the house (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aQueueIndex**: Integer; // _Should be in 0..5 range_</sub> | <sub></sub> |
@@ -320,10 +338,12 @@ Version column description:
 | 14498 | <a id="UnitHungerChange">UnitHungerChange</a><sub><br/>Changes unit hunger level.<br/>If unit changes owner, this setting will be carried over</sub> | <sub>**aUnitID**: Integer; // _ID of the unit_ <br/> **aHungerSec**: Integer; // _Hunger level change in seconds of unit life. Should be within 0 and 2700 (45min). Plus to add, Minus to reduce_</sub> | <sub></sub> |
 | 6692 | <a id="UnitHungerSet">UnitHungerSet</a><sub><br/>Set unit hunger level.<br/>If unit changes owner, this setting will be carried over</sub> | <sub>**aUnitID**: Integer; // _ID of the unit_ <br/> **aHungerSec**: Integer; // _Hunger level in seconds of unit life. Should be within 0 and 2700 (45min)_</sub> | <sub></sub> |
 | - | <a id="UnitKill">UnitKill</a><sub><br/>Kills a unit<br/>Actual death could still take up to a couple of ticks, until all internal interactions are resolved<br/>Units in training can not die until they are trained.</sub> | <sub>**aUnitID**: Integer; <br/> **aSilent**: Boolean; // _Makes unit die without exiting house, death animation and sound_</sub> | <sub></sub> |
+| 15303 | <a id="UnitMoraleOverride">UnitMoraleOverride</a><sub><br/>Override current unit morale</sub> | <sub>**aUnitID**: Integer; <br/> **aMorale**: Integer; // _New unit morale as a percentage between 0 and 100. Set to -1 to disable the override_</sub> | <sub> // UID of new unit</sub> |
 | 15063 | <a id="UnitNameSet">UnitNameSet</a><sub><br/>Set unit name to be diplayed in HUD</sub> | <sub>**aUnitID**: Integer; // _ID of the unit_ <br/> **aName**: string; // _Name of the unit. Pass empty string to reset to default_</sub> | <sub></sub> |
 | - | <a id="UnitOrderWalk">UnitOrderWalk</a><sub><br/>Order a unit to walk to location. Can not order to animals. Only idle units can be ordered to walk.</sub> | <sub>**aUnitID**: Integer; <br/> **X, Y**: Word;</sub> | <sub>Boolean // success or fail</sub> |
 | 5128 | <a id="UnitOwnerChange">UnitOwnerChange</a><sub><br/>Change owner of the unit. Technically it kills old unit and creates a new one with the same basic properties<br/>(type, position, direction, hp, condition, wares). All the advanced props and states do not get carried over.<br/>Warriors need to change owner via GroupOwnerChange (even single ones)</sub> | <sub>**aUnitID**: Integer; <br/> **aPlayer**: Integer;</sub> | <sub>Integer // UID of new unit</sub> |
-| 14501 | <a id="UnitSight">UnitSight</a><sub><br/>Change unit sight radius. Measured in whole tiles from the units position<br/>If unit changes owner, this setting will be carried over<br/>Valid values are 1 .. 32. Pass -1 to reset to default</sub> | <sub>**aUnitID**: Integer; <br/> **aSight**: Integer;</sub> | <sub></sub> |
+| 15347 | <a id="UnitSightSet">UnitSightSet</a><sub><br/>Change unit sight radius. Measured in whole tiles from the units position<br/>If unit changes owner, this setting will be carried over<br/>Valid values are 1 .. 32. Pass -1 to reset to default</sub> | <sub>**aUnitID**: Integer; <br/> **aSight**: Integer;</sub> | <sub></sub> |
+| 15338 | <a id="UnitSpeedSet">UnitSpeedSet</a><sub><br/>Change unit speed. Measured in number of steps it takes to cross 1 tile<br/>Higher value means slower movement speed<br/>If unit changes owner, this setting will be carried over<br/>Valid values are 4 .. 32. Pass -1 to reset to default</sub> | <sub>**aUnitID**: Integer; <br/> **aSpeed**: Integer;</sub> | <sub></sub> |
 | Alpha 11.2 | <a id="UnitUnlock">UnitUnlock</a><sub><br/>Allow the unit to be trained (if was blocked in a static script)</sub> | <sub>**aPlayer**: Integer; <br/> **aUnitType**: TKMUnitType;</sub> | <sub></sub> |
 | r10636 | <a id="UnitWagonOrderEnterHouse">UnitWagonOrderEnterHouse</a><sub><br/>Order wagon to enter a building</sub> | <sub>**aWagonID**: Integer; <br/> **aHouseID**: Integer;</sub> | <sub></sub> |
 | r10636 | <a id="UnitWagonOrderHalt">UnitWagonOrderHalt</a><sub><br/>Order wagon to stop movement</sub> | <sub>**aWagonID**: Integer;</sub> | <sub></sub> |

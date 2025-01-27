@@ -21,6 +21,7 @@ Version column description:
 * <a href="#GamePeaceTime">GamePeaceTime</a>
 * <a href="#GroupAt">GroupAt</a>
 * <a href="#GroupBannerDisplay">GroupBannerDisplay</a>
+* <a href="#GroupCanTakeOrders">GroupCanTakeOrders</a>
 * <a href="#GroupColumnCount">GroupColumnCount</a>
 * <a href="#GroupDead">GroupDead</a>
 * <a href="#GroupIsIdle">GroupIsIdle</a>
@@ -28,6 +29,7 @@ Version column description:
 * <a href="#GroupMemberCount">GroupMemberCount</a>
 * <a href="#GroupOwner">GroupOwner</a>
 * <a href="#GroupType">GroupType</a>
+* <a href="#GroupTypeName">GroupTypeName</a>
 * <a href="#HouseAt">HouseAt</a>
 * <a href="#HouseDamage">HouseDamage</a>
 * <a href="#HouseDeliveryBlocked">&#x274C; HouseDeliveryBlocked</a>
@@ -44,6 +46,7 @@ Version column description:
 * <a href="#HouseSheepyardHasPasture">HouseSheepyardHasPasture</a>
 * <a href="#HouseTrainQueuePeek">HouseTrainQueuePeek</a>
 * <a href="#HouseType">HouseType</a>
+* <a href="#HouseTypeName">HouseTypeName</a>
 * <a href="#HouseWareBlock">HouseWareBlock</a>
 * <a href="#HouseWareInside">HouseWareInside</a>
 * <a href="#HouseWareInType">HouseWareInType</a>
@@ -101,6 +104,8 @@ Version column description:
 * <a href="#UnitAt">UnitAt</a>
 * <a href="#UnitCarryCount">UnitCarryCount</a>
 * <a href="#UnitCarryType">UnitCarryType</a>
+* <a href="#UnitDamageMax">UnitDamageMax</a>
+* <a href="#UnitDamageMin">UnitDamageMin</a>
 * <a href="#UnitDead">UnitDead</a>
 * <a href="#UnitDirection">UnitDirection</a>
 * <a href="#UnitGroup">UnitGroup</a>
@@ -115,6 +120,8 @@ Version column description:
 * <a href="#UnitPositionY">UnitPositionY</a>
 * <a href="#UnitsAt">UnitsAt</a>
 * <a href="#UnitType">UnitType</a>
+* <a href="#UnitTypeName">UnitTypeName</a>
+* <a href="#WareTypeName">WareTypeName</a>
 <br />
 
 | Ver<br/>sion | State description | Parameters<br/>and types | Returns |
@@ -126,13 +133,15 @@ Version column description:
 | - | <a id="GamePeaceTime">GamePeaceTime</a><sub><br/>Get the peacetime duration (in game ticks)</sub> | <sub></sub> | <sub>Cardinal</sub> |
 | - | <a id="GroupAt">GroupAt</a><sub><br/>Return UID of a group at requested coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | 14898 | <a id="GroupBannerDisplay">GroupBannerDisplay</a><sub><br/>Returns state of the groups banner display. False if the group is already dead</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
-| - | <a id="GroupColumnCount">GroupColumnCount</a><sub></sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
+| 15640 | <a id="GroupCanTakeOrders">GroupCanTakeOrders</a><sub><br/>See if the group can take orders (i.e. not in a fight)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
+| - | <a id="GroupColumnCount">GroupColumnCount</a><sub><br/>Returns 0 if group does not exist</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupDead">GroupDead</a><sub><br/>See if the group is dead (all members are dead)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
-| 5632 | <a id="GroupIsIdle">GroupIsIdle</a><sub><br/>See if the group is idle (ready to take orders)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
+| 5632 | <a id="GroupIsIdle">GroupIsIdle</a><sub><br/>See if the group has no active orders</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="GroupMember">GroupMember</a><sub><br/>Get N-th group member</sub> | <sub>**aGroupID**: Integer; <br/> **aMemberIndex**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupMemberCount">GroupMemberCount</a><sub><br/>Returns how many member there are in this group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupOwner">GroupOwner</a><sub><br/>Returns to which Hand this group belongs</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | 14509 | <a id="GroupType">GroupType</a><sub><br/>Returns group type</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>TKMGroupType</sub> |
+| 15658 | <a id="GroupTypeName">GroupTypeName</a><sub><br/>Returns group type name as used in the game engine<br/>Intended to be used for debug purposes</sub> | <sub>**aGroupType**: TKMGroupType;</sub> | <sub>string</sub> |
 | - | <a id="HouseAt">HouseAt</a><sub><br/>Get the house at coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseDamage">HouseDamage</a><sub><br/>Check house damage<br/>-1 if house does not exist</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
 | -7015 | <a id="HouseDeliveryBlocked">HouseDeliveryBlocked</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseWareBlock">HouseWareBlock</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean</sub> |
@@ -149,6 +158,7 @@ Version column description:
 | 13134 | <a id="HouseSheepyardHasPasture">HouseSheepyardHasPasture</a><sub><br/>Check if the sheepyard has a pasture built (fenced area by the back door)</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 4820 | <a id="HouseTrainQueuePeek">HouseTrainQueuePeek</a><sub><br/>Get the unit type in the houses training queue (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer;</sub> | <sub>TKMUnitType</sub> |
 | - | <a id="HouseType">HouseType</a><sub><br/>Get the house type</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMHouseType</sub> |
+| 15658 | <a id="HouseTypeName">HouseTypeName</a><sub><br/>Returns house type name as used in the game engine<br/>Intended to be used for debug purposes</sub> | <sub>**aHouseType**: TKMHouseType;</sub> | <sub>string</sub> |
 | 7021 | <a id="HouseWareBlock">HouseWareBlock</a><sub><br/>Lookup spacious house ware delivery policy. Works only for spacious houses (Camp, Fort, Store, Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer // 0 - allow, 1 - block, 2 - evacuate</sub> |
 | - | <a id="HouseWareInside">HouseWareInside</a><sub><br/>See the total amount of wares (input and output) in a house<br/>-1 if house does not exist or ware can not be in that house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | 15065 | <a id="HouseWareInType">HouseWareInType</a><sub><br/>Get the ware type in the house input<br/>For spacious houses ware types are listed both for input and output<br/>Returns wtNone in case of an error</sub> | <sub>**aHouseType**: TKMHouseType; <br/> **aIndex**: Integer;</sub> | <sub>TKMWareType</sub> |
@@ -206,6 +216,8 @@ Version column description:
 | - | <a id="UnitAt">UnitAt</a><sub><br/>Return UID of the unit on requested coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitCarryCount">UnitCarryCount</a><sub><br/>See how many wares that unit (porter or wagon) is carrying</sub> | <sub>**aUnitID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitCarryType">UnitCarryType</a><sub><br/>See ware type that unit (porter or wagon) is carrying</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMWareType</sub> |
+| 15556 | <a id="UnitDamageMax">UnitDamageMax</a><sub><br/>Returns maximum damage of a unit. 0 if unit can not deal damage. -1 if there's no such unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
+| 15556 | <a id="UnitDamageMin">UnitDamageMin</a><sub><br/>Returns minimum damage of a unit. 0 if unit can not deal damage. -1 if there's no such unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitDead">UnitDead</a><sub><br/>Check if unit is dead</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="UnitDirection">UnitDirection</a><sub><br/>See unit facing direction (0 .. 7)<br/>-1 if direction is uninitialized</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | 4829 | <a id="UnitGroup">UnitGroup</a><sub><br/>Return UID of a group to which requested Unit belongs</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
@@ -220,3 +232,5 @@ Version column description:
 | - | <a id="UnitPositionY">UnitPositionY</a><sub><br/>Get rounded unit position Y<br/>-1 if unit does not exist</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | 12430 | <a id="UnitsAt">UnitsAt</a><sub><br/>Return UIDs of the units within requested coordinates<br/>For convenience, bounds can exceed map coordinates without generating an error</sub> | <sub>**aX1**: Integer; <br/> **aY1**: Integer; <br/> **aX2**: Integer; <br/> **aY2**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | - | <a id="UnitType">UnitType</a><sub><br/>See unit type</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMUnitType</sub> |
+| 15658 | <a id="UnitTypeName">UnitTypeName</a><sub><br/>Returns unit type name as used in the game engine<br/>Intended to be used for debug purposes</sub> | <sub>**aUnitType**: TKMUnitType;</sub> | <sub>string</sub> |
+| 15658 | <a id="WareTypeName">WareTypeName</a><sub><br/>Returns ware type name as used in the game engine<br/>Intended to be used for debug purposes</sub> | <sub>**aWareType**: TKMWareType;</sub> | <sub>string</sub> |

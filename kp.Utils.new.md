@@ -38,6 +38,7 @@ Version column description:
 * <a href="#DistanceS">DistanceS</a>
 * <a href="#EnsureRangeI">EnsureRangeI</a>
 * <a href="#EnsureRangeS">EnsureRangeS</a>
+* <a href="#FMod">FMod</a>
 * <a href="#Format">Format</a>
 * <a href="#HexToInt">HexToInt</a>
 * <a href="#IfThen">IfThen</a>
@@ -92,13 +93,14 @@ Version column description:
 | 15136 | <a id="ArrayHasElementS">ArrayHasElementS</a><sub><br/>Checks whether requested array has specified single number</sub> | <sub>**aArray**: array of Single; <br/> **aElement**: Single;</sub> | <sub>Boolean</sub> |
 | 15136 | <a id="ArraySumI">ArraySumI</a><sub><br/>Returns sum of the elements of requested array</sub> | <sub>**aArray**: array of Integer;</sub> | <sub>Integer</sub> |
 | 15136 | <a id="ArraySumS">ArraySumS</a><sub><br/>Returns sum of the elements of requested array</sub> | <sub>**aArray**: array of Single;</sub> | <sub>Single</sub> |
-| 14387 | <a id="ColorFromHSB">ColorFromHSB</a><sub><br/>Create RGB color from Hue, Saturation and Volume<br/>Hue goes from 0.0 to 1.0 (RoyG.Biv)<br/>Saturation goes from 0.0 to 1.0 (Grey to Colorful)<br/>Brightness goes from 0.0 to 1.0 (Black to Bright to White)<br/>Returns RGB color value</sub> | <sub>**H**: Single; <br/> **S**: Single; <br/> **B**: Single;</sub> | <sub>Integer</sub> |
+| 14387 | <a id="ColorFromHSB">ColorFromHSB</a><sub><br/>Create RGB color from Hue, Saturation and Brightness<br/>Hue goes from 0.0 to 1.0 (RoyG.Biv)<br/>Saturation goes from 0.0 to 1.0 (Grey to Colorful)<br/>Brightness goes from 0.0 to 1.0 (Black to Bright to White)<br/>Returns RGB color value</sub> | <sub>**H**: Single; <br/> **S**: Single; <br/> **B**: Single;</sub> | <sub>Integer</sub> |
 | 14387 | <a id="ColorFromHSV">ColorFromHSV</a><sub><br/>Create RGB color from Hue, Saturation and Volume<br/>Hue goes from 0.0 to 1.0 (RoyG.Biv)<br/>Saturation goes from 0.0 to 1.0 (Grey to Colorful)<br/>Volume goes from 0.0 to 1.0 (Black to Bright)<br/>Returns RGB color value</sub> | <sub>**H**: Single; <br/> **S**: Single; <br/> **V**: Single;</sub> | <sub>Integer</sub> |
 | 14387 | <a id="ColorFromRGB">ColorFromRGB</a><sub><br/>Create RGB color from Red, Green and Blue components<br/>All values need to be in the range 0.0 to 1.0<br/>Returns RGB color value</sub> | <sub>**R**: Single; <br/> **G**: Single; <br/> **B**: Single;</sub> | <sub>Integer</sub> |
 | 14363 | <a id="DistanceI">DistanceI</a><sub><br/>Returns the length of the vector. Sqrt(x * x + y * y)</sub> | <sub>**aX, aY**: Integer;</sub> | <sub>Single</sub> |
 | 14363 | <a id="DistanceS">DistanceS</a><sub><br/>Returns the length of the vector. Sqrt(x * x + y * y)</sub> | <sub>**aX, aY**: Single;</sub> | <sub>Single</sub> |
 | 5422 | <a id="EnsureRangeI">EnsureRangeI</a><sub><br/>Returns the closest to aValue integer that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Integer; <br/> **aMin, aMax**: Integer;</sub> | <sub>Integer</sub> |
 | 5422 | <a id="EnsureRangeS">EnsureRangeS</a><sub><br/>Returns the closest to aValue single number that is in interval [aMin..aMax]</sub> | <sub>**aValue**: Single; <br/> **aMin, aMax**: Single;</sub> | <sub>Single</sub> |
+| 15658 | <a id="FMod">FMod</a><sub><br/>Returns floating point remainder of aNumerator / aDenominator (like mod in integers) with the same sign as aNumerator.</sub> | <sub>**aNumerator**: Single; <br/> **aDenominator**: Single;</sub> | <sub>Single</sub> |
 | 5422 | <a id="Format">Format</a><sub><br/>Wrapper for pascal Format function<br/>Formats aFormat string with specified aArgs array of arguments</sub> | <sub>**aFormat**: string; <br/> **aArgs**: array of const;</sub> | <sub>string</sub> |
 | 5422 | <a id="HexToInt">HexToInt</a><sub><br/>Converts hex string into a number</sub> | <sub>**aHexString**: string; // _should be in form "1234AB", without $ or 0x prefix_</sub> | <sub>Integer</sub> |
 | 5422 | <a id="IfThen">IfThen</a><sub><br/>Checks condition aBool and returns aTrue/aFalse string depending on check result</sub> | <sub>**aBool**: Boolean; <br/> **aTrue**: string; <br/> **aFalse**: string;</sub> | <sub>string</sub> |
