@@ -1,8 +1,7 @@
 program ScriptingParser;
-
 uses
   Vcl.Forms,
-  Main in 'Main.pas' {Form1},
+  FormScriptingParser in 'FormScriptingParser.pas' {fmScriptingParser},
   KM_ParserTypes in 'KM_ParserTypes.pas',
   KM_ScriptingConsts in 'KM_ScriptingConsts.pas',
   KM_ScriptingMethods in 'KM_ScriptingMethods.pas',
@@ -13,9 +12,12 @@ uses
 
 {$R *.res}
 
+var
+  fmScriptingParser: TfmScriptingParser;
+
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfmScriptingParser, fmScriptingParser);
   Application.Run;
 end.

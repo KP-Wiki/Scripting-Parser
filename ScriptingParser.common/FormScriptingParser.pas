@@ -1,4 +1,4 @@
-unit Main;
+unit FormScriptingParser;
 interface
 uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils, Windows,
@@ -6,7 +6,7 @@ uses
   KM_ScriptingParser, KM_ParserTypes;
 
 type
-  TForm1 = class(TForm)
+  TfmScriptingParser = class(TForm)
     btnReyKMR: TButton;
     btnKromKMR: TButton;
     btnKromKP: TButton;
@@ -63,16 +63,13 @@ type
     procedure SaveSettings;
   end;
 
-var
-  Form1: TForm1;
-
 
 implementation
 {$R *.dfm}
 
 
-{ TForm1 }
-procedure TForm1.FormCreate(Sender: TObject);
+{ TfmScriptingParser }
+procedure TfmScriptingParser.FormCreate(Sender: TObject);
 begin
   fScriptingParser := TKMScriptingParser.Create(
     procedure (aMsg: string)
@@ -84,13 +81,13 @@ begin
 end;
 
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TfmScriptingParser.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fScriptingParser);
 end;
 
 
-procedure TForm1.LoadSettings;
+procedure TfmScriptingParser.LoadSettings;
 var
   ini: TINIFile;
 begin
@@ -129,7 +126,7 @@ begin
 end;
 
 
-procedure TForm1.btnGenerateCodeClick(Sender: TObject);
+procedure TfmScriptingParser.btnGenerateCodeClick(Sender: TObject);
 begin
   meLog.Clear;
   meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' code export:');
@@ -143,7 +140,7 @@ begin
 end;
 
 
-procedure TForm1.btnGenerateWikiClick(Sender: TObject);
+procedure TfmScriptingParser.btnGenerateWikiClick(Sender: TObject);
 begin
   meLog.Clear;
   meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' wiki export:');
@@ -157,7 +154,7 @@ begin
 end;
 
 
-procedure TForm1.btnGenerateXMLClick(Sender: TObject);
+procedure TfmScriptingParser.btnGenerateXMLClick(Sender: TObject);
 begin
   meLog.Clear;
 
@@ -165,7 +162,7 @@ begin
 end;
 
 
-procedure TForm1.btnReyKMRClick(Sender: TObject);
+procedure TfmScriptingParser.btnReyKMRClick(Sender: TObject);
 begin
   // Rey KaM
   fParsingGame := pgKaMRemake;
@@ -174,7 +171,7 @@ begin
 end;
 
 
-procedure TForm1.btnKromKMRClick(Sender: TObject);
+procedure TfmScriptingParser.btnKromKMRClick(Sender: TObject);
 begin
   // Krom KaM
   fParsingGame := pgKaMRemake;
@@ -183,7 +180,7 @@ begin
 end;
 
 
-procedure TForm1.btnKromKPClick(Sender: TObject);
+procedure TfmScriptingParser.btnKromKPClick(Sender: TObject);
 begin
   // Krom KP
   fParsingGame := pgKnightsProvince;
@@ -192,7 +189,7 @@ begin
 end;
 
 
-procedure TForm1.edtOnTextChange(Sender: TObject);
+procedure TfmScriptingParser.edtOnTextChange(Sender: TObject);
 begin
   if fUpdating then Exit;
 
@@ -200,7 +197,7 @@ begin
 end;
 
 
-procedure TForm1.SaveSettings;
+procedure TfmScriptingParser.SaveSettings;
 var
   ini: TINIFile;
 begin

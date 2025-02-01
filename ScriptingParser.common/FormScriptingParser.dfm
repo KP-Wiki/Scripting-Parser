@@ -1,4 +1,4 @@
-object Form1: TForm1
+object fmScriptingParser: TfmScriptingParser
   Left = 0
   Top = 0
   Caption = 'Pascal To Wiki Parser'
