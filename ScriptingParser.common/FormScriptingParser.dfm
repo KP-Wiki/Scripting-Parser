@@ -1,7 +1,7 @@
 object fmScriptingParser: TfmScriptingParser
   Left = 0
   Top = 0
-  Caption = 'Pascal To Wiki Parser'
+  Caption = 'KMR/KP Scripting Parser'
   ClientHeight = 648
   ClientWidth = 945
   Color = clBtnFace
