@@ -1,8 +1,8 @@
 unit FormScriptingParser;
 interface
 uses
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, SysUtils, Windows,
-  Classes, StdCtrls, StrUtils, Types, INIFiles, Vcl.ComCtrls,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, System.SysUtils, Winapi.Windows,
+  System.Classes, Vcl.StdCtrls, System.StrUtils, System.Types, System.IniFiles, Vcl.ComCtrls,
   KM_ScriptingParser, KM_ParserTypes;
 
 type

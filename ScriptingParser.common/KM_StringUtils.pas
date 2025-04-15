@@ -1,7 +1,7 @@
 unit KM_StringUtils;
 interface
 uses
-  Classes, SysUtils, Types, StrUtils;
+  System.Classes, System.SysUtils, System.Types, System.StrUtils;
 
 
 function RightStrAfter(const aStr, aSubStr: string): string;

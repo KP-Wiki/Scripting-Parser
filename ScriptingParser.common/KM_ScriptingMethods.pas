@@ -1,8 +1,8 @@
 unit KM_ScriptingMethods;
 interface
 uses
-  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, Generics.Defaults,
-  StrUtils,
+  System.Classes, System.SysUtils, System.Types, Vcl.Forms, Winapi.Windows, System.Generics.Collections, System.Generics.Defaults,
+  System.StrUtils,
   KM_ScriptingParameters, KM_ParserTypes;
 
 type
@@ -355,7 +355,7 @@ begin
 
   fList := TObjectList<TKMMethodInfo>.Create(
     TComparer<TKMMethodInfo>.Construct(
-      function(const A, B: TKMMethodInfo): Integer
+      function (const A, B: TKMMethodInfo): Integer
       begin
         // Case-sensitive compare, since we use CamelCase and it looks nicer that way
         Result := CompareText(A.fName, B.fName);

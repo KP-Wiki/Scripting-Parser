@@ -1,8 +1,8 @@
 unit KM_ScriptingParser;
 interface
 uses
-  Classes, SysUtils, Types, Vcl.Forms, Windows, Generics.Collections, System.IOUtils,
-  StrUtils,
+  System.Classes, System.SysUtils, System.Types, Vcl.Forms, Winapi.Windows, System.Generics.Collections, System.IOUtils,
+  System.StrUtils,
   KM_ScriptingMethods,
   KM_ScriptingParameters,
   KM_ScriptingTypes,
@@ -71,7 +71,7 @@ var
   tgtPath: string;
 begin
   tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_INFO[fParsingGame].Ext + '.' + AREA_INFO[aArea].Short + '.new.md';
-  Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
+  Winapi.Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
 end;
 
 

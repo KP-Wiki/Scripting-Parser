@@ -1,7 +1,7 @@
 unit KM_ScriptingConsts;
 interface
 uses
-  StrUtils, SysUtils;
+  System.StrUtils, System.SysUtils;
 
 
   function TryEventTypeToAlias(const aType: string): string;

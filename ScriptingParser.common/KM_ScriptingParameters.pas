@@ -1,8 +1,8 @@
 unit KM_ScriptingParameters;
 interface
 uses
-  Classes, SysUtils, Types, Generics.Collections,
-  StrUtils;
+  System.Classes, System.SysUtils, System.Types, System.Generics.Collections,
+  System.StrUtils;
 
 type
   // Single parameter info

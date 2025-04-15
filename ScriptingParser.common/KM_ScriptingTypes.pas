@@ -1,8 +1,8 @@
 unit KM_ScriptingTypes;
 interface
 uses
-  Classes, SysUtils, Types, Generics.Collections, Generics.Defaults,
-  Math, StrUtils,
+  System.Classes, System.SysUtils, System.Types, System.Generics.Collections, System.Generics.Defaults,
+  System.Math, System.StrUtils,
   KM_ParserTypes;
 
 type
@@ -440,7 +440,7 @@ begin
 
   fList := TObjectList<TKMScriptType>.Create(
     TComparer<TKMScriptType>.Construct(
-      function(const A, B: TKMScriptType): Integer
+      function (const A, B: TKMScriptType): Integer
       begin
         Result := CompareValue(A.SortPriority, B.SortPriority);
         if Result = 0 then
