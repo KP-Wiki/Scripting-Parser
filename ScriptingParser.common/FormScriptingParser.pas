@@ -70,7 +70,6 @@ implementation
 { TfmScriptingParser }
 procedure TfmScriptingParser.FormCreate(Sender: TObject);
 begin
-
   btnReyKMR.Click;
 end;
 
@@ -128,11 +127,11 @@ begin
 
   // For now it is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.GenerateCode(paActions, edActionsIn.Text, edActionsCode.Text, '');
+  scriptingParser.GenerateCode(paActions, edActionsIn.Text, edActionsCode.Text, edActionsCode.Text);
   scriptingParser.GenerateCode(paEvents,  edEventsIn.Text,  edEventsCode.Text, edEventsCode2.Text);
-  scriptingParser.GenerateCode(paStates,  edStatesIn.Text,  edStatesCode.Text, '');
-  scriptingParser.GenerateCode(paUtils,   edUtilsIn.Text,   edUtilsCode.Text, '');
-  scriptingParser.GenerateCode(paTypes,   edTypesIn.Text,   edTypesCode.Text, '');
+  scriptingParser.GenerateCode(paStates,  edStatesIn.Text,  edStatesCode.Text, edStatesCode.Text);
+  scriptingParser.GenerateCode(paUtils,   edUtilsIn.Text,   edUtilsCode.Text, edUtilsCode.Text);
+  scriptingParser.GenerateCode(paTypes,   edTypesIn.Text,   edTypesCode.Text, edTypesCode.Text);
   scriptingParser.Free;
 end;
 

@@ -58,7 +58,7 @@ type
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure ExportCode(const aCodeFile: string);
+    procedure ExportCode(const aFilenameCheck, aFilenameReg: string);
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
 
@@ -553,21 +553,25 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aCodeFile: string);
+procedure TKMScriptMethods.ExportCode(const aFilenameCheck, aFilenameReg: string);
 var
   sl: TStringList;
 begin
-  if not FileExists(aCodeFile) then Exit;
-
-  sl := TStringList.Create;
-  try
-    sl.LoadFromFile(aCodeFile);
-
+  if FileExists(aFilenameCheck) then
+  begin
+    sl := TStringList.Create;
+    sl.LoadFromFile(aFilenameCheck);
     ExportCodeSectionCheck(sl);
-    ExportCodeSectionReg(sl);
+    sl.SaveToFile(aFilenameCheck);
+    sl.Free;
+  end;
 
-    sl.SaveToFile(aCodeFile);
-  finally
+  if FileExists(aFilenameReg) then
+  begin
+    sl := TStringList.Create;
+    sl.LoadFromFile(aFilenameReg);
+    ExportCodeSectionReg(sl);
+    sl.SaveToFile(aFilenameReg);
     sl.Free;
   end;
 end;

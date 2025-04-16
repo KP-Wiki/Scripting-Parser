@@ -18,7 +18,7 @@ type
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fTypes: TKMScriptTypes;
     procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
-    procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
+    procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
     procedure ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
     procedure ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
@@ -26,7 +26,7 @@ type
     constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure GenerateCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
+    procedure GenerateCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
     procedure GenerateWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure GenerateXML;
   end;
@@ -76,7 +76,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
+procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
 begin
   if not FileExists(aSourceFile) then Exit;
 
@@ -87,8 +87,7 @@ begin
   // Sort for neat order
   fMethods[aArea].SortByName;
 
-  fMethods[aArea].ExportCode(aCodeFile);
-  fMethods[aArea].ExportCode(aCodeFile2);
+  fMethods[aArea].ExportCode(aFilenameCheck, aFilenameReg);
 
   fOnLog('');
 end;
@@ -192,7 +191,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
+procedure TKMScriptingParser.GenerateCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
 begin
   //todo -cThink: Automate verification in ScriptingParser that functions/procedures pose under the same name in LogMissionWarning
   // Arrays can be declared in 2 ways in KP PS - "array of string" and TKMStringArray. First one is more traditional and more universal.
@@ -204,8 +203,8 @@ begin
     paActions,
     paEvents,
     paStates,
-    paUtils: ExportMethodsToCode(aArea, aSourceFile, aCodeFile, aCodeFile2);
-    paTypes: ExportTypesToCode(aSourceFile, aCodeFile);
+    paUtils: ExportMethodsToCode(aArea, aSourceFile, aFilenameCheck, aFilenameReg);
+    paTypes: ExportTypesToCode(aSourceFile, aFilenameCheck);
   end;
 end;
 
