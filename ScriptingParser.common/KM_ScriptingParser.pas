@@ -14,6 +14,7 @@ type
     DBG_COPY_FOR_REFERENCE = True;
   private
     fParsingGame: TKMParsingGame;
+    fOnLog: TProc<string>;
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fTypes: TKMScriptTypes;
     procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
@@ -22,12 +23,11 @@ type
     procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
     procedure ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
   public
-    OnLog: TProc<string>;
-    constructor Create(aOnLog: TProc<string>);
+    constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
-    procedure GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+    procedure GenerateCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
+    procedure GenerateWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure GenerateXML;
   end;
 
@@ -38,16 +38,17 @@ uses
 
 
 { TKMScriptingParser }
-constructor TKMScriptingParser.Create(aOnLog: TProc<string>);
+constructor TKMScriptingParser.Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
 var
   I: TKMParsingArea;
 begin
   inherited Create;
 
-  OnLog := aOnLog;
+  fParsingGame := aParsingGame;
+  fOnLog := aOnLog;
 
   for I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fMethods[I] := TKMScriptMethods.Create(I, OnLog);
+    fMethods[I] := TKMScriptMethods.Create(fParsingGame, I, fOnLog);
 
   fTypes := TKMScriptTypes.Create;
 end;
@@ -83,19 +84,19 @@ begin
 
   fMethods[aArea].LoadFromFile(aSourceFile);
 
-  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
+  fOnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
 
   // Sort for neat order
   fMethods[aArea].SortByName;
 
   countCheck := 0;
   countReg := 0;
-  fMethods[aArea].ExportCode(aCodeFile, fParsingGame, countCheck, countReg);
-  fMethods[aArea].ExportCode(aCodeFile2, fParsingGame, countCheck, countReg);
+  fMethods[aArea].ExportCode(aCodeFile, countCheck, countReg);
+  fMethods[aArea].ExportCode(aCodeFile2, countCheck, countReg);
 
-  OnLog(Format('%d %s exported into Code checks', [countCheck, AREA_INFO[aArea].Short]));
-  OnLog(Format('%d %s exported into Code regs', [countReg, AREA_INFO[aArea].Short]));
-  OnLog('');
+  fOnLog(Format('%d %s exported into Code checks', [countCheck, AREA_INFO[aArea].Short]));
+  fOnLog(Format('%d %s exported into Code regs', [countReg, AREA_INFO[aArea].Short]));
+  fOnLog('');
 end;
 
 
@@ -109,7 +110,7 @@ begin
 
   fMethods[aArea].LoadFromFile(aSourceFile);
 
-  OnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
+  fOnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
 
   // Sort for neat order
   fMethods[aArea].SortByName;
@@ -128,8 +129,8 @@ begin
 
   sl.Free;
 
-  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[aArea].Short]));
-  OnLog('');
+  fOnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[aArea].Short]));
+  fOnLog('');
 end;
 
 
@@ -146,15 +147,15 @@ begin
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
-  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
+  fOnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
 
   // Sort for neat order
   fTypes.SortByName(stByDependancy);
 
   fTypes.ExportCode(aCodeFile, countReg);
 
-  OnLog(Format('%d %s exported into Code', [countReg, AREA_INFO[paTypes].Short]));
-  OnLog('');
+  fOnLog(Format('%d %s exported into Code', [countReg, AREA_INFO[paTypes].Short]));
+  fOnLog('');
 end;
 
 
@@ -173,7 +174,7 @@ begin
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
-  OnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
+  fOnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
 
   // Sort for neat order
   fTypes.SortByName(stByAlphabet);
@@ -192,36 +193,38 @@ begin
 
   sl.Free;
 
-  OnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[paTypes].Short]));
-  OnLog('');
+  fOnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[paTypes].Short]));
+  fOnLog('');
 end;
 
 
-procedure TKMScriptingParser.GenerateCode(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
+procedure TKMScriptingParser.GenerateCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
 begin
-  fParsingGame := aParsingGame;
-
   //todo -cThink: Automate verification in ScriptingParser that functions/procedures pose under the same name in LogMissionWarning
   // Arrays can be declared in 2 ways in KP PS - "array of string" and TKMStringArray. First one is more traditional and more universal.
   // Second one is required for some Utils methods to allow for resizing of passed arrays. Resized arrays become TKMStringArray though.
   // Now, some functions in Actions expect string arrays. Problem is that they must be declared as TKMStringArray to accept both TKMStringArray and "array of"
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
-  if aArea in [paActions..paUtils] then
-    ExportMethodsToCode(aArea, aSourceFile, aCodeFile, aCodeFile2)
-  else
-    ExportTypesToCode(aSourceFile, aCodeFile);
+  case aArea of
+    paActions,
+    paEvents,
+    paStates,
+    paUtils: ExportMethodsToCode(aArea, aSourceFile, aCodeFile, aCodeFile2);
+    paTypes: ExportTypesToCode(aSourceFile, aCodeFile);
+  end;
 end;
 
 
-procedure TKMScriptingParser.GenerateWiki(aParsingGame: TKMParsingGame; aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingParser.GenerateWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
 begin
-  fParsingGame := aParsingGame;
-
-  if aArea in [paActions..paUtils] then
-    ExportMethodsToWiki(aArea, aSourceFile, aTemplateFile, aOutputFile)
-  else
-    ExportTypesToWiki(aSourceFile, aTemplateFile, aOutputFile);
+  case aArea of
+    paActions,
+    paEvents,
+    paStates,
+    paUtils: ExportMethodsToWiki(aArea, aSourceFile, aTemplateFile, aOutputFile);
+    paTypes: ExportTypesToWiki(aSourceFile, aTemplateFile, aOutputFile);
+  end;
 
   if DBG_COPY_FOR_REFERENCE then
     CopyForReference(aOutputFile, aArea);

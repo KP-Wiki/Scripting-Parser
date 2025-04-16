@@ -52,15 +52,14 @@ type
     procedure btnKromKPClick(Sender: TObject);
     procedure btnKromKMRClick(Sender: TObject);
     procedure btnGenerateXMLClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure btnGenerateCodeClick(Sender: TObject);
   private
-    fScriptingParser: TKMScriptingParser;
     fParsingGame: TKMParsingGame;
     fSettingsPath: string;
     fUpdating: Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
+    procedure DoLog(aMsg: string);
   end;
 
 
@@ -71,19 +70,14 @@ implementation
 { TfmScriptingParser }
 procedure TfmScriptingParser.FormCreate(Sender: TObject);
 begin
-  fScriptingParser := TKMScriptingParser.Create(
-    procedure (aMsg: string)
-    begin
-      meLog.Lines.Append(aMsg);
-    end);
 
   btnReyKMR.Click;
 end;
 
 
-procedure TfmScriptingParser.FormDestroy(Sender: TObject);
+procedure TfmScriptingParser.DoLog(aMsg: string);
 begin
-  FreeAndNil(fScriptingParser);
+  meLog.Lines.Append(aMsg);
 end;
 
 
@@ -132,11 +126,14 @@ begin
   meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' code export:');
   meLog.Lines.Append(DupeString('-', 50));
 
-  fScriptingParser.GenerateCode(fParsingGame, paActions, edActionsIn.Text, edActionsCode.Text, '');
-  fScriptingParser.GenerateCode(fParsingGame, paEvents,  edEventsIn.Text,  edEventsCode.Text, edEventsCode2.Text);
-  fScriptingParser.GenerateCode(fParsingGame, paStates,  edStatesIn.Text,  edStatesCode.Text, '');
-  fScriptingParser.GenerateCode(fParsingGame, paUtils,   edUtilsIn.Text,   edUtilsCode.Text, '');
-  fScriptingParser.GenerateCode(fParsingGame, paTypes,   edTypesIn.Text,   edTypesCode.Text, '');
+  // For now it is more KISS to create and use instance for the job
+  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
+  scriptingParser.GenerateCode(paActions, edActionsIn.Text, edActionsCode.Text, '');
+  scriptingParser.GenerateCode(paEvents,  edEventsIn.Text,  edEventsCode.Text, edEventsCode2.Text);
+  scriptingParser.GenerateCode(paStates,  edStatesIn.Text,  edStatesCode.Text, '');
+  scriptingParser.GenerateCode(paUtils,   edUtilsIn.Text,   edUtilsCode.Text, '');
+  scriptingParser.GenerateCode(paTypes,   edTypesIn.Text,   edTypesCode.Text, '');
+  scriptingParser.Free;
 end;
 
 
@@ -146,11 +143,14 @@ begin
   meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' wiki export:');
   meLog.Lines.Append(DupeString('-', 50));
 
-  fScriptingParser.GenerateWiki(fParsingGame, paActions, edActionsIn.Text, edActionsTemplate.Text, edActionsOut.Text);
-  fScriptingParser.GenerateWiki(fParsingGame, paEvents,  edEventsIn.Text,  edEventsTemplate.Text,  edEventsOut.Text);
-  fScriptingParser.GenerateWiki(fParsingGame, paStates,  edStatesIn.Text,  edStatesTemplate.Text,  edStatesOut.Text);
-  fScriptingParser.GenerateWiki(fParsingGame, paUtils,   edUtilsIn.Text,   edUtilsTemplate.Text,   edUtilsOut.Text);
-  fScriptingParser.GenerateWiki(fParsingGame, paTypes,   edTypesIn.Text,   edTypesTemplate.Text,   edTypesOut.Text);
+  // For now it is more KISS to create and use instance for the job
+  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
+  scriptingParser.GenerateWiki(paActions, edActionsIn.Text, edActionsTemplate.Text, edActionsOut.Text);
+  scriptingParser.GenerateWiki(paEvents,  edEventsIn.Text,  edEventsTemplate.Text,  edEventsOut.Text);
+  scriptingParser.GenerateWiki(paStates,  edStatesIn.Text,  edStatesTemplate.Text,  edStatesOut.Text);
+  scriptingParser.GenerateWiki(paUtils,   edUtilsIn.Text,   edUtilsTemplate.Text,   edUtilsOut.Text);
+  scriptingParser.GenerateWiki(paTypes,   edTypesIn.Text,   edTypesTemplate.Text,   edTypesOut.Text);
+  scriptingParser.Free;
 end;
 
 
@@ -158,7 +158,10 @@ procedure TfmScriptingParser.btnGenerateXMLClick(Sender: TObject);
 begin
   meLog.Clear;
 
-  fScriptingParser.GenerateXML;
+  // For now it is more KISS to create and use instance for the job
+  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
+  scriptingParser.GenerateXML;
+  scriptingParser.Free;
 end;
 
 

@@ -42,20 +42,23 @@ type
   // List of methods
   TKMScriptMethods = class
   private
+    fGame: TKMParsingGame;
     fArea: TKMParsingArea;
     fOnLog: TProc<string>;
     fList: TObjectList<TKMMethodInfo>;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function GetCount: Integer;
+    procedure ExportCodeSectionCheck(aSL: TStringList; var aCount: Integer);
+    procedure ExportCodeSectionReg(aSL: TStringList; var aCount: Integer);
   public
-    constructor Create(aArea: TKMParsingArea; aOnLog: TProc<string>);
+    constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure ExportCode(const aCodeFile: string; aGame: TKMParsingGame; var aCountCheck, aCountReg: Integer);
+    procedure ExportCode(const aCodeFile: string; var aCountCheck, aCountReg: Integer);
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
 
@@ -346,10 +349,11 @@ end;
 
 
 { TKMScriptMethods }
-constructor TKMScriptMethods.Create(aArea: TKMParsingArea; aOnLog: TProc<string>);
+constructor TKMScriptMethods.Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
 begin
   inherited Create;
 
+  fGame := aGame;
   fArea := aArea;
   fOnLog := aOnLog;
 
@@ -402,7 +406,6 @@ begin
       function Something(something, something, something
         something): something
       }
-
 
     sectionStarted := False;
     sectionTailEnded := True;
@@ -483,16 +486,80 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aCodeFile: string; aGame: TKMParsingGame; var aCountCheck, aCountReg: Integer);
+procedure TKMScriptMethods.ExportCodeSectionCheck(aSL: TStringList; var aCount: Integer);
+var
+  secStart, secEnd, pad: Integer;
+  I: Integer;
+begin
+  FindStartAndFinish(aSL, AREA_INFO[fArea].CheckTag, secStart, secEnd, pad);
+  if secStart <> -1 then
+  begin
+    for I := secEnd downto secStart do
+      aSL.Delete(I);
+
+    // Insert in reverse so we could skip "removed" methods
+    for I := fList.Count - 1 downto 0 do
+    begin
+      if fList[I].fStatus in [msOk, msDeprecated] then
+      case fArea of
+        paActions,
+        paStates,
+        paUtils:    begin
+                      // We can write more compact code with AdjoinPairs
+                      fList[I].fParameters.AdjoinPairs;
+                      aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
+                    end;
+        paEvents:   // Can not use AdjoinPairs here. All vars must be separate
+                    aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
+      end;
+
+      Inc(aCount);
+    end;
+  end else
+    fOnLog(Format('%s tag not found', [AREA_INFO[fArea].CheckTag]));
+end;
+
+
+procedure TKMScriptMethods.ExportCodeSectionReg(aSL: TStringList; var aCount: Integer);
 const
   AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
     ('TKMScriptActions',    '', 'TKMScriptStates',    'TKMScriptUtils',    ''), // KMR
     ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptingUtils', '')  // KP
   );
 var
-  sl: TStringList;
   secStart, secEnd, pad: Integer;
   I: Integer;
+begin
+  // Events in KP do not have Reg section
+  if (fGame = pgKnightsProvince) and (fArea = paEvents) then Exit;
+
+  FindStartAndFinish(aSL, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
+  if secStart <> -1 then
+  begin
+    for I := secEnd downto secStart do
+      aSL.Delete(I);
+
+    // Insert in reverse so we could skip "removed" methods
+    for I := fList.Count - 1 downto 0 do
+    begin
+      if fList[I].fStatus in [msOk, msDeprecated] then
+      case fArea of
+        paActions,
+        paStates,
+        paUtils:    aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
+        paEvents:   aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(fGame) + IfThen(I <> fList.Count-1, ','));
+      end;
+
+      Inc(aCount);
+    end;
+  end else
+    fOnLog(Format('%s tag not found', [AREA_INFO[fArea].RegTag]));
+end;
+
+
+procedure TKMScriptMethods.ExportCode(const aCodeFile: string; var aCountCheck, aCountReg: Integer);
+var
+  sl: TStringList;
 begin
   if not FileExists(aCodeFile) then Exit;
 
@@ -500,54 +567,8 @@ begin
   try
     sl.LoadFromFile(aCodeFile);
 
-    FindStartAndFinish(sl, AREA_INFO[fArea].CheckTag, secStart, secEnd, pad);
-    if secStart <> -1 then
-    begin
-      for I := secEnd downto secStart do
-        sl.Delete(I);
-
-      // Insert in reverse so we could skip "removed" methods
-      for I := fList.Count - 1 downto 0 do
-      begin
-        if fList[I].fStatus in [msOk, msDeprecated] then
-        case fArea of
-          paActions,
-          paStates,
-          paUtils:    begin
-                        // We can write more compact code with AdjoinPairs
-                        fList[I].fParameters.AdjoinPairs;
-                        sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
-                      end;
-          paEvents:   // Can not use AdjoinPairs here. All vars must be separate
-                      sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeSignatureEvent(aGame, I = fList.Count-1));
-        end;
-
-        Inc(aCountCheck);
-      end;
-    end else
-      fOnLog(Format('%s tag not found in %s', [AREA_INFO[fArea].CheckTag, aCodeFile]));
-
-    FindStartAndFinish(sl, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
-    if secStart <> -1 then
-    begin
-      for I := secEnd downto secStart do
-        sl.Delete(I);
-
-      // Insert in reverse so we could skip "removed" methods
-      for I := fList.Count - 1 downto 0 do
-      begin
-        if fList[I].fStatus in [msOk, msDeprecated] then
-        case fArea of
-          paActions,
-          paStates,
-          paUtils:    sl.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[aGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
-          paEvents:   sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(aGame) + IfThen(I <> fList.Count-1, ','));
-        end;
-
-        Inc(aCountReg);
-      end;
-    end else
-      fOnLog(Format('%s tag not found in %s', [AREA_INFO[fArea].RegTag, aCodeFile]));
+    ExportCodeSectionCheck(sl, aCountCheck);
+    ExportCodeSectionReg(sl, aCountReg);
 
     sl.SaveToFile(aCodeFile);
   finally
