@@ -77,8 +77,6 @@ end;
 
 
 procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aCodeFile, aCodeFile2: string);
-var
-  countCheck, countReg: Integer;
 begin
   if not FileExists(aSourceFile) then Exit;
 
@@ -89,13 +87,9 @@ begin
   // Sort for neat order
   fMethods[aArea].SortByName;
 
-  countCheck := 0;
-  countReg := 0;
-  fMethods[aArea].ExportCode(aCodeFile, countCheck, countReg);
-  fMethods[aArea].ExportCode(aCodeFile2, countCheck, countReg);
+  fMethods[aArea].ExportCode(aCodeFile);
+  fMethods[aArea].ExportCode(aCodeFile2);
 
-  fOnLog(Format('%d %s exported into Code checks', [countCheck, AREA_INFO[aArea].Short]));
-  fOnLog(Format('%d %s exported into Code regs', [countReg, AREA_INFO[aArea].Short]));
   fOnLog('');
 end;
 

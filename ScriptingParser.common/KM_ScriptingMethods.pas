@@ -49,8 +49,8 @@ type
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function GetCount: Integer;
-    procedure ExportCodeSectionCheck(aSL: TStringList; var aCount: Integer);
-    procedure ExportCodeSectionReg(aSL: TStringList; var aCount: Integer);
+    procedure ExportCodeSectionCheck(aSL: TStringList);
+    procedure ExportCodeSectionReg(aSL: TStringList);
   public
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
@@ -58,7 +58,7 @@ type
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure ExportCode(const aCodeFile: string; var aCountCheck, aCountReg: Integer);
+    procedure ExportCode(const aCodeFile: string);
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
 
@@ -486,7 +486,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCodeSectionCheck(aSL: TStringList; var aCount: Integer);
+procedure TKMScriptMethods.ExportCodeSectionCheck(aSL: TStringList);
 var
   secStart, secEnd, pad: Integer;
   I: Integer;
@@ -499,28 +499,26 @@ begin
 
     // Insert in reverse so we could skip "removed" methods
     for I := fList.Count - 1 downto 0 do
-    begin
       if fList[I].fStatus in [msOk, msDeprecated] then
-      case fArea of
-        paActions,
-        paStates,
-        paUtils:    begin
-                      // We can write more compact code with AdjoinPairs
-                      fList[I].fParameters.AdjoinPairs;
-                      aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
-                    end;
-        paEvents:   // Can not use AdjoinPairs here. All vars must be separate
-                    aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
-      end;
+        case fArea of
+          paActions,
+          paStates,
+          paUtils:    begin
+                        // We can write more compact code with AdjoinPairs
+                        fList[I].fParameters.AdjoinPairs;
+                        aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
+                      end;
+          paEvents:   // Can not use AdjoinPairs here. All vars must be separate
+                      aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
+        end;
 
-      Inc(aCount);
-    end;
+    fOnLog(Format('%d %s exported into Code checks', [fList.Count, AREA_INFO[fArea].Short]));
   end else
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].CheckTag]));
 end;
 
 
-procedure TKMScriptMethods.ExportCodeSectionReg(aSL: TStringList; var aCount: Integer);
+procedure TKMScriptMethods.ExportCodeSectionReg(aSL: TStringList);
 const
   AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
     ('TKMScriptActions',    '', 'TKMScriptStates',    'TKMScriptUtils',    ''), // KMR
@@ -541,23 +539,21 @@ begin
 
     // Insert in reverse so we could skip "removed" methods
     for I := fList.Count - 1 downto 0 do
-    begin
       if fList[I].fStatus in [msOk, msDeprecated] then
-      case fArea of
-        paActions,
-        paStates,
-        paUtils:    aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
-        paEvents:   aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(fGame) + IfThen(I <> fList.Count-1, ','));
-      end;
+        case fArea of
+          paActions,
+          paStates,
+          paUtils:    aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
+          paEvents:   aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(fGame) + IfThen(I <> fList.Count-1, ','));
+        end;
 
-      Inc(aCount);
-    end;
+    fOnLog(Format('%d %s exported into Code regs', [fList.Count, AREA_INFO[fArea].Short]));
   end else
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].RegTag]));
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aCodeFile: string; var aCountCheck, aCountReg: Integer);
+procedure TKMScriptMethods.ExportCode(const aCodeFile: string);
 var
   sl: TStringList;
 begin
@@ -567,8 +563,8 @@ begin
   try
     sl.LoadFromFile(aCodeFile);
 
-    ExportCodeSectionCheck(sl, aCountCheck);
-    ExportCodeSectionReg(sl, aCountReg);
+    ExportCodeSectionCheck(sl);
+    ExportCodeSectionReg(sl);
 
     sl.SaveToFile(aCodeFile);
   finally
