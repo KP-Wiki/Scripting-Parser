@@ -5,7 +5,7 @@ uses
   System.StrUtils;
 
 type
-  // Single parameter info
+  // Single parameter(argument) info
   TKMScriptParameter = class
   private
     fName: string;
@@ -20,7 +20,7 @@ type
     function ExportCodeSignature: string;
   end;
 
-  // List of parameters of a method
+  // List of parameters(arguments) of a method
   TKMScriptParameters = class
   private
     fList: TObjectList<TKMScriptParameter>;

@@ -3,7 +3,7 @@ interface
 uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, System.SysUtils, Winapi.Windows,
   System.Classes, Vcl.StdCtrls, System.StrUtils, System.Types, System.IniFiles, Vcl.ComCtrls,
-  KM_ScriptingParser, KM_ParserTypes;
+  KM_ScriptingParser, KM_ParserTypes, KM_ScriptingPaths;
 
 type
   TfmScriptingParser = class(TForm)
@@ -53,9 +53,11 @@ type
     procedure btnKromKMRClick(Sender: TObject);
     procedure btnGenerateXMLClick(Sender: TObject);
     procedure btnGenerateCodeClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     fParsingGame: TKMParsingGame;
     fSettingsPath: string;
+    fScriptingPaths: TKMScriptingPaths;
     fUpdating: Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -70,7 +72,14 @@ implementation
 { TfmScriptingParser }
 procedure TfmScriptingParser.FormCreate(Sender: TObject);
 begin
+  fScriptingPaths := TKMScriptingPaths.Create;
   btnReyKMR.Click;
+end;
+
+
+procedure TfmScriptingParser.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(fScriptingPaths);
 end;
 
 
@@ -81,41 +90,39 @@ end;
 
 
 procedure TfmScriptingParser.LoadSettings;
-var
-  ini: TINIFile;
 begin
-  ini := TINIFile.Create(fSettingsPath);
+  fScriptingPaths.LoadFromINI(fSettingsPath);
 
+  // Blit settings to UI
   fUpdating := True;
+  try
+    edActionsIn.Text       := fScriptingPaths.Paths[paActions].SourceInput;
+    edEventsIn.Text        := fScriptingPaths.Paths[paEvents].SourceInput;
+    edStatesIn.Text        := fScriptingPaths.Paths[paStates].SourceInput;
+    edUtilsIn.Text         := fScriptingPaths.Paths[paUtils].SourceInput;
+    edTypesIn.Text         := fScriptingPaths.Paths[paTypes].SourceInput;
 
-  edActionsIn.Text       := ini.ReadString('INPUT',  'Actions', '..\..\src\scripting\KM_ScriptingActions.pas');
-  edEventsIn.Text        := ini.ReadString('INPUT',  'Events',  '..\..\src\scripting\KM_ScriptingEvents.pas');
-  edStatesIn.Text        := ini.ReadString('INPUT',  'States',  '..\..\src\scripting\KM_ScriptingStates.pas');
-  edUtilsIn.Text         := ini.ReadString('INPUT',  'Utils',   '..\..\src\scripting\KM_ScriptingUtils.pas');
-  edTypesIn.Text         := ini.ReadString('INPUT',  'Types',   '..\..\src\scripting\KM_ScriptingEnginePS.pas');
-  edActionsTemplate.Text := ini.ReadString('TEMPLATE', 'Actions', 'template\Actions.template');
-  edEventsTemplate.Text  := ini.ReadString('TEMPLATE', 'Events',  'template\Events.template');
-  edStatesTemplate.Text  := ini.ReadString('TEMPLATE', 'States',  'template\States.template');
-  edUtilsTemplate.Text   := ini.ReadString('TEMPLATE', 'Utils',   'template\Utils.template');
-  edTypesTemplate.Text   := ini.ReadString('TEMPLATE', 'Types',   'template\Types.template');
-  edActionsOut.Text := ini.ReadString('OUTPUT', 'Actions', 'Actions.wiki');
-  edEventsOut.Text  := ini.ReadString('OUTPUT', 'Events',  'Events.wiki');
-  edStatesOut.Text  := ini.ReadString('OUTPUT', 'States',  'States.wiki');
-  edUtilsOut.Text   := ini.ReadString('OUTPUT', 'Utils',   'Utils.wiki');
-  edTypesOut.Text   := ini.ReadString('OUTPUT', 'Types',   'Types.wiki');
-  edActionsCode.Text := ini.ReadString('CODE', 'Actions', '.pas');
-  edEventsCode.Text  := ini.ReadString('CODE', 'Events',  '.pas');
-  edEventsCode2.Text  := ini.ReadString('CODE', 'Events2',  '.pas');
-  edStatesCode.Text  := ini.ReadString('CODE', 'States',  '.pas');
-  edUtilsCode.Text   := ini.ReadString('CODE', 'Utils',   '.pas');
-  edTypesCode.Text   := ini.ReadString('CODE', 'Types',   '.pas');
+    edActionsTemplate.Text := fScriptingPaths.Paths[paActions].WikiTemplate;
+    edEventsTemplate.Text  := fScriptingPaths.Paths[paEvents].WikiTemplate;
+    edStatesTemplate.Text  := fScriptingPaths.Paths[paStates].WikiTemplate;
+    edUtilsTemplate.Text   := fScriptingPaths.Paths[paUtils].WikiTemplate;
+    edTypesTemplate.Text   := fScriptingPaths.Paths[paTypes].WikiTemplate;
 
-  FreeAndNil(ini);
+    edActionsOut.Text      := fScriptingPaths.Paths[paActions].WikiOutput;
+    edEventsOut.Text       := fScriptingPaths.Paths[paEvents].WikiOutput;
+    edStatesOut.Text       := fScriptingPaths.Paths[paStates].WikiOutput;
+    edUtilsOut.Text        := fScriptingPaths.Paths[paUtils].WikiOutput;
+    edTypesOut.Text        := fScriptingPaths.Paths[paTypes].WikiOutput;
 
-  fUpdating := False;
-
-  if not FileExists(fSettingsPath) then
-    SaveSettings;
+    edActionsCode.Text     := fScriptingPaths.Paths[paActions].SourceOutputCheck;
+    edEventsCode.Text      := fScriptingPaths.Paths[paEvents].SourceOutputCheck;
+    edEventsCode2.Text     := fScriptingPaths.Paths[paEvents].SourceOutputReg;
+    edStatesCode.Text      := fScriptingPaths.Paths[paStates].SourceOutputCheck;
+    edUtilsCode.Text       := fScriptingPaths.Paths[paUtils].SourceOutputCheck;
+    edTypesCode.Text       := fScriptingPaths.Paths[paTypes].SourceOutputCheck;
+  finally
+    fUpdating := False;
+  end;
 end;
 
 
@@ -200,34 +207,33 @@ end;
 
 
 procedure TfmScriptingParser.SaveSettings;
-var
-  ini: TINIFile;
 begin
-  ini := TINIFile.Create(fSettingsPath);
+  fScriptingPaths.Paths[paActions].SourceInput        := edActionsIn.Text;
+  fScriptingPaths.Paths[paEvents].SourceInput         := edEventsIn.Text;
+  fScriptingPaths.Paths[paStates].SourceInput         := edStatesIn.Text;
+  fScriptingPaths.Paths[paUtils].SourceInput          := edUtilsIn.Text;
+  fScriptingPaths.Paths[paTypes].SourceInput          := edTypesIn.Text;
 
-  ini.WriteString('INPUT',  'Actions', edActionsIn.Text);
-  ini.WriteString('INPUT',  'Events',  edEventsIn.Text);
-  ini.WriteString('INPUT',  'States',  edStatesIn.Text);
-  ini.WriteString('INPUT',  'Utils',   edUtilsIn.Text);
-  ini.WriteString('INPUT',  'Types',   edTypesIn.Text);
-  ini.WriteString('TEMPLATE', 'Actions', edActionsTemplate.Text);
-  ini.WriteString('TEMPLATE', 'Events',  edEventsTemplate.Text);
-  ini.WriteString('TEMPLATE', 'States',  edStatesTemplate.Text);
-  ini.WriteString('TEMPLATE', 'Utils',   edUtilsTemplate.Text);
-  ini.WriteString('TEMPLATE', 'Types',   edTypesTemplate.Text);
-  ini.WriteString('OUTPUT', 'Actions', edActionsOut.Text);
-  ini.WriteString('OUTPUT', 'Events',  edEventsOut.Text);
-  ini.WriteString('OUTPUT', 'States',  edStatesOut.Text);
-  ini.WriteString('OUTPUT', 'Utils',   edUtilsOut.Text);
-  ini.WriteString('OUTPUT', 'Types',   edTypesOut.Text);
-  ini.WriteString('CODE', 'Actions', edActionsCode.Text);
-  ini.WriteString('CODE', 'Events',  edEventsCode.Text);
-  ini.WriteString('CODE', 'Events2',  edEventsCode2.Text);
-  ini.WriteString('CODE', 'States',  edStatesCode.Text);
-  ini.WriteString('CODE', 'Utils',   edUtilsCode.Text);
-  ini.WriteString('CODE', 'Types',   edTypesCode.Text);
+  fScriptingPaths.Paths[paActions].WikiTemplate       := edActionsTemplate.Text;
+  fScriptingPaths.Paths[paEvents].WikiTemplate        := edEventsTemplate.Text;
+  fScriptingPaths.Paths[paStates].WikiTemplate        := edStatesTemplate.Text;
+  fScriptingPaths.Paths[paUtils].WikiTemplate         := edUtilsTemplate.Text;
+  fScriptingPaths.Paths[paTypes].WikiTemplate         := edTypesTemplate.Text;
 
-  FreeAndNil(ini);
+  fScriptingPaths.Paths[paActions].WikiOutput         := edActionsOut.Text;
+  fScriptingPaths.Paths[paEvents].WikiOutput          := edEventsOut.Text;
+  fScriptingPaths.Paths[paStates].WikiOutput          := edStatesOut.Text;
+  fScriptingPaths.Paths[paUtils].WikiOutput           := edUtilsOut.Text;
+  fScriptingPaths.Paths[paTypes].WikiOutput           := edTypesOut.Text;
+
+  fScriptingPaths.Paths[paActions].SourceOutputCheck  := edActionsCode.Text;
+  fScriptingPaths.Paths[paEvents].SourceOutputCheck   := edEventsCode.Text;
+  fScriptingPaths.Paths[paEvents].SourceOutputReg     := edEventsCode2.Text;
+  fScriptingPaths.Paths[paStates].SourceOutputCheck   := edStatesCode.Text;
+  fScriptingPaths.Paths[paUtils].SourceOutputCheck    := edUtilsCode.Text;
+  fScriptingPaths.Paths[paTypes].SourceOutputCheck    := edTypesCode.Text;
+
+  fScriptingPaths.SaveToINI(fSettingsPath);
 end;
 
 

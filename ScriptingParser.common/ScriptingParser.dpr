@@ -7,6 +7,7 @@ uses
   KM_ScriptingMethods in 'KM_ScriptingMethods.pas',
   KM_ScriptingParameters in 'KM_ScriptingParameters.pas',
   KM_ScriptingParser in 'KM_ScriptingParser.pas',
+  KM_ScriptingPaths in 'KM_ScriptingPaths.pas',
   KM_ScriptingTypes in 'KM_ScriptingTypes.pas',
   KM_StringUtils in 'KM_StringUtils.pas';
 
