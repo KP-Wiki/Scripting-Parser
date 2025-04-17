@@ -389,6 +389,7 @@ var
   sectionStarted, sectionTailEnded: Boolean;
 begin
   fList.Clear;
+  if not FileExists(aInputFile) then Exit;
 
   slSource := TStringList.Create;
   try
@@ -446,6 +447,8 @@ begin
   finally
     slSource.Free;
   end;
+
+  SortByName;
 end;
 
 

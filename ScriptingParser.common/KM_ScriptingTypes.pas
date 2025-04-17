@@ -58,13 +58,14 @@ type
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function GetCount: Integer;
+    procedure LoadFromFile(const aInputFile: string);
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure Clear;
     property Count: Integer read GetCount;
-    procedure LoadFromFile(const aInputFile: string);
+    procedure LoadFromFiles(const aSourceMask: string);
     procedure SortByName(aSortBy: TKMSortType);
     procedure ExportCode(const aCodeFile: string; out aCountReg: Integer);
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
@@ -73,6 +74,7 @@ type
 
 implementation
 uses
+  System.IOUtils,
   KM_ScriptingConsts, KM_StringUtils;
 
 
@@ -533,6 +535,21 @@ begin
   finally
     slSource.Free;
   end;
+end;
+
+
+procedure TKMScriptTypes.LoadFromFiles(const aSourceMask: string);
+var
+  s: TStringDynArray;
+  I: Integer;
+begin
+  Clear;
+
+  // Get all files matching the mask
+  s := TDirectory.GetFiles(ExtractFilePath(aSourceMask), ExtractFileName(aSourceMask), TSearchOption.soAllDirectories);
+
+  for I := Low(s) to High(s) do
+    LoadFromFile(s[I]);
 end;
 
 

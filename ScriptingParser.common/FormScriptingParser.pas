@@ -134,6 +134,7 @@ begin
 
   // For now it is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
+  scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateCode(fScriptingPaths);
   scriptingParser.Free;
 end;
@@ -147,6 +148,7 @@ begin
 
   // For now it is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
+  scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateWiki(fScriptingPaths);
   scriptingParser.Free;
 end;
@@ -158,6 +160,7 @@ begin
 
   // For now it is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
+  scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateXML;
   scriptingParser.Free;
 end;

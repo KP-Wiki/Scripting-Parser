@@ -27,6 +27,7 @@ type
     constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
     destructor Destroy; override;
 
+    procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure GenerateCode(aPaths: TKMScriptingPaths);
     procedure GenerateWiki(aPaths: TKMScriptingPaths);
     procedure GenerateXML;
@@ -79,18 +80,7 @@ end;
 
 procedure TKMScriptingParser.ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
 begin
-  if not FileExists(aSourceFile) then Exit;
-
-  fMethods[aArea].LoadFromFile(aSourceFile);
-
-  fOnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
-
-  // Sort for neat order
-  fMethods[aArea].SortByName;
-
   fMethods[aArea].ExportCode(aFilenameCheck, aFilenameReg);
-
-  fOnLog('');
 end;
 
 
@@ -100,15 +90,6 @@ var
   exportPath: string;
   countWiki: Integer;
 begin
-  if not FileExists(aPaths.SourceInput) then Exit;
-
-  fMethods[aArea].LoadFromFile(aPaths.SourceInput);
-
-  fOnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
-
-  // Sort for neat order
-  fMethods[aArea].SortByName;
-
   if aPaths.WikiOutput = '' then Exit;
 
   sl := TStringList.Create;
@@ -130,20 +111,8 @@ end;
 
 procedure TKMScriptingParser.ExportTypesToCode(const aSourceMask, aCodeFile: string);
 var
-  s: TStringDynArray;
-  I: Integer;
   countReg: Integer;
 begin
-  fTypes.Clear;
-
-  // Get all files matching the mask
-  s := TDirectory.GetFiles(ExtractFilePath(aSourceMask), ExtractFileName(aSourceMask), TSearchOption.soAllDirectories);
-  for I := Low(s) to High(s) do
-    fTypes.LoadFromFile(s[I]);
-
-  fOnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
-
-  // Sort for neat order
   fTypes.SortByName(stByDependancy);
 
   fTypes.ExportCode(aCodeFile, countReg);
@@ -157,23 +126,11 @@ procedure TKMScriptingParser.ExportTypesToWiki(aPaths: TKMAreaPathsCommon);
 var
   sl: TStringList;
   exportPath: string;
-  s: TStringDynArray;
-  I: Integer;
   countWiki: Integer;
 begin
-  fTypes.Clear;
-
-  // Get all files matching the mask
-  s := TDirectory.GetFiles(ExtractFilePath(aPaths.SourceInput), ExtractFileName(aPaths.SourceInput), TSearchOption.soAllDirectories);
-  for I := Low(s) to High(s) do
-    fTypes.LoadFromFile(s[I]);
-
-  fOnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
-
-  // Sort for neat order
-  fTypes.SortByName(stByAlphabet);
-
   if aPaths.WikiOutput = '' then Exit;
+
+  fTypes.SortByName(stByAlphabet);
 
   sl := TStringList.Create;
 
@@ -205,6 +162,25 @@ begin
   ExportMethodsToCode(paStates, aPaths.PathsS.SourceInput, aPaths.PathsS.SourceOutputCheckAndReg, aPaths.PathsS.SourceOutputCheckAndReg);
   ExportMethodsToCode(paUtils, aPaths.PathsU.SourceInput, aPaths.PathsU.SourceOutputCheckAndReg, aPaths.PathsU.SourceOutputCheckAndReg);
   ExportTypesToCode(aPaths.PathsT.SourceInput, aPaths.PathsT.SourceOutputReg);
+end;
+
+
+procedure TKMScriptingParser.ParseCode(aPaths: TKMScriptingPaths);
+begin
+  fMethods[paActions].LoadFromFile(aPaths.PathsA.SourceInput);
+  fOnLog(Format('%d %s parsed', [fMethods[paActions].Count, AREA_INFO[paActions].Short]));
+
+  fMethods[paEvents].LoadFromFile(aPaths.PathsE.SourceInput);
+  fOnLog(Format('%d %s parsed', [fMethods[paEvents].Count, AREA_INFO[paEvents].Short]));
+
+  fMethods[paStates].LoadFromFile(aPaths.PathsS.SourceInput);
+  fOnLog(Format('%d %s parsed', [fMethods[paStates].Count, AREA_INFO[paStates].Short]));
+
+  fMethods[paUtils].LoadFromFile(aPaths.PathsU.SourceInput);
+  fOnLog(Format('%d %s parsed', [fMethods[paUtils].Count, AREA_INFO[paUtils].Short]));
+
+  fTypes.LoadFromFiles(aPaths.PathsT.SourceInput);
+  fOnLog(Format('%d %s parsed', [fTypes.Count, AREA_INFO[paTypes].Short]));
 end;
 
 
