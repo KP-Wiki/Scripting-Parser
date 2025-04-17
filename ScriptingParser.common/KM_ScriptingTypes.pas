@@ -53,6 +53,7 @@ type
   // List of types
   TKMScriptTypes = class
   private
+    fOnLog: TProc<string>;
     fList: TObjectList<TKMScriptType>;
     procedure AssignSortOrder;
     function ExportWikiBody: string;
@@ -61,14 +62,14 @@ type
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName(aSortBy: TKMSortType);
   public
-    constructor Create;
+    constructor Create(aOnLog: TProc<string>);
     destructor Destroy; override;
 
     procedure Clear;
     property Count: Integer read GetCount;
     procedure LoadFromFiles(const aSourceMask: string);
-    procedure ExportCode(const aCodeFile: string; out aCountReg: Integer);
-    procedure ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer);
+    procedure ExportCode(const aCodeFile: string);
+    procedure ExportWiki(const aTemplateFile, aOutputFile: string);
   end;
 
 
@@ -436,9 +437,11 @@ begin
 end;
 
 
-constructor TKMScriptTypes.Create;
+constructor TKMScriptTypes.Create(aOnLog: TProc<string>);
 begin
   inherited Create;
+
+  fOnLog := aOnLog;
 
   fList := TObjectList<TKMScriptType>.Create(
     TComparer<TKMScriptType>.Construct(
@@ -550,6 +553,8 @@ begin
 
   for I := Low(s) to High(s) do
     LoadFromFile(s[I]);
+
+  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[paTypes].Short]));
 end;
 
 
@@ -670,14 +675,12 @@ begin
 end;
 
 
-procedure TKMScriptTypes.ExportCode(const aCodeFile: string; out aCountReg: Integer);
+procedure TKMScriptTypes.ExportCode(const aCodeFile: string);
 var
   sl: TStringList;
   secStart, secEnd, pad: Integer;
   I: Integer;
 begin
-  aCountReg := 0;
-
   if not FileExists(aCodeFile) then Exit;
 
   SortByName(stByDependancy);
@@ -699,8 +702,6 @@ begin
 
         if (I > 0) and (fList[I].SortPriority <> fList[I-1].SortPriority) then
           sl.Insert(secStart, DupeString(' ', pad) + '// Dependent types of level ' + IntToStr(fList[I].SortPriority));
-
-        Inc(aCountReg);
       end;
     end;
 
@@ -708,16 +709,16 @@ begin
   finally
     sl.Free;
   end;
+
+  fOnLog(Format('%d %s exported into Code checks', [fList.Count, AREA_INFO[paTypes].Short]));
 end;
 
 
-procedure TKMScriptTypes.ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer);
+procedure TKMScriptTypes.ExportWiki(const aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
 begin
-  aCountWiki := 0;
-
   // Without template we cant generate output
   if aTemplateFile = '' then Exit;
 
@@ -738,8 +739,7 @@ begin
 
   sl.Free;
 
-  // No surprises here, everything gets exported
-  aCountWiki := Count;
+  fOnLog(Format('%d %s exported into Wiki', [fList.Count, AREA_INFO[paTypes].Short]));
 end;
 
 

@@ -60,7 +60,7 @@ type
     procedure LoadFromFile(const aInputFile: string);
     procedure ExportCode(const aFilenameCheckAndReg: string); overload;
     procedure ExportCode(const aFilenameCheck, aFilenameReg: string); overload;
-    function ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer): string;
+    function ExportWiki(const aTemplateFile, aOutputFile: string): string;
   end;
 
 
@@ -450,6 +450,8 @@ begin
   end;
 
   SortByName;
+
+  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[fArea].Short]));
 end;
 
 
@@ -516,7 +518,7 @@ begin
                       aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
         end;
 
-    fOnLog(Format('%d %s exported into Code checks', [fList.Count, AREA_INFO[fArea].Short]));
+    fOnLog(Format('%d %s exported into Code checks', [GetCount, AREA_INFO[fArea].Short]));
   end else
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].CheckTag]));
 end;
@@ -551,7 +553,7 @@ begin
           paEvents:   aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(fGame) + IfThen(I <> fList.Count-1, ','));
         end;
 
-    fOnLog(Format('%d %s exported into Code regs', [fList.Count, AREA_INFO[fArea].Short]));
+    fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Short]));
   end else
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].RegTag]));
 end;
@@ -596,13 +598,11 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer): string;
+function TKMScriptMethods.ExportWiki(const aTemplateFile, aOutputFile: string): string;
 var
   sl: TStringList;
   exportPath: string;
 begin
-  aCountWiki := 0;
-
   // Without template we cant generate output
   if aTemplateFile = '' then Exit;
 
@@ -621,8 +621,7 @@ begin
 
   sl.Free;
 
-  // No surprises here, everything gets exported
-  aCountWiki := Count;
+  fOnLog(Format('%d %s exported into Wiki', [GetCount, AREA_INFO[fArea].Short]));
 end;
 
 
