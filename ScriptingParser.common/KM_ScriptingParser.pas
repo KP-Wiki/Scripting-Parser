@@ -79,24 +79,9 @@ end;
 
 procedure TKMScriptingParser.ExportMethodsToWiki(aArea: TKMParsingArea; aPaths: TKMAreaPathsCommon);
 var
-  sl: TStringList;
-  exportPath: string;
   countWiki: Integer;
 begin
-  if aPaths.WikiOutput = '' then Exit;
-
-  sl := TStringList.Create;
-
-  sl.Text := fMethods[aArea].ExportWiki(aPaths.WikiTemplate, countWiki);
-
-  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aPaths.WikiOutput);
-  if not DirectoryExists(ExtractFileDir(exportPath)) then
-    ForceDirectories(ExtractFileDir(exportPath));
-
-  sl.SaveToFile(aPaths.WikiOutput);
-
-  sl.Free;
-
+  fMethods[aArea].ExportWiki(aPaths.WikiTemplate, aPaths.WikiOutput, countWiki);
   fOnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[aArea].Short]));
   fOnLog('');
 end;

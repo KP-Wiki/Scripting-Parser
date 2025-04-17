@@ -60,7 +60,7 @@ type
     procedure LoadFromFile(const aInputFile: string);
     procedure ExportCode(const aFilenameCheckAndReg: string); overload;
     procedure ExportCode(const aFilenameCheck, aFilenameReg: string); overload;
-    function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
+    function ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer): string;
   end;
 
 
@@ -596,10 +596,16 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
+function TKMScriptMethods.ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer): string;
 var
   sl: TStringList;
+  exportPath: string;
 begin
+  aCountWiki := 0;
+
+  // Without template we cant generate output
+  if aTemplateFile = '' then Exit;
+
   sl := TStringList.Create;
 
   sl.LoadFromFile(aTemplateFile);
@@ -607,7 +613,11 @@ begin
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
-  Result := sl.Text;
+  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+  if not DirectoryExists(ExtractFileDir(exportPath)) then
+    ForceDirectories(ExtractFileDir(exportPath));
+
+  sl.SaveToFile(aOutputFile);
 
   sl.Free;
 

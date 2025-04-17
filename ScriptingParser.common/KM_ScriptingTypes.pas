@@ -59,6 +59,7 @@ type
     function ExportWikiLinks: string;
     function GetCount: Integer;
     procedure LoadFromFile(const aInputFile: string);
+    procedure SortByName(aSortBy: TKMSortType);
   public
     constructor Create;
     destructor Destroy; override;
@@ -66,7 +67,6 @@ type
     procedure Clear;
     property Count: Integer read GetCount;
     procedure LoadFromFiles(const aSourceMask: string);
-    procedure SortByName(aSortBy: TKMSortType);
     procedure ExportCode(const aCodeFile: string; out aCountReg: Integer);
     procedure ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer);
   end;
@@ -718,7 +718,8 @@ var
 begin
   aCountWiki := 0;
 
-  if aOutputFile = '' then Exit;
+  // Without template we cant generate output
+  if aTemplateFile = '' then Exit;
 
   SortByName(stByAlphabet);
 
