@@ -19,6 +19,7 @@ Version column description:
 * <a href="#OnCampaignMenu">OnCampaignMenu</a>
 * <a href="#OnGroupBeforeDied">OnGroupBeforeDied</a>
 * <a href="#OnGroupDied">OnGroupDied</a>
+* <a href="#OnGroupGiven">OnGroupGiven</a>
 * <a href="#OnHouseBuilt">OnHouseBuilt</a>
 * <a href="#OnHouseDamaged">OnHouseDamaged</a>
 * <a href="#OnHouseDestroyed">OnHouseDestroyed</a>
@@ -36,11 +37,13 @@ Version column description:
 * <a href="#OnUnitGiven">OnUnitGiven</a>
 * <a href="#OnUnitOwnerChanged">OnUnitOwnerChanged</a>
 * <a href="#OnUnitOwnerChanging">OnUnitOwnerChanging</a>
+* <a href="#OnUnitSpawned">OnUnitSpawned</a>
 * <a href="#OnUnitTrained">OnUnitTrained</a>
 * <a href="#OnUnitWagonEnteredHouse">OnUnitWagonEnteredHouse</a>
 * <a href="#OnUnitWoundedByHouse">OnUnitWoundedByHouse</a>
 * <a href="#OnUnitWoundedByUnit">OnUnitWoundedByUnit</a>
 * <a href="#OnWarriorEquipped">OnWarriorEquipped</a>
+* <a href="#OnWarriorGiven">OnWarriorGiven</a>
 <br />
 
 | Ver<br/>sion | Event description | Parameters<br/>and types |
@@ -48,6 +51,7 @@ Version column description:
 | 8250 | <a id="OnCampaignMenu">OnCampaignMenu</a><sub><br/>A campaign menu has been opened. Campaign-only event!</sub> | <sub></sub> |
 | 10626 | <a id="OnGroupBeforeDied">OnGroupBeforeDied</a><sub><br/>Group will cease to exist in a moment (last current member will die). The process is irreversible<br/>Most of the group properties can still be accessed<br/>Note that groups can be rearranged, split and joined. Single warrior is a group too.</sub> | <sub>**aGroup**: Integer;</sub> |
 | 10626 | <a id="OnGroupDied">OnGroupDied</a><sub><br/>Group has ceased to exist (all current members have died). The process is irreversible<br/>Most of the group properties can no longer be accessed<br/>Note that groups can be rearranged, split and joined. Single warrior is a group too.</sub> | <sub>**aGroup**: Integer;</sub> |
+| 15907 | <a id="OnGroupGiven">OnGroupGiven</a><sub><br/>Group was given to a player<br/>This includes: Actions.GiveGroup</sub> | <sub>**aGroup**: Integer;</sub> |
 | - | <a id="OnHouseBuilt">OnHouseBuilt</a><sub><br/>A house has finished construction</sub> | <sub>**aHouse**: Integer;</sub> |
 | 7820 | <a id="OnHouseDamaged">OnHouseDamaged</a><sub><br/>A house got damaged</sub> | <sub>**aHouse**: Integer; <br/> **aAttacker**: Integer; // _UID of the attacked, can be a house, a unit or noone (e.g. if damage was applied from script)_</sub> |
 | - | <a id="OnHouseDestroyed">OnHouseDestroyed</a><sub><br/>Occurs right before house gets destroyed</sub> | <sub>**aHouse**: Integer; <br/> **aDestroyerIndex**: Integer;</sub> |
@@ -61,12 +65,14 @@ Version column description:
 | 5102 | <a id="OnTerrainTrigger">OnTerrainTrigger</a><sub><br/>Happens when a unit enters terrain trigger area (or gets spawned in to it, or exits a house)</sub> | <sub>**aTriggerId**: Integer; <br/> **aUnit**: Integer; <br/> **aX, aY**: Word;</sub> |
 | - | <a id="OnTick">OnTick</a><sub><br/>Happens right after OnMissionStart<br/>First tick is '1'</sub> | <sub>**aTick**: Integer;</sub> |
 | 10626 | <a id="OnUnitBeforeDied">OnUnitBeforeDied</a><sub><br/>Unit will cease to exist in a moment. The process is irreversible<br/>Most of the unit properties can still be accessed</sub> | <sub>**aUnit**: Integer; <br/> **aKillerOwner**: Integer;</sub> |
-| - | <a id="OnUnitDied">OnUnitDied</a><sub><br/>Unit has died. The process is irreversible<br/>Most of unit properties can no longer be accessed</sub> | <sub>**aUnit**: Integer; <br/> **aKillerOwner**: Integer;</sub> |
-| 7023 | <a id="OnUnitGiven">OnUnitGiven</a><sub></sub> | <sub>**aUnit**: Integer;</sub> |
+| - | <a id="OnUnitDied">OnUnitDied</a><sub><br/>Unit has died. The process is irreversible<br/>Most of unit properties can no longer be accessed<br/>Note that act of training a citizen/warrior also has to kill the peasant, since new unit will have a new UID</sub> | <sub>**aUnit**: Integer; <br/> **aKillerOwner**: Integer;</sub> |
+| 15902 | <a id="OnUnitGiven">OnUnitGiven</a><sub><br/>Signals that new unit was given to the player<br/>This includes: Actions.UnitGive</sub> | <sub>**aUnit**: Integer;</sub> |
 | 10630 | <a id="OnUnitOwnerChanged">OnUnitOwnerChanged</a><sub><br/>Occurs after a unit changes owner.<br/>When a unit changes its owner it actually get silently killed and a new unit gets spawned for a new owner in its place.</sub> | <sub>**aOldUnit**: Integer; // _UID of the unit that was killed (since it is already dead, it can't be used in any States or Actions)._ <br/> **aNewUnit**: Integer; // _UID of the new unit that was spawned (-1 if it failed)_</sub> |
 | 14474 | <a id="OnUnitOwnerChanging">OnUnitOwnerChanging</a><sub><br/>Occurs right before unit changes owner.<br/>When a unit changes its owner it actually get silently killed and a new unit gets spawned for a new owner in its place.</sub> | <sub>**aUnit**: Integer; // _UID of the unit that will be silently killed (since it is doomed, it must not be used in any Actions)._ <br/> **aNewOwner**: Integer; // _Player who will get the new identical unit_</sub> |
-| - | <a id="OnUnitTrained">OnUnitTrained</a><sub></sub> | <sub>**aUnit**: Integer;</sub> |
+| 15903 | <a id="OnUnitSpawned">OnUnitSpawned</a><sub><br/>New unit was automatically spawned for the player<br/>This includes: Peasants in Cottages, Sheep in pastures, Wild Animals in Dens</sub> | <sub>**aUnit**: Integer;</sub> |
+| - | <a id="OnUnitTrained">OnUnitTrained</a><sub><br/>Citizen unit was trained in Camp or School<br/>Warriors use OnWarriorEquipped</sub> | <sub>**aUnit**: Integer;</sub> |
 | 12050 | <a id="OnUnitWagonEnteredHouse">OnUnitWagonEnteredHouse</a><sub><br/>Occurs when wagon has successfully entered a house. Right before wares get transferred and the wagon is gone</sub> | <sub>**aUnit**: Integer; <br/> **aHouse**: Integer;</sub> |
 | 4349 | <a id="OnUnitWoundedByHouse">OnUnitWoundedByHouse</a><sub><br/>A unit was attacked by an enemy house (surely a Tower)</sub> | <sub>**aUnit**: Integer; <br/> **aAttackerHouse**: Integer;</sub> |
 | 4349 | <a id="OnUnitWoundedByUnit">OnUnitWoundedByUnit</a><sub><br/>A unit was attacked by an enemy unit</sub> | <sub>**aUnit**: Integer; <br/> **aAttackerUnit**: Integer;</sub> |
-| - | <a id="OnWarriorEquipped">OnWarriorEquipped</a><sub></sub> | <sub>**aUnit**: Integer; <br/> **aGroup**: Integer;</sub> |
+| - | <a id="OnWarriorEquipped">OnWarriorEquipped</a><sub><br/>New individual warrior was equipped and assigned to a group<br/>This includes: warrior trained</sub> | <sub>**aUnit**: Integer; <br/> **aGroup**: Integer;</sub> |
+| 15908 | <a id="OnWarriorGiven">OnWarriorGiven</a><sub><br/>New individual warrior was given to the player and assigned to a group<br/>This includes: cheat-code</sub> | <sub>**aUnit**: Integer; <br/> **aGroup**: Integer;</sub> |

@@ -180,8 +180,8 @@ Version column description:
 | - | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub><br/>Checking alliances with Neutral will always return True (despite some animals being agressive)</sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerColorText">PlayerColorText</a><sub><br/>Get the string with color code of the player (adjusted brighter for text display)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>string</sub> |
 | - | <a id="PlayerDefeated">PlayerDefeated</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
-| - | <a id="PlayerEnabled">PlayerEnabled</a><sub><br/>Check if hand is enabled (chosen to be played by anyone on mission start)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
-| 8743 | <a id="PlayerFogRevealed">PlayerFogRevealed</a><sub><br/>See if tile is revealed to the player (known or live)</sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="PlayerEnabled">PlayerEnabled</a><sub><br/>Check if hand is enabled (chosen to be played by anyone on mission start)<br/>Will return false for any non-existent hands too</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
+| 8743 | <a id="PlayerFogRevealed">PlayerFogRevealed</a><sub><br/>See if tile is revealed to the player (known or live)</sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerGetAllGroups">PlayerGetAllGroups</a><sub><br/>Get list of all players groups</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | 14495 | <a id="PlayerGetAllGroupsFilter">PlayerGetAllGroupsFilter</a><sub><br/>Get list of all players groups</sub> | <sub>**aPlayer**: Integer; <br/> **aGroupType**: TKMGroupTypeSet;</sub> | <sub>TKMIntegerArray</sub> |
 | - | <a id="PlayerGetAllHouses">PlayerGetAllHouses</a><sub><br/>Return all players houses that are not destroyed</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
@@ -213,7 +213,7 @@ Version column description:
 | -6683 | <a id="SysRandom">SysRandom</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#Utils.Random">Utils.Random</a> instead*</sub><sub></sub> | <sub></sub> | <sub>Single</sub> |
 | -6683 | <a id="SysRandomI">SysRandomI</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#Utils.RandomI">Utils.RandomI</a> instead*</sub><sub></sub> | <sub>**aMax**: Integer;</sub> | <sub>Integer</sub> |
 | 14250 | <a id="TerrainObjectState">TerrainObjectState</a><sub><br/>Get the state of the terrain object<br/>If there's no object - default state of 0 is returned</sub> | <sub>**aX, aY**: Integer; <br/> **aCoord**: Byte;</sub> | <sub>Byte</sub> |
-| - | <a id="UnitAt">UnitAt</a><sub><br/>Return UID of the unit on requested coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
+| - | <a id="UnitAt">UnitAt</a><sub><br/>Return UID of the unit on requested coordinates on terrain<br/>Units inside houses do not count</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitCarryCount">UnitCarryCount</a><sub><br/>See how many wares that unit (porter or wagon) is carrying</sub> | <sub>**aUnitID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitCarryType">UnitCarryType</a><sub><br/>See ware type that unit (porter or wagon) is carrying</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMWareType</sub> |
 | 15556 | <a id="UnitDamageMax">UnitDamageMax</a><sub><br/>Returns maximum damage of a unit. 0 if unit can not deal damage. -1 if there's no such unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
@@ -230,7 +230,7 @@ Version column description:
 | - | <a id="UnitOwner">UnitOwner</a><sub><br/>See unit owner hand</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitPositionX">UnitPositionX</a><sub><br/>Get rounded unit position X<br/>-1 if unit does not exist</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitPositionY">UnitPositionY</a><sub><br/>Get rounded unit position Y<br/>-1 if unit does not exist</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
-| 12430 | <a id="UnitsAt">UnitsAt</a><sub><br/>Return UIDs of the units within requested coordinates<br/>For convenience, bounds can exceed map coordinates without generating an error</sub> | <sub>**aX1**: Integer; <br/> **aY1**: Integer; <br/> **aX2**: Integer; <br/> **aY2**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
+| 12430 | <a id="UnitsAt">UnitsAt</a><sub><br/>Return UIDs of the units within requested coordinates<br/>Units inside houses do not count<br/>For convenience, bounds can exceed map coordinates without generating an error</sub> | <sub>**aX1**: Integer; <br/> **aY1**: Integer; <br/> **aX2**: Integer; <br/> **aY2**: Integer;</sub> | <sub>TKMIntegerArray</sub> |
 | - | <a id="UnitType">UnitType</a><sub><br/>See unit type</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>TKMUnitType</sub> |
 | 15658 | <a id="UnitTypeName">UnitTypeName</a><sub><br/>Returns unit type name as used in the game engine<br/>Intended to be used for debug purposes</sub> | <sub>**aUnitType**: TKMUnitType;</sub> | <sub>string</sub> |
 | 15658 | <a id="WareTypeName">WareTypeName</a><sub><br/>Returns ware type name as used in the game engine<br/>Intended to be used for debug purposes</sub> | <sub>**aWareType**: TKMWareType;</sub> | <sub>string</sub> |
