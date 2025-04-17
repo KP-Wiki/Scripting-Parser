@@ -106,10 +106,7 @@ procedure TKMScriptingParser.ExportTypesToCode(const aCodeFile: string);
 var
   countReg: Integer;
 begin
-  fTypes.SortByName(stByDependancy);
-
   fTypes.ExportCode(aCodeFile, countReg);
-
   fOnLog(Format('%d %s exported into Code', [countReg, AREA_INFO[paTypes].Short]));
   fOnLog('');
 end;
@@ -117,26 +114,9 @@ end;
 
 procedure TKMScriptingParser.ExportTypesToWiki(aPaths: TKMAreaPathsCommon);
 var
-  sl: TStringList;
-  exportPath: string;
   countWiki: Integer;
 begin
-  if aPaths.WikiOutput = '' then Exit;
-
-  fTypes.SortByName(stByAlphabet);
-
-  sl := TStringList.Create;
-
-  sl.Text := fTypes.ExportWiki(aPaths.WikiTemplate, countWiki);
-
-  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aPaths.WikiOutput);
-  if not DirectoryExists(ExtractFileDir(exportPath)) then
-    ForceDirectories(ExtractFileDir(exportPath));
-
-  sl.SaveToFile(aPaths.WikiOutput);
-
-  sl.Free;
-
+  fTypes.ExportWiki(aPaths.WikiTemplate, aPaths.WikiOutput, countWiki);
   fOnLog(Format('%d %s exported into Wiki', [countWiki, AREA_INFO[paTypes].Short]));
   fOnLog('');
 end;

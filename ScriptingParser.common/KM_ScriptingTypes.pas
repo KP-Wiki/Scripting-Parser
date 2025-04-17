@@ -68,7 +68,7 @@ type
     procedure LoadFromFiles(const aSourceMask: string);
     procedure SortByName(aSortBy: TKMSortType);
     procedure ExportCode(const aCodeFile: string; out aCountReg: Integer);
-    function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
+    procedure ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer);
   end;
 
 
@@ -680,6 +680,8 @@ begin
 
   if not FileExists(aCodeFile) then Exit;
 
+  SortByName(stByDependancy);
+
   sl := TStringList.Create;
   try
     sl.LoadFromFile(aCodeFile);
@@ -709,10 +711,17 @@ begin
 end;
 
 
-function TKMScriptTypes.ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
+procedure TKMScriptTypes.ExportWiki(const aTemplateFile, aOutputFile: string; out aCountWiki: Integer);
 var
   sl: TStringList;
+  exportPath: string;
 begin
+  aCountWiki := 0;
+
+  if aOutputFile = '' then Exit;
+
+  SortByName(stByAlphabet);
+
   sl := TStringList.Create;
 
   sl.LoadFromFile(aTemplateFile);
@@ -720,7 +729,11 @@ begin
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
-  Result := sl.Text;
+  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+  if not DirectoryExists(ExtractFileDir(exportPath)) then
+    ForceDirectories(ExtractFileDir(exportPath));
+
+  sl.SaveToFile(aOutputFile);
 
   sl.Free;
 
