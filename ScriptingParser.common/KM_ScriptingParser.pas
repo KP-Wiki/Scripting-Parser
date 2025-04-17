@@ -20,7 +20,7 @@ type
     fTypes: TKMScriptTypes;
     procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
     procedure ExportMethodsToWiki(aArea: TKMParsingArea; aPaths: TKMAreaPathsCommon);
-    procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
+    procedure ExportTypesToCode(const aCodeFile: string);
     procedure ExportTypesToWiki(aPaths: TKMAreaPathsCommon);
   public
     constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
@@ -102,7 +102,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ExportTypesToCode(const aSourceMask, aCodeFile: string);
+procedure TKMScriptingParser.ExportTypesToCode(const aCodeFile: string);
 var
   countReg: Integer;
 begin
@@ -150,11 +150,11 @@ begin
   // Now, some functions in Actions expect string arrays. Problem is that they must be declared as TKMStringArray to accept both TKMStringArray and "array of"
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
-  fMethods[paActions].ExportCode(aPaths.PathsA.SourceOutputCheckAndReg, aPaths.PathsA.SourceOutputCheckAndReg);
-  fMethods[paEvents ].ExportCode(aPaths.PathsE.SourceOutputCheck,       aPaths.PathsE.SourceOutputReg);
-  fMethods[paStates ].ExportCode(aPaths.PathsS.SourceOutputCheckAndReg, aPaths.PathsS.SourceOutputCheckAndReg);
-  fMethods[paUtils  ].ExportCode(aPaths.PathsU.SourceOutputCheckAndReg, aPaths.PathsU.SourceOutputCheckAndReg);
-  ExportTypesToCode(aPaths.PathsT.SourceInput, aPaths.PathsT.SourceOutputReg);
+  fMethods[paActions].ExportCode(aPaths.PathsA.SourceOutputCheckAndReg);
+  fMethods[paEvents ].ExportCode(aPaths.PathsE.SourceOutputCheck, aPaths.PathsE.SourceOutputReg);
+  fMethods[paStates ].ExportCode(aPaths.PathsS.SourceOutputCheckAndReg);
+  fMethods[paUtils  ].ExportCode(aPaths.PathsU.SourceOutputCheckAndReg);
+  ExportTypesToCode(aPaths.PathsT.SourceOutputReg);
 end;
 
 

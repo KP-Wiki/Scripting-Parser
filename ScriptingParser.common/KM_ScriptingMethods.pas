@@ -58,7 +58,8 @@ type
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName;
-    procedure ExportCode(const aFilenameCheck, aFilenameReg: string);
+    procedure ExportCode(const aFilenameCheckAndReg: string); overload;
+    procedure ExportCode(const aFilenameCheck, aFilenameReg: string); overload;
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
   end;
 
@@ -553,6 +554,21 @@ begin
     fOnLog(Format('%d %s exported into Code regs', [fList.Count, AREA_INFO[fArea].Short]));
   end else
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].RegTag]));
+end;
+
+
+procedure TKMScriptMethods.ExportCode(const aFilenameCheckAndReg: string);
+var
+  sl: TStringList;
+begin
+  if not FileExists(aFilenameCheckAndReg) then Exit;
+
+  sl := TStringList.Create;
+  sl.LoadFromFile(aFilenameCheckAndReg);
+  ExportCodeSectionCheck(sl);
+  ExportCodeSectionReg(sl);
+  sl.SaveToFile(aFilenameCheckAndReg);
+  sl.Free;
 end;
 
 
