@@ -6,19 +6,38 @@ uses
 
 type
   // Set of paths required for one job
-  // Maybe we will split them for Events/Types?
-  TKMAreaPaths = record
+  TKMAreaPathsCommon = class
   public
     SourceInput: string;
-    SourceOutputCheck: string;
-    SourceOutputReg: string;
     WikiTemplate: string;
     WikiOutput: string;
   end;
 
+  TKMAreaPathsASU = class(TKMAreaPathsCommon)
+  public
+    SourceOutputCheckAndReg: string;
+  end;
+
+  TKMAreaPathsE = class(TKMAreaPathsCommon)
+  public
+    SourceOutputCheck: string;
+    SourceOutputReg: string;
+  end;
+
+  TKMAreaPathsT = class(TKMAreaPathsCommon)
+  public
+    SourceOutputReg: string;
+  end;
+
   TKMScriptingPaths = class
   public
-    Paths: array [TKMParsingArea] of TKMAreaPaths;
+    PathsA: TKMAreaPathsASU;
+    PathsE: TKMAreaPathsE;
+    PathsS: TKMAreaPathsASU;
+    PathsU: TKMAreaPathsASU;
+    PathsT: TKMAreaPathsT;
+    constructor Create;
+    destructor Destroy; override;
     procedure LoadFromINI(const aSettingsPath: string);
     procedure SaveToINI(const aSettingsPath: string);
   end;
@@ -30,6 +49,30 @@ uses
 
 
 { TKMScriptingPaths }
+constructor TKMScriptingPaths.Create;
+begin
+  inherited;
+
+  PathsA := TKMAreaPathsASU.Create;
+  PathsE := TKMAreaPathsE.Create;
+  PathsS := TKMAreaPathsASU.Create;
+  PathsU := TKMAreaPathsASU.Create;
+  PathsT := TKMAreaPathsT.Create;
+end;
+
+
+destructor TKMScriptingPaths.Destroy;
+begin
+  FreeAndNil(PathsA);
+  FreeAndNil(PathsE);
+  FreeAndNil(PathsS);
+  FreeAndNil(PathsU);
+  FreeAndNil(PathsT);
+
+  inherited;
+end;
+
+
 procedure TKMScriptingPaths.LoadFromINI(const aSettingsPath: string);
 var
   ini: TINIFile;
@@ -37,30 +80,30 @@ begin
   ini := TINIFile.Create(aSettingsPath);
 
   // Listing everything plainly is KISS compared to loops and issues with Events and Types being slightly different
-  Paths[paActions].SourceInput := ini.ReadString('INPUT',  'Actions', '..\..\src\scripting\KM_ScriptingActions.pas');
-  Paths[paEvents].SourceInput  := ini.ReadString('INPUT',  'Events',  '..\..\src\scripting\KM_ScriptingEvents.pas');
-  Paths[paStates].SourceInput  := ini.ReadString('INPUT',  'States',  '..\..\src\scripting\KM_ScriptingStates.pas');
-  Paths[paUtils].SourceInput   := ini.ReadString('INPUT',  'Utils',   '..\..\src\scripting\KM_ScriptingUtils.pas');
-  Paths[paTypes].SourceInput   := ini.ReadString('INPUT',  'Types',   '..\..\src\scripting\KM_ScriptingEnginePS.pas');
+  PathsA.SourceInput := ini.ReadString('INPUT',  'Actions', '..\..\src\scripting\KM_ScriptingActions.pas');
+  PathsE.SourceInput := ini.ReadString('INPUT',  'Events',  '..\..\src\scripting\KM_ScriptingEvents.pas');
+  PathsS.SourceInput := ini.ReadString('INPUT',  'States',  '..\..\src\scripting\KM_ScriptingStates.pas');
+  PathsU.SourceInput := ini.ReadString('INPUT',  'Utils',   '..\..\src\scripting\KM_ScriptingUtils.pas');
+  PathsT.SourceInput := ini.ReadString('INPUT',  'Types',   '..\..\src\scripting\KM_ScriptingEnginePS.pas');
 
-  Paths[paActions].WikiTemplate := ini.ReadString('TEMPLATE', 'Actions', 'template\Actions.template');
-  Paths[paEvents].WikiTemplate  := ini.ReadString('TEMPLATE', 'Events',  'template\Events.template');
-  Paths[paStates].WikiTemplate  := ini.ReadString('TEMPLATE', 'States',  'template\States.template');
-  Paths[paUtils].WikiTemplate   := ini.ReadString('TEMPLATE', 'Utils',   'template\Utils.template');
-  Paths[paTypes].WikiTemplate   := ini.ReadString('TEMPLATE', 'Types',   'template\Types.template');
+  PathsA.WikiTemplate := ini.ReadString('TEMPLATE', 'Actions', 'template\Actions.template');
+  PathsE.WikiTemplate := ini.ReadString('TEMPLATE', 'Events',  'template\Events.template');
+  PathsS.WikiTemplate := ini.ReadString('TEMPLATE', 'States',  'template\States.template');
+  PathsU.WikiTemplate := ini.ReadString('TEMPLATE', 'Utils',   'template\Utils.template');
+  PathsT.WikiTemplate := ini.ReadString('TEMPLATE', 'Types',   'template\Types.template');
 
-  Paths[paActions].WikiOutput := ini.ReadString('OUTPUT', 'Actions', 'Actions.wiki');
-  Paths[paEvents].WikiOutput  := ini.ReadString('OUTPUT', 'Events',  'Events.wiki');
-  Paths[paStates].WikiOutput  := ini.ReadString('OUTPUT', 'States',  'States.wiki');
-  Paths[paUtils].WikiOutput   := ini.ReadString('OUTPUT', 'Utils',   'Utils.wiki');
-  Paths[paTypes].WikiOutput   := ini.ReadString('OUTPUT', 'Types',   'Types.wiki');
+  PathsA.WikiOutput := ini.ReadString('OUTPUT', 'Actions', 'Actions.wiki');
+  PathsE.WikiOutput := ini.ReadString('OUTPUT', 'Events',  'Events.wiki');
+  PathsS.WikiOutput := ini.ReadString('OUTPUT', 'States',  'States.wiki');
+  PathsU.WikiOutput := ini.ReadString('OUTPUT', 'Utils',   'Utils.wiki');
+  PathsT.WikiOutput := ini.ReadString('OUTPUT', 'Types',   'Types.wiki');
 
-  Paths[paActions].SourceOutputCheck := ini.ReadString('CODE', 'Actions', '.pas');
-  Paths[paEvents].SourceOutputCheck  := ini.ReadString('CODE', 'Events',  '.pas');
-  Paths[paEvents].SourceOutputReg    := ini.ReadString('CODE', 'Events2',  '.pas');
-  Paths[paStates].SourceOutputCheck  := ini.ReadString('CODE', 'States',  '.pas');
-  Paths[paUtils].SourceOutputCheck   := ini.ReadString('CODE', 'Utils',   '.pas');
-  Paths[paTypes].SourceOutputCheck   := ini.ReadString('CODE', 'Types',   '.pas');
+  PathsA.SourceOutputCheckAndReg  := ini.ReadString('CODE', 'Actions', '.pas');
+  PathsE.SourceOutputCheck        := ini.ReadString('CODE', 'Events',  '.pas');
+  PathsE.SourceOutputReg          := ini.ReadString('CODE', 'Events2', '.pas');
+  PathsS.SourceOutputCheckAndReg  := ini.ReadString('CODE', 'States',  '.pas');
+  PathsU.SourceOutputCheckAndReg  := ini.ReadString('CODE', 'Utils',   '.pas');
+  PathsT.SourceOutputReg          := ini.ReadString('CODE', 'Types',   '.pas');
 
   FreeAndNil(ini);
 
@@ -76,30 +119,30 @@ begin
   ini := TINIFile.Create(aSettingsPath);
 
   // Listing everything plainly is KISS compared to loops and issues with Events and Types being slightly different
-  ini.WriteString('INPUT',  'Actions', Paths[paActions].SourceInput);
-  ini.WriteString('INPUT',  'Events',  Paths[paEvents].SourceInput);
-  ini.WriteString('INPUT',  'States',  Paths[paStates].SourceInput);
-  ini.WriteString('INPUT',  'Utils',   Paths[paUtils].SourceInput);
-  ini.WriteString('INPUT',  'Types',   Paths[paTypes].SourceInput);
+  ini.WriteString('INPUT',  'Actions', PathsA.SourceInput);
+  ini.WriteString('INPUT',  'Events',  PathsE.SourceInput);
+  ini.WriteString('INPUT',  'States',  PathsS.SourceInput);
+  ini.WriteString('INPUT',  'Utils',   PathsU.SourceInput);
+  ini.WriteString('INPUT',  'Types',   PathsT.SourceInput);
 
-  ini.WriteString('TEMPLATE',  'Actions', Paths[paActions].WikiTemplate);
-  ini.WriteString('TEMPLATE',  'Events',  Paths[paEvents].WikiTemplate);
-  ini.WriteString('TEMPLATE',  'States',  Paths[paStates].WikiTemplate);
-  ini.WriteString('TEMPLATE',  'Utils',   Paths[paUtils].WikiTemplate);
-  ini.WriteString('TEMPLATE',  'Types',   Paths[paTypes].WikiTemplate);
+  ini.WriteString('TEMPLATE',  'Actions', PathsA.WikiTemplate);
+  ini.WriteString('TEMPLATE',  'Events',  PathsE.WikiTemplate);
+  ini.WriteString('TEMPLATE',  'States',  PathsS.WikiTemplate);
+  ini.WriteString('TEMPLATE',  'Utils',   PathsU.WikiTemplate);
+  ini.WriteString('TEMPLATE',  'Types',   PathsT.WikiTemplate);
 
-  ini.WriteString('OUTPUT',  'Actions', Paths[paActions].WikiOutput);
-  ini.WriteString('OUTPUT',  'Events',  Paths[paEvents].WikiOutput);
-  ini.WriteString('OUTPUT',  'States',  Paths[paStates].WikiOutput);
-  ini.WriteString('OUTPUT',  'Utils',   Paths[paUtils].WikiOutput);
-  ini.WriteString('OUTPUT',  'Types',   Paths[paTypes].WikiOutput);
+  ini.WriteString('OUTPUT',  'Actions', PathsA.WikiOutput);
+  ini.WriteString('OUTPUT',  'Events',  PathsE.WikiOutput);
+  ini.WriteString('OUTPUT',  'States',  PathsS.WikiOutput);
+  ini.WriteString('OUTPUT',  'Utils',   PathsU.WikiOutput);
+  ini.WriteString('OUTPUT',  'Types',   PathsT.WikiOutput);
 
-  ini.WriteString('CODE',  'Actions', Paths[paActions].SourceOutputCheck);
-  ini.WriteString('CODE',  'Events',  Paths[paEvents].SourceOutputCheck);
-  ini.WriteString('CODE',  'Events2', Paths[paEvents].SourceOutputReg);
-  ini.WriteString('CODE',  'States',  Paths[paStates].SourceOutputCheck);
-  ini.WriteString('CODE',  'Utils',   Paths[paUtils].SourceOutputCheck);
-  ini.WriteString('CODE',  'Types',   Paths[paTypes].SourceOutputCheck);
+  ini.WriteString('CODE',  'Actions', PathsA.SourceOutputCheckAndReg);
+  ini.WriteString('CODE',  'Events',  PathsE.SourceOutputCheck);
+  ini.WriteString('CODE',  'Events2', PathsE.SourceOutputReg);
+  ini.WriteString('CODE',  'States',  PathsS.SourceOutputCheckAndReg);
+  ini.WriteString('CODE',  'Utils',   PathsU.SourceOutputCheckAndReg);
+  ini.WriteString('CODE',  'Types',   PathsT.SourceOutputReg);
 
   FreeAndNil(ini);
 end;
