@@ -12,13 +12,11 @@ object fmScriptingParser: TfmScriptingParser
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
     945
     648)
-  PixelsPerInch = 96
   TextHeight = 13
   object btnReyKMR: TButton
     Left = 840
@@ -63,7 +61,7 @@ object fmScriptingParser: TfmScriptingParser
   end
   object btnGenerateXML: TButton
     Left = 838
-    Top = 152
+    Top = 200
     Width = 98
     Height = 49
     Anchors = [akTop]
@@ -357,5 +355,24 @@ object fmScriptingParser: TfmScriptingParser
     Height = 441
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 7
+  end
+  object btnCheckMessages: TButton
+    Left = 838
+    Top = 152
+    Width = 98
+    Height = 49
+    Anchors = [akTop]
+    Caption = 'Check messages'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
+    TabOrder = 8
+    WordWrap = True
+    OnClick = btnCheckMessagesClick
   end
 end

@@ -45,6 +45,7 @@ type
     btnGenerateCode: TButton;
     meLog: TMemo;
     edEventsCode2: TEdit;
+    btnCheckMessages: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure edtOnTextChange(Sender: TObject);
@@ -54,6 +55,7 @@ type
     procedure btnGenerateXMLClick(Sender: TObject);
     procedure btnGenerateCodeClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure btnCheckMessagesClick(Sender: TObject);
   private
     fParsingGame: TKMParsingGame;
     fSettingsPath: string;
@@ -123,6 +125,20 @@ begin
   finally
     fUpdating := False;
   end;
+end;
+
+
+procedure TfmScriptingParser.btnCheckMessagesClick(Sender: TObject);
+begin
+  meLog.Clear;
+  meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' checking messages:');
+  meLog.Lines.Append(DupeString('-', 50));
+
+  // For now it is more KISS to create and use instance for the job
+  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
+  scriptingParser.ParseCode(fScriptingPaths);
+  scriptingParser.CheckMessages(fScriptingPaths);
+  scriptingParser.Free;
 end;
 
 

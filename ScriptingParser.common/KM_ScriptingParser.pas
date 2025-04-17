@@ -26,6 +26,7 @@ type
     procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure GenerateCode(aPaths: TKMScriptingPaths);
     procedure GenerateWiki(aPaths: TKMScriptingPaths);
+    procedure CheckMessages(aPaths: TKMScriptingPaths);
     procedure GenerateXML;
   end;
 
@@ -115,6 +116,23 @@ begin
     CopyForReference(aPaths.PathsS.WikiOutput, paStates);
     CopyForReference(aPaths.PathsU.WikiOutput, paUtils);
     CopyForReference(aPaths.PathsT.WikiOutput, paTypes);
+  end;
+end;
+
+
+procedure TKMScriptingParser.CheckMessages(aPaths: TKMScriptingPaths);
+begin
+  if fParsingGame = pgKaMRemake then
+  begin
+    fMethods[paActions].CheckMessages(aPaths.PathsA.SourceInput, 'LogParamWarn');
+    fMethods[paStates].CheckMessages(aPaths.PathsS.SourceInput, 'LogParamWarn');
+    fMethods[paUtils].CheckMessages(aPaths.PathsU.SourceInput, 'LogParamWarn');
+  end;
+  if fParsingGame = pgKnightsProvince then
+  begin
+    fMethods[paActions].CheckMessages(aPaths.PathsA.SourceInput, 'LogParamWarning');
+    fMethods[paStates].CheckMessages(aPaths.PathsS.SourceInput, 'LogParamWarning');
+    fMethods[paUtils].CheckMessages(aPaths.PathsU.SourceInput, 'LogParamWarning');
   end;
 end;
 

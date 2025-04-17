@@ -17,6 +17,7 @@ type
   // Single method info
   TKMMethodInfo = class
   private
+    fLineOfCode: Integer;
     fName: string;
     fType: TKMMethodType;
     fVersion: string; // Version in which the method was added/changed
@@ -29,7 +30,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure LoadFromStringList(aSource: TStringList; aArea: TKMParsingArea);
+    procedure LoadFromStringList(aSource: TStringList; aLineOfCode: Integer; aArea: TKMParsingArea);
     function ExportWikiBody(aNeedReturn: Boolean): string;
     function ExportWikiLink: string;
     function ExportCodeSignature: string;
@@ -52,6 +53,7 @@ type
     procedure ExportCodeSectionCheck(aSL: TStringList);
     procedure ExportCodeSectionReg(aSL: TStringList);
     procedure SortByName;
+    procedure CheckMessagesInt(aSL: TStringList; const aLogMessageName: string);
   public
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
@@ -61,6 +63,8 @@ type
     procedure ExportCode(const aFilenameCheckAndReg: string); overload;
     procedure ExportCode(const aFilenameCheck, aFilenameReg: string); overload;
     function ExportWiki(const aTemplateFile, aOutputFile: string): string;
+
+    procedure CheckMessages(const aSourceFile: string; const aLogMessageName: string);
   end;
 
 
@@ -91,13 +95,15 @@ begin
 end;
 
 
-procedure TKMMethodInfo.LoadFromStringList(aSource: TStringList; aArea: TKMParsingArea);
+procedure TKMMethodInfo.LoadFromStringList(aSource: TStringList; aLineOfCode: Integer; aArea: TKMParsingArea);
 var
   I: Integer;
   srcLine, restStr, metName: string;
   strStatus: string;
   details: TStringList;
 begin
+  fLineOfCode := aLineOfCode;
+
   details := TStringList.Create;
   try
     I := 0;
@@ -386,8 +392,9 @@ var
   slSource: TStringList;
   I: Integer;
   srcLine: string;
-  sl: TStringList;
+  slMethodDeclaration: TStringList;
   sectionStarted, sectionTailEnded: Boolean;
+  lastSectionStart: Integer;
 begin
   fList.Clear;
   if not FileExists(aInputFile) then Exit;
@@ -411,8 +418,9 @@ begin
 
     sectionStarted := False;
     sectionTailEnded := True;
+    lastSectionStart := -1;
 
-    sl := TStringList.Create;
+    slMethodDeclaration := TStringList.Create;
     for I := 0 to slSource.Count - 1 do
     begin
       srcLine := slSource[I];
@@ -421,11 +429,12 @@ begin
       begin
         sectionStarted := True;
         sectionTailEnded := True;
-        sl.Clear;
+        slMethodDeclaration.Clear;
+        lastSectionStart := I;
       end;
 
       if sectionStarted then
-        sl.Append(slSource[I]);
+        slMethodDeclaration.Append(slSource[I]);
 
       if sectionStarted and (StartsStr('procedure', srcLine) or StartsStr('function', srcLine) or not sectionTailEnded) then
       begin
@@ -440,11 +449,13 @@ begin
           sectionStarted := False;
 
           fList.Add(TKMMethodInfo.Create);
-          fList.Last.LoadFromStringList(sl, fArea);
+          fList.Last.LoadFromStringList(slMethodDeclaration, lastSectionStart, fArea);
+
+          lastSectionStart := -1;
         end;
       end;
     end;
-    sl.Free;
+    slMethodDeclaration.Free;
   finally
     slSource.Free;
   end;
@@ -559,6 +570,37 @@ begin
 end;
 
 
+procedure TKMScriptMethods.CheckMessagesInt(aSL: TStringList; const aLogMessageName: string);
+begin
+  for var I := 0 to fList.Count - 1 do
+  begin
+    var idx := fList[I].fLineOfCode;
+    var lineTextThis := '';
+    var lineTextPrev := '';
+    var logCount := 0;
+    repeat
+      lineTextPrev := lineTextThis;
+      lineTextThis := aSL[idx];
+
+      if (Pos(aLogMessageName, lineTextThis) <> 0) then
+      begin
+        Inc(logCount);
+
+        // If there is a LogMessage in this line, it should reference the method it is in
+        if (Pos(fList[I].fName, lineTextThis) = 0) then
+          fOnLog(fList[I].fName + ' - ' + Trim(lineTextThis));
+      end;
+
+      Inc(idx);
+    until lineTextThis + lineTextPrev = '';
+
+    // There are quite a few methods without warnings in them
+    //if (fList[I].fStatus = msOk) and (fList[I].fParameters.Count > 0) and (logCount = 0) then
+    //  fOnLog(fList[I].fName + ' - no warnings?');
+  end;
+end;
+
+
 procedure TKMScriptMethods.ExportCode(const aFilenameCheckAndReg: string);
 var
   sl: TStringList;
@@ -622,6 +664,19 @@ begin
   sl.Free;
 
   fOnLog(Format('%d %s exported into Wiki', [GetCount, AREA_INFO[fArea].Short]));
+end;
+
+
+procedure TKMScriptMethods.CheckMessages(const aSourceFile: string; const aLogMessageName: string);
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  sl.LoadFromFile(aSourceFile);
+
+  CheckMessagesInt(sl, aLogMessageName);
+
+  sl.Free;
 end;
 
 
