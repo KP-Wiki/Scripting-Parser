@@ -147,11 +147,7 @@ begin
 
   // For now it is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.GenerateWiki(paActions, edActionsIn.Text, edActionsTemplate.Text, edActionsOut.Text);
-  scriptingParser.GenerateWiki(paEvents,  edEventsIn.Text,  edEventsTemplate.Text,  edEventsOut.Text);
-  scriptingParser.GenerateWiki(paStates,  edStatesIn.Text,  edStatesTemplate.Text,  edStatesOut.Text);
-  scriptingParser.GenerateWiki(paUtils,   edUtilsIn.Text,   edUtilsTemplate.Text,   edUtilsOut.Text);
-  scriptingParser.GenerateWiki(paTypes,   edTypesIn.Text,   edTypesTemplate.Text,   edTypesOut.Text);
+  scriptingParser.GenerateWiki(fScriptingPaths);
   scriptingParser.Free;
 end;
 

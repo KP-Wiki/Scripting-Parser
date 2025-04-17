@@ -28,7 +28,7 @@ type
     destructor Destroy; override;
 
     procedure GenerateCode(aPaths: TKMScriptingPaths);
-    procedure GenerateWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+    procedure GenerateWiki(aPaths: TKMScriptingPaths);
     procedure GenerateXML;
   end;
 
@@ -208,18 +208,22 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingParser.GenerateWiki(aPaths: TKMScriptingPaths);
 begin
-  case aArea of
-    paActions,
-    paEvents,
-    paStates,
-    paUtils: ExportMethodsToWiki(aArea, aSourceFile, aTemplateFile, aOutputFile);
-    paTypes: ExportTypesToWiki(aSourceFile, aTemplateFile, aOutputFile);
-  end;
+  ExportMethodsToWiki(paActions, aPaths.PathsA.SourceInput, aPaths.PathsA.WikiTemplate, aPaths.PathsA.WikiOutput);
+  ExportMethodsToWiki(paEvents, aPaths.PathsE.SourceInput, aPaths.PathsE.WikiTemplate, aPaths.PathsE.WikiOutput);
+  ExportMethodsToWiki(paStates, aPaths.PathsS.SourceInput, aPaths.PathsS.WikiTemplate, aPaths.PathsS.WikiOutput);
+  ExportMethodsToWiki(paUtils, aPaths.PathsU.SourceInput, aPaths.PathsU.WikiTemplate, aPaths.PathsU.WikiOutput);
+  ExportTypesToWiki(aPaths.PathsT.SourceInput, aPaths.PathsT.WikiTemplate, aPaths.PathsT.WikiOutput);
 
   if DBG_COPY_FOR_REFERENCE then
-    CopyForReference(aOutputFile, aArea);
+  begin
+    CopyForReference(aPaths.PathsA.WikiOutput, paActions);
+    CopyForReference(aPaths.PathsE.WikiOutput, paEvents);
+    CopyForReference(aPaths.PathsS.WikiOutput, paStates);
+    CopyForReference(aPaths.PathsU.WikiOutput, paUtils);
+    CopyForReference(aPaths.PathsT.WikiOutput, paTypes);
+  end;
 end;
 
 
