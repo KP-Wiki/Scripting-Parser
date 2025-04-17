@@ -20,9 +20,9 @@ type
     fTypes: TKMScriptTypes;
     procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
     procedure ExportMethodsToCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
-    procedure ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+    procedure ExportMethodsToWiki(aArea: TKMParsingArea; aPaths: TKMAreaPathsCommon);
     procedure ExportTypesToCode(const aSourceMask, aCodeFile: string);
-    procedure ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
+    procedure ExportTypesToWiki(aPaths: TKMAreaPathsCommon);
   public
     constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
     destructor Destroy; override;
@@ -94,32 +94,32 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ExportMethodsToWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingParser.ExportMethodsToWiki(aArea: TKMParsingArea; aPaths: TKMAreaPathsCommon);
 var
   sl: TStringList;
   exportPath: string;
   countWiki: Integer;
 begin
-  if not FileExists(aSourceFile) then Exit;
+  if not FileExists(aPaths.SourceInput) then Exit;
 
-  fMethods[aArea].LoadFromFile(aSourceFile);
+  fMethods[aArea].LoadFromFile(aPaths.SourceInput);
 
   fOnLog(Format('%d %s parsed', [fMethods[aArea].Count, AREA_INFO[aArea].Short]));
 
   // Sort for neat order
   fMethods[aArea].SortByName;
 
-  if aOutputFile = '' then Exit;
+  if aPaths.WikiOutput = '' then Exit;
 
   sl := TStringList.Create;
 
-  sl.Text := fMethods[aArea].ExportWiki(aTemplateFile, countWiki);
+  sl.Text := fMethods[aArea].ExportWiki(aPaths.WikiTemplate, countWiki);
 
-  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aPaths.WikiOutput);
   if not DirectoryExists(ExtractFileDir(exportPath)) then
     ForceDirectories(ExtractFileDir(exportPath));
 
-  sl.SaveToFile(aOutputFile);
+  sl.SaveToFile(aPaths.WikiOutput);
 
   sl.Free;
 
@@ -153,7 +153,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ExportTypesToWiki(const aSourceMask, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingParser.ExportTypesToWiki(aPaths: TKMAreaPathsCommon);
 var
   sl: TStringList;
   exportPath: string;
@@ -164,7 +164,7 @@ begin
   fTypes.Clear;
 
   // Get all files matching the mask
-  s := TDirectory.GetFiles(ExtractFilePath(aSourceMask), ExtractFileName(aSourceMask), TSearchOption.soAllDirectories);
+  s := TDirectory.GetFiles(ExtractFilePath(aPaths.SourceInput), ExtractFileName(aPaths.SourceInput), TSearchOption.soAllDirectories);
   for I := Low(s) to High(s) do
     fTypes.LoadFromFile(s[I]);
 
@@ -173,17 +173,17 @@ begin
   // Sort for neat order
   fTypes.SortByName(stByAlphabet);
 
-  if aOutputFile = '' then Exit;
+  if aPaths.WikiOutput = '' then Exit;
 
   sl := TStringList.Create;
 
-  sl.Text := fTypes.ExportWiki(aTemplateFile, countWiki);
+  sl.Text := fTypes.ExportWiki(aPaths.WikiTemplate, countWiki);
 
-  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aPaths.WikiOutput);
   if not DirectoryExists(ExtractFileDir(exportPath)) then
     ForceDirectories(ExtractFileDir(exportPath));
 
-  sl.SaveToFile(aOutputFile);
+  sl.SaveToFile(aPaths.WikiOutput);
 
   sl.Free;
 
@@ -210,11 +210,11 @@ end;
 
 procedure TKMScriptingParser.GenerateWiki(aPaths: TKMScriptingPaths);
 begin
-  ExportMethodsToWiki(paActions, aPaths.PathsA.SourceInput, aPaths.PathsA.WikiTemplate, aPaths.PathsA.WikiOutput);
-  ExportMethodsToWiki(paEvents, aPaths.PathsE.SourceInput, aPaths.PathsE.WikiTemplate, aPaths.PathsE.WikiOutput);
-  ExportMethodsToWiki(paStates, aPaths.PathsS.SourceInput, aPaths.PathsS.WikiTemplate, aPaths.PathsS.WikiOutput);
-  ExportMethodsToWiki(paUtils, aPaths.PathsU.SourceInput, aPaths.PathsU.WikiTemplate, aPaths.PathsU.WikiOutput);
-  ExportTypesToWiki(aPaths.PathsT.SourceInput, aPaths.PathsT.WikiTemplate, aPaths.PathsT.WikiOutput);
+  ExportMethodsToWiki(paActions, aPaths.PathsA);
+  ExportMethodsToWiki(paEvents, aPaths.PathsE);
+  ExportMethodsToWiki(paStates, aPaths.PathsS);
+  ExportMethodsToWiki(paUtils, aPaths.PathsU);
+  ExportTypesToWiki(aPaths.PathsT);
 
   if DBG_COPY_FOR_REFERENCE then
   begin
