@@ -5,6 +5,7 @@ uses
   System.StrUtils,
   KM_ScriptingMethods,
   KM_ScriptingParameters,
+  KM_ScriptingPaths,
   KM_ScriptingTypes,
   KM_ParserTypes;
 
@@ -26,7 +27,7 @@ type
     constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure GenerateCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
+    procedure GenerateCode(aPaths: TKMScriptingPaths);
     procedure GenerateWiki(aArea: TKMParsingArea; const aSourceFile, aTemplateFile, aOutputFile: string);
     procedure GenerateXML;
   end;
@@ -191,7 +192,7 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateCode(aArea: TKMParsingArea; const aSourceFile, aFilenameCheck, aFilenameReg: string);
+procedure TKMScriptingParser.GenerateCode(aPaths: TKMScriptingPaths);
 begin
   //todo -cThink: Automate verification in ScriptingParser that functions/procedures pose under the same name in LogMissionWarning
   // Arrays can be declared in 2 ways in KP PS - "array of string" and TKMStringArray. First one is more traditional and more universal.
@@ -199,13 +200,11 @@ begin
   // Now, some functions in Actions expect string arrays. Problem is that they must be declared as TKMStringArray to accept both TKMStringArray and "array of"
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
-  case aArea of
-    paActions,
-    paEvents,
-    paStates,
-    paUtils: ExportMethodsToCode(aArea, aSourceFile, aFilenameCheck, aFilenameReg);
-    paTypes: ExportTypesToCode(aSourceFile, aFilenameCheck);
-  end;
+  ExportMethodsToCode(paActions, aPaths.PathsA.SourceInput, aPaths.PathsA.SourceOutputCheckAndReg, aPaths.PathsA.SourceOutputCheckAndReg);
+  ExportMethodsToCode(paEvents, aPaths.PathsE.SourceInput, aPaths.PathsE.SourceOutputCheck, aPaths.PathsE.SourceOutputReg);
+  ExportMethodsToCode(paStates, aPaths.PathsS.SourceInput, aPaths.PathsS.SourceOutputCheckAndReg, aPaths.PathsS.SourceOutputCheckAndReg);
+  ExportMethodsToCode(paUtils, aPaths.PathsU.SourceInput, aPaths.PathsU.SourceOutputCheckAndReg, aPaths.PathsU.SourceOutputCheckAndReg);
+  ExportTypesToCode(aPaths.PathsT.SourceInput, aPaths.PathsT.SourceOutputReg);
 end;
 
 
