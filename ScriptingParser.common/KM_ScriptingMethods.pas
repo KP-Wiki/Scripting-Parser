@@ -51,13 +51,13 @@ type
     function GetCount: Integer;
     procedure ExportCodeSectionCheck(aSL: TStringList);
     procedure ExportCodeSectionReg(aSL: TStringList);
+    procedure SortByName;
   public
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
-    procedure SortByName;
     procedure ExportCode(const aFilenameCheckAndReg: string); overload;
     procedure ExportCode(const aFilenameCheck, aFilenameReg: string); overload;
     function ExportWiki(const aTemplateFile: string; out aCountWiki: Integer): string;
