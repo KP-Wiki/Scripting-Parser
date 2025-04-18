@@ -2,7 +2,7 @@ object fmScriptingParser: TfmScriptingParser
   Left = 0
   Top = 0
   Caption = 'KMR/KP Scripting Parser'
-  ClientHeight = 648
+  ClientHeight = 649
   ClientWidth = 945
   Color = clBtnFace
   Constraints.MinHeight = 400
@@ -16,7 +16,7 @@ object fmScriptingParser: TfmScriptingParser
   OnDestroy = FormDestroy
   DesignSize = (
     945
-    648)
+    649)
   TextHeight = 13
   object btnReyKMR: TButton
     Left = 840
@@ -41,9 +41,9 @@ object fmScriptingParser: TfmScriptingParser
     OnClick = btnKromKPClick
   end
   object btnGenerateWiki: TButton
-    Left = 838
+    Left = 840
     Top = 56
-    Width = 98
+    Width = 97
     Height = 49
     Anchors = [akTop]
     Caption = 'Generate Wiki'
@@ -60,9 +60,9 @@ object fmScriptingParser: TfmScriptingParser
     OnClick = btnGenerateWikiClick
   end
   object btnGenerateXML: TButton
-    Left = 838
+    Left = 840
     Top = 200
-    Width = 98
+    Width = 97
     Height = 49
     Anchors = [akTop]
     Caption = 'Generate XML'
@@ -124,16 +124,16 @@ object fmScriptingParser: TfmScriptingParser
     object Label5: TLabel
       Left = 344
       Top = 16
-      Width = 61
+      Width = 81
       Height = 13
-      Caption = 'Template file'
+      Caption = 'Wiki template file'
     end
     object Label6: TLabel
       Left = 528
       Top = 16
-      Width = 51
+      Width = 71
       Height = 13
-      Caption = 'Output file'
+      Caption = 'Wiki output file'
     end
     object Label7: TLabel
       Left = 8
@@ -330,9 +330,9 @@ object fmScriptingParser: TfmScriptingParser
     OnClick = btnKromKMRClick
   end
   object btnGenerateCode: TButton
-    Left = 838
+    Left = 840
     Top = 104
-    Width = 98
+    Width = 97
     Height = 49
     Anchors = [akTop]
     Caption = 'Generate Code'
@@ -357,9 +357,9 @@ object fmScriptingParser: TfmScriptingParser
     TabOrder = 7
   end
   object btnCheckMessages: TButton
-    Left = 838
+    Left = 840
     Top = 152
-    Width = 98
+    Width = 97
     Height = 49
     Anchors = [akTop]
     Caption = 'Check messages'
