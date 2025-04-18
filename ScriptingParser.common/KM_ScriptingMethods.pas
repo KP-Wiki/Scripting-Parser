@@ -36,7 +36,7 @@ type
     function ExportCodeSignature: string;
     function ExportCodeSignatureEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
     function ExportCodeNameRegistration: string;
-    function ExportCodeNameRegistrationEvent(aGame: TKMParsingGame): string;
+    function ExportCodeNameRegistrationEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
     function CheckLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
   end;
 
@@ -337,11 +337,11 @@ begin
 end;
 
 
-function TKMMethodInfo.ExportCodeNameRegistrationEvent(aGame: TKMParsingGame): string;
+function TKMMethodInfo.ExportCodeNameRegistrationEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
 begin
   case aGame of
-    pgKaMRemake:        Result := 'evt' + Copy(fName, 3, Length(fName));
-    pgKnightsProvince:  Assert(False);
+    pgKaMRemake:        Result := 'evt' + Copy(fName, 3, Length(fName)) + IfThen(not aLastLine, ',');
+    pgKnightsProvince:  Result := Format('fProc%-24s := fExec.GetProcAsMethodN('#39'%s'#39');', [fName, fName]);
   end;
 end;
 
@@ -365,7 +365,7 @@ begin
   var logCount := 0;
   repeat
     lineTextPrev := lineTextThis;
-    lineTextThis := aSourceCode[idx];
+    lineTextThis := Trim(aSourceCode[idx]);
 
     if (Pos(aLogMessageName, lineTextThis) <> 0) then
     begin
@@ -373,7 +373,7 @@ begin
 
       // If there is a LogMessage in this line, it should reference the method it is in
       if (Pos(fName, lineTextThis) = 0) then
-        Result := Result + IfThen(Result <> '', sLineBreak) + fName + ' - ' + Trim(lineTextThis);
+        Result := Result + IfThen(Result <> '', sLineBreak) + Format('Line %d. "%s" missing in "%s"', [idx, fName, lineTextThis]);
     end;
 
     Inc(idx);
@@ -575,9 +575,6 @@ var
   secStart, secEnd, pad: Integer;
   I: Integer;
 begin
-  // Events in KP do not have Reg section
-  if (fGame = pgKnightsProvince) and (fArea = paEvents) then Exit;
-
   FindStartAndFinish(aSL, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
   if secStart <> -1 then
   begin
@@ -591,7 +588,7 @@ begin
           paActions,
           paStates,
           paUtils:    aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
-          paEvents:   aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(fGame) + IfThen(I <> fList.Count-1, ','));
+          paEvents:   aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(fGame, I = fList.Count - 1));
         end;
 
     fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Short]));
