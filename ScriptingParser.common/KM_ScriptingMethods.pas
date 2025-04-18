@@ -17,13 +17,13 @@ type
   // Single method info
   TKMMethodInfo = class
   private
-    fLineOfCode: Integer;
+    fFirstLine: Integer;  // First line of code where this method documentation and declaration starts
     fName: string;
     fType: TKMMethodType;
-    fVersion: string; // Version in which the method was added/changed
+    fVersion: string;         // Game version in which the method was added/changed
     fStatus: TKMMethodStatus;
-    fReplacement: string;
-    fDescription: string;
+    fReplacement: string;     // Replacement method recommendation
+    fDescription: string;     // Description of the method as a whole
     fParameters: TKMScriptParameters; // Parameters parsed from declaration
     fResultType: string;
     fResultDesc: string;
@@ -37,6 +37,7 @@ type
     function ExportCodeSignatureEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
     function ExportCodeNameRegistration: string;
     function ExportCodeNameRegistrationEvent(aGame: TKMParsingGame): string;
+    function CheckLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
   end;
 
 
@@ -53,7 +54,6 @@ type
     procedure ExportCodeSectionCheck(aSL: TStringList);
     procedure ExportCodeSectionReg(aSL: TStringList);
     procedure SortByName;
-    procedure CheckMessagesInt(aSL: TStringList; const aLogMessageName: string);
   public
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
@@ -102,7 +102,7 @@ var
   strStatus: string;
   details: TStringList;
 begin
-  fLineOfCode := aLineOfCode;
+  fFirstLine := aLineOfCode;
 
   details := TStringList.Create;
   try
@@ -355,6 +355,36 @@ begin
 end;
 
 
+function TKMMethodInfo.CheckLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
+begin
+  Result := '';
+
+  var idx := fFirstLine;
+  var lineTextThis := '';
+  var lineTextPrev := '';
+  var logCount := 0;
+  repeat
+    lineTextPrev := lineTextThis;
+    lineTextThis := aSourceCode[idx];
+
+    if (Pos(aLogMessageName, lineTextThis) <> 0) then
+    begin
+      Inc(logCount);
+
+      // If there is a LogMessage in this line, it should reference the method it is in
+      if (Pos(fName, lineTextThis) = 0) then
+        Result := Result + IfThen(Result <> '', sLineBreak) + fName + ' - ' + Trim(lineTextThis);
+    end;
+
+    Inc(idx);
+  until lineTextThis + lineTextPrev = '';
+
+  // There are quite a few methods without warnings in them
+  //if (fStatus = msOk) and (fParameters.Count > 0) and (logCount = 0) then
+  //  Result := Result + IfThen(Result <> '', sLineBreak) + fName + ' - no warnings?';
+end;
+
+
 { TKMScriptMethods }
 constructor TKMScriptMethods.Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
 begin
@@ -570,37 +600,6 @@ begin
 end;
 
 
-procedure TKMScriptMethods.CheckMessagesInt(aSL: TStringList; const aLogMessageName: string);
-begin
-  for var I := 0 to fList.Count - 1 do
-  begin
-    var idx := fList[I].fLineOfCode;
-    var lineTextThis := '';
-    var lineTextPrev := '';
-    var logCount := 0;
-    repeat
-      lineTextPrev := lineTextThis;
-      lineTextThis := aSL[idx];
-
-      if (Pos(aLogMessageName, lineTextThis) <> 0) then
-      begin
-        Inc(logCount);
-
-        // If there is a LogMessage in this line, it should reference the method it is in
-        if (Pos(fList[I].fName, lineTextThis) = 0) then
-          fOnLog(fList[I].fName + ' - ' + Trim(lineTextThis));
-      end;
-
-      Inc(idx);
-    until lineTextThis + lineTextPrev = '';
-
-    // There are quite a few methods without warnings in them
-    //if (fList[I].fStatus = msOk) and (fList[I].fParameters.Count > 0) and (logCount = 0) then
-    //  fOnLog(fList[I].fName + ' - no warnings?');
-  end;
-end;
-
-
 procedure TKMScriptMethods.ExportCode(const aFilenameCheckAndReg: string);
 var
   sl: TStringList;
@@ -674,7 +673,12 @@ begin
   sl := TStringList.Create;
   sl.LoadFromFile(aSourceFile);
 
-  CheckMessagesInt(sl, aLogMessageName);
+  for var I := 0 to fList.Count - 1 do
+  begin
+    var res := fList[I].CheckLogMessages(sl, aLogMessageName);
+    if res <> '' then
+      fOnLog(res);
+  end;
 
   sl.Free;
 end;
