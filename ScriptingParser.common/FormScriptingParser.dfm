@@ -45,7 +45,7 @@ object fmScriptingParser: TfmScriptingParser
     Top = 56
     Width = 97
     Height = 49
-    Anchors = [akTop]
+    Anchors = [akTop, akRight]
     Caption = 'Generate Wiki'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -64,7 +64,7 @@ object fmScriptingParser: TfmScriptingParser
     Top = 200
     Width = 97
     Height = 49
-    Anchors = [akTop]
+    Anchors = [akTop, akRight]
     Caption = 'Generate XML'
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
@@ -115,21 +115,21 @@ object fmScriptingParser: TfmScriptingParser
       Caption = 'States:'
     end
     object Label4: TLabel
-      Left = 144
+      Left = 48
       Top = 16
       Width = 43
       Height = 13
       Caption = 'Input file'
     end
     object Label5: TLabel
-      Left = 344
+      Left = 304
       Top = 16
       Width = 81
       Height = 13
       Caption = 'Wiki template file'
     end
     object Label6: TLabel
-      Left = 528
+      Left = 464
       Top = 16
       Width = 71
       Height = 13
@@ -143,11 +143,11 @@ object fmScriptingParser: TfmScriptingParser
       Caption = 'Types:'
     end
     object Label9: TLabel
-      Left = 720
+      Left = 664
       Top = 16
-      Width = 36
+      Width = 77
       Height = 13
-      Caption = 'Code in'
+      Caption = 'Code output file'
     end
     object edActionsIn: TEdit
       Left = 48
@@ -334,7 +334,7 @@ object fmScriptingParser: TfmScriptingParser
     Top = 104
     Width = 97
     Height = 49
-    Anchors = [akTop]
+    Anchors = [akTop, akRight]
     Caption = 'Generate Code'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -361,7 +361,7 @@ object fmScriptingParser: TfmScriptingParser
     Top = 152
     Width = 97
     Height = 49
-    Anchors = [akTop]
+    Anchors = [akTop, akRight]
     Caption = 'Check messages'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
