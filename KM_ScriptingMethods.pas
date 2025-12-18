@@ -285,7 +285,7 @@ begin
   Result := Format(TEMPLATE, [
     IfThen(fVersion <> '', fVersion, '-'), fName, fName, deprStr, fDescription, fParameters.ExportWikiBody]);
   if aNeedReturn then
-    // todo: add link instead of text when our custom script type are mentioned
+    //todo -cPractical: add link instead of text when our custom script type is mentioned
     Result := Result + Format(TEMPLATE_RET, [fResultType, IfThen(fResultDesc <> '', ' // ' + fResultDesc)]);
 end;
 

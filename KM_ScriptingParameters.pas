@@ -71,7 +71,7 @@ function TKMScriptParameter.ExportWikiBody: string;
 const
   TEMPLATE = '**%s%s**: %s;%s';
 begin
-  // todo: add link instead of text when our custom script type are mentioned
+  //todo -cPractical: add link instead of text when our custom script type is mentioned
   Result := Format(TEMPLATE, [IfThen(fModifier <> '', fModifier + ' '), fName, fVarType, IfThen(fDesc <> '', ' // _' + fDesc + '_')]);
 end;
 
