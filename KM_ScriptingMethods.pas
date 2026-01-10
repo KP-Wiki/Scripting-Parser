@@ -362,14 +362,14 @@ begin
   var idx := fFirstLine;
   var lineTextThis := '';
   var lineTextPrev := '';
-  var logCount := 0;
+  //var logCount := 0;
   repeat
     lineTextPrev := lineTextThis;
     lineTextThis := Trim(aSourceCode[idx]);
 
     if (Pos(aLogMessageName, lineTextThis) <> 0) then
     begin
-      Inc(logCount);
+      //Inc(logCount);
 
       // If there is a LogMessage in this line, it should reference the method it is in
       if (Pos(fName, lineTextThis) = 0) then
