@@ -4,7 +4,7 @@ uses
   System.Classes, System.SysUtils, System.Types, System.StrUtils;
 
 
-function RightStrAfter(const aStr, aSubStr: string): string;
+function RightStrAfter(const aStr, aSeparator: string): string;
 function StrSubstring(const aStr: string; aFrom: Integer): string;
 function StrLastIndexOf(const aStr, aSubStr: string): Integer;
 function StrTrimRightSeparators(const aStr: string): string;
@@ -15,9 +15,11 @@ procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLin
 implementation
 
 
-function RightStrAfter(const aStr, aSubStr: string): string;
+// Copy everything on the right of the separator
+// 123:mystring:3 -> mystring:3
+function RightStrAfter(const aStr, aSeparator: string): string;
 begin
-  Result := Copy(aStr, Pos(aSubStr, aStr) + Length(aSubStr), MaxInt);
+  Result := Copy(aStr, Pos(aSeparator, aStr) + Length(aSeparator), MaxInt);
 end;
 
 
