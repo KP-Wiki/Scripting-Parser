@@ -44,17 +44,24 @@ begin
 end;
 
 
+// Hello; -> Hello
+// Hello;; -> Hello
 function StrTrimRightSeparators(const aStr: string): string;
+const
+  SEP: set of Char = [',', ':', ';'];
 var
   I, K: Integer;
 begin
+  // Find last non-separator
   K := 0;
   for I := Length(aStr) downto 1 do
-  if not (aStr[I] in [',', ':', ';']) then
+  if not (aStr[I] in SEP) then
   begin
     K := I;
     Break;
   end;
+
+  // Copy text up to it
   Result := Copy(aStr, 1, K);
 end;
 
