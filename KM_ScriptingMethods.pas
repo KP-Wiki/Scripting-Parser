@@ -218,7 +218,7 @@ begin
         fName := metName;
 
       // Function result
-      restStr := StrTrimRightSeparators(StrSubstring(srcLine, StrLastIndexOf(srcLine, ':') + 2));
+      restStr := ExtractFunctionResultType(srcLine);
       if aArea = paEvents then
         fResultType := TryEventTypeToAlias(restStr)
       else

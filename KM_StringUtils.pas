@@ -1,7 +1,7 @@
 unit KM_StringUtils;
 interface
 uses
-  System.Classes, System.SysUtils, System.Types, System.StrUtils;
+  System.Classes;
 
 
 // These function were replacements for string functions introduced after XE2 (XE5 probably)
@@ -10,13 +10,14 @@ uses
 //todo: Now we dont support old compilers and they can be removed
 function RightStrAfter(const aStr, aSeparator: string): string; deprecated;
 function StrSubstring(const aStr: string; aFrom: Integer): string; deprecated;
-function StrLastIndexOf(const aStr, aSubStr: string): Integer; deprecated;
-function StrTrimRightSeparators(const aStr: string): string; deprecated;
 procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
 procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer); deprecated;
 
+function ExtractFunctionResultType(aStr: string): string;
 
 implementation
+uses
+  System.SysUtils, System.Types, System.StrUtils;
 
 
 // Copy everything on the right of the separator
@@ -30,39 +31,6 @@ end;
 function StrSubstring(const aStr: string; aFrom: Integer): string;
 begin
   Result := Copy(aStr, aFrom + 1, Length(aStr));
-end;
-
-
-function StrLastIndexOf(const aStr, aSubStr: string): Integer;
-var
-  I: Integer;
-begin
-  Result := -1;
-  for I := 1 to Length(aStr) do
-    if AnsiPos(aSubStr, StrSubstring(aStr, I-1)) <> 0 then
-      Result := I - 1;
-end;
-
-
-// Hello; -> Hello
-// Hello;; -> Hello
-function StrTrimRightSeparators(const aStr: string): string;
-const
-  SEP: set of Char = [',', ':', ';'];
-var
-  I, K: Integer;
-begin
-  // Find last non-separator
-  K := 0;
-  for I := Length(aStr) downto 1 do
-  if not (aStr[I] in SEP) then
-  begin
-    K := I;
-    Break;
-  end;
-
-  // Copy text up to it
-  Result := Copy(aStr, 1, K);
 end;
 
 
@@ -103,6 +71,17 @@ begin
   until (Trim(aStringList[aLineFinish]) = aMarker);
 
   Dec(aLineFinish);
+end;
+
+
+// "function MyMethod: Integer;" -> Integer
+// "function MyMethod(a: Byte; B: string): Integer;" -> Integer
+function ExtractFunctionResultType(aStr: string): string;
+begin
+  var posColon := LastDelimiter(':', aStr);
+  var posSemicolon := Pos(';', aStr, posColon);
+  var tail := Copy(aStr, posColon + 1, posSemicolon - posColon - 1);
+  Result := Trim(tail);
 end;
 
 
