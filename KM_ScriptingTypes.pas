@@ -554,7 +554,7 @@ begin
   for I := Low(s) to High(s) do
     LoadFromFile(s[I]);
 
-  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[paTypes].Short]));
+  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[paTypes].Name]));
 end;
 
 
@@ -712,7 +712,7 @@ begin
     sl.Free;
   end;
 
-  fOnLog(Format('%d %s exported into Code checks', [fList.Count, AREA_INFO[paTypes].Short]));
+  fOnLog(Format('%d %s exported into Code checks', [fList.Count, AREA_INFO[paTypes].Name]));
 end;
 
 
@@ -741,7 +741,7 @@ begin
 
   sl.Free;
 
-  fOnLog(Format('%d %s exported into Wiki', [fList.Count, AREA_INFO[paTypes].Short]));
+  fOnLog(Format('%d %s exported into Wiki', [fList.Count, AREA_INFO[paTypes].Name]));
 end;
 
 

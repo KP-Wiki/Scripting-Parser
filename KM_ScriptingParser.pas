@@ -70,7 +70,7 @@ procedure TKMScriptingParser.CopyForReference(const aFilename: string; aArea: TK
 var
   tgtPath: string;
 begin
-  tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_INFO[fParsingGame].Ext + '.' + AREA_INFO[aArea].Short + '.new.md';
+  tgtPath := ExtractFilePath(Application.ExeName) + '..\' + GAME_INFO[fParsingGame].Ext + '.' + AREA_INFO[aArea].Name + '.new.md';
   Winapi.Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
 end;
 

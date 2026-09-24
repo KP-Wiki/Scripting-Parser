@@ -491,7 +491,7 @@ begin
 
   SortByName;
 
-  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[fArea].Short]));
+  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[fArea].Name]));
 end;
 
 
@@ -556,7 +556,7 @@ begin
                       aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
         end;
 
-    fOnLog(Format('%d %s exported into Code checks', [GetCount, AREA_INFO[fArea].Short]));
+    fOnLog(Format('%d %s exported into Code checks', [GetCount, AREA_INFO[fArea].Name]));
   end else
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].CheckTag]));
 end;
@@ -586,7 +586,7 @@ begin
           paEvents:   aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeNameRegistrationEvent(fGame, I = fList.Count - 1));
         end;
 
-    fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Short]));
+    fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Name]));
   end else
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].RegTag]));
 end;
@@ -654,7 +654,7 @@ begin
 
   sl.Free;
 
-  fOnLog(Format('%d %s exported into Wiki', [GetCount, AREA_INFO[fArea].Short]));
+  fOnLog(Format('%d %s exported into Wiki', [GetCount, AREA_INFO[fArea].Name]));
 end;
 
 

@@ -13,12 +13,18 @@ const
     (Ext: 'kp';  Name: 'Knights Province')
   );
 
-  AREA_INFO: array [TKMParsingArea] of record Short, CheckTag, RegTag: string; NeedsReturn: Boolean; end = (
-    (Short: 'Actions'; CheckTag: '//*Actions-Check*//'; RegTag:'//*Actions-Reg*//'; NeedsReturn: True),
-    (Short: 'Events';  CheckTag: '//*Events-Check*//';  RegTag:'//*Events-Reg*//';  NeedsReturn: False),
-    (Short: 'States';  CheckTag: '//*States-Check*//';  RegTag:'//*States-Reg*//';  NeedsReturn: True),
-    (Short: 'Utils';   CheckTag: '//*Utils-Check*//';   RegTag:'//*Utils-Reg*//';   NeedsReturn: True),
-    (Short: 'Types';   CheckTag: '//*Types-Check*//';   RegTag:'//*Types-Reg*//';   NeedsReturn: False)
+  // Denotes regions where Events, States, Actions, Types, Utils are located
+  AREA_INFO: array [TKMParsingArea] of record
+    Name: string;  // Name of the area. Used in the logs and for reference md-s in this repo
+    CheckTag: string;   // Tag used for the Check region
+    RegTag: string;     // Tag used for the Register region
+    NeedsReturn: Boolean;
+  end = (
+    (Name: 'Actions'; CheckTag: '//*Actions-Check*//'; RegTag:'//*Actions-Reg*//'; NeedsReturn: True),
+    (Name: 'Events';  CheckTag: '//*Events-Check*//';  RegTag:'//*Events-Reg*//';  NeedsReturn: False),
+    (Name: 'States';  CheckTag: '//*States-Check*//';  RegTag:'//*States-Reg*//';  NeedsReturn: True),
+    (Name: 'Utils';   CheckTag: '//*Utils-Check*//';   RegTag:'//*Utils-Reg*//';   NeedsReturn: True),
+    (Name: 'Types';   CheckTag: '//*Types-Check*//';   RegTag:'//*Types-Reg*//';   NeedsReturn: False)
   );
 
 
