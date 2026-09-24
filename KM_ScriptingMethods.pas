@@ -49,8 +49,8 @@ type
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function GetCount: Integer;
-    procedure ExportCodeSectionCheck(aSL: TStringList);
-    procedure ExportCodeSectionReg(aSL: TStringList);
+    function ExportCodeSectionCheck(aSL: TStringList): Boolean;
+    function ExportCodeSectionReg(aSL: TStringList): Boolean;
     procedure SortByName;
   public
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
@@ -58,8 +58,7 @@ type
 
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
-    procedure GenerateCode(const aFilenameCheckAndReg: string); overload;
-    procedure GenerateCode(const aFilenameCheck, aFilenameReg: string); overload;
+    procedure GenerateCode(const aFilename1, aFilename2: string);
     function GenerateWiki(const aTemplateFile, aOutputFile: string): string;
 
     procedure VerifyMessages(const aSourceFile: string; const aLogMessageName: string);
@@ -539,37 +538,36 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCodeSectionCheck(aSL: TStringList);
+function TKMScriptMethods.ExportCodeSectionCheck(aSL: TStringList): Boolean;
 begin
   var lineFrom, lineTo, padLevel: Integer;
   FindRegionBounds(aSL, AREA_INFO[fArea].CheckTag, lineFrom, lineTo, padLevel);
-  if lineFrom <> -1 then
-  begin
-    for var I := lineTo downto lineFrom do
-      aSL.Delete(I);
+  if lineFrom = -1 then Exit(False);
 
-    // Insert in reverse so we could skip "removed" methods
-    for var I := fList.Count - 1 downto 0 do
-      if fList[I].fStatus in [msOk, msDeprecated] then
-        case fArea of
-          paActions,
-          paStates,
-          paUtils:    begin
-                        // We can write more compact code with AdjoinPairs
-                        fList[I].fParameters.AdjoinPairs;
-                        aSL.Insert(lineFrom, DupeString(' ', padLevel) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
-                      end;
-          paEvents:   // Can not use AdjoinPairs here. All vars must be separate
-                      aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
-        end;
+  for var I := lineTo downto lineFrom do
+    aSL.Delete(I);
 
-    fOnLog(Format('%d %s exported into Code checks', [GetCount, AREA_INFO[fArea].Name]));
-  end else
-    fOnLog(Format('%s tag not found', [AREA_INFO[fArea].CheckTag]));
+  // Insert in reverse so we could skip "removed" methods
+  for var I := fList.Count - 1 downto 0 do
+    if fList[I].fStatus in [msOk, msDeprecated] then
+      case fArea of
+        paActions,
+        paStates,
+        paUtils:    begin
+                      // We can write more compact code with AdjoinPairs
+                      fList[I].fParameters.AdjoinPairs;
+                      aSL.Insert(lineFrom, DupeString(' ', padLevel) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
+                    end;
+        paEvents:   // Can not use AdjoinPairs here. All vars must be separate
+                    aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
+      end;
+
+  Result := True;
+  fOnLog(Format('%d %s exported into Code checks', [GetCount, AREA_INFO[fArea].Name]));
 end;
 
 
-procedure TKMScriptMethods.ExportCodeSectionReg(aSL: TStringList);
+function TKMScriptMethods.ExportCodeSectionReg(aSL: TStringList): Boolean;
 const
   AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
     ('TKMScriptActions',    '', 'TKMScriptStates',    'TKMScriptUtils',    ''), // KMR
@@ -578,63 +576,59 @@ const
 begin
   var lineFrom, lineTo, padLevel: Integer;
   FindRegionBounds(aSL, AREA_INFO[fArea].RegTag, lineFrom, lineTo, padLevel);
-  if lineFrom <> -1 then
+  if lineFrom = -1 then Exit(False);
+
+  for var I := lineTo downto lineFrom do
+    aSL.Delete(I);
+
+  // Insert in reverse so we could skip "removed" methods
+  for var I := fList.Count - 1 downto 0 do
+    if fList[I].fStatus in [msOk, msDeprecated] then
+      case fArea of
+        paActions,
+        paStates,
+        paUtils:    aSL.Insert(lineFrom, DupeString(' ', padLevel) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
+        paEvents:   aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeNameRegistrationEvent(fGame, I = fList.Count - 1));
+      end;
+
+  Result := True;
+  fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Name]));
+end;
+
+
+procedure TKMScriptMethods.GenerateCode(const aFilename1, aFilename2: string);
+begin
+  var checkFound := False;
+  var regFound := False;
+
+  // It is inefficient, but simple to just always process 2 files
+
+  if FileExists(aFilename1) then
   begin
-    for var I := lineTo downto lineFrom do
-      aSL.Delete(I);
+    var sl := TStringList.Create;
+    sl.LoadFromFile(aFilename1);
 
-    // Insert in reverse so we could skip "removed" methods
-    for var I := fList.Count - 1 downto 0 do
-      if fList[I].fStatus in [msOk, msDeprecated] then
-        case fArea of
-          paActions,
-          paStates,
-          paUtils:    aSL.Insert(lineFrom, DupeString(' ', padLevel) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
-          paEvents:   aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeNameRegistrationEvent(fGame, I = fList.Count - 1));
-        end;
+    checkFound := ExportCodeSectionCheck(sl);
+    regFound := ExportCodeSectionReg(sl);
+    sl.SaveToFile(aFilename1);
+    sl.Free;
+  end;
 
-    fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Name]));
-  end else
+  if FileExists(aFilename2) then
+  begin
+    var sl := TStringList.Create;
+    sl.LoadFromFile(aFilename2);
+    checkFound := checkFound or ExportCodeSectionCheck(sl);
+    regFound := regFound or ExportCodeSectionReg(sl);
+    sl.SaveToFile(aFilename2);
+    sl.Free;
+  end;
+
+  if not checkFound then
+    fOnLog(Format('%s tag not found', [AREA_INFO[fArea].CheckTag]));
+
+  if not regFound then
     fOnLog(Format('%s tag not found', [AREA_INFO[fArea].RegTag]));
-end;
-
-
-procedure TKMScriptMethods.GenerateCode(const aFilenameCheckAndReg: string);
-var
-  sl: TStringList;
-begin
-  if not FileExists(aFilenameCheckAndReg) then Exit;
-
-  sl := TStringList.Create;
-  sl.LoadFromFile(aFilenameCheckAndReg);
-  ExportCodeSectionCheck(sl);
-  ExportCodeSectionReg(sl);
-  sl.SaveToFile(aFilenameCheckAndReg);
-  sl.Free;
-end;
-
-
-procedure TKMScriptMethods.GenerateCode(const aFilenameCheck, aFilenameReg: string);
-var
-  sl: TStringList;
-begin
-  if FileExists(aFilenameCheck) then
-  begin
-    sl := TStringList.Create;
-    sl.LoadFromFile(aFilenameCheck);
-    ExportCodeSectionCheck(sl);
-    sl.SaveToFile(aFilenameCheck);
-    sl.Free;
-  end;
-
-  if FileExists(aFilenameReg) then
-  begin
-    sl := TStringList.Create;
-    sl.LoadFromFile(aFilenameReg);
-    ExportCodeSectionReg(sl);
-    sl.SaveToFile(aFilenameReg);
-    sl.Free;
-  end;
 end;
 
 

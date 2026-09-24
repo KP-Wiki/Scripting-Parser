@@ -83,11 +83,11 @@ begin
   // Now, some functions in Actions expect string arrays. Problem is that they must be declared as TKMStringArray to accept both TKMStringArray and "array of"
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
-  fMethods[paActions].GenerateCode(aPaths.PathsA.SourceOutputCheckAndReg);
-  fMethods[paEvents ].GenerateCode(aPaths.PathsE.SourceOutputCheck, aPaths.PathsE.SourceOutputReg);
-  fMethods[paStates ].GenerateCode(aPaths.PathsS.SourceOutputCheckAndReg);
-  fMethods[paUtils  ].GenerateCode(aPaths.PathsU.SourceOutputCheckAndReg);
-  fTypes.GenerateCode(aPaths.PathsT.SourceOutputReg);
+  fMethods[paActions].GenerateCode(aPaths.PathsA.SourceOutput1, aPaths.PathsA.SourceOutput2);
+  fMethods[paEvents ].GenerateCode(aPaths.PathsE.SourceOutput1, aPaths.PathsE.SourceOutput2);
+  fMethods[paStates ].GenerateCode(aPaths.PathsS.SourceOutput1, aPaths.PathsS.SourceOutput2);
+  fMethods[paUtils  ].GenerateCode(aPaths.PathsU.SourceOutput1, aPaths.PathsU.SourceOutput2);
+  fTypes.GenerateCode(aPaths.PathsT.SourceOutput1);
 end;
 
 

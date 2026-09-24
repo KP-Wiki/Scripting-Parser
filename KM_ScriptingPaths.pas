@@ -11,34 +11,17 @@ type
     SourceInput: string;
     WikiTemplate: string;
     WikiOutput: string;
-  end;
-
-  // Actions/States/Utils have common Verification and Registration
-  TKMAreaPathsASU = class(TKMAreaPathsCommon)
-  public
-    SourceOutputCheckAndReg: string;
-  end;
-
-  // Events have separate Verification and Registration
-  TKMAreaPathsE = class(TKMAreaPathsCommon)
-  public
-    SourceOutputCheck: string;
-    SourceOutputReg: string;
-  end;
-
-  // Types have only Registration
-  TKMAreaPathsT = class(TKMAreaPathsCommon)
-  public
-    SourceOutputReg: string;
+    SourceOutput1: string;
+    SourceOutput2: string;
   end;
 
   TKMScriptingPaths = class
   public
-    PathsA: TKMAreaPathsASU;
-    PathsE: TKMAreaPathsE;
-    PathsS: TKMAreaPathsASU;
-    PathsU: TKMAreaPathsASU;
-    PathsT: TKMAreaPathsT;
+    PathsA: TKMAreaPathsCommon;
+    PathsE: TKMAreaPathsCommon;
+    PathsS: TKMAreaPathsCommon;
+    PathsU: TKMAreaPathsCommon;
+    PathsT: TKMAreaPathsCommon;
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromINI(const aSettingsPath: string);
@@ -56,11 +39,11 @@ constructor TKMScriptingPaths.Create;
 begin
   inherited;
 
-  PathsA := TKMAreaPathsASU.Create;
-  PathsE := TKMAreaPathsE.Create;
-  PathsS := TKMAreaPathsASU.Create;
-  PathsU := TKMAreaPathsASU.Create;
-  PathsT := TKMAreaPathsT.Create;
+  PathsA := TKMAreaPathsCommon.Create;
+  PathsE := TKMAreaPathsCommon.Create;
+  PathsS := TKMAreaPathsCommon.Create;
+  PathsU := TKMAreaPathsCommon.Create;
+  PathsT := TKMAreaPathsCommon.Create;
 end;
 
 
@@ -99,12 +82,12 @@ begin
   PathsU.WikiOutput := ini.ReadString('OUTPUT', 'Utils',   'Utils.wiki');
   PathsT.WikiOutput := ini.ReadString('OUTPUT', 'Types',   'Types.wiki');
 
-  PathsA.SourceOutputCheckAndReg  := ini.ReadString('CODE', 'Actions', '.pas');
-  PathsE.SourceOutputCheck        := ini.ReadString('CODE', 'Events',  '.pas');
-  PathsE.SourceOutputReg          := ini.ReadString('CODE', 'Events2', '.pas');
-  PathsS.SourceOutputCheckAndReg  := ini.ReadString('CODE', 'States',  '.pas');
-  PathsU.SourceOutputCheckAndReg  := ini.ReadString('CODE', 'Utils',   '.pas');
-  PathsT.SourceOutputReg          := ini.ReadString('CODE', 'Types',   '.pas');
+  PathsA.SourceOutput1 := ini.ReadString('CODE', 'Actions', '.pas');
+  PathsE.SourceOutput1 := ini.ReadString('CODE', 'Events',  '.pas');
+  PathsE.SourceOutput2 := ini.ReadString('CODE', 'Events2', '.pas');
+  PathsS.SourceOutput1 := ini.ReadString('CODE', 'States',  '.pas');
+  PathsU.SourceOutput1 := ini.ReadString('CODE', 'Utils',   '.pas');
+  PathsT.SourceOutput1 := ini.ReadString('CODE', 'Types',   '.pas');
 
   FreeAndNil(ini);
 
@@ -136,12 +119,12 @@ begin
   ini.WriteString('OUTPUT',  'Utils',   PathsU.WikiOutput);
   ini.WriteString('OUTPUT',  'Types',   PathsT.WikiOutput);
 
-  ini.WriteString('CODE',  'Actions', PathsA.SourceOutputCheckAndReg);
-  ini.WriteString('CODE',  'Events',  PathsE.SourceOutputCheck);
-  ini.WriteString('CODE',  'Events2', PathsE.SourceOutputReg);
-  ini.WriteString('CODE',  'States',  PathsS.SourceOutputCheckAndReg);
-  ini.WriteString('CODE',  'Utils',   PathsU.SourceOutputCheckAndReg);
-  ini.WriteString('CODE',  'Types',   PathsT.SourceOutputReg);
+  ini.WriteString('CODE',  'Actions', PathsA.SourceOutput1);
+  ini.WriteString('CODE',  'Events',  PathsE.SourceOutput1);
+  ini.WriteString('CODE',  'Events2', PathsE.SourceOutput2);
+  ini.WriteString('CODE',  'States',  PathsS.SourceOutput1);
+  ini.WriteString('CODE',  'Utils',   PathsU.SourceOutput1);
+  ini.WriteString('CODE',  'Types',   PathsT.SourceOutput1);
 
   FreeAndNil(ini);
 end;

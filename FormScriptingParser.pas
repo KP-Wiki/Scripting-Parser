@@ -126,12 +126,12 @@ begin
     edUtilsOut.Text        := fScriptingPaths.PathsU.WikiOutput;
     edTypesOut.Text        := fScriptingPaths.PathsT.WikiOutput;
 
-    edActionsCode.Text     := fScriptingPaths.PathsA.SourceOutputCheckAndReg;
-    edEventsCode.Text      := fScriptingPaths.PathsE.SourceOutputCheck;
-    edEventsCode2.Text     := fScriptingPaths.PathsE.SourceOutputReg;
-    edStatesCode.Text      := fScriptingPaths.PathsS.SourceOutputCheckAndReg;
-    edUtilsCode.Text       := fScriptingPaths.PathsU.SourceOutputCheckAndReg;
-    edTypesCode.Text       := fScriptingPaths.PathsT.SourceOutputReg;
+    edActionsCode.Text     := fScriptingPaths.PathsA.SourceOutput1;
+    edEventsCode.Text      := fScriptingPaths.PathsE.SourceOutput1;
+    edEventsCode2.Text     := fScriptingPaths.PathsE.SourceOutput2;
+    edStatesCode.Text      := fScriptingPaths.PathsS.SourceOutput1;
+    edUtilsCode.Text       := fScriptingPaths.PathsU.SourceOutput1;
+    edTypesCode.Text       := fScriptingPaths.PathsT.SourceOutput1;
 
     // Modding
 //    edResIn.Text        :=
@@ -253,12 +253,12 @@ begin
   fScriptingPaths.PathsU.WikiOutput := edUtilsOut.Text;
   fScriptingPaths.PathsT.WikiOutput := edTypesOut.Text;
 
-  fScriptingPaths.PathsA.SourceOutputCheckAndReg  := edActionsCode.Text;
-  fScriptingPaths.PathsE.SourceOutputCheck        := edEventsCode.Text;
-  fScriptingPaths.PathsE.SourceOutputReg          := edEventsCode2.Text;
-  fScriptingPaths.PathsS.SourceOutputCheckAndReg  := edStatesCode.Text;
-  fScriptingPaths.PathsU.SourceOutputCheckAndReg  := edUtilsCode.Text;
-  fScriptingPaths.PathsT.SourceOutputReg          := edTypesCode.Text;
+  fScriptingPaths.PathsA.SourceOutput1 := edActionsCode.Text;
+  fScriptingPaths.PathsE.SourceOutput1 := edEventsCode.Text;
+  fScriptingPaths.PathsE.SourceOutput2 := edEventsCode2.Text;
+  fScriptingPaths.PathsS.SourceOutput1 := edStatesCode.Text;
+  fScriptingPaths.PathsU.SourceOutput1 := edUtilsCode.Text;
+  fScriptingPaths.PathsT.SourceOutput1 := edTypesCode.Text;
 
   // Modding
 //    edResIn.Text        :=
