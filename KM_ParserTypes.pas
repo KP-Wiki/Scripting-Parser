@@ -20,11 +20,11 @@ const
     RegTag: string;       // Tag used for the Register region
     NeedsReturn: Boolean; // Wherever wiki needs return type column for this area (Actions, States, Utils)
   end = (
-    (Name: 'Actions'; CheckTag: '//*Actions-Check*//'; RegTag:'//*Actions-Reg*//'; NeedsReturn: True),
-    (Name: 'Events';  CheckTag: '//*Events-Check*//';  RegTag:'//*Events-Reg*//';  NeedsReturn: False),
-    (Name: 'States';  CheckTag: '//*States-Check*//';  RegTag:'//*States-Reg*//';  NeedsReturn: True),
-    (Name: 'Utils';   CheckTag: '//*Utils-Check*//';   RegTag:'//*Utils-Reg*//';   NeedsReturn: True),
-    (Name: 'Types';   CheckTag: '//*Types-Check*//';   RegTag:'//*Types-Reg*//';   NeedsReturn: False)
+    (Name: 'Actions'; CheckTag: '//*Area-Actions-Check*//'; RegTag:'//*Area-Actions-Reg*//'; NeedsReturn: True),
+    (Name: 'Events';  CheckTag: '//*Area-Events-Check*//';  RegTag:'//*Area-Events-Reg*//';  NeedsReturn: False),
+    (Name: 'States';  CheckTag: '//*Area-States-Check*//';  RegTag:'//*Area-States-Reg*//';  NeedsReturn: True),
+    (Name: 'Utils';   CheckTag: '//*Area-Utils-Check*//';   RegTag:'//*Area-Utils-Reg*//';   NeedsReturn: True),
+    (Name: 'Types';   CheckTag: '//*Area-Types-Check*//';   RegTag:'//*Area-Types-Reg*//';   NeedsReturn: False)
   );
 
 
@@ -38,8 +38,7 @@ const
   DOC_TAG_REPLACEMENT = '//* Replacement:';
   DOC_TAG_RESULT = '//* Result:';
 
-  DOC_TAG_AREA_BEGIN = '//*';
-  DOC_TAG_AREA_END = '*//';
+  DOC_TAG_AREA = '//*Area';
 
 
 implementation

@@ -499,6 +499,7 @@ begin
     TKMSomeType = set of TKMSomething;
     }
 
+    var areaStarted := False;
     sectionStarted := False;
     recordStarted := False;
 
@@ -507,7 +508,21 @@ begin
     begin
       srcLine := Trim(slSource[I]);
 
-      if not sectionStarted and StartsStr(DOC_TAG, srcLine) and not ContainsText(srcLine, DOC_TAG_AREA_END) then
+      // Skip special areas
+      if StartsStr(DOC_TAG_AREA, srcLine) then
+        if not areaStarted then
+          areaStarted := True
+        else
+        begin
+          areaStarted := False;
+          // Skip this closing line too
+          Continue;
+        end;
+
+      if areaStarted then
+        Continue;
+
+      if not sectionStarted and StartsStr(DOC_TAG, srcLine) then
       begin
         sectionStarted := True;
         sl.Clear;
