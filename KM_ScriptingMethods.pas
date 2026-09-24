@@ -108,7 +108,7 @@ begin
     I := 0;
     srcLine := aSource[I];
 
-    if StartsStr('//* Version:', srcLine) then
+    if StartsStr(DOC_TAG_VERSION, srcLine) then
     begin
       fVersion := Trim(RightStrAfter(srcLine, ':'));
       Inc(I);
@@ -117,29 +117,30 @@ begin
 
     // Descriptions are only added by lines starting with "//*"
     // Repeat until no description tags are found
-    while StartsStr('//*', srcLine) do
+    while StartsStr(DOC_TAG, srcLine) do
     begin
-      if StartsStr('//* Status:', srcLine) then
+      if StartsStr(DOC_TAG_STATUS, srcLine) then
       begin
         strStatus := Trim(RightStrAfter(srcLine, ':'));
-        if StartsStr('Deprecated', strStatus) then
+        if StartsStr(DOC_TAG_STATUS_DEPRECATED, strStatus) then
           fStatus := msDeprecated
         else
-        if StartsStr('Changed', strStatus) then
+        if StartsStr(DOC_TAG_STATUS_CHANGED, strStatus) then
           fStatus := msChanged
         else
-        if StartsStr('Removed', strStatus) then
+        if StartsStr(DOC_TAG_STATUS_REMOVED, strStatus) then
           fStatus := msRemoved;
       end else
-      if StartsStr('//* Replacement:', srcLine) then
+      if StartsStr(DOC_TAG_REPLACEMENT, srcLine) then
         fReplacement := Trim(RightStrAfter(srcLine, ':'))
       else
       // Handle Result description separately to keep the output clean
-      if StartsStr('//* Result:', srcLine) then
+      if StartsStr(DOC_TAG_RESULT, srcLine) then
         fResultDesc := Trim(RightStrAfter(srcLine, ':'))
       else
         // Do not trim, we want to preseve the padding (especially in <pre> sections)
-        details.Add(RightStrAfter(srcLine, '* '));
+        details.Add(RightStrAfter(srcLine, DOC_TAG + ' '));
+
       Inc(I);
       srcLine := aSource[I];
     end;
@@ -460,7 +461,7 @@ begin
     begin
       srcLine := slSource[I];
 
-      if not sectionStarted and StartsStr('//*', srcLine) then
+      if not sectionStarted and StartsStr(DOC_TAG, srcLine) then
       begin
         sectionStarted := True;
         sectionTailEnded := True;

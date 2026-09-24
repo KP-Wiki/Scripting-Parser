@@ -28,6 +28,20 @@ const
   );
 
 
+  // Long comments may contain whole paragraphs, hence //* has to stay without a whitespace
+  DOC_TAG = '//*';
+  DOC_TAG_VERSION = '//* Version:';
+  DOC_TAG_STATUS = '//* Status:';
+  DOC_TAG_STATUS_DEPRECATED = 'Deprecated';
+  DOC_TAG_STATUS_CHANGED = 'Changed';
+  DOC_TAG_STATUS_REMOVED = 'Removed';
+  DOC_TAG_REPLACEMENT = '//* Replacement:';
+  DOC_TAG_RESULT = '//* Result:';
+
+  DOC_TAG_AREA_BEGIN = '//*';
+  DOC_TAG_AREA_END = '*//';
+
+
 implementation
 
 

@@ -312,7 +312,7 @@ begin
     I := 0;
     srcLine := aSource[I];
 
-//    if StartsStr('//* Version:', srcLine) then
+//    if StartsStr(DOC_TAG_VERSION, srcLine) then
 //    begin
 //      fVersion := Trim(RightStrAfter(srcLine, ':'));
 //      Inc(I);
@@ -321,9 +321,9 @@ begin
 
     // Descriptions are only added by lines starting with "//*"
     // Repeat until no description tags are found
-    while StartsStr('//*', srcLine) do
+    while StartsStr(DOC_TAG, srcLine) do
     begin
-      details.Add(RightStrAfter(srcLine, '* '));
+      details.Add(RightStrAfter(srcLine, DOC_TAG + ' '));
 
       Inc(I);
       srcLine := aSource[I];
@@ -507,14 +507,14 @@ begin
     begin
       srcLine := Trim(slSource[I]);
 
-      if not sectionStarted and StartsStr('//* ', srcLine) then
+      if not sectionStarted and StartsStr(DOC_TAG, srcLine) and not ContainsText(srcLine, DOC_TAG_AREA_END) then
       begin
         sectionStarted := True;
         sl.Clear;
       end;
 
       if sectionStarted then
-        if not StartsStr('//', srcLine) or StartsStr('//*', srcLine) then
+        if not StartsStr('//', srcLine) or StartsStr(DOC_TAG, srcLine) then
           sl.Append(srcLine);
 
       if sectionStarted and not StartsStr('//', srcLine) and (Pos('record', srcLine) > 0) then
@@ -526,7 +526,7 @@ begin
       if sectionStarted and recordStarted and (Pos('end;', srcLine) > 0) then
         recordStarted := False;
 
-      if sectionStarted and not recordStarted and not StartsStr('//*', srcLine) and (Pos(';', srcLine) > 0) then
+      if sectionStarted and not recordStarted and not StartsStr(DOC_TAG, srcLine) and (Pos(';', srcLine) > 0) then
       begin
         sectionStarted := False;
 
