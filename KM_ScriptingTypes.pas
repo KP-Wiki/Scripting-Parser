@@ -676,34 +676,33 @@ end;
 
 
 procedure TKMScriptTypes.ExportCode(const aCodeFile: string);
-var
-  sl: TStringList;
-  secStart, secEnd, pad: Integer;
-  I: Integer;
 begin
   if not FileExists(aCodeFile) then Exit;
 
   SortByName(stByDependancy);
 
-  sl := TStringList.Create;
+  var sl := TStringList.Create;
   try
     sl.LoadFromFile(aCodeFile);
 
-    FindStartAndFinish(sl, AREA_INFO[paTypes].RegTag, secStart, secEnd, pad);
+    var lineFrom, lineTo, padLevel: Integer;
+    FindRegionBounds(sl, AREA_INFO[paTypes].RegTag, lineFrom, lineTo, padLevel);
 
-    if secStart <> -1 then
+    if lineFrom <> -1 then
     begin
-      for I := secEnd downto secStart do
+      // Remove old code
+      for var I := lineTo downto lineFrom do
         sl.Delete(I);
 
-      for I := fList.Count - 1 downto 0 do
+      // Insert new code
+      for var I := fList.Count - 1 downto 0 do
       begin
-        sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCode);
+        sl.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCode);
 
         if (I > 0) and (fList[I].SortPriority <> fList[I-1].SortPriority) then
         begin
-          sl.Insert(secStart, '');
-          sl.Insert(secStart + 1, DupeString(' ', pad) + Format('// Level %d types depend on preceeding types of level %d', [fList[I].SortPriority, fList[I].SortPriority - 1]));
+          sl.Insert(lineFrom, '');
+          sl.Insert(lineFrom + 1, DupeString(' ', padLevel) + Format('// Level %d types depend on preceeding types of level %d', [fList[I].SortPriority, fList[I].SortPriority - 1]));
         end;
       end;
     end;

@@ -533,18 +533,16 @@ end;
 
 
 procedure TKMScriptMethods.ExportCodeSectionCheck(aSL: TStringList);
-var
-  secStart, secEnd, pad: Integer;
-  I: Integer;
 begin
-  FindStartAndFinish(aSL, AREA_INFO[fArea].CheckTag, secStart, secEnd, pad);
-  if secStart <> -1 then
+  var lineFrom, lineTo, padLevel: Integer;
+  FindRegionBounds(aSL, AREA_INFO[fArea].CheckTag, lineFrom, lineTo, padLevel);
+  if lineFrom <> -1 then
   begin
-    for I := secEnd downto secStart do
+    for var I := lineTo downto lineFrom do
       aSL.Delete(I);
 
     // Insert in reverse so we could skip "removed" methods
-    for I := fList.Count - 1 downto 0 do
+    for var I := fList.Count - 1 downto 0 do
       if fList[I].fStatus in [msOk, msDeprecated] then
         case fArea of
           paActions,
@@ -552,10 +550,10 @@ begin
           paUtils:    begin
                         // We can write more compact code with AdjoinPairs
                         fList[I].fParameters.AdjoinPairs;
-                        aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
+                        aSL.Insert(lineFrom, DupeString(' ', padLevel) + 'RegisterMethodCheck(c, '#39 + fList[I].ExportCodeSignature + #39');');
                       end;
           paEvents:   // Can not use AdjoinPairs here. All vars must be separate
-                      aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
+                      aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeSignatureEvent(fGame, I = fList.Count-1));
         end;
 
     fOnLog(Format('%d %s exported into Code checks', [GetCount, AREA_INFO[fArea].Short]));
@@ -570,24 +568,22 @@ const
     ('TKMScriptActions',    '', 'TKMScriptStates',    'TKMScriptUtils',    ''), // KMR
     ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptingUtils', '')  // KP
   );
-var
-  secStart, secEnd, pad: Integer;
-  I: Integer;
 begin
-  FindStartAndFinish(aSL, AREA_INFO[fArea].RegTag, secStart, secEnd, pad);
-  if secStart <> -1 then
+  var lineFrom, lineTo, padLevel: Integer;
+  FindRegionBounds(aSL, AREA_INFO[fArea].RegTag, lineFrom, lineTo, padLevel);
+  if lineFrom <> -1 then
   begin
-    for I := secEnd downto secStart do
+    for var I := lineTo downto lineFrom do
       aSL.Delete(I);
 
     // Insert in reverse so we could skip "removed" methods
-    for I := fList.Count - 1 downto 0 do
+    for var I := fList.Count - 1 downto 0 do
       if fList[I].fStatus in [msOk, msDeprecated] then
         case fArea of
           paActions,
           paStates,
-          paUtils:    aSL.Insert(secStart, DupeString(' ', pad) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
-          paEvents:   aSL.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCodeNameRegistrationEvent(fGame, I = fList.Count - 1));
+          paUtils:    aSL.Insert(lineFrom, DupeString(' ', padLevel) + 'RegisterMethod(@' + AREA_REG_CLASS[fGame, fArea] + '.' + fList[I].ExportCodeNameRegistration + ');');
+          paEvents:   aSL.Insert(lineFrom, DupeString(' ', padLevel) + fList[I].ExportCodeNameRegistrationEvent(fGame, I = fList.Count - 1));
         end;
 
     fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Short]));

@@ -11,7 +11,7 @@ uses
 function RightStrAfter(const aStr, aSeparator: string): string; deprecated;
 function StrSubstring(const aStr: string; aFrom: Integer): string; deprecated;
 procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
-procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer); deprecated;
+procedure FindRegionBounds(aStringList: TStringList; aMarker: string; out aLineFrom, aLineTo, aPadLevel: Integer);
 
 function ExtractFunctionResultType(aStr: string): string;
 
@@ -46,31 +46,31 @@ begin
 end;
 
 
-procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer);
+procedure FindRegionBounds(aStringList: TStringList; aMarker: string; out aLineFrom, aLineTo, aPadLevel: Integer);
 begin
-  aLineStart := -1;
+  aLineFrom := -1;
   repeat
-    Inc(aLineStart);
-    if aLineStart >= aStringList.Count then
+    Inc(aLineFrom);
+    if aLineFrom >= aStringList.Count then
     begin
-      aLineStart := -1;
+      aLineFrom := -1;
       Exit;
     end;
-  until (Trim(aStringList[aLineStart]) = aMarker);
+  until (Trim(aStringList[aLineFrom]) = aMarker);
 
-  aPad := Pos(aMarker, aStringList[aLineStart]) - 1;
+  aPadLevel := Pos(aMarker, aStringList[aLineFrom]) - 1;
 
-  Inc(aLineStart);
+  Inc(aLineFrom);
 
-  aLineFinish := aLineStart;
+  aLineTo := aLineFrom;
   repeat
-    Inc(aLineFinish);
+    Inc(aLineTo);
 
-    if aLineFinish >= aStringList.Count then
+    if aLineTo >= aStringList.Count then
       Exit;
-  until (Trim(aStringList[aLineFinish]) = aMarker);
+  until (Trim(aStringList[aLineTo]) = aMarker);
 
-  Dec(aLineFinish);
+  Dec(aLineTo);
 end;
 
 
