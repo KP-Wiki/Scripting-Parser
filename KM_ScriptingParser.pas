@@ -83,39 +83,39 @@ begin
   // Now, some functions in Actions expect string arrays. Problem is that they must be declared as TKMStringArray to accept both TKMStringArray and "array of"
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
-  fMethods[paActions].GenerateCode(aPaths.PathsA.SourceOutput1, aPaths.PathsA.SourceOutput2);
-  fMethods[paEvents ].GenerateCode(aPaths.PathsE.SourceOutput1, aPaths.PathsE.SourceOutput2);
-  fMethods[paStates ].GenerateCode(aPaths.PathsS.SourceOutput1, aPaths.PathsS.SourceOutput2);
-  fMethods[paUtils  ].GenerateCode(aPaths.PathsU.SourceOutput1, aPaths.PathsU.SourceOutput2);
-  fTypes.GenerateCode(aPaths.PathsT.SourceOutput1);
+  fMethods[paActions].GenerateCode(aPaths.PathsScripting[paActions].SourceOutput1, aPaths.PathsScripting[paActions].SourceOutput2);
+  fMethods[paEvents ].GenerateCode(aPaths.PathsScripting[paEvents].SourceOutput1, aPaths.PathsScripting[paEvents].SourceOutput2);
+  fMethods[paStates ].GenerateCode(aPaths.PathsScripting[paStates].SourceOutput1, aPaths.PathsScripting[paStates].SourceOutput2);
+  fMethods[paUtils  ].GenerateCode(aPaths.PathsScripting[paUtils].SourceOutput1, aPaths.PathsScripting[paUtils].SourceOutput2);
+  fTypes.GenerateCode(aPaths.PathsScripting[paTypes].SourceOutput1);
 end;
 
 
 procedure TKMScriptingParser.ParseCode(aPaths: TKMScriptingPaths);
 begin
-  fMethods[paActions].LoadFromFile(aPaths.PathsA.SourceInput);
-  fMethods[paEvents].LoadFromFile(aPaths.PathsE.SourceInput);
-  fMethods[paStates].LoadFromFile(aPaths.PathsS.SourceInput);
-  fMethods[paUtils].LoadFromFile(aPaths.PathsU.SourceInput);
-  fTypes.LoadFromFiles(aPaths.PathsT.SourceInput);
+  fMethods[paActions].LoadFromFile(aPaths.PathsScripting[paActions].SourceInput);
+  fMethods[paEvents].LoadFromFile(aPaths.PathsScripting[paEvents].SourceInput);
+  fMethods[paStates].LoadFromFile(aPaths.PathsScripting[paStates].SourceInput);
+  fMethods[paUtils].LoadFromFile(aPaths.PathsScripting[paUtils].SourceInput);
+  fTypes.LoadFromFiles(aPaths.PathsScripting[paTypes].SourceInput);
 end;
 
 
 procedure TKMScriptingParser.GenerateWiki(aPaths: TKMScriptingPaths);
 begin
-  fMethods[paActions].GenerateWiki(aPaths.PathsA.WikiTemplate, aPaths.PathsA.WikiOutput);
-  fMethods[paEvents].GenerateWiki(aPaths.PathsE.WikiTemplate, aPaths.PathsE.WikiOutput);
-  fMethods[paStates].GenerateWiki(aPaths.PathsS.WikiTemplate, aPaths.PathsS.WikiOutput);
-  fMethods[paUtils].GenerateWiki(aPaths.PathsU.WikiTemplate, aPaths.PathsU.WikiOutput);
-  fTypes.GenerateWiki(aPaths.PathsT.WikiTemplate, aPaths.PathsT.WikiOutput);
+  fMethods[paActions].GenerateWiki(aPaths.PathsScripting[paActions].WikiTemplate, aPaths.PathsScripting[paActions].WikiOutput);
+  fMethods[paEvents].GenerateWiki(aPaths.PathsScripting[paEvents].WikiTemplate, aPaths.PathsScripting[paEvents].WikiOutput);
+  fMethods[paStates].GenerateWiki(aPaths.PathsScripting[paStates].WikiTemplate, aPaths.PathsScripting[paStates].WikiOutput);
+  fMethods[paUtils].GenerateWiki(aPaths.PathsScripting[paUtils].WikiTemplate, aPaths.PathsScripting[paUtils].WikiOutput);
+  fTypes.GenerateWiki(aPaths.PathsScripting[paTypes].WikiTemplate, aPaths.PathsScripting[paTypes].WikiOutput);
 
   if DBG_COPY_FOR_REFERENCE then
   begin
-    CopyForReference(aPaths.PathsA.WikiOutput, paActions);
-    CopyForReference(aPaths.PathsE.WikiOutput, paEvents);
-    CopyForReference(aPaths.PathsS.WikiOutput, paStates);
-    CopyForReference(aPaths.PathsU.WikiOutput, paUtils);
-    CopyForReference(aPaths.PathsT.WikiOutput, paTypes);
+    CopyForReference(aPaths.PathsScripting[paActions].WikiOutput, paActions);
+    CopyForReference(aPaths.PathsScripting[paEvents].WikiOutput, paEvents);
+    CopyForReference(aPaths.PathsScripting[paStates].WikiOutput, paStates);
+    CopyForReference(aPaths.PathsScripting[paUtils].WikiOutput, paUtils);
+    CopyForReference(aPaths.PathsScripting[paTypes].WikiOutput, paTypes);
   end;
 end;
 
@@ -124,15 +124,15 @@ procedure TKMScriptingParser.VerifyMessages(aPaths: TKMScriptingPaths);
 begin
   if fParsingGame = pgKaMRemake then
   begin
-    fMethods[paActions].VerifyMessages(aPaths.PathsA.SourceInput, 'LogParamWarn');
-    fMethods[paStates].VerifyMessages(aPaths.PathsS.SourceInput, 'LogParamWarn');
-    fMethods[paUtils].VerifyMessages(aPaths.PathsU.SourceInput, 'LogParamWarn');
+    fMethods[paActions].VerifyMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarn');
+    fMethods[paStates].VerifyMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarn');
+    fMethods[paUtils].VerifyMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarn');
   end;
   if fParsingGame = pgKnightsProvince then
   begin
-    fMethods[paActions].VerifyMessages(aPaths.PathsA.SourceInput, 'LogParamWarning');
-    fMethods[paStates].VerifyMessages(aPaths.PathsS.SourceInput, 'LogParamWarning');
-    fMethods[paUtils].VerifyMessages(aPaths.PathsU.SourceInput, 'LogParamWarning');
+    fMethods[paActions].VerifyMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarning');
+    fMethods[paStates].VerifyMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarning');
+    fMethods[paUtils].VerifyMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarning');
   end;
 end;
 

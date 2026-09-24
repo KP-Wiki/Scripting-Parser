@@ -108,30 +108,30 @@ begin
   fUpdating := True;
   try
     // Scripting
-    edActionsIn.Text       := fScriptingPaths.PathsA.SourceInput;
-    edEventsIn.Text        := fScriptingPaths.PathsE.SourceInput;
-    edStatesIn.Text        := fScriptingPaths.PathsS.SourceInput;
-    edUtilsIn.Text         := fScriptingPaths.PathsU.SourceInput;
-    edTypesIn.Text         := fScriptingPaths.PathsT.SourceInput;
+    edActionsIn.Text       := fScriptingPaths.PathsScripting[paActions].SourceInput;
+    edEventsIn.Text        := fScriptingPaths.PathsScripting[paEvents].SourceInput;
+    edStatesIn.Text        := fScriptingPaths.PathsScripting[paStates].SourceInput;
+    edUtilsIn.Text         := fScriptingPaths.PathsScripting[paUtils].SourceInput;
+    edTypesIn.Text         := fScriptingPaths.PathsScripting[paTypes].SourceInput;
 
-    edActionsTemplate.Text := fScriptingPaths.PathsA.WikiTemplate;
-    edEventsTemplate.Text  := fScriptingPaths.PathsE.WikiTemplate;
-    edStatesTemplate.Text  := fScriptingPaths.PathsS.WikiTemplate;
-    edUtilsTemplate.Text   := fScriptingPaths.PathsU.WikiTemplate;
-    edTypesTemplate.Text   := fScriptingPaths.PathsT.WikiTemplate;
+    edActionsTemplate.Text := fScriptingPaths.PathsScripting[paActions].WikiTemplate;
+    edEventsTemplate.Text  := fScriptingPaths.PathsScripting[paEvents].WikiTemplate;
+    edStatesTemplate.Text  := fScriptingPaths.PathsScripting[paStates].WikiTemplate;
+    edUtilsTemplate.Text   := fScriptingPaths.PathsScripting[paUtils].WikiTemplate;
+    edTypesTemplate.Text   := fScriptingPaths.PathsScripting[paTypes].WikiTemplate;
 
-    edActionsOut.Text      := fScriptingPaths.PathsA.WikiOutput;
-    edEventsOut.Text       := fScriptingPaths.PathsE.WikiOutput;
-    edStatesOut.Text       := fScriptingPaths.PathsS.WikiOutput;
-    edUtilsOut.Text        := fScriptingPaths.PathsU.WikiOutput;
-    edTypesOut.Text        := fScriptingPaths.PathsT.WikiOutput;
+    edActionsOut.Text      := fScriptingPaths.PathsScripting[paActions].WikiOutput;
+    edEventsOut.Text       := fScriptingPaths.PathsScripting[paEvents].WikiOutput;
+    edStatesOut.Text       := fScriptingPaths.PathsScripting[paStates].WikiOutput;
+    edUtilsOut.Text        := fScriptingPaths.PathsScripting[paUtils].WikiOutput;
+    edTypesOut.Text        := fScriptingPaths.PathsScripting[paTypes].WikiOutput;
 
-    edActionsCode.Text     := fScriptingPaths.PathsA.SourceOutput1;
-    edEventsCode.Text      := fScriptingPaths.PathsE.SourceOutput1;
-    edEventsCode2.Text     := fScriptingPaths.PathsE.SourceOutput2;
-    edStatesCode.Text      := fScriptingPaths.PathsS.SourceOutput1;
-    edUtilsCode.Text       := fScriptingPaths.PathsU.SourceOutput1;
-    edTypesCode.Text       := fScriptingPaths.PathsT.SourceOutput1;
+    edActionsCode.Text     := fScriptingPaths.PathsScripting[paActions].SourceOutput1;
+    edEventsCode.Text      := fScriptingPaths.PathsScripting[paEvents].SourceOutput1;
+    edEventsCode2.Text     := fScriptingPaths.PathsScripting[paEvents].SourceOutput2;
+    edStatesCode.Text      := fScriptingPaths.PathsScripting[paStates].SourceOutput1;
+    edUtilsCode.Text       := fScriptingPaths.PathsScripting[paUtils].SourceOutput1;
+    edTypesCode.Text       := fScriptingPaths.PathsScripting[paTypes].SourceOutput1;
 
     // Modding
 //    edResIn.Text        :=
@@ -235,30 +235,30 @@ end;
 procedure TfmScriptingParser.SaveSettings;
 begin
   // Scripting
-  fScriptingPaths.PathsA.SourceInput  := edActionsIn.Text;
-  fScriptingPaths.PathsE.SourceInput  := edEventsIn.Text;
-  fScriptingPaths.PathsS.SourceInput  := edStatesIn.Text;
-  fScriptingPaths.PathsU.SourceInput  := edUtilsIn.Text;
-  fScriptingPaths.PathsT.SourceInput  := edTypesIn.Text;
+  fScriptingPaths.PathsScripting[paActions].SourceInput  := edActionsIn.Text;
+  fScriptingPaths.PathsScripting[paEvents].SourceInput  := edEventsIn.Text;
+  fScriptingPaths.PathsScripting[paStates].SourceInput  := edStatesIn.Text;
+  fScriptingPaths.PathsScripting[paUtils].SourceInput  := edUtilsIn.Text;
+  fScriptingPaths.PathsScripting[paTypes].SourceInput  := edTypesIn.Text;
 
-  fScriptingPaths.PathsA.WikiTemplate := edActionsTemplate.Text;
-  fScriptingPaths.PathsE.WikiTemplate := edEventsTemplate.Text;
-  fScriptingPaths.PathsS.WikiTemplate := edStatesTemplate.Text;
-  fScriptingPaths.PathsU.WikiTemplate := edUtilsTemplate.Text;
-  fScriptingPaths.PathsT.WikiTemplate := edTypesTemplate.Text;
+  fScriptingPaths.PathsScripting[paActions].WikiTemplate := edActionsTemplate.Text;
+  fScriptingPaths.PathsScripting[paEvents].WikiTemplate := edEventsTemplate.Text;
+  fScriptingPaths.PathsScripting[paStates].WikiTemplate := edStatesTemplate.Text;
+  fScriptingPaths.PathsScripting[paUtils].WikiTemplate := edUtilsTemplate.Text;
+  fScriptingPaths.PathsScripting[paTypes].WikiTemplate := edTypesTemplate.Text;
 
-  fScriptingPaths.PathsA.WikiOutput := edActionsOut.Text;
-  fScriptingPaths.PathsE.WikiOutput := edEventsOut.Text;
-  fScriptingPaths.PathsS.WikiOutput := edStatesOut.Text;
-  fScriptingPaths.PathsU.WikiOutput := edUtilsOut.Text;
-  fScriptingPaths.PathsT.WikiOutput := edTypesOut.Text;
+  fScriptingPaths.PathsScripting[paActions].WikiOutput := edActionsOut.Text;
+  fScriptingPaths.PathsScripting[paEvents].WikiOutput := edEventsOut.Text;
+  fScriptingPaths.PathsScripting[paStates].WikiOutput := edStatesOut.Text;
+  fScriptingPaths.PathsScripting[paUtils].WikiOutput := edUtilsOut.Text;
+  fScriptingPaths.PathsScripting[paTypes].WikiOutput := edTypesOut.Text;
 
-  fScriptingPaths.PathsA.SourceOutput1 := edActionsCode.Text;
-  fScriptingPaths.PathsE.SourceOutput1 := edEventsCode.Text;
-  fScriptingPaths.PathsE.SourceOutput2 := edEventsCode2.Text;
-  fScriptingPaths.PathsS.SourceOutput1 := edStatesCode.Text;
-  fScriptingPaths.PathsU.SourceOutput1 := edUtilsCode.Text;
-  fScriptingPaths.PathsT.SourceOutput1 := edTypesCode.Text;
+  fScriptingPaths.PathsScripting[paActions].SourceOutput1 := edActionsCode.Text;
+  fScriptingPaths.PathsScripting[paEvents].SourceOutput1 := edEventsCode.Text;
+  fScriptingPaths.PathsScripting[paEvents].SourceOutput2 := edEventsCode2.Text;
+  fScriptingPaths.PathsScripting[paStates].SourceOutput1 := edStatesCode.Text;
+  fScriptingPaths.PathsScripting[paUtils].SourceOutput1 := edUtilsCode.Text;
+  fScriptingPaths.PathsScripting[paTypes].SourceOutput1 := edTypesCode.Text;
 
   // Modding
 //    edResIn.Text        :=
