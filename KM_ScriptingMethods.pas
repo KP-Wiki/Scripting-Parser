@@ -58,11 +58,11 @@ type
 
     property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
-    procedure ExportCode(const aFilenameCheckAndReg: string); overload;
-    procedure ExportCode(const aFilenameCheck, aFilenameReg: string); overload;
-    function ExportWiki(const aTemplateFile, aOutputFile: string): string;
+    procedure GenerateCode(const aFilenameCheckAndReg: string); overload;
+    procedure GenerateCode(const aFilenameCheck, aFilenameReg: string); overload;
+    function GenerateWiki(const aTemplateFile, aOutputFile: string): string;
 
-    procedure CheckMessages(const aSourceFile: string; const aLogMessageName: string);
+    procedure VerifyMessages(const aSourceFile: string; const aLogMessageName: string);
   end;
 
 
@@ -599,7 +599,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aFilenameCheckAndReg: string);
+procedure TKMScriptMethods.GenerateCode(const aFilenameCheckAndReg: string);
 var
   sl: TStringList;
 begin
@@ -614,7 +614,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.ExportCode(const aFilenameCheck, aFilenameReg: string);
+procedure TKMScriptMethods.GenerateCode(const aFilenameCheck, aFilenameReg: string);
 var
   sl: TStringList;
 begin
@@ -638,7 +638,7 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportWiki(const aTemplateFile, aOutputFile: string): string;
+function TKMScriptMethods.GenerateWiki(const aTemplateFile, aOutputFile: string): string;
 var
   sl: TStringList;
   exportPath: string;
@@ -665,7 +665,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.CheckMessages(const aSourceFile: string; const aLogMessageName: string);
+procedure TKMScriptMethods.VerifyMessages(const aSourceFile: string; const aLogMessageName: string);
 var
   sl: TStringList;
 begin

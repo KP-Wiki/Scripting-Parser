@@ -68,8 +68,8 @@ type
     procedure Clear;
     property Count: Integer read GetCount;
     procedure LoadFromFiles(const aSourceMask: string);
-    procedure ExportCode(const aCodeFile: string);
-    procedure ExportWiki(const aTemplateFile, aOutputFile: string);
+    procedure GenerateCode(const aCodeFile: string);
+    procedure GenerateWiki(const aTemplateFile, aOutputFile: string);
   end;
 
 
@@ -690,7 +690,7 @@ begin
 end;
 
 
-procedure TKMScriptTypes.ExportCode(const aCodeFile: string);
+procedure TKMScriptTypes.GenerateCode(const aCodeFile: string);
 begin
   if not FileExists(aCodeFile) then Exit;
 
@@ -727,11 +727,11 @@ begin
     sl.Free;
   end;
 
-  fOnLog(Format('%d %s exported into Code checks', [fList.Count, AREA_INFO[paTypes].Name]));
+  fOnLog(Format('Written %d items of %s into Code', [fList.Count, AREA_INFO[paTypes].Name]));
 end;
 
 
-procedure TKMScriptTypes.ExportWiki(const aTemplateFile, aOutputFile: string);
+procedure TKMScriptTypes.GenerateWiki(const aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
@@ -756,7 +756,7 @@ begin
 
   sl.Free;
 
-  fOnLog(Format('%d %s exported into Wiki', [fList.Count, AREA_INFO[paTypes].Name]));
+  fOnLog(Format('Written %d items of %s into Wiki', [fList.Count, AREA_INFO[paTypes].Name]));
 end;
 
 

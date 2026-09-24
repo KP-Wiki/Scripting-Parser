@@ -26,7 +26,7 @@ type
     procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure GenerateCode(aPaths: TKMScriptingPaths);
     procedure GenerateWiki(aPaths: TKMScriptingPaths);
-    procedure CheckMessages(aPaths: TKMScriptingPaths);
+    procedure VerifyMessages(aPaths: TKMScriptingPaths);
     procedure GenerateXML;
   end;
 
@@ -83,11 +83,11 @@ begin
   // Now, some functions in Actions expect string arrays. Problem is that they must be declared as TKMStringArray to accept both TKMStringArray and "array of"
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
-  fMethods[paActions].ExportCode(aPaths.PathsA.SourceOutputCheckAndReg);
-  fMethods[paEvents ].ExportCode(aPaths.PathsE.SourceOutputCheck, aPaths.PathsE.SourceOutputReg);
-  fMethods[paStates ].ExportCode(aPaths.PathsS.SourceOutputCheckAndReg);
-  fMethods[paUtils  ].ExportCode(aPaths.PathsU.SourceOutputCheckAndReg);
-  fTypes.ExportCode(aPaths.PathsT.SourceOutputReg);
+  fMethods[paActions].GenerateCode(aPaths.PathsA.SourceOutputCheckAndReg);
+  fMethods[paEvents ].GenerateCode(aPaths.PathsE.SourceOutputCheck, aPaths.PathsE.SourceOutputReg);
+  fMethods[paStates ].GenerateCode(aPaths.PathsS.SourceOutputCheckAndReg);
+  fMethods[paUtils  ].GenerateCode(aPaths.PathsU.SourceOutputCheckAndReg);
+  fTypes.GenerateCode(aPaths.PathsT.SourceOutputReg);
 end;
 
 
@@ -103,11 +103,11 @@ end;
 
 procedure TKMScriptingParser.GenerateWiki(aPaths: TKMScriptingPaths);
 begin
-  fMethods[paActions].ExportWiki(aPaths.PathsA.WikiTemplate, aPaths.PathsA.WikiOutput);
-  fMethods[paEvents].ExportWiki(aPaths.PathsE.WikiTemplate, aPaths.PathsE.WikiOutput);
-  fMethods[paStates].ExportWiki(aPaths.PathsS.WikiTemplate, aPaths.PathsS.WikiOutput);
-  fMethods[paUtils].ExportWiki(aPaths.PathsU.WikiTemplate, aPaths.PathsU.WikiOutput);
-  fTypes.ExportWiki(aPaths.PathsT.WikiTemplate, aPaths.PathsT.WikiOutput);
+  fMethods[paActions].GenerateWiki(aPaths.PathsA.WikiTemplate, aPaths.PathsA.WikiOutput);
+  fMethods[paEvents].GenerateWiki(aPaths.PathsE.WikiTemplate, aPaths.PathsE.WikiOutput);
+  fMethods[paStates].GenerateWiki(aPaths.PathsS.WikiTemplate, aPaths.PathsS.WikiOutput);
+  fMethods[paUtils].GenerateWiki(aPaths.PathsU.WikiTemplate, aPaths.PathsU.WikiOutput);
+  fTypes.GenerateWiki(aPaths.PathsT.WikiTemplate, aPaths.PathsT.WikiOutput);
 
   if DBG_COPY_FOR_REFERENCE then
   begin
@@ -120,19 +120,19 @@ begin
 end;
 
 
-procedure TKMScriptingParser.CheckMessages(aPaths: TKMScriptingPaths);
+procedure TKMScriptingParser.VerifyMessages(aPaths: TKMScriptingPaths);
 begin
   if fParsingGame = pgKaMRemake then
   begin
-    fMethods[paActions].CheckMessages(aPaths.PathsA.SourceInput, 'LogParamWarn');
-    fMethods[paStates].CheckMessages(aPaths.PathsS.SourceInput, 'LogParamWarn');
-    fMethods[paUtils].CheckMessages(aPaths.PathsU.SourceInput, 'LogParamWarn');
+    fMethods[paActions].VerifyMessages(aPaths.PathsA.SourceInput, 'LogParamWarn');
+    fMethods[paStates].VerifyMessages(aPaths.PathsS.SourceInput, 'LogParamWarn');
+    fMethods[paUtils].VerifyMessages(aPaths.PathsU.SourceInput, 'LogParamWarn');
   end;
   if fParsingGame = pgKnightsProvince then
   begin
-    fMethods[paActions].CheckMessages(aPaths.PathsA.SourceInput, 'LogParamWarning');
-    fMethods[paStates].CheckMessages(aPaths.PathsS.SourceInput, 'LogParamWarning');
-    fMethods[paUtils].CheckMessages(aPaths.PathsU.SourceInput, 'LogParamWarning');
+    fMethods[paActions].VerifyMessages(aPaths.PathsA.SourceInput, 'LogParamWarning');
+    fMethods[paStates].VerifyMessages(aPaths.PathsS.SourceInput, 'LogParamWarning');
+    fMethods[paUtils].VerifyMessages(aPaths.PathsU.SourceInput, 'LogParamWarning');
   end;
 end;
 
