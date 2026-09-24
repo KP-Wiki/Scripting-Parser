@@ -146,10 +146,10 @@ end;
 procedure TfmScriptingParser.btnCheckMessagesClick(Sender: TObject);
 begin
   meLog.Clear;
-  meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' checking messages:');
-  meLog.Lines.Append(DupeString('-', 50));
+  DoLog(GAME_INFO[fParsingGame].Name + ' checking messages:');
+  DoLog(DupeString('-', 50));
 
-  // For now it is more KISS to create and use instance for the job
+  // It is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
   scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.CheckMessages(fScriptingPaths);
@@ -160,10 +160,10 @@ end;
 procedure TfmScriptingParser.btnGenerateCodeClick(Sender: TObject);
 begin
   meLog.Clear;
-  meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' code export:');
-  meLog.Lines.Append(DupeString('-', 50));
+  DoLog(GAME_INFO[fParsingGame].Name + ' code export:');
+  DoLog(DupeString('-', 50));
 
-  // For now it is more KISS to create and use instance for the job
+  // It is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
   scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateCode(fScriptingPaths);
@@ -174,10 +174,10 @@ end;
 procedure TfmScriptingParser.btnGenerateWikiClick(Sender: TObject);
 begin
   meLog.Clear;
-  meLog.Lines.Append(GAME_INFO[fParsingGame].Name + ' wiki export:');
-  meLog.Lines.Append(DupeString('-', 50));
+  DoLog(GAME_INFO[fParsingGame].Name + ' wiki export:');
+  DoLog(DupeString('-', 50));
 
-  // For now it is more KISS to create and use instance for the job
+  // It is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
   scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateWiki(fScriptingPaths);
@@ -189,7 +189,7 @@ procedure TfmScriptingParser.btnGenerateXMLClick(Sender: TObject);
 begin
   meLog.Clear;
 
-  // For now it is more KISS to create and use instance for the job
+  // It is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
   scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateXML;
