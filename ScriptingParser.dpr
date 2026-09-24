@@ -4,6 +4,7 @@ uses
   FormScriptingParser in 'FormScriptingParser.pas' {fmScriptingParser},
   KM_ParserTypes in 'KM_ParserTypes.pas',
   KM_ScriptingConsts in 'KM_ScriptingConsts.pas',
+  KM_ScriptingMethod in 'KM_ScriptingMethod.pas',
   KM_ScriptingMethods in 'KM_ScriptingMethods.pas',
   KM_ScriptingParameters in 'KM_ScriptingParameters.pas',
   KM_ScriptingParser in 'KM_ScriptingParser.pas',
