@@ -480,22 +480,22 @@ begin
     // Assemble method sections 1 by 1
 
     {
-    //* Enum
+    //* This is an Enum
     TKMSomeType = (stNone,
       //
       stSomething);
 
-    //* Record
+    //* This is a Record
     // ignore this comment
     TKMSomeType = record
       A,B: Integer;
       function Some: Byte;
     end;
 
-    //* Array of
+    //* This is an Array of
     TKMSomeType = array of TKMSomething;
 
-    //* Set of
+    //* This is a Set of
     TKMSomeType = set of TKMSomething;
     }
 

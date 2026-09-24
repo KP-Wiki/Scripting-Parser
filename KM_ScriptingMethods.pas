@@ -442,9 +442,11 @@ begin
     // Assemble method sections 1 by 1
       {
       //* Version: 1234
-      //* Status: -/Deprecated/Removed/Changed [optional]
-      //* Replacement: Link to the replacement method [optional]
+      //* Status: Deprecated/Removed/Changed [optional]
+      //* Replacement: name of the replacement method [optional]
       //* Large description of the method [optional]
+      //*  empty line
+      //* Another paragraph with even more description of the method [optional]
       //* aX: Small optional description of parameter
       //* aY: Small optional description of parameter
       //* Result: Small optional description of returned value
