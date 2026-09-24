@@ -1,8 +1,7 @@
 unit KM_ScriptingMethods;
 interface
 uses
-  System.Classes, System.SysUtils, System.Types, Vcl.Forms, Winapi.Windows, System.Generics.Collections, System.Generics.Defaults,
-  System.StrUtils,
+  System.Classes, System.SysUtils, System.Generics.Collections,
   KM_ScriptingParameters, KM_ParserTypes;
 
 type
@@ -40,7 +39,6 @@ type
     function CheckLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
   end;
 
-
   // List of methods
   TKMScriptMethods = class
   private
@@ -70,6 +68,7 @@ type
 
 implementation
 uses
+  System.StrUtils, System.Generics.Defaults,
   KM_ScriptingConsts, KM_StringUtils;
 
 
