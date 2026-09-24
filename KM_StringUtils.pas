@@ -4,13 +4,17 @@ uses
   System.Classes, System.SysUtils, System.Types, System.StrUtils;
 
 
-function RightStrAfter(const aStr, aSeparator: string): string;
-function StrSubstring(const aStr: string; aFrom: Integer): string;
-function StrLastIndexOf(const aStr, aSubStr: string): Integer;
-function StrTrimRightSeparators(const aStr: string): string;
-procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList);
+// These function were replacements for string functions introduced after XE2 (XE5 probably)
+// Names are the same as in new Delphi versions, but with 'Str' prefix
+// We kept them here to support pre-XE5 compilation
+//todo: Now we dont support old compilers and they can be removed
+function RightStrAfter(const aStr, aSeparator: string): string; deprecated;
+function StrSubstring(const aStr: string; aFrom: Integer): string; deprecated;
+function StrLastIndexOf(const aStr, aSubStr: string): Integer; deprecated;
+function StrTrimRightSeparators(const aStr: string): string; deprecated;
+procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
+procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer); deprecated;
 
-procedure FindStartAndFinish(aStringList: TStringList; aMarker: string; out aLineStart, aLineFinish, aPad: Integer);
 
 implementation
 
@@ -23,10 +27,6 @@ begin
 end;
 
 
-// string functions
-// These function are replacements for string functions introduced after XE2 (XE5 probably)
-// Names are the same as in new Delphi versions, but with 'Str' prefix
-// We keep them here to support pre-XE5 compilation
 function StrSubstring(const aStr: string; aFrom: Integer): string;
 begin
   Result := Copy(aStr, aFrom + 1, Length(aStr));
