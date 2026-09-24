@@ -15,10 +15,10 @@ const
 
   // Denotes regions where Events, States, Actions, Types, Utils are located
   AREA_INFO: array [TKMParsingArea] of record
-    Name: string;  // Name of the area. Used in the logs and for reference md-s in this repo
-    CheckTag: string;   // Tag used for the Check region
-    RegTag: string;     // Tag used for the Register region
-    NeedsReturn: Boolean;
+    Name: string;         // Name of the area. Used in the logs and for reference md-s in this repo
+    CheckTag: string;     // Tag used for the Check region
+    RegTag: string;       // Tag used for the Register region
+    NeedsReturn: Boolean; // Wherever wiki needs return type column for this area (Actions, States, Utils)
   end = (
     (Name: 'Actions'; CheckTag: '//*Actions-Check*//'; RegTag:'//*Actions-Reg*//'; NeedsReturn: True),
     (Name: 'Events';  CheckTag: '//*Events-Check*//';  RegTag:'//*Events-Reg*//';  NeedsReturn: False),

@@ -283,9 +283,15 @@ begin
 
   Result := Format(TEMPLATE, [
     IfThen(fVersion <> '', fVersion, '-'), fName, fName, deprStr, fDescription, fParameters.ExportWikiBody]);
+
   if aNeedReturn then
+  begin
     //todo -cPractical: add link instead of text when our custom script type is mentioned
-    Result := Result + Format(TEMPLATE_RET, [fResultType, IfThen(fResultDesc <> '', ' // ' + fResultDesc)]);
+    var retType := IfThen(fResultType <> '', fResultType, '-');
+    var retDesc := IfThen(fResultDesc <> '', ' // ' + fResultDesc);
+
+    Result := Result + Format(TEMPLATE_RET, [retType, retDesc]);
+  end;
 end;
 
 
@@ -496,12 +502,10 @@ end;
 
 
 function TKMScriptMethods.ExportWikiBody: string;
-var
-  I: Integer;
 begin
   Result := '';
 
-  for I := 0 to fList.Count - 1 do
+  for var I := 0 to fList.Count - 1 do
   begin
     fList[I].fParameters.AdjoinPairs;
     Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody(AREA_INFO[fArea].NeedsReturn);
