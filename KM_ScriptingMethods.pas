@@ -14,6 +14,7 @@ type
   );
 
   // Single method info
+  // Documenter > Scripting > Methods
   TKMMethodInfo = class
   private
     fFirstLine: Integer;  // First line of code where this method documentation and declaration starts
@@ -40,6 +41,7 @@ type
   end;
 
   // List of methods
+  // Documenter > Scripting > Methods
   TKMScriptMethods = class
   private
     fGame: TKMParsingGame;

@@ -83,6 +83,7 @@
         <DCCReference Include="KM_ScriptingParameters.pas"/>
         <DCCReference Include="KM_ScriptingParser.pas"/>
         <DCCReference Include="KM_ScriptingPaths.pas"/>
+        <DCCReference Include="KM_ScriptingType.pas"/>
         <DCCReference Include="KM_ScriptingTypes.pas"/>
         <DCCReference Include="KM_StringUtils.pas"/>
         <BuildConfiguration Include="Base">
