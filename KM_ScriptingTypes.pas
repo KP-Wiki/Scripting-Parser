@@ -701,7 +701,10 @@ begin
         sl.Insert(secStart, DupeString(' ', pad) + fList[I].ExportCode);
 
         if (I > 0) and (fList[I].SortPriority <> fList[I-1].SortPriority) then
-          sl.Insert(secStart, DupeString(' ', pad) + '// Dependent types of level ' + IntToStr(fList[I].SortPriority));
+        begin
+          sl.Insert(secStart, '');
+          sl.Insert(secStart + 1, DupeString(' ', pad) + Format('// Level %d types depend on preceeding types of level %d', [fList[I].SortPriority, fList[I].SortPriority - 1]));
+        end;
       end;
     end;
 
