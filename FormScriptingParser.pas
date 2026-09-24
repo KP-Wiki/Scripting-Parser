@@ -107,6 +107,7 @@ begin
   // Blit settings to UI
   fUpdating := True;
   try
+    // Scripting
     edActionsIn.Text       := fScriptingPaths.PathsA.SourceInput;
     edEventsIn.Text        := fScriptingPaths.PathsE.SourceInput;
     edStatesIn.Text        := fScriptingPaths.PathsS.SourceInput;
@@ -131,6 +132,11 @@ begin
     edStatesCode.Text      := fScriptingPaths.PathsS.SourceOutputCheckAndReg;
     edUtilsCode.Text       := fScriptingPaths.PathsU.SourceOutputCheckAndReg;
     edTypesCode.Text       := fScriptingPaths.PathsT.SourceOutputReg;
+
+    // Modding
+//    edResIn.Text        :=
+//    edResTemplate.Text  :=
+//    edResOut.Text       :=
   finally
     fUpdating := False;
   end;
@@ -228,6 +234,7 @@ end;
 
 procedure TfmScriptingParser.SaveSettings;
 begin
+  // Scripting
   fScriptingPaths.PathsA.SourceInput  := edActionsIn.Text;
   fScriptingPaths.PathsE.SourceInput  := edEventsIn.Text;
   fScriptingPaths.PathsS.SourceInput  := edStatesIn.Text;
@@ -252,6 +259,11 @@ begin
   fScriptingPaths.PathsS.SourceOutputCheckAndReg  := edStatesCode.Text;
   fScriptingPaths.PathsU.SourceOutputCheckAndReg  := edUtilsCode.Text;
   fScriptingPaths.PathsT.SourceOutputReg          := edTypesCode.Text;
+
+  // Modding
+//    edResIn.Text        :=
+//    edResTemplate.Text  :=
+//    edResOut.Text       :=
 
   fScriptingPaths.SaveToINI(fSettingsPath);
 end;

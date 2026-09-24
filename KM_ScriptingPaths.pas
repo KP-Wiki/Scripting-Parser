@@ -13,17 +13,20 @@ type
     WikiOutput: string;
   end;
 
+  // Actions/States/Utils have common Verification and Registration
   TKMAreaPathsASU = class(TKMAreaPathsCommon)
   public
     SourceOutputCheckAndReg: string;
   end;
 
+  // Events have separate Verification and Registration
   TKMAreaPathsE = class(TKMAreaPathsCommon)
   public
     SourceOutputCheck: string;
     SourceOutputReg: string;
   end;
 
+  // Types have only Registration
   TKMAreaPathsT = class(TKMAreaPathsCommon)
   public
     SourceOutputReg: string;
@@ -74,10 +77,8 @@ end;
 
 
 procedure TKMScriptingPaths.LoadFromINI(const aSettingsPath: string);
-var
-  ini: TINIFile;
 begin
-  ini := TINIFile.Create(aSettingsPath);
+  var ini := TINIFile.Create(aSettingsPath);
 
   // Listing everything plainly is KISS compared to loops and issues with Events and Types being slightly different
   PathsA.SourceInput := ini.ReadString('INPUT',  'Actions', '..\..\src\scripting\KM_ScriptingActions.pas');
@@ -113,10 +114,8 @@ end;
 
 
 procedure TKMScriptingPaths.SaveToINI(const aSettingsPath: string);
-var
-  ini: TINIFile;
 begin
-  ini := TINIFile.Create(aSettingsPath);
+  var ini := TINIFile.Create(aSettingsPath);
 
   // Listing everything plainly is KISS compared to loops and issues with Events and Types being slightly different
   ini.WriteString('INPUT',  'Actions', PathsA.SourceInput);
