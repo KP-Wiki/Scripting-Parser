@@ -14,16 +14,21 @@ Version column description:
 
 ***
 
+* <a href="#AlertExists">AlertExists</a>
 * <a href="#CampaignMissionCount">CampaignMissionCount</a>
 * <a href="#CampaignMissionWon">CampaignMissionWon</a>
 * <a href="#EntityType">EntityType</a>
+* <a href="#FieldAgeAt">FieldAgeAt</a>
+* <a href="#FieldAt">FieldAt</a>
+* <a href="#FieldOwnerAt">FieldOwnerAt</a>
 * <a href="#FogRevealed">&#x274C; FogRevealed</a>
-* <a href="#GamePeaceTime">GamePeaceTime</a>
+* <a href="#GamePeacetime">GamePeacetime</a>
 * <a href="#GroupAt">GroupAt</a>
 * <a href="#GroupBannerDisplay">GroupBannerDisplay</a>
 * <a href="#GroupCanTakeOrders">GroupCanTakeOrders</a>
 * <a href="#GroupColumnCount">GroupColumnCount</a>
 * <a href="#GroupDead">GroupDead</a>
+* <a href="#GroupExists">GroupExists</a>
 * <a href="#GroupIsIdle">GroupIsIdle</a>
 * <a href="#GroupMember">GroupMember</a>
 * <a href="#GroupMemberCount">GroupMemberCount</a>
@@ -34,7 +39,9 @@ Version column description:
 * <a href="#HouseDamage">HouseDamage</a>
 * <a href="#HouseDeliveryBlocked">&#x274C; HouseDeliveryBlocked</a>
 * <a href="#HouseDestroyed">HouseDestroyed</a>
+* <a href="#HouseExists">HouseExists</a>
 * <a href="#HouseHasOccupant">&#x274C; HouseHasOccupant</a>
+* <a href="#HouseHasPasture">HouseHasPasture</a>
 * <a href="#HouseHasWorker">HouseHasWorker</a>
 * <a href="#HouseIsComplete">HouseIsComplete</a>
 * <a href="#HouseOwner">HouseOwner</a>
@@ -43,7 +50,7 @@ Version column description:
 * <a href="#HousePositionX">HousePositionX</a>
 * <a href="#HousePositionY">HousePositionY</a>
 * <a href="#HouseRepair">HouseRepair</a>
-* <a href="#HouseSheepyardHasPasture">HouseSheepyardHasPasture</a>
+* <a href="#HouseSheepyardHasPasture">&#x274C; HouseSheepyardHasPasture</a>
 * <a href="#HouseTrainQueuePeek">HouseTrainQueuePeek</a>
 * <a href="#HouseType">HouseType</a>
 * <a href="#HouseTypeName">HouseTypeName</a>
@@ -57,8 +64,8 @@ Version column description:
 * <a href="#HouseWeaponsOrdered">HouseWeaponsOrdered</a>
 * <a href="#HouseWoodcutterChopOnly">&#x274C; HouseWoodcutterChopOnly</a>
 * <a href="#HouseWoodcutterMode">HouseWoodcutterMode</a>
-* <a href="#IsFieldAt">IsFieldAt</a>
-* <a href="#IsOrchardAt">IsOrchardAt</a>
+* <a href="#IsFieldAt">&#x274C; IsFieldAt</a>
+* <a href="#IsOrchardAt">&#x274C; IsOrchardAt</a>
 * <a href="#IsRoadAt">IsRoadAt</a>
 * <a href="#PlayerAIDispositionCount">PlayerAIDispositionCount</a>
 * <a href="#PlayerAIDispositionGet">PlayerAIDispositionGet</a>
@@ -108,6 +115,7 @@ Version column description:
 * <a href="#UnitDamageMin">UnitDamageMin</a>
 * <a href="#UnitDead">UnitDead</a>
 * <a href="#UnitDirection">UnitDirection</a>
+* <a href="#UnitExists">UnitExists</a>
 * <a href="#UnitGroup">UnitGroup</a>
 * <a href="#UnitHitpoints">UnitHitpoints</a>
 * <a href="#UnitHitpointsMax">UnitHitpointsMax</a>
@@ -126,16 +134,21 @@ Version column description:
 
 | Ver<br/>sion | State description | Parameters<br/>and types | Returns |
 | ------- | ------------------------------------ | -------------- | ------- |
+| 16615 | <a id="AlertExists">AlertExists</a><sub><br/>Checks if the alert exists</sub> | <sub>**aAlertId**: Integer;</sub> | <sub>Boolean</sub> |
 | 8721 | <a id="CampaignMissionCount">CampaignMissionCount</a><sub><br/>Get total number of missions in the current campaign. Campaign-only action!</sub> | <sub></sub> | <sub>Integer</sub> |
 | 8723 | <a id="CampaignMissionWon">CampaignMissionWon</a><sub><br/>See if the mission was won. Campaign-only action!</sub> | <sub>**aMission**: Integer; // _mission index to check_</sub> | <sub>Boolean</sub> |
 | 7969 | <a id="EntityType">EntityType</a><sub><br/>Get the entity type by its UID (0 - unknown or none, 1 - Unit, 2 - House, 3 - UnitGroup, 4 - Stockpile)</sub> | <sub>**aEntityID**: Integer;</sub> | <sub>Integer</sub> |
+| 17347 | <a id="FieldAgeAt">FieldAgeAt</a><sub><br/>Returns age of the field at coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>TKMFieldAge</sub> |
+| 17347 | <a id="FieldAt">FieldAt</a><sub><br/>Returns type of the field at coordinates<br/>Result can be Grain, Orchard or None</sub> | <sub>**aX, aY**: Word;</sub> | <sub>TKMFieldType</sub> |
+| 17347 | <a id="FieldOwnerAt">FieldOwnerAt</a><sub><br/>Returns owner of the field at coordinates<br/>Result will be -1 if there is no field</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | -8743 | <a id="FogRevealed">FogRevealed</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#PlayerFogRevealed">PlayerFogRevealed</a> instead*</sub><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="GamePeaceTime">GamePeaceTime</a><sub><br/>Get the peacetime duration (in game ticks)</sub> | <sub></sub> | <sub>Cardinal</sub> |
+| - | <a id="GamePeacetime">GamePeacetime</a><sub><br/>Get the Peacetime duration (in game ticks)</sub> | <sub></sub> | <sub>Cardinal</sub> |
 | - | <a id="GroupAt">GroupAt</a><sub><br/>Return UID of a group at requested coordinates</sub> | <sub>**aX, aY**: Word;</sub> | <sub>Integer</sub> |
 | 14898 | <a id="GroupBannerDisplay">GroupBannerDisplay</a><sub><br/>Returns state of the groups banner display. False if the group is already dead</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
 | 15640 | <a id="GroupCanTakeOrders">GroupCanTakeOrders</a><sub><br/>See if the group can take orders (i.e. not in a fight)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="GroupColumnCount">GroupColumnCount</a><sub><br/>Returns 0 if group does not exist</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupDead">GroupDead</a><sub><br/>See if the group is dead (all members are dead)</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
+| 16670 | <a id="GroupExists">GroupExists</a><sub><br/>Checks if group exists</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
 | 5632 | <a id="GroupIsIdle">GroupIsIdle</a><sub><br/>See if the group has no active orders</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="GroupMember">GroupMember</a><sub><br/>Get N-th group member</sub> | <sub>**aGroupID**: Integer; <br/> **aMemberIndex**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="GroupMemberCount">GroupMemberCount</a><sub><br/>Returns how many member there are in this group</sub> | <sub>**aGroupID**: Integer;</sub> | <sub>Integer</sub> |
@@ -146,7 +159,9 @@ Version column description:
 | - | <a id="HouseDamage">HouseDamage</a><sub><br/>Check house damage<br/>-1 if house does not exist</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
 | -7015 | <a id="HouseDeliveryBlocked">HouseDeliveryBlocked</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseWareBlock">HouseWareBlock</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Boolean</sub> |
 | - | <a id="HouseDestroyed">HouseDestroyed</a><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
-| -6102 | <a id="HouseHasOccupant">HouseHasOccupant</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseHasWorker">HouseHasWorker</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub></sub> |
+| 16670 | <a id="HouseExists">HouseExists</a><sub><br/>Checks if house exists</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| -6102 | <a id="HouseHasOccupant">HouseHasOccupant</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseHasWorker">HouseHasWorker</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>-</sub> |
+| 18216 | <a id="HouseHasPasture">HouseHasPasture</a><sub><br/>Check if the house (that works with a pasture) has a pasture built (fenced area by the back door)</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 6102 | <a id="HouseHasWorker">HouseHasWorker</a><sub><br/>Check if the house has a worker assigned to it</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="HouseIsComplete">HouseIsComplete</a><sub><br/>Check if house is complete</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="HouseOwner">HouseOwner</a><sub><br/>See to which player the house belongs</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
@@ -155,7 +170,7 @@ Version column description:
 | - | <a id="HousePositionX">HousePositionX</a><sub><br/>-1 if house does not exist</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="HousePositionY">HousePositionY</a><sub><br/>-1 if house does not exist</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="HouseRepair">HouseRepair</a><sub><br/>Check if house repair is enabled</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
-| 13134 | <a id="HouseSheepyardHasPasture">HouseSheepyardHasPasture</a><sub><br/>Check if the sheepyard has a pasture built (fenced area by the back door)</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
+| -18216 | <a id="HouseSheepyardHasPasture">HouseSheepyardHasPasture</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseSheepyardHasPasture">HouseSheepyardHasPasture</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 4820 | <a id="HouseTrainQueuePeek">HouseTrainQueuePeek</a><sub><br/>Get the unit type in the houses training queue (School/Fort/Barracks)</sub> | <sub>**aHouseID**: Integer; <br/> **QueueIndex**: Integer;</sub> | <sub>TKMUnitType</sub> |
 | - | <a id="HouseType">HouseType</a><sub><br/>Get the house type</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>TKMHouseType</sub> |
 | 15658 | <a id="HouseTypeName">HouseTypeName</a><sub><br/>Returns house type name as used in the game engine<br/>Intended to be used for debug purposes</sub> | <sub>**aHouseType**: TKMHouseType;</sub> | <sub>string</sub> |
@@ -169,13 +184,13 @@ Version column description:
 | - | <a id="HouseWeaponsOrdered">HouseWeaponsOrdered</a><sub><br/>Get the amount of weapons ordered in the house</sub> | <sub>**aHouseID**: Integer; <br/> **aWareType**: TKMWareType;</sub> | <sub>Integer</sub> |
 | -15056 | <a id="HouseWoodcutterChopOnly">HouseWoodcutterChopOnly</a><br/>&#x274C;`Removed`<br/><sub>*Method was removed, use <a href="#HouseWoodcutterMode">HouseWoodcutterMode</a> instead*</sub><sub></sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Boolean</sub> |
 | 15057 | <a id="HouseWoodcutterMode">HouseWoodcutterMode</a><sub><br/>Modes are: -1 for error, 0 - cut and plant, 1 - chop only, 2 - plant only</sub> | <sub>**aHouseID**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="IsFieldAt">IsFieldAt</a><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom field must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
-| - | <a id="IsOrchardAt">IsOrchardAt</a><sub><br/>Check if there is a orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom orchard must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsFieldAt">IsFieldAt</a><br/>&#x274C;`Deprecated`<br/><sub>*Method could be removed in the future game versions, use <a href="#FieldAt">FieldAt</a> instead*</sub><sub><br/>Check if there is a field owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom field must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
+| - | <a id="IsOrchardAt">IsOrchardAt</a><br/>&#x274C;`Deprecated`<br/><sub>*Method could be removed in the future game versions, use <a href="#FieldAt">FieldAt</a> instead*</sub><sub><br/>Check if there is an orchard owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom orchard must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | - | <a id="IsRoadAt">IsRoadAt</a><sub><br/>Check if there is a road owned by player at coordinates</sub> | <sub>**aPlayer**: Integer; // _player to whom road must belong. -1 stands for any player_ <br/> **aX, aY**: Word;</sub> | <sub>Boolean</sub> |
 | 14370 | <a id="PlayerAIDispositionCount">PlayerAIDispositionCount</a><sub><br/>Return how many dispositions AI has<br/>-1 if the player does not exist or is not AI</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
-| 15082 | <a id="PlayerAIDispositionGet">PlayerAIDispositionGet</a><sub><br/>Returns disposition details<br/>All returned values will be zero if the player does not exist or is not AI, or Index is wrong</sub> | <sub>**aPlayer**: Integer; <br/> **aIndex**: Integer; <br/> **out aUID**: Integer; <br/> **out aX, aY**: Integer; <br/> **out aDir**: Integer; <br/> **out aGroupType**: TKMGroupType; <br/> **out aNumUnits**: Integer; <br/> **out aUnitsPerRow**: Integer; <br/> **out aGuardRadius**: Integer;</sub> | <sub></sub> |
+| 15082 | <a id="PlayerAIDispositionGet">PlayerAIDispositionGet</a><sub><br/>Returns disposition details<br/>All returned values will be zero if the player does not exist or is not AI, or Index is wrong</sub> | <sub>**aPlayer**: Integer; <br/> **aIndex**: Integer; <br/> **out aUID**: Integer; <br/> **out aX, aY**: Integer; <br/> **out aDir**: Integer; <br/> **out aGroupType**: TKMGroupType; <br/> **out aNumUnits**: Integer; <br/> **out aUnitsPerRow**: Integer; <br/> **out aGuardRadius**: Integer;</sub> | <sub>-</sub> |
 | 14405 | <a id="PlayerAIDispositionGroup">PlayerAIDispositionGroup</a><sub><br/>Returns group currently assigned to the disposition<br/>Returns zero if the player does not exist or is not AI, or Index is wrong</sub> | <sub>**aPlayer**: Integer; <br/> **aIndex**: Integer;</sub> | <sub>Integer</sub> |
-| 15082 | <a id="PlayerAIDispositionUIDGet">PlayerAIDispositionUIDGet</a><sub><br/>Returns disposition details<br/>All returned values will be zero if the player does not exist or is not AI, or aDispositionUID is unknown</sub> | <sub>**aPlayer**: Integer; <br/> **aDispositionUID**: Integer; <br/> **out aX, aY**: Integer; <br/> **out aDir**: Integer; <br/> **out aGroupType**: TKMGroupType; <br/> **out aNumUnits**: Integer; <br/> **out aUnitsPerRow**: Integer; <br/> **out aGuardRadius**: Integer;</sub> | <sub></sub> |
+| 15082 | <a id="PlayerAIDispositionUIDGet">PlayerAIDispositionUIDGet</a><sub><br/>Returns disposition details<br/>All returned values will be zero if the player does not exist or is not AI, or aDispositionUID is unknown</sub> | <sub>**aPlayer**: Integer; <br/> **aDispositionUID**: Integer; <br/> **out aX, aY**: Integer; <br/> **out aDir**: Integer; <br/> **out aGroupType**: TKMGroupType; <br/> **out aNumUnits**: Integer; <br/> **out aUnitsPerRow**: Integer; <br/> **out aGuardRadius**: Integer;</sub> | <sub>-</sub> |
 | 15082 | <a id="PlayerAIDispositionUIDGroup">PlayerAIDispositionUIDGroup</a><sub><br/>Returns group currently assigned to the disposition<br/>Returns zero if the player does not exist or is not AI, or aDispositionUID is unknown</sub> | <sub>**aPlayer**: Integer; <br/> **aDispositionUID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="PlayerAllianceCheck">PlayerAllianceCheck</a><sub><br/>Checking alliances with Neutral will always return True (despite some animals being agressive)</sub> | <sub>**aPlayer1**: Integer; <br/> **aPlayer2**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="PlayerColorText">PlayerColorText</a><sub><br/>Get the string with color code of the player (adjusted brighter for text display)</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>string</sub> |
@@ -198,9 +213,9 @@ Version column description:
 | 14892 | <a id="PlayerObjectiveStatus">PlayerObjectiveStatus</a><sub><br/>Get the objective status<br/>Returns osHidden in case of fail</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveId**: Integer;</sub> | <sub>TKMObjectiveStatus</sub> |
 | 14892 | <a id="PlayerObjectiveType">PlayerObjectiveType</a><sub><br/>Get the objective type<br/>Returns otMain in case of fail</sub> | <sub>**aPlayer**: Integer; <br/> **aObjectiveId**: Integer;</sub> | <sub>TKMObjectiveType</sub> |
 | - | <a id="PlayerVictorious">PlayerVictorious</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Boolean</sub> |
-| - | <a id="PlayerWareDistribution">PlayerWareDistribution</a><sub></sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Byte</sub> |
-| - | <a id="StatArmyCount">StatArmyCount</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
-| - | <a id="StatCitizenCount">StatCitizenCount</a><sub></sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
+| - | <a id="PlayerWareDistribution">PlayerWareDistribution</a><sub><br/>Gets player ware distribution value for house type</sub> | <sub>**aPlayer**: Integer; <br/> **aWareType**: TKMWareType; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Byte</sub> |
+| - | <a id="StatArmyCount">StatArmyCount</a><sub><br/>See how many warriors player has</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
+| - | <a id="StatCitizenCount">StatCitizenCount</a><sub><br/>See how many citizens player has</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="StatHouseTypeCount">StatHouseTypeCount</a><sub><br/>Return number of completed houses of specified type that player has at this moment</sub> | <sub>**aPlayer**: Integer; <br/> **aHouseType**: TKMHouseType;</sub> | <sub>Integer</sub> |
 | - | <a id="StatPlayerCount">StatPlayerCount</a><sub><br/>See how many enabled players there are in the mission (chosen to be played by anyone on mission start)</sub> | <sub></sub> | <sub>Integer</sub> |
 | - | <a id="StatUnitCount">StatUnitCount</a><sub><br/>See how many units player has alive</sub> | <sub>**aPlayer**: Integer;</sub> | <sub>Integer</sub> |
@@ -220,6 +235,7 @@ Version column description:
 | 15556 | <a id="UnitDamageMin">UnitDamageMin</a><sub><br/>Returns minimum damage of a unit. 0 if unit can not deal damage. -1 if there's no such unit</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | - | <a id="UnitDead">UnitDead</a><sub><br/>Check if unit is dead</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean</sub> |
 | - | <a id="UnitDirection">UnitDirection</a><sub><br/>See unit facing direction (0 .. 7)<br/>-1 if direction is uninitialized</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
+| 16670 | <a id="UnitExists">UnitExists</a><sub><br/>Checks if unit exists</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Boolean</sub> |
 | 4829 | <a id="UnitGroup">UnitGroup</a><sub><br/>Return UID of a group to which requested Unit belongs</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | 14497 | <a id="UnitHitpoints">UnitHitpoints</a><sub><br/>See current unit hitpoints</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
 | 14497 | <a id="UnitHitpointsMax">UnitHitpointsMax</a><sub><br/>See maximum unit hitpoints</sub> | <sub>**aUnitID**: Integer;</sub> | <sub>Integer</sub> |
