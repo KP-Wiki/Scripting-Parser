@@ -12,7 +12,7 @@ type
     btnKromKP: TButton;
     btnGenerateWiki: TButton;
     btnGenerateXML: TButton;
-    gbSettings: TGroupBox;
+    gbScripting: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -46,6 +46,15 @@ type
     meLog: TMemo;
     edEventsCode2: TEdit;
     btnCheckMessages: TButton;
+    gbModding: TGroupBox;
+    Label10: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    edResIn: TEdit;
+    edResOut: TEdit;
+    edResTemplate: TEdit;
+    btnGenerateResWiki: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure edtOnTextChange(Sender: TObject);

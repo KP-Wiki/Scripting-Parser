@@ -3,7 +3,7 @@ object fmScriptingParser: TfmScriptingParser
   Top = 0
   Caption = 'KMR/KP Scripting Parser'
   ClientHeight = 649
-  ClientWidth = 945
+  ClientWidth = 961
   Color = clBtnFace
   Constraints.MinHeight = 400
   Constraints.MinWidth = 500
@@ -15,14 +15,14 @@ object fmScriptingParser: TfmScriptingParser
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    945
+    961
     649)
   TextHeight = 13
   object btnReyKMR: TButton
-    Left = 840
-    Top = 16
-    Width = 33
-    Height = 33
+    Left = 696
+    Top = 8
+    Width = 81
+    Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Rey KMR'
     TabOrder = 0
@@ -30,62 +30,26 @@ object fmScriptingParser: TfmScriptingParser
     OnClick = btnReyKMRClick
   end
   object btnKromKP: TButton
-    Left = 904
-    Top = 16
-    Width = 33
-    Height = 33
+    Left = 872
+    Top = 8
+    Width = 81
+    Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Krom KP'
     TabOrder = 1
     WordWrap = True
     OnClick = btnKromKPClick
   end
-  object btnGenerateWiki: TButton
-    Left = 840
-    Top = 56
-    Width = 97
-    Height = 49
-    Anchors = [akTop, akRight]
-    Caption = 'Generate Wiki'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = False
-    TabOrder = 2
-    WordWrap = True
-    OnClick = btnGenerateWikiClick
-  end
-  object btnGenerateXML: TButton
-    Left = 840
-    Top = 200
-    Width = 97
-    Height = 49
-    Anchors = [akTop, akRight]
-    Caption = 'Generate XML'
-    Enabled = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = False
-    TabOrder = 3
-    WordWrap = True
-    OnClick = btnGenerateXMLClick
-  end
-  object gbSettings: TGroupBox
+  object gbScripting: TGroupBox
     Left = 8
-    Top = 8
-    Width = 825
+    Top = 40
+    Width = 945
     Height = 185
-    Caption = ' Settings '
-    TabOrder = 4
+    Caption = ' Scripting '
+    TabOrder = 2
+    DesignSize = (
+      945
+      185)
     object Label1: TLabel
       Left = 8
       Top = 32
@@ -117,9 +81,9 @@ object fmScriptingParser: TfmScriptingParser
     object Label4: TLabel
       Left = 48
       Top = 16
-      Width = 43
+      Width = 103
       Height = 13
-      Caption = 'Input file'
+      Caption = 'Source code input file'
     end
     object Label5: TLabel
       Left = 304
@@ -145,9 +109,9 @@ object fmScriptingParser: TfmScriptingParser
     object Label9: TLabel
       Left = 664
       Top = 16
-      Width = 77
+      Width = 111
       Height = 13
-      Caption = 'Code output file'
+      Caption = 'Source code output file'
     end
     object edActionsIn: TEdit
       Left = 48
@@ -317,62 +281,183 @@ object fmScriptingParser: TfmScriptingParser
       TabOrder = 20
       OnChange = edtOnTextChange
     end
+    object btnCheckMessages: TButton
+      Left = 832
+      Top = 96
+      Width = 97
+      Height = 41
+      Anchors = [akTop, akRight]
+      Caption = 'Check messages'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 21
+      WordWrap = True
+      OnClick = btnCheckMessagesClick
+    end
+    object btnGenerateCode: TButton
+      Left = 832
+      Top = 56
+      Width = 97
+      Height = 41
+      Anchors = [akTop, akRight]
+      Caption = 'Generate Code'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 22
+      WordWrap = True
+      OnClick = btnGenerateCodeClick
+    end
+    object btnGenerateWiki: TButton
+      Left = 832
+      Top = 16
+      Width = 97
+      Height = 41
+      Anchors = [akTop, akRight]
+      Caption = 'Generate Wiki'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 23
+      WordWrap = True
+      OnClick = btnGenerateWikiClick
+    end
+    object btnGenerateXML: TButton
+      Left = 832
+      Top = 136
+      Width = 97
+      Height = 41
+      Anchors = [akTop, akRight]
+      Caption = 'Generate XML'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 24
+      WordWrap = True
+      OnClick = btnGenerateXMLClick
+    end
   end
   object btnKromKMR: TButton
-    Left = 872
-    Top = 16
-    Width = 33
-    Height = 33
+    Left = 784
+    Top = 8
+    Width = 81
+    Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Krom KMR'
-    TabOrder = 5
+    TabOrder = 3
     WordWrap = True
     OnClick = btnKromKMRClick
   end
-  object btnGenerateCode: TButton
-    Left = 840
-    Top = 104
-    Width = 97
-    Height = 49
-    Anchors = [akTop, akRight]
-    Caption = 'Generate Code'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = False
-    TabOrder = 6
-    WordWrap = True
-    OnClick = btnGenerateCodeClick
-  end
   object meLog: TMemo
     Left = 8
-    Top = 200
-    Width = 825
-    Height = 441
+    Top = 304
+    Width = 945
+    Height = 337
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabOrder = 7
+    TabOrder = 4
   end
-  object btnCheckMessages: TButton
-    Left = 840
-    Top = 152
-    Width = 97
-    Height = 49
-    Anchors = [akTop, akRight]
-    Caption = 'Check messages'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = False
-    TabOrder = 8
-    WordWrap = True
-    OnClick = btnCheckMessagesClick
+  object gbModding: TGroupBox
+    Left = 8
+    Top = 232
+    Width = 945
+    Height = 65
+    Caption = ' Modding '
+    TabOrder = 5
+    DesignSize = (
+      945
+      65)
+    object Label10: TLabel
+      Left = 8
+      Top = 32
+      Width = 22
+      Height = 13
+      Caption = 'Res:'
+    end
+    object Label14: TLabel
+      Left = 48
+      Top = 16
+      Width = 103
+      Height = 13
+      Caption = 'Source code input file'
+    end
+    object Label15: TLabel
+      Left = 304
+      Top = 16
+      Width = 81
+      Height = 13
+      Caption = 'Wiki template file'
+    end
+    object Label16: TLabel
+      Left = 464
+      Top = 16
+      Width = 71
+      Height = 13
+      Caption = 'Wiki output file'
+    end
+    object edResIn: TEdit
+      Left = 48
+      Top = 32
+      Width = 249
+      Height = 21
+      TabOrder = 0
+      OnChange = edtOnTextChange
+    end
+    object edResOut: TEdit
+      Left = 464
+      Top = 32
+      Width = 193
+      Height = 21
+      TabOrder = 1
+      OnChange = edtOnTextChange
+    end
+    object edResTemplate: TEdit
+      Left = 304
+      Top = 32
+      Width = 153
+      Height = 21
+      TabOrder = 2
+      OnChange = edtOnTextChange
+    end
+    object btnGenerateResWiki: TButton
+      Left = 832
+      Top = 16
+      Width = 97
+      Height = 41
+      Anchors = [akTop, akRight]
+      Caption = 'Generate Wiki'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 3
+      WordWrap = True
+      OnClick = btnCheckMessagesClick
+    end
   end
 end
