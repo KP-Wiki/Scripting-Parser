@@ -6,6 +6,15 @@ type
   TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
   TKMScriptingArea = (paActions, paEvents, paStates, paUtils, paTypes);
 
+  // Set of paths required for one job
+  TKMDocumenterPathSet = record
+  public
+    SourceInput: string;    // Supports wildcards
+    WikiTemplate: string;
+    WikiOutput: string;
+    SourceOutput1: string;
+    SourceOutput2: string;
+  end;
 
 const
   GAME_INFO: array [TKMParsingGame] of record Ext, Name: string; end = (

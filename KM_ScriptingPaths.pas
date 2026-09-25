@@ -1,23 +1,13 @@
 unit KM_ScriptingPaths;
 interface
 uses
-  System.SysUtils,
   KM_DocumenterTypes;
 
 type
-  // Set of paths required for one job
-  TKMAreaPathsCommon = record
-  public
-    SourceInput: string;    // Supports wildcards
-    WikiTemplate: string;
-    WikiOutput: string;
-    SourceOutput1: string;
-    SourceOutput2: string;
-  end;
-
+  // Set of paths for scripting
   TKMScriptingPaths = class
   public
-    PathsScripting: array [TKMScriptingArea] of TKMAreaPathsCommon;
+    PathsScripting: array [TKMScriptingArea] of TKMDocumenterPathSet;
     procedure LoadFromINI(const aSettingsPath: string);
     procedure SaveToINI(const aSettingsPath: string);
   end;
@@ -25,7 +15,7 @@ type
 
 implementation
 uses
-  System.IniFiles;
+  System.IniFiles, System.SysUtils;
 
 
 { TKMScriptingPaths }
