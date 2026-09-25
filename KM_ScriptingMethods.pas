@@ -138,7 +138,7 @@ begin
 
   SortByName;
 
-  fOnLog(Format('%d %s parsed', [fList.Count, SCRIPTING_DOMAIN_SPEC[fArea].Name]));
+  fOnLog(Format('%d %s parsed', [fList.Count, SCRIPTING_AREA_SPEC[fArea].Name]));
 end;
 
 
@@ -149,7 +149,7 @@ begin
   for var I := 0 to fList.Count - 1 do
   begin
     fList[I].Parameters.AdjoinPairs;
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody(SCRIPTING_DOMAIN_SPEC[fArea].NeedsReturn);
+    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody(SCRIPTING_AREA_SPEC[fArea].NeedsReturn);
   end;
 end;
 
@@ -174,7 +174,7 @@ end;
 function TKMScriptingMethods.ExportCodeSectionCheck(aSL: TStringList): Boolean;
 begin
   var lineFrom, lineTo, padLevel: Integer;
-  FindRegionBounds(aSL, SCRIPTING_DOMAIN_SPEC[fArea].CheckTag, lineFrom, lineTo, padLevel);
+  FindRegionBounds(aSL, SCRIPTING_AREA_SPEC[fArea].CheckTag, lineFrom, lineTo, padLevel);
   if lineFrom = -1 then Exit(False);
 
   for var I := lineTo downto lineFrom do
@@ -196,7 +196,7 @@ begin
       end;
 
   Result := True;
-  fOnLog(Format('%d %s exported into Code checks', [fList.Count, SCRIPTING_DOMAIN_SPEC[fArea].Name]));
+  fOnLog(Format('%d %s exported into Code checks', [fList.Count, SCRIPTING_AREA_SPEC[fArea].Name]));
 end;
 
 
@@ -208,7 +208,7 @@ const
   );
 begin
   var lineFrom, lineTo, padLevel: Integer;
-  FindRegionBounds(aSL, SCRIPTING_DOMAIN_SPEC[fArea].RegTag, lineFrom, lineTo, padLevel);
+  FindRegionBounds(aSL, SCRIPTING_AREA_SPEC[fArea].RegTag, lineFrom, lineTo, padLevel);
   if lineFrom = -1 then Exit(False);
 
   for var I := lineTo downto lineFrom do
@@ -225,7 +225,7 @@ begin
       end;
 
   Result := True;
-  fOnLog(Format('%d %s exported into Code regs', [fList.Count, SCRIPTING_DOMAIN_SPEC[fArea].Name]));
+  fOnLog(Format('%d %s exported into Code regs', [fList.Count, SCRIPTING_AREA_SPEC[fArea].Name]));
 end;
 
 
@@ -260,10 +260,10 @@ begin
   end;
 
   if not checkFound then
-    fOnLog(Format('%s tag not found', [SCRIPTING_DOMAIN_SPEC[fArea].CheckTag]));
+    fOnLog(Format('%s tag not found', [SCRIPTING_AREA_SPEC[fArea].CheckTag]));
 
   if not regFound then
-    fOnLog(Format('%s tag not found', [SCRIPTING_DOMAIN_SPEC[fArea].RegTag]));
+    fOnLog(Format('%s tag not found', [SCRIPTING_AREA_SPEC[fArea].RegTag]));
 end;
 
 
@@ -292,7 +292,7 @@ begin
 
   sl.Free;
 
-  fOnLog(Format('%d %s exported into Wiki', [fList.Count, SCRIPTING_DOMAIN_SPEC[fArea].Name]));
+  fOnLog(Format('%d %s exported into Wiki', [fList.Count, SCRIPTING_AREA_SPEC[fArea].Name]));
 end;
 
 

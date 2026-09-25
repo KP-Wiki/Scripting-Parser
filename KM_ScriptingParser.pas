@@ -74,7 +74,7 @@ procedure TKMDocumenterScripting.CopyForReference(const aFilename: string; aArea
 var
   tgtPath: string;
 begin
-  tgtPath := ExtractFilePath(Application.ExeName) + GAME_INFO[fParsingGame].Ext + '.' + SCRIPTING_DOMAIN_SPEC[aArea].Name + '.new.md';
+  tgtPath := ExtractFilePath(Application.ExeName) + GAME_INFO[fParsingGame].Ext + '.' + SCRIPTING_AREA_SPEC[aArea].Name + '.new.md';
   Winapi.Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
 end;
 
