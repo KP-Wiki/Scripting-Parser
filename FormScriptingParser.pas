@@ -151,7 +151,6 @@ begin
 
   // It is more KISS to create and use one instance for one job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.LintMessages(fScriptingPaths);
   scriptingParser.Free;
 end;
@@ -165,7 +164,6 @@ begin
 
   // It is more KISS to create and use one instance for one job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateCode(fScriptingPaths);
   scriptingParser.Free;
 end;
@@ -179,7 +177,6 @@ begin
 
   // It is more KISS to create and use one instance for one job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.ParseCode(fScriptingPaths);
   scriptingParser.GenerateWiki(fScriptingPaths);
   scriptingParser.Free;
 end;
@@ -191,8 +188,7 @@ begin
 
   // It is more KISS to create and use instance for the job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.ParseCode(fScriptingPaths);
-  scriptingParser.GenerateXML;
+  scriptingParser.GenerateXML(fScriptingPaths);
   scriptingParser.Free;
 end;
 

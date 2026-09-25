@@ -10,6 +10,7 @@ uses
   KM_ParserTypes;
 
 type
+  // Documenter > Scripting
   TKMScriptingParser = class
   private const
     DBG_COPY_FOR_REFERENCE = True;
@@ -18,16 +19,16 @@ type
     fOnLog: TProc<string>;
     fMethods: array [TKMParsingArea] of TKMScriptMethods;
     fTypes: TKMScriptTypes;
+    procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
   public
     constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure GenerateCode(aPaths: TKMScriptingPaths);
     procedure GenerateWiki(aPaths: TKMScriptingPaths);
     procedure LintMessages(aPaths: TKMScriptingPaths);
-    procedure GenerateXML;
+    procedure GenerateXML(aPaths: TKMScriptingPaths);
   end;
 
 
@@ -66,6 +67,16 @@ begin
 end;
 
 
+procedure TKMScriptingParser.ParseCode(aPaths: TKMScriptingPaths);
+begin
+  fMethods[paActions].LoadFromFile(aPaths.PathsScripting[paActions].SourceInput);
+  fMethods[paEvents].LoadFromFile(aPaths.PathsScripting[paEvents].SourceInput);
+  fMethods[paStates].LoadFromFile(aPaths.PathsScripting[paStates].SourceInput);
+  fMethods[paUtils].LoadFromFile(aPaths.PathsScripting[paUtils].SourceInput);
+  fTypes.LoadFromFiles(aPaths.PathsScripting[paTypes].SourceInput);
+end;
+
+
 procedure TKMScriptingParser.CopyForReference(const aFilename: string; aArea: TKMParsingArea);
 var
   tgtPath: string;
@@ -77,6 +88,8 @@ end;
 
 procedure TKMScriptingParser.GenerateCode(aPaths: TKMScriptingPaths);
 begin
+  ParseCode(aPaths);
+
   //todo -cThink: Automate verification in ScriptingParser that functions/procedures pose under the same name in LogMissionWarning
   // Arrays can be declared in 2 ways in KP PS - "array of string" and TKMStringArray. First one is more traditional and more universal.
   // Second one is required for some Utils methods to allow for resizing of passed arrays. Resized arrays become TKMStringArray though.
@@ -91,18 +104,10 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseCode(aPaths: TKMScriptingPaths);
-begin
-  fMethods[paActions].LoadFromFile(aPaths.PathsScripting[paActions].SourceInput);
-  fMethods[paEvents].LoadFromFile(aPaths.PathsScripting[paEvents].SourceInput);
-  fMethods[paStates].LoadFromFile(aPaths.PathsScripting[paStates].SourceInput);
-  fMethods[paUtils].LoadFromFile(aPaths.PathsScripting[paUtils].SourceInput);
-  fTypes.LoadFromFiles(aPaths.PathsScripting[paTypes].SourceInput);
-end;
-
-
 procedure TKMScriptingParser.GenerateWiki(aPaths: TKMScriptingPaths);
 begin
+  ParseCode(aPaths);
+
   fMethods[paActions].GenerateWiki(aPaths.PathsScripting[paActions].WikiTemplate, aPaths.PathsScripting[paActions].WikiOutput);
   fMethods[paEvents].GenerateWiki(aPaths.PathsScripting[paEvents].WikiTemplate, aPaths.PathsScripting[paEvents].WikiOutput);
   fMethods[paStates].GenerateWiki(aPaths.PathsScripting[paStates].WikiTemplate, aPaths.PathsScripting[paStates].WikiOutput);
@@ -122,6 +127,8 @@ end;
 
 procedure TKMScriptingParser.LintMessages(aPaths: TKMScriptingPaths);
 begin
+  ParseCode(aPaths);
+
   fMethods[paActions].LintLogMessages(aPaths.PathsScripting[paActions].SourceInput);
   // Events dont have log messages
   fMethods[paStates].LintLogMessages(aPaths.PathsScripting[paStates].SourceInput);
@@ -130,8 +137,10 @@ begin
 end;
 
 
-procedure TKMScriptingParser.GenerateXML;
+procedure TKMScriptingParser.GenerateXML(aPaths: TKMScriptingPaths);
 begin
+  ParseCode(aPaths);
+
   //todo -cThink: GenerateXML for ScriptingEditor
 end;
 
