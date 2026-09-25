@@ -125,7 +125,7 @@ begin
           sectionStarted := False;
 
           fList.Add(TKMMethodInfo.Create);
-          fList.Last.LoadFromStringList(slMethodDeclaration, lastSectionStart, fArea);
+          fList.Last.LoadFromStringList(slMethodDeclaration, lastSectionStart, fArea = paEvents);
 
           lastSectionStart := -1;
         end;

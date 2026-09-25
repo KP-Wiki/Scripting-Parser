@@ -30,7 +30,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure LoadFromStringList(aSource: TStringList; aLineOfCode: Integer; aArea: TKMParsingArea);
+    procedure LoadFromStringList(aSource: TStringList; aLineOfCode: Integer; aAreaIsEvents: Boolean);
     function ExportWikiBody(aNeedReturn: Boolean): string;
     function ExportWikiLink: string;
     function ExportCodeSignature: string;
@@ -73,7 +73,7 @@ begin
 end;
 
 
-procedure TKMMethodInfo.LoadFromStringList(aSource: TStringList; aLineOfCode: Integer; aArea: TKMParsingArea);
+procedure TKMMethodInfo.LoadFromStringList(aSource: TStringList; aLineOfCode: Integer; aAreaIsEvents: Boolean);
 var
   I: Integer;
   srcLine, restStr, metName: string;
@@ -157,7 +157,7 @@ begin
         // Procedure without fParameters (ends with ";")
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(';', srcLine) - 1 - Pos('.', srcLine));
 
-      if aArea = paEvents then
+      if aAreaIsEvents then
       begin
         metName := ReplaceStr(metName, 'ProcOn', 'On'); // For the KP
         fName := ReplaceStr(metName, 'Proc', 'On');   // For the KMR
@@ -190,7 +190,7 @@ begin
         // Function without fParameters (ends with ":")
         metName := Copy(srcLine, Pos('.', srcLine) + 1, Pos(':', srcLine) - 1 - Pos('.', srcLine));
 
-      if aArea = paEvents then
+      if aAreaIsEvents then
       begin
         metName := ReplaceStr(metName, 'FuncOn', 'On'); // For the KP
         fName := ReplaceStr(metName, 'Func', 'On');   // For the KMR
@@ -199,13 +199,13 @@ begin
 
       // Function result
       restStr := ExtractFunctionResultType(srcLine);
-      if aArea = paEvents then
+      if aAreaIsEvents then
         fResultType := TryEventTypeToAlias(restStr)
       else
         fResultType := restStr;
     end;
 
-    if aArea = paEvents then
+    if aAreaIsEvents then
       fParameters.DowngradeTypes;
 
     // Now we can assemble Description, after we have detected and removed fParameters descriptions from it
