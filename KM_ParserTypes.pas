@@ -13,6 +13,11 @@ const
     (Ext: 'kp';  Name: 'Knights Province')
   );
 
+  LOG_MESSAGE_NAME: array [TKMParsingGame] of string = (
+    'LogParamWarn',   // KMR
+    'LogParamWarning' // KP
+  );
+
   // Denotes regions where Events, States, Actions, Types, Utils are located
   AREA_INFO: array [TKMParsingArea] of record
     Name: string;         // Name of the area. Used in the logs and for reference md-s in this repo

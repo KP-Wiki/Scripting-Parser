@@ -122,18 +122,11 @@ end;
 
 procedure TKMScriptingParser.LintMessages(aPaths: TKMScriptingPaths);
 begin
-  if fParsingGame = pgKaMRemake then
-  begin
-    fMethods[paActions].LintLogMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarn');
-    fMethods[paStates].LintLogMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarn');
-    fMethods[paUtils].LintLogMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarn');
-  end;
-  if fParsingGame = pgKnightsProvince then
-  begin
-    fMethods[paActions].LintLogMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarning');
-    fMethods[paStates].LintLogMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarning');
-    fMethods[paUtils].LintLogMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarning');
-  end;
+  fMethods[paActions].LintLogMessages(aPaths.PathsScripting[paActions].SourceInput);
+  // Events dont have log messages
+  fMethods[paStates].LintLogMessages(aPaths.PathsScripting[paStates].SourceInput);
+  fMethods[paUtils].LintLogMessages(aPaths.PathsScripting[paUtils].SourceInput);
+  // Utils dont have log messages
 end;
 
 
