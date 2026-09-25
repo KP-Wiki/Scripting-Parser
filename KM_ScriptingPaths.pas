@@ -17,7 +17,7 @@ type
 
   TKMScriptingPaths = class
   public
-    PathsScripting: array [TKMParsingArea] of TKMAreaPathsCommon;
+    PathsScripting: array [TKMScriptingArea] of TKMAreaPathsCommon;
     procedure LoadFromINI(const aSettingsPath: string);
     procedure SaveToINI(const aSettingsPath: string);
   end;
@@ -33,7 +33,7 @@ procedure TKMScriptingPaths.LoadFromINI(const aSettingsPath: string);
 begin
   var ini := TINIFile.Create(aSettingsPath);
 
-  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
+  for var I := Low(TKMScriptingArea) to High(TKMScriptingArea) do
   begin
     PathsScripting[I].SourceInput   := ini.ReadString('INPUT',    SCRIPTING_DOMAIN_SPEC[I].Name, '');
     PathsScripting[I].WikiTemplate  := ini.ReadString('TEMPLATE', SCRIPTING_DOMAIN_SPEC[I].Name, '');
@@ -53,7 +53,7 @@ procedure TKMScriptingPaths.SaveToINI(const aSettingsPath: string);
 begin
   var ini := TINIFile.Create(aSettingsPath);
 
-  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
+  for var I := Low(TKMScriptingArea) to High(TKMScriptingArea) do
   begin
     ini.WriteString('INPUT',    SCRIPTING_DOMAIN_SPEC[I].Name,       PathsScripting[I].SourceInput);
     ini.WriteString('TEMPLATE', SCRIPTING_DOMAIN_SPEC[I].Name,       PathsScripting[I].WikiTemplate);

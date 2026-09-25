@@ -4,7 +4,7 @@ interface
 
 type
   TKMParsingGame = (pgKaMRemake, pgKnightsProvince);
-  TKMParsingArea = (paActions, paEvents, paStates, paUtils, paTypes);
+  TKMScriptingArea = (paActions, paEvents, paStates, paUtils, paTypes);
 
 
 const
@@ -19,7 +19,7 @@ const
   );
 
   // Denotes specification details for scripting domains (Events, States, Actions, Types, Utils)
-  SCRIPTING_DOMAIN_SPEC: array [TKMParsingArea] of record
+  SCRIPTING_DOMAIN_SPEC: array [TKMScriptingArea] of record
     Name: string;         // Name of the area. Used in the logs and for reference md-s in this repo
     CheckTag: string;     // Tag used for the Check region
     RegTag: string;       // Tag used for the Register region

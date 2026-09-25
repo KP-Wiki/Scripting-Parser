@@ -8,17 +8,17 @@ uses
 type
   // List of methods
   // Documenter > Scripting > Methods
-  TKMScriptMethods = class(TKMScriptCommon)
+  TKMScriptingMethods = class(TKMScriptingCommon)
   private
     fList: TObjectList<TKMMethodInfo>;
-    procedure LoadFromFile(const aSourceFile: string); override;
+    procedure LoadFromFile(const aSourceFile: string);
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function ExportCodeSectionCheck(aSL: TStringList): Boolean;
     function ExportCodeSectionReg(aSL: TStringList): Boolean;
     procedure SortByName;
   public
-    constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
+    constructor Create(aGame: TKMParsingGame; aArea: TKMScriptingArea; aOnLog: TProc<string>); override;
     destructor Destroy; override;
 
     procedure GenerateCode(const aSourceFile, aFilename1, aFilename2: string); override;
@@ -33,8 +33,8 @@ uses
   KM_StringUtils;
 
 
-{ TKMScriptMethods }
-constructor TKMScriptMethods.Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
+{ TKMScriptingMethods }
+constructor TKMScriptingMethods.Create(aGame: TKMParsingGame; aArea: TKMScriptingArea; aOnLog: TProc<string>);
 begin
   inherited;
 
@@ -52,7 +52,7 @@ begin
 end;
 
 
-destructor TKMScriptMethods.Destroy;
+destructor TKMScriptingMethods.Destroy;
 begin
   FreeAndNil(fList);
 
@@ -61,7 +61,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptMethods.LoadFromFile(const aSourceFile: string);
+procedure TKMScriptingMethods.LoadFromFile(const aSourceFile: string);
 var
   slSource: TStringList;
   I: Integer;
@@ -142,7 +142,7 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportWikiBody: string;
+function TKMScriptingMethods.ExportWikiBody: string;
 begin
   Result := '';
 
@@ -154,7 +154,7 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportWikiLinks: string;
+function TKMScriptingMethods.ExportWikiLinks: string;
 var
   I: Integer;
 begin
@@ -165,13 +165,13 @@ begin
 end;
 
 
-procedure TKMScriptMethods.SortByName;
+procedure TKMScriptingMethods.SortByName;
 begin
   fList.Sort;
 end;
 
 
-function TKMScriptMethods.ExportCodeSectionCheck(aSL: TStringList): Boolean;
+function TKMScriptingMethods.ExportCodeSectionCheck(aSL: TStringList): Boolean;
 begin
   var lineFrom, lineTo, padLevel: Integer;
   FindRegionBounds(aSL, SCRIPTING_DOMAIN_SPEC[fArea].CheckTag, lineFrom, lineTo, padLevel);
@@ -200,9 +200,9 @@ begin
 end;
 
 
-function TKMScriptMethods.ExportCodeSectionReg(aSL: TStringList): Boolean;
+function TKMScriptingMethods.ExportCodeSectionReg(aSL: TStringList): Boolean;
 const
-  AREA_REG_CLASS: array [TKMParsingGame, TKMParsingArea] of string = (
+  AREA_REG_CLASS: array [TKMParsingGame, TKMScriptingArea] of string = (
     ('TKMScriptActions',    '', 'TKMScriptStates',    'TKMScriptUtils',    ''), // KMR
     ('TKMScriptingActions', '', 'TKMScriptingStates', 'TKMScriptingUtils', '')  // KP
   );
@@ -229,7 +229,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
+procedure TKMScriptingMethods.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
 begin
   LoadFromFile(aSourceFile);
 
@@ -267,7 +267,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingMethods.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
@@ -296,7 +296,7 @@ begin
 end;
 
 
-procedure TKMScriptMethods.LintLogMessages(const aSourceFile: string);
+procedure TKMScriptingMethods.LintLogMessages(const aSourceFile: string);
 begin
   LoadFromFile(aSourceFile);
 

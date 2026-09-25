@@ -8,10 +8,10 @@ uses
 type
   // List of types
   // Documenter > Scripting > Types
-  TKMScriptTypes = class(TKMScriptCommon)
+  TKMScriptingTypes = class(TKMScriptingCommon)
   private
     fList: TObjectList<TKMScriptType>;
-    procedure LoadFromFile(const aSourceMask: string); override;
+    procedure LoadFromFile(const aSourceMask: string);
     procedure AssignSortOrder;
     procedure Clear;
     function ExportWikiBody: string;
@@ -19,7 +19,7 @@ type
     procedure LoadFromFileInt(const aInputFile: string);
     procedure SortByName(aSortBy: TKMSortType);
   public
-    constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
+    constructor Create(aGame: TKMParsingGame; aArea: TKMScriptingArea; aOnLog: TProc<string>); override;
     destructor Destroy; override;
 
     procedure GenerateCode(const aSourceFile, aFilename1, aFilename2: string); override;
@@ -33,8 +33,8 @@ uses
   KM_StringUtils;
 
 
-{ TKMScriptTypes }
-constructor TKMScriptTypes.Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
+{ TKMScriptingTypes }
+constructor TKMScriptingTypes.Create(aGame: TKMParsingGame; aArea: TKMScriptingArea; aOnLog: TProc<string>);
 begin
   inherited;
 
@@ -50,7 +50,7 @@ begin
 end;
 
 
-destructor TKMScriptTypes.Destroy;
+destructor TKMScriptingTypes.Destroy;
 begin
   FreeAndNil(fList);
 
@@ -58,14 +58,14 @@ begin
 end;
 
 
-procedure TKMScriptTypes.Clear;
+procedure TKMScriptingTypes.Clear;
 begin
   fList.Clear;
 end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptTypes.LoadFromFileInt(const aInputFile: string);
+procedure TKMScriptingTypes.LoadFromFileInt(const aInputFile: string);
 var
   slSource: TStringList;
   I: Integer;
@@ -157,7 +157,7 @@ begin
 end;
 
 
-procedure TKMScriptTypes.LoadFromFile(const aSourceMask: string);
+procedure TKMScriptingTypes.LoadFromFile(const aSourceMask: string);
 var
   s: TStringDynArray;
   I: Integer;
@@ -174,7 +174,7 @@ begin
 end;
 
 
-function TKMScriptTypes.ExportWikiBody: string;
+function TKMScriptingTypes.ExportWikiBody: string;
 var
   I: Integer;
 begin
@@ -185,7 +185,7 @@ begin
 end;
 
 
-function TKMScriptTypes.ExportWikiLinks: string;
+function TKMScriptingTypes.ExportWikiLinks: string;
 var
   I: Integer;
 begin
@@ -196,7 +196,7 @@ begin
 end;
 
 
-procedure TKMScriptTypes.AssignSortOrder;
+procedure TKMScriptingTypes.AssignSortOrder;
   function FindType(aName: string): Integer;
   var
     I: Integer;
@@ -274,7 +274,7 @@ begin
 end;
 
 
-procedure TKMScriptTypes.SortByName(aSortBy: TKMSortType);
+procedure TKMScriptingTypes.SortByName(aSortBy: TKMSortType);
 begin
   case aSortBy of
     stByAlphabet:   ; // Already sorted by default
@@ -285,7 +285,7 @@ begin
 end;
 
 
-procedure TKMScriptTypes.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
+procedure TKMScriptingTypes.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
 begin
   Assert(aFilename2 = '');
 
@@ -330,7 +330,7 @@ begin
 end;
 
 
-procedure TKMScriptTypes.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
+procedure TKMScriptingTypes.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;

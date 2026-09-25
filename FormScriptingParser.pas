@@ -153,9 +153,9 @@ begin
   DoLog(DupeString('-', 50));
 
   // It is more KISS to create and use one instance for one job
-  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.LintMessages(fScriptingPaths);
-  scriptingParser.Free;
+  var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
+  documenterScripting.LintMessages(fScriptingPaths);
+  documenterScripting.Free;
 end;
 
 
@@ -166,9 +166,9 @@ begin
   DoLog(DupeString('-', 50));
 
   // It is more KISS to create and use one instance for one job
-  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.GenerateCode(fScriptingPaths);
-  scriptingParser.Free;
+  var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
+  documenterScripting.GenerateCode(fScriptingPaths);
+  documenterScripting.Free;
 end;
 
 
@@ -179,9 +179,9 @@ begin
   DoLog(DupeString('-', 50));
 
   // It is more KISS to create and use one instance for one job
-  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.GenerateWiki(fScriptingPaths);
-  scriptingParser.Free;
+  var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
+  documenterScripting.GenerateWiki(fScriptingPaths);
+  documenterScripting.Free;
 end;
 
 
@@ -190,9 +190,9 @@ begin
   meLog.Clear;
 
   // It is more KISS to create and use instance for the job
-  var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
-  scriptingParser.GenerateXML(fScriptingPaths);
-  scriptingParser.Free;
+  var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
+  documenterScripting.GenerateXML(fScriptingPaths);
+  documenterScripting.Free;
 end;
 
 

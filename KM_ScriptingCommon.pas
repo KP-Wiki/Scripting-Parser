@@ -6,14 +6,13 @@ uses
 
 type
   // Documenter > Scripting > common
-  TKMScriptCommon = class
+  TKMScriptingCommon = class
   protected
     fGame: TKMParsingGame;
-    fArea: TKMParsingArea;
+    fArea: TKMScriptingArea;
     fOnLog: TProc<string>;
-    procedure LoadFromFile(const aSourceFile: string); virtual;
   public
-    constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
+    constructor Create(aGame: TKMParsingGame; aArea: TKMScriptingArea; aOnLog: TProc<string>); virtual;
 
     procedure GenerateCode(const aSourceFile, aFilename1, aFilename2: string); virtual;
     procedure GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string); virtual;
@@ -24,8 +23,8 @@ type
 implementation
 
 
-{ TKMScriptCommon }
-constructor TKMScriptCommon.Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
+{ TKMScriptingCommon }
+constructor TKMScriptingCommon.Create(aGame: TKMParsingGame; aArea: TKMScriptingArea; aOnLog: TProc<string>);
 begin
   inherited Create;
 
@@ -35,25 +34,19 @@ begin
 end;
 
 
-procedure TKMScriptCommon.LoadFromFile(const aSourceFile: string);
+procedure TKMScriptingCommon.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
 begin
   //
 end;
 
 
-procedure TKMScriptCommon.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
+procedure TKMScriptingCommon.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
 begin
   //
 end;
 
 
-procedure TKMScriptCommon.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
-begin
-  //
-end;
-
-
-procedure TKMScriptCommon.LintLogMessages(const aSourceFile: string);
+procedure TKMScriptingCommon.LintLogMessages(const aSourceFile: string);
 begin
   //
 end;
