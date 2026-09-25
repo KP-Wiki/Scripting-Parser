@@ -78,6 +78,7 @@
             <Form>fmScriptingParser</Form>
         </DCCReference>
         <DCCReference Include="KM_ParserTypes.pas"/>
+        <DCCReference Include="KM_ScriptingCommon.pas"/>
         <DCCReference Include="KM_ScriptingConsts.pas"/>
         <DCCReference Include="KM_ScriptingMethod.pas"/>
         <DCCReference Include="KM_ScriptingMethods.pas"/>

@@ -1,45 +1,42 @@
 unit KM_ScriptingTypes;
 interface
 uses
-  System.Classes, System.SysUtils, System.Types, System.Generics.Collections, System.Generics.Defaults,
-  System.Math, System.StrUtils,
-  KM_ScriptingType;
+  System.Classes, System.Math, System.SysUtils, System.Types, System.Generics.Collections, System.Generics.Defaults, System.StrUtils,
+  KM_ParserTypes,
+  KM_ScriptingCommon, KM_ScriptingType;
 
 type
   // List of types
   // Documenter > Scripting > Types
-  TKMScriptTypes = class
+  TKMScriptTypes = class(TKMScriptCommon)
   private
-    fOnLog: TProc<string>;
     fList: TObjectList<TKMScriptType>;
     procedure AssignSortOrder;
     procedure Clear;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
-    procedure LoadFromFile(const aInputFile: string);
+    procedure LoadFromFileInt(const aInputFile: string);
     procedure SortByName(aSortBy: TKMSortType);
   public
-    constructor Create(aOnLog: TProc<string>);
+    constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure LoadFromFiles(const aSourceMask: string);
-    procedure GenerateCode(const aCodeFile: string);
-    procedure GenerateWiki(const aTemplateFile, aOutputFile: string);
+    procedure LoadFromFile(const aSourceMask: string); override;
+    procedure GenerateCode(const aFilename1, aFilename2: string); override;
+    procedure GenerateWiki(const aTemplateFile, aOutputFile: string); override;
   end;
 
 
 implementation
 uses
   System.IOUtils,
-  KM_ParserTypes, KM_StringUtils;
+  KM_StringUtils;
 
 
 { TKMScriptTypes }
-constructor TKMScriptTypes.Create(aOnLog: TProc<string>);
+constructor TKMScriptTypes.Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
 begin
-  inherited Create;
-
-  fOnLog := aOnLog;
+  inherited;
 
   fList := TObjectList<TKMScriptType>.Create(
     TComparer<TKMScriptType>.Construct(
@@ -68,7 +65,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptTypes.LoadFromFile(const aInputFile: string);
+procedure TKMScriptTypes.LoadFromFileInt(const aInputFile: string);
 var
   slSource: TStringList;
   I: Integer;
@@ -160,7 +157,7 @@ begin
 end;
 
 
-procedure TKMScriptTypes.LoadFromFiles(const aSourceMask: string);
+procedure TKMScriptTypes.LoadFromFile(const aSourceMask: string);
 var
   s: TStringDynArray;
   I: Integer;
@@ -171,7 +168,7 @@ begin
   s := TDirectory.GetFiles(ExtractFilePath(aSourceMask), ExtractFileName(aSourceMask), TSearchOption.soAllDirectories);
 
   for I := Low(s) to High(s) do
-    LoadFromFile(s[I]);
+    LoadFromFileInt(s[I]);
 
   fOnLog(Format('%d %s parsed', [fList.Count, AREA_INFO[paTypes].Name]));
 end;
@@ -288,15 +285,17 @@ begin
 end;
 
 
-procedure TKMScriptTypes.GenerateCode(const aCodeFile: string);
+procedure TKMScriptTypes.GenerateCode(const aFilename1, aFilename2: string);
 begin
-  if not FileExists(aCodeFile) then Exit;
+  Assert(aFilename2 = '');
+
+  if not FileExists(aFilename1) then Exit;
 
   SortByName(stByDependancy);
 
   var sl := TStringList.Create;
   try
-    sl.LoadFromFile(aCodeFile);
+    sl.LoadFromFile(aFilename1);
 
     var lineFrom, lineTo, padLevel: Integer;
     FindRegionBounds(sl, AREA_INFO[paTypes].RegTag, lineFrom, lineTo, padLevel);
@@ -320,7 +319,7 @@ begin
       end;
     end;
 
-    sl.SaveToFile(aCodeFile);
+    sl.SaveToFile(aFilename1);
   finally
     sl.Free;
   end;

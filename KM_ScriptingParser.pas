@@ -3,6 +3,7 @@ interface
 uses
   System.Classes, System.SysUtils, System.Types, Vcl.Forms, Winapi.Windows, System.Generics.Collections, System.IOUtils,
   System.StrUtils,
+  KM_ScriptingCommon,
   KM_ScriptingMethods,
   KM_ScriptingParameters,
   KM_ScriptingPaths,
@@ -17,8 +18,7 @@ type
   private
     fParsingGame: TKMParsingGame;
     fOnLog: TProc<string>;
-    fMethods: array [TKMParsingArea] of TKMScriptMethods;
-    fTypes: TKMScriptTypes;
+    fMethods: array [TKMParsingArea] of TKMScriptCommon;
     procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
   public
@@ -46,9 +46,13 @@ begin
   fOnLog := aOnLog;
 
   for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fMethods[I] := TKMScriptMethods.Create(fParsingGame, I, fOnLog);
-
-  fTypes := TKMScriptTypes.Create(fOnLog);
+  case I of
+    paActions,
+    paEvents,
+    paStates,
+    paUtils:  fMethods[I] := TKMScriptMethods.Create(fParsingGame, I, fOnLog);
+    paTypes:  fMethods[I] := TKMScriptTypes.Create(fParsingGame, I, fOnLog);
+  end;
 end;
 
 
@@ -57,19 +61,14 @@ begin
   for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
     FreeAndNil(fMethods[I]);
 
-  FreeAndNil(fTypes);
-
   inherited;
 end;
 
 
 procedure TKMScriptingParser.ParseCode(aPaths: TKMScriptingPaths);
 begin
-  fMethods[paActions].LoadFromFile(aPaths.PathsScripting[paActions].SourceInput);
-  fMethods[paEvents].LoadFromFile(aPaths.PathsScripting[paEvents].SourceInput);
-  fMethods[paStates].LoadFromFile(aPaths.PathsScripting[paStates].SourceInput);
-  fMethods[paUtils].LoadFromFile(aPaths.PathsScripting[paUtils].SourceInput);
-  fTypes.LoadFromFiles(aPaths.PathsScripting[paTypes].SourceInput);
+  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
+    fMethods[I].LoadFromFile(aPaths.PathsScripting[I].SourceInput);
 end;
 
 
@@ -92,11 +91,8 @@ begin
   // Now, some functions in Actions expect string arrays. Problem is that they must be declared as TKMStringArray to accept both TKMStringArray and "array of"
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
-  fMethods[paActions].GenerateCode(aPaths.PathsScripting[paActions].SourceOutput1, aPaths.PathsScripting[paActions].SourceOutput2);
-  fMethods[paEvents ].GenerateCode(aPaths.PathsScripting[paEvents].SourceOutput1, aPaths.PathsScripting[paEvents].SourceOutput2);
-  fMethods[paStates ].GenerateCode(aPaths.PathsScripting[paStates].SourceOutput1, aPaths.PathsScripting[paStates].SourceOutput2);
-  fMethods[paUtils  ].GenerateCode(aPaths.PathsScripting[paUtils].SourceOutput1, aPaths.PathsScripting[paUtils].SourceOutput2);
-  fTypes.GenerateCode(aPaths.PathsScripting[paTypes].SourceOutput1);
+  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
+    fMethods[I].GenerateCode(aPaths.PathsScripting[I].SourceOutput1, aPaths.PathsScripting[I].SourceOutput2);
 end;
 
 
@@ -104,20 +100,12 @@ procedure TKMScriptingParser.GenerateWiki(aPaths: TKMScriptingPaths);
 begin
   ParseCode(aPaths);
 
-  fMethods[paActions].GenerateWiki(aPaths.PathsScripting[paActions].WikiTemplate, aPaths.PathsScripting[paActions].WikiOutput);
-  fMethods[paEvents].GenerateWiki(aPaths.PathsScripting[paEvents].WikiTemplate, aPaths.PathsScripting[paEvents].WikiOutput);
-  fMethods[paStates].GenerateWiki(aPaths.PathsScripting[paStates].WikiTemplate, aPaths.PathsScripting[paStates].WikiOutput);
-  fMethods[paUtils].GenerateWiki(aPaths.PathsScripting[paUtils].WikiTemplate, aPaths.PathsScripting[paUtils].WikiOutput);
-  fTypes.GenerateWiki(aPaths.PathsScripting[paTypes].WikiTemplate, aPaths.PathsScripting[paTypes].WikiOutput);
+  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
+    fMethods[I].GenerateWiki(aPaths.PathsScripting[I].WikiTemplate, aPaths.PathsScripting[I].WikiOutput);
 
   if DBG_COPY_FOR_REFERENCE then
-  begin
-    CopyForReference(aPaths.PathsScripting[paActions].WikiOutput, paActions);
-    CopyForReference(aPaths.PathsScripting[paEvents].WikiOutput, paEvents);
-    CopyForReference(aPaths.PathsScripting[paStates].WikiOutput, paStates);
-    CopyForReference(aPaths.PathsScripting[paUtils].WikiOutput, paUtils);
-    CopyForReference(aPaths.PathsScripting[paTypes].WikiOutput, paTypes);
-  end;
+    for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
+      CopyForReference(aPaths.PathsScripting[I].WikiOutput, I);
 end;
 
 

@@ -35,11 +35,11 @@ begin
 
   for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
   begin
-    PathsScripting[I].SourceInput   := ini.ReadString('INPUT',    AREA_INFO[I].Name, '..\..\src\');
-    PathsScripting[I].WikiTemplate  := ini.ReadString('TEMPLATE', AREA_INFO[I].Name, 'template\' + AREA_INFO[I].Name + '.template');
-    PathsScripting[I].WikiOutput    := ini.ReadString('OUTPUT',   AREA_INFO[I].Name, AREA_INFO[I].Name + '.wiki');
-    PathsScripting[I].SourceOutput1 := ini.ReadString('CODE',     AREA_INFO[I].Name, '.pas');
-    PathsScripting[I].SourceOutput2 := ini.ReadString('CODE',     AREA_INFO[I].Name + '2',  '.pas');
+    PathsScripting[I].SourceInput   := ini.ReadString('INPUT',    AREA_INFO[I].Name, '');
+    PathsScripting[I].WikiTemplate  := ini.ReadString('TEMPLATE', AREA_INFO[I].Name, '');
+    PathsScripting[I].WikiOutput    := ini.ReadString('OUTPUT',   AREA_INFO[I].Name, '');
+    PathsScripting[I].SourceOutput1 := ini.ReadString('CODE',     AREA_INFO[I].Name, '');
+    PathsScripting[I].SourceOutput2 := ini.ReadString('CODE',     AREA_INFO[I].Name + '2', '');
   end;
 
   FreeAndNil(ini);

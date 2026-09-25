@@ -2,16 +2,14 @@ unit KM_ScriptingMethods;
 interface
 uses
   System.Classes, System.SysUtils, System.Generics.Collections,
-  KM_ParserTypes, KM_ScriptingMethod;
+  KM_ParserTypes,
+  KM_ScriptingCommon, KM_ScriptingMethod;
 
 type
   // List of methods
   // Documenter > Scripting > Methods
-  TKMScriptMethods = class
+  TKMScriptMethods = class(TKMScriptCommon)
   private
-    fGame: TKMParsingGame;
-    fArea: TKMParsingArea;
-    fOnLog: TProc<string>;
     fList: TObjectList<TKMMethodInfo>;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
@@ -22,11 +20,10 @@ type
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure LoadFromFile(const aInputFile: string);
-    procedure GenerateCode(const aFilename1, aFilename2: string);
-    function GenerateWiki(const aTemplateFile, aOutputFile: string): string;
-
-    procedure LintLogMessages(const aSourceFile: string);
+    procedure LoadFromFile(const aInputFile: string); override;
+    procedure GenerateCode(const aFilename1, aFilename2: string); override;
+    procedure GenerateWiki(const aTemplateFile, aOutputFile: string); override;
+    procedure LintLogMessages(const aSourceFile: string); override;
   end;
 
 
@@ -39,11 +36,7 @@ uses
 { TKMScriptMethods }
 constructor TKMScriptMethods.Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
 begin
-  inherited Create;
-
-  fGame := aGame;
-  fArea := aArea;
-  fOnLog := aOnLog;
+  inherited;
 
   fList := TObjectList<TKMMethodInfo>.Create(
     TComparer<TKMMethodInfo>.Construct(
@@ -272,7 +265,7 @@ begin
 end;
 
 
-function TKMScriptMethods.GenerateWiki(const aTemplateFile, aOutputFile: string): string;
+procedure TKMScriptMethods.GenerateWiki(const aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
