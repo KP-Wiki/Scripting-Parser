@@ -26,7 +26,7 @@ type
     procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure GenerateCode(aPaths: TKMScriptingPaths);
     procedure GenerateWiki(aPaths: TKMScriptingPaths);
-    procedure VerifyMessages(aPaths: TKMScriptingPaths);
+    procedure LintMessages(aPaths: TKMScriptingPaths);
     procedure GenerateXML;
   end;
 
@@ -120,19 +120,19 @@ begin
 end;
 
 
-procedure TKMScriptingParser.VerifyMessages(aPaths: TKMScriptingPaths);
+procedure TKMScriptingParser.LintMessages(aPaths: TKMScriptingPaths);
 begin
   if fParsingGame = pgKaMRemake then
   begin
-    fMethods[paActions].VerifyMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarn');
-    fMethods[paStates].VerifyMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarn');
-    fMethods[paUtils].VerifyMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarn');
+    fMethods[paActions].LintLogMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarn');
+    fMethods[paStates].LintLogMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarn');
+    fMethods[paUtils].LintLogMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarn');
   end;
   if fParsingGame = pgKnightsProvince then
   begin
-    fMethods[paActions].VerifyMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarning');
-    fMethods[paStates].VerifyMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarning');
-    fMethods[paUtils].VerifyMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarning');
+    fMethods[paActions].LintLogMessages(aPaths.PathsScripting[paActions].SourceInput, 'LogParamWarning');
+    fMethods[paStates].LintLogMessages(aPaths.PathsScripting[paStates].SourceInput, 'LogParamWarning');
+    fMethods[paUtils].LintLogMessages(aPaths.PathsScripting[paUtils].SourceInput, 'LogParamWarning');
   end;
 end;
 

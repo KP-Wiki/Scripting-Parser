@@ -45,7 +45,7 @@ type
     btnGenerateCode: TButton;
     meLog: TMemo;
     edEventsCode2: TEdit;
-    btnVerifyMessages: TButton;
+    btnScriptingLintMessages: TButton;
     gbModding: TGroupBox;
     Label10: TLabel;
     Label14: TLabel;
@@ -64,7 +64,7 @@ type
     procedure btnGenerateXMLClick(Sender: TObject);
     procedure btnGenerateCodeClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure btnVerifyMessagesClick(Sender: TObject);
+    procedure btnScriptingLintMessagesClick(Sender: TObject);
   private
     fParsingGame: TKMParsingGame;
     fSettingsPath: string;
@@ -143,16 +143,16 @@ begin
 end;
 
 
-procedure TfmScriptingParser.btnVerifyMessagesClick(Sender: TObject);
+procedure TfmScriptingParser.btnScriptingLintMessagesClick(Sender: TObject);
 begin
   meLog.Clear;
-  DoLog('Verifying messages for ' + GAME_INFO[fParsingGame].Name + ':');
+  DoLog('Linting messages for ' + GAME_INFO[fParsingGame].Name + ':');
   DoLog(DupeString('-', 50));
 
   // It is more KISS to create and use one instance for one job
   var scriptingParser := TKMScriptingParser.Create(fParsingGame, DoLog);
   scriptingParser.ParseCode(fScriptingPaths);
-  scriptingParser.VerifyMessages(fScriptingPaths);
+  scriptingParser.LintMessages(fScriptingPaths);
   scriptingParser.Free;
 end;
 

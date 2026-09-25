@@ -37,7 +37,7 @@ type
     function ExportCodeSignatureEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
     function ExportCodeNameRegistration: string;
     function ExportCodeNameRegistrationEvent(aGame: TKMParsingGame; aLastLine: Boolean): string;
-    function CheckLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
+    function LintLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
 
     property Name: string read fName;
     property Status: TKMMethodStatus read fStatus;
@@ -340,7 +340,7 @@ begin
 end;
 
 
-function TKMMethodInfo.CheckLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
+function TKMMethodInfo.LintLogMessages(aSourceCode: TStringList; const aLogMessageName: string): string;
 begin
   Result := '';
 

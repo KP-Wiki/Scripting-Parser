@@ -283,13 +283,13 @@ object fmScriptingParser: TfmScriptingParser
       TabOrder = 20
       OnChange = edtOnTextChange
     end
-    object btnVerifyMessages: TButton
+    object btnScriptingLintMessages: TButton
       Left = 896
       Top = 80
       Width = 89
       Height = 33
       Anchors = [akTop, akRight]
-      Caption = 'Verify messages'
+      Caption = 'Lint messages'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -300,7 +300,7 @@ object fmScriptingParser: TfmScriptingParser
       ShowHint = False
       TabOrder = 21
       WordWrap = True
-      OnClick = btnVerifyMessagesClick
+      OnClick = btnScriptingLintMessagesClick
     end
     object btnGenerateCode: TButton
       Left = 896
@@ -460,8 +460,6 @@ object fmScriptingParser: TfmScriptingParser
       ShowHint = False
       TabOrder = 3
       WordWrap = True
-      OnClick = btnVerifyMessagesClick
-      ExplicitLeft = 840
     end
   end
 end

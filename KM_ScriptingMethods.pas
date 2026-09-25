@@ -28,7 +28,7 @@ type
     procedure GenerateCode(const aFilename1, aFilename2: string);
     function GenerateWiki(const aTemplateFile, aOutputFile: string): string;
 
-    procedure VerifyMessages(const aSourceFile: string; const aLogMessageName: string);
+    procedure LintLogMessages(const aSourceFile: string; const aLogMessageName: string);
   end;
 
 
@@ -307,16 +307,14 @@ begin
 end;
 
 
-procedure TKMScriptMethods.VerifyMessages(const aSourceFile: string; const aLogMessageName: string);
-var
-  sl: TStringList;
+procedure TKMScriptMethods.LintLogMessages(const aSourceFile: string; const aLogMessageName: string);
 begin
-  sl := TStringList.Create;
+  var sl := TStringList.Create;
   sl.LoadFromFile(aSourceFile);
 
   for var I := 0 to fList.Count - 1 do
   begin
-    var res := fList[I].CheckLogMessages(sl, aLogMessageName);
+    var res := fList[I].LintLogMessages(sl, aLogMessageName);
     if res <> '' then
       fOnLog(res);
   end;
