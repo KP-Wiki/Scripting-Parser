@@ -1,4 +1,4 @@
-unit KM_ScriptingConsts;
+unit KM_ScriptingMethodConsts;
 interface
 uses
   System.StrUtils, System.SysUtils;

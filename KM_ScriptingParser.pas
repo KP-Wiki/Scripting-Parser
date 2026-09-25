@@ -7,7 +7,7 @@ uses
   KM_ScriptingMethods,
   KM_ScriptingPaths,
   KM_ScriptingTypes,
-  KM_ParserTypes;
+  KM_DocumenterTypes;
 
 type
   // Documenter > Scripting
@@ -31,8 +31,6 @@ type
 
 
 implementation
-uses
-  KM_ScriptingConsts;
 
 
 type

@@ -2,7 +2,7 @@ unit KM_ScriptingCommon;
 interface
 uses
   System.SysUtils,
-  KM_ParserTypes;
+  KM_DocumenterTypes;
 
 type
   // Documenter > Scripting > common

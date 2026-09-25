@@ -3,7 +3,7 @@ interface
 uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, System.SysUtils, Winapi.Windows,
   System.Classes, Vcl.StdCtrls, System.StrUtils, System.Types, System.IniFiles, Vcl.ComCtrls,
-  KM_ParserTypes, KM_ScriptingPaths, Vcl.ExtCtrls;
+  KM_DocumenterTypes, KM_ScriptingPaths, Vcl.ExtCtrls;
 
 type
   TfmScriptingParser = class(TForm)

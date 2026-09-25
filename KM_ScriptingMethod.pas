@@ -2,7 +2,7 @@ unit KM_ScriptingMethod;
 interface
 uses
   System.Classes,
-  KM_ScriptingMethodParameters, KM_ParserTypes;
+  KM_ScriptingMethodParameters, KM_DocumenterTypes;
 
 type
   TKMMethodType = (mtFunc, mtProc);
@@ -48,7 +48,7 @@ type
 implementation
 uses
   System.SysUtils, System.StrUtils,
-  KM_ScriptingConsts, KM_StringUtils;
+  KM_ScriptingMethodConsts, KM_StringUtils;
 
 
 const

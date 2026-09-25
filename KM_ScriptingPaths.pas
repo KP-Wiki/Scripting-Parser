@@ -2,7 +2,7 @@ unit KM_ScriptingPaths;
 interface
 uses
   System.SysUtils,
-  KM_ParserTypes;
+  KM_DocumenterTypes;
 
 type
   // Set of paths required for one job

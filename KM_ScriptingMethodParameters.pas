@@ -46,7 +46,7 @@ type
 
 implementation
 uses
-  KM_ScriptingConsts, KM_StringUtils;
+  KM_ScriptingMethodConsts, KM_StringUtils;
 
 
 { TKMScriptingMethodParameter }

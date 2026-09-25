@@ -63,7 +63,7 @@ implementation
 uses
   System.Math, System.StrUtils, System.SysUtils, System.Types,
   KM_StringUtils,
-  KM_ParserTypes;
+  KM_DocumenterTypes;
 
 
 { TKMScriptTypeElement }

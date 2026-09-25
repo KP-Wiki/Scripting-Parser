@@ -2,7 +2,7 @@ unit KM_ScriptingTypes;
 interface
 uses
   System.Classes, System.Math, System.SysUtils, System.Types, System.Generics.Collections, System.Generics.Defaults, System.StrUtils,
-  KM_ParserTypes,
+  KM_DocumenterTypes,
   KM_ScriptingCommon, KM_ScriptingType;
 
 type
