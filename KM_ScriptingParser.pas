@@ -5,7 +5,6 @@ uses
   System.StrUtils,
   KM_ScriptingCommon,
   KM_ScriptingMethods,
-  KM_ScriptingParameters,
   KM_ScriptingPaths,
   KM_ScriptingTypes,
   KM_ParserTypes;

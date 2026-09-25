@@ -2,7 +2,7 @@ unit KM_ScriptingMethod;
 interface
 uses
   System.Classes,
-  KM_ScriptingParameters, KM_ParserTypes;
+  KM_ScriptingMethodParameters, KM_ParserTypes;
 
 type
   TKMMethodType = (mtFunc, mtProc);
@@ -24,7 +24,7 @@ type
     fStatus: TKMMethodStatus;
     fReplacement: string;     // Replacement method recommendation
     fDescription: string;     // Description of the method as a whole
-    fParameters: TKMScriptParameters; // Parameters parsed from declaration
+    fParameters: TKMScriptingMethodParameters; // Parameters parsed from declaration
     fResultType: string;
     fResultDesc: string;
   public
@@ -41,7 +41,7 @@ type
 
     property Name: string read fName;
     property Status: TKMMethodStatus read fStatus;
-    property Parameters: TKMScriptParameters read fParameters;
+    property Parameters: TKMScriptingMethodParameters read fParameters;
   end;
 
 
@@ -61,7 +61,7 @@ constructor TKMMethodInfo.Create;
 begin
   inherited;
 
-  fParameters := TKMScriptParameters.Create;
+  fParameters := TKMScriptingMethodParameters.Create;
 end;
 
 

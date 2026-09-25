@@ -1,4 +1,4 @@
-unit KM_ScriptingParameters;
+unit KM_ScriptingMethodParameters;
 interface
 uses
   System.Classes, System.SysUtils, System.Types, System.Generics.Collections,
@@ -6,7 +6,7 @@ uses
 
 type
   // Single parameter(argument) info
-  TKMScriptParameter = class
+  TKMScriptingMethodParameter = class
   private
     fName: string;
     fModifier: string;
@@ -21,20 +21,20 @@ type
   end;
 
   // List of parameters(arguments) of a method
-  TKMScriptParameters = class
+  TKMScriptingMethodParameters = class
   private
-    fList: TObjectList<TKMScriptParameter>;
+    fList: TObjectList<TKMScriptingMethodParameter>;
     procedure SplitIntoTokens(const aArguments: string; aTokenList: TStringList);
     function FindDescription(const aName: string; aDescriptions: TStringList): string;
     procedure CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
     function GetCount: Integer;
-    function GetParameter(aIndex: Integer): TKMScriptParameter;
+    function GetParameter(aIndex: Integer): TKMScriptingMethodParameter;
   public
     constructor Create;
     destructor Destroy; override;
 
     property Count: Integer read GetCount;
-    property Parameters[aIndex: Integer]: TKMScriptParameter read GetParameter; default;
+    property Parameters[aIndex: Integer]: TKMScriptingMethodParameter read GetParameter; default;
     function ExportWikiBody: string;
     function ExportCodeSignature: string;
     procedure AdjoinPairs;
@@ -49,8 +49,8 @@ uses
   KM_ScriptingConsts, KM_StringUtils;
 
 
-{ TKMScriptParameter }
-constructor TKMScriptParameter.Create(const aName, aModifier, aVarType, aDesc: string);
+{ TKMScriptingMethodParameter }
+constructor TKMScriptingMethodParameter.Create(const aName, aModifier, aVarType, aDesc: string);
 begin
   inherited Create;
 
@@ -61,13 +61,13 @@ begin
 end;
 
 
-function TKMScriptParameter.ExportCodeSignature: string;
+function TKMScriptingMethodParameter.ExportCodeSignature: string;
 begin
   Result := IfThen(fModifier <> '', fModifier + ' ') + fName + ': ' + fVarType;
 end;
 
 
-function TKMScriptParameter.ExportWikiBody: string;
+function TKMScriptingMethodParameter.ExportWikiBody: string;
 const
   TEMPLATE = '**%s%s**: %s;%s';
 begin
@@ -76,16 +76,16 @@ begin
 end;
 
 
-{ TKMScriptParameters }
-constructor TKMScriptParameters.Create;
+{ TKMScriptingMethodParameters }
+constructor TKMScriptingMethodParameters.Create;
 begin
   inherited;
 
-  fList := TObjectList<TKMScriptParameter>.Create;
+  fList := TObjectList<TKMScriptingMethodParameter>.Create;
 end;
 
 
-destructor TKMScriptParameters.Destroy;
+destructor TKMScriptingMethodParameters.Destroy;
 begin
   FreeAndNil(fList);
 
@@ -93,19 +93,19 @@ begin
 end;
 
 
-function TKMScriptParameters.GetCount: Integer;
+function TKMScriptingMethodParameters.GetCount: Integer;
 begin
   Result := fList.Count;
 end;
 
 
-function TKMScriptParameters.GetParameter(aIndex: Integer): TKMScriptParameter;
+function TKMScriptingMethodParameters.GetParameter(aIndex: Integer): TKMScriptingMethodParameter;
 begin
   Result := fList[aIndex];
 end;
 
 
-function TKMScriptParameters.ExportWikiBody: string;
+function TKMScriptingMethodParameters.ExportWikiBody: string;
 var
   I: Integer;
 begin
@@ -117,7 +117,7 @@ end;
 
 
 // Method signature for the "RegisterMethodCheck(c, '...');" in PS engine
-function TKMScriptParameters.ExportCodeSignature: string;
+function TKMScriptingMethodParameters.ExportCodeSignature: string;
 const
   ROUGH_LINE_LIMIT = 60;
 var
@@ -142,7 +142,7 @@ end;
 
 
 // Take a string of arguments and split it into list of tokens
-procedure TKMScriptParameters.SplitIntoTokens(const aArguments: string; aTokenList: TStringList);
+procedure TKMScriptingMethodParameters.SplitIntoTokens(const aArguments: string; aTokenList: TStringList);
 var
   I: Integer;
   args: string;
@@ -169,7 +169,7 @@ begin
 end;
 
 
-function TKMScriptParameters.FindDescription(const aName: string; aDescriptions: TStringList): string;
+function TKMScriptingMethodParameters.FindDescription(const aName: string; aDescriptions: TStringList): string;
 var
   I: Integer;
 begin
@@ -186,7 +186,7 @@ begin
 end;
 
 
-procedure TKMScriptParameters.CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
+procedure TKMScriptingMethodParameters.CollectParameters(aTokenList: TStringList; aDescriptions: TStringList);
 var
   I: Integer;
   varModifier, varType: string;
@@ -231,12 +231,12 @@ begin
   // Finally add to the list
   for I := 0 to aTokenList.Count - 1 do
   if (list[I].Name <> '') then
-    fList.Add(TKMScriptParameter.Create(list[I].Name, list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
+    fList.Add(TKMScriptingMethodParameter.Create(list[I].Name, list[I].Modifier, list[I].&Type, FindDescription(aTokenList[I], aDescriptions)));
 end;
 
 
 // Adjoin pairs wherever possible
-procedure TKMScriptParameters.AdjoinPairs;
+procedure TKMScriptingMethodParameters.AdjoinPairs;
 var
   I: Integer;
 begin
@@ -253,7 +253,7 @@ begin
 end;
 
 
-procedure TKMScriptParameters.DowngradeTypes;
+procedure TKMScriptingMethodParameters.DowngradeTypes;
 var
   I: Integer;
 begin
@@ -262,7 +262,7 @@ begin
 end;
 
 
-procedure TKMScriptParameters.ParseFromString(const aArguments: string; aDescriptions: TStringList);
+procedure TKMScriptingMethodParameters.ParseFromString(const aArguments: string; aDescriptions: TStringList);
 var
   tokenList: TStringList;
 begin
