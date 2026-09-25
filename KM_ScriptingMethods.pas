@@ -15,7 +15,6 @@ type
     fList: TObjectList<TKMMethodInfo>;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
-    function GetCount: Integer;
     function ExportCodeSectionCheck(aSL: TStringList): Boolean;
     function ExportCodeSectionReg(aSL: TStringList): Boolean;
     procedure SortByName;
@@ -23,7 +22,6 @@ type
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    property Count: Integer read GetCount;
     procedure LoadFromFile(const aInputFile: string);
     procedure GenerateCode(const aFilename1, aFilename2: string);
     function GenerateWiki(const aTemplateFile, aOutputFile: string): string;
@@ -147,7 +145,7 @@ begin
 
   SortByName;
 
-  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[fArea].Name]));
+  fOnLog(Format('%d %s parsed', [fList.Count, AREA_INFO[fArea].Name]));
 end;
 
 
@@ -171,12 +169,6 @@ begin
 
   for I := 0 to fList.Count - 1 do
     Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiLink;
-end;
-
-
-function TKMScriptMethods.GetCount: Integer;
-begin
-  Result := fList.Count;
 end;
 
 
@@ -211,7 +203,7 @@ begin
       end;
 
   Result := True;
-  fOnLog(Format('%d %s exported into Code checks', [GetCount, AREA_INFO[fArea].Name]));
+  fOnLog(Format('%d %s exported into Code checks', [fList.Count, AREA_INFO[fArea].Name]));
 end;
 
 
@@ -240,7 +232,7 @@ begin
       end;
 
   Result := True;
-  fOnLog(Format('%d %s exported into Code regs', [GetCount, AREA_INFO[fArea].Name]));
+  fOnLog(Format('%d %s exported into Code regs', [fList.Count, AREA_INFO[fArea].Name]));
 end;
 
 
@@ -303,7 +295,7 @@ begin
 
   sl.Free;
 
-  fOnLog(Format('%d %s exported into Wiki', [GetCount, AREA_INFO[fArea].Name]));
+  fOnLog(Format('%d %s exported into Wiki', [fList.Count, AREA_INFO[fArea].Name]));
 end;
 
 
