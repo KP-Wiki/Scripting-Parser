@@ -11,6 +11,7 @@ type
   TKMScriptMethods = class(TKMScriptCommon)
   private
     fList: TObjectList<TKMMethodInfo>;
+    procedure LoadFromFile(const aSourceFile: string); override;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     function ExportCodeSectionCheck(aSL: TStringList): Boolean;
@@ -20,9 +21,8 @@ type
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure LoadFromFile(const aInputFile: string); override;
-    procedure GenerateCode(const aFilename1, aFilename2: string); override;
-    procedure GenerateWiki(const aTemplateFile, aOutputFile: string); override;
+    procedure GenerateCode(const aSourceFile, aFilename1, aFilename2: string); override;
+    procedure GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string); override;
     procedure LintLogMessages(const aSourceFile: string); override;
   end;
 
@@ -61,7 +61,7 @@ end;
 
 
 // Scans source contents and puts it all in proper formatting for most wikis.
-procedure TKMScriptMethods.LoadFromFile(const aInputFile: string);
+procedure TKMScriptMethods.LoadFromFile(const aSourceFile: string);
 var
   slSource: TStringList;
   I: Integer;
@@ -71,11 +71,11 @@ var
   lastSectionStart: Integer;
 begin
   fList.Clear;
-  if not FileExists(aInputFile) then Exit;
+  if not FileExists(aSourceFile) then Exit;
 
   slSource := TStringList.Create;
   try
-    slSource.LoadFromFile(aInputFile);
+    slSource.LoadFromFile(aSourceFile);
 
     // Assemble method sections 1 by 1
       {
@@ -229,8 +229,10 @@ begin
 end;
 
 
-procedure TKMScriptMethods.GenerateCode(const aFilename1, aFilename2: string);
+procedure TKMScriptMethods.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
 begin
+  LoadFromFile(aSourceFile);
+
   var checkFound := False;
   var regFound := False;
 
@@ -265,13 +267,15 @@ begin
 end;
 
 
-procedure TKMScriptMethods.GenerateWiki(const aTemplateFile, aOutputFile: string);
+procedure TKMScriptMethods.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
 begin
   // Without template we cant generate output
   if aTemplateFile = '' then Exit;
+
+  LoadFromFile(aSourceFile);
 
   sl := TStringList.Create;
 
@@ -294,6 +298,8 @@ end;
 
 procedure TKMScriptMethods.LintLogMessages(const aSourceFile: string);
 begin
+  LoadFromFile(aSourceFile);
+
   var slSourceCode := TStringList.Create;
   slSourceCode.LoadFromFile(aSourceFile);
 

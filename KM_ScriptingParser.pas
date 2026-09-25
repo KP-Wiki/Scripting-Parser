@@ -18,7 +18,6 @@ type
     fParsingGame: TKMParsingGame;
     fOnLog: TProc<string>;
     fMethods: array [TKMParsingArea] of TKMScriptCommon;
-    procedure ParseCode(aPaths: TKMScriptingPaths);
     procedure CopyForReference(const aFilename: string; aArea: TKMParsingArea);
   public
     constructor Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
@@ -64,13 +63,6 @@ begin
 end;
 
 
-procedure TKMScriptingParser.ParseCode(aPaths: TKMScriptingPaths);
-begin
-  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fMethods[I].LoadFromFile(aPaths.PathsScripting[I].SourceInput);
-end;
-
-
 procedure TKMScriptingParser.CopyForReference(const aFilename: string; aArea: TKMParsingArea);
 var
   tgtPath: string;
@@ -82,8 +74,6 @@ end;
 
 procedure TKMScriptingParser.GenerateCode(aPaths: TKMScriptingPaths);
 begin
-  ParseCode(aPaths);
-
   //todo -cThink: Automate verification in ScriptingParser that functions/procedures pose under the same name in LogMissionWarning
   // Arrays can be declared in 2 ways in KP PS - "array of string" and TKMStringArray. First one is more traditional and more universal.
   // Second one is required for some Utils methods to allow for resizing of passed arrays. Resized arrays become TKMStringArray though.
@@ -91,16 +81,14 @@ begin
   //todo -cThink: Hence we need to add such a check in here. KP arrays need to be declared as TKMStringArray (Integer/Single/etc)
 
   for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fMethods[I].GenerateCode(aPaths.PathsScripting[I].SourceOutput1, aPaths.PathsScripting[I].SourceOutput2);
+    fMethods[I].GenerateCode(aPaths.PathsScripting[I].SourceInput, aPaths.PathsScripting[I].SourceOutput1, aPaths.PathsScripting[I].SourceOutput2);
 end;
 
 
 procedure TKMScriptingParser.GenerateWiki(aPaths: TKMScriptingPaths);
 begin
-  ParseCode(aPaths);
-
   for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
-    fMethods[I].GenerateWiki(aPaths.PathsScripting[I].WikiTemplate, aPaths.PathsScripting[I].WikiOutput);
+    fMethods[I].GenerateWiki(aPaths.PathsScripting[I].SourceInput, aPaths.PathsScripting[I].WikiTemplate, aPaths.PathsScripting[I].WikiOutput);
 
   if DBG_COPY_FOR_REFERENCE then
     for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
@@ -110,8 +98,6 @@ end;
 
 procedure TKMScriptingParser.LintMessages(aPaths: TKMScriptingPaths);
 begin
-  ParseCode(aPaths);
-
   fMethods[paActions].LintLogMessages(aPaths.PathsScripting[paActions].SourceInput);
   // Events dont have log messages
   fMethods[paStates].LintLogMessages(aPaths.PathsScripting[paStates].SourceInput);
@@ -122,8 +108,6 @@ end;
 
 procedure TKMScriptingParser.GenerateXML(aPaths: TKMScriptingPaths);
 begin
-  ParseCode(aPaths);
-
   //todo -cThink: GenerateXML for ScriptingEditor
 end;
 

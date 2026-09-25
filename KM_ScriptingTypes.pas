@@ -11,6 +11,7 @@ type
   TKMScriptTypes = class(TKMScriptCommon)
   private
     fList: TObjectList<TKMScriptType>;
+    procedure LoadFromFile(const aSourceMask: string); override;
     procedure AssignSortOrder;
     procedure Clear;
     function ExportWikiBody: string;
@@ -21,9 +22,8 @@ type
     constructor Create(aGame: TKMParsingGame; aArea: TKMParsingArea; aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure LoadFromFile(const aSourceMask: string); override;
-    procedure GenerateCode(const aFilename1, aFilename2: string); override;
-    procedure GenerateWiki(const aTemplateFile, aOutputFile: string); override;
+    procedure GenerateCode(const aSourceFile, aFilename1, aFilename2: string); override;
+    procedure GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string); override;
   end;
 
 
@@ -285,11 +285,13 @@ begin
 end;
 
 
-procedure TKMScriptTypes.GenerateCode(const aFilename1, aFilename2: string);
+procedure TKMScriptTypes.GenerateCode(const aSourceFile, aFilename1, aFilename2: string);
 begin
   Assert(aFilename2 = '');
 
   if not FileExists(aFilename1) then Exit;
+
+  LoadFromFile(aSourceFile);
 
   SortByName(stByDependancy);
 
@@ -328,13 +330,15 @@ begin
 end;
 
 
-procedure TKMScriptTypes.GenerateWiki(const aTemplateFile, aOutputFile: string);
+procedure TKMScriptTypes.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
 var
   sl: TStringList;
   exportPath: string;
 begin
   // Without template we cant generate output
   if aTemplateFile = '' then Exit;
+
+  LoadFromFile(aSourceFile);
 
   SortByName(stByAlphabet);
 
