@@ -18,8 +18,8 @@ const
     'LogParamWarning' // KP
   );
 
-  // Denotes regions where Events, States, Actions, Types, Utils are located
-  AREA_INFO: array [TKMParsingArea] of record
+  // Denotes specification details for scripting domains (Events, States, Actions, Types, Utils)
+  SCRIPTING_DOMAIN_SPEC: array [TKMParsingArea] of record
     Name: string;         // Name of the area. Used in the logs and for reference md-s in this repo
     CheckTag: string;     // Tag used for the Check region
     RegTag: string;       // Tag used for the Register region

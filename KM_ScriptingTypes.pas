@@ -170,7 +170,7 @@ begin
   for I := Low(s) to High(s) do
     LoadFromFileInt(s[I]);
 
-  fOnLog(Format('%d %s parsed', [fList.Count, AREA_INFO[paTypes].Name]));
+  fOnLog(Format('%d %s parsed', [fList.Count, SCRIPTING_DOMAIN_SPEC[paTypes].Name]));
 end;
 
 
@@ -298,7 +298,7 @@ begin
     sl.LoadFromFile(aFilename1);
 
     var lineFrom, lineTo, padLevel: Integer;
-    FindRegionBounds(sl, AREA_INFO[paTypes].RegTag, lineFrom, lineTo, padLevel);
+    FindRegionBounds(sl, SCRIPTING_DOMAIN_SPEC[paTypes].RegTag, lineFrom, lineTo, padLevel);
 
     if lineFrom <> -1 then
     begin
@@ -324,7 +324,7 @@ begin
     sl.Free;
   end;
 
-  fOnLog(Format('Written %d items of %s into Code', [fList.Count, AREA_INFO[paTypes].Name]));
+  fOnLog(Format('Written %d items of %s into Code', [fList.Count, SCRIPTING_DOMAIN_SPEC[paTypes].Name]));
 end;
 
 
@@ -353,7 +353,7 @@ begin
 
   sl.Free;
 
-  fOnLog(Format('Written %d items of %s into Wiki', [fList.Count, AREA_INFO[paTypes].Name]));
+  fOnLog(Format('Written %d items of %s into Wiki', [fList.Count, SCRIPTING_DOMAIN_SPEC[paTypes].Name]));
 end;
 
 

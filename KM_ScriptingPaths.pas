@@ -35,11 +35,11 @@ begin
 
   for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
   begin
-    PathsScripting[I].SourceInput   := ini.ReadString('INPUT',    AREA_INFO[I].Name, '');
-    PathsScripting[I].WikiTemplate  := ini.ReadString('TEMPLATE', AREA_INFO[I].Name, '');
-    PathsScripting[I].WikiOutput    := ini.ReadString('OUTPUT',   AREA_INFO[I].Name, '');
-    PathsScripting[I].SourceOutput1 := ini.ReadString('CODE',     AREA_INFO[I].Name, '');
-    PathsScripting[I].SourceOutput2 := ini.ReadString('CODE',     AREA_INFO[I].Name + '2', '');
+    PathsScripting[I].SourceInput   := ini.ReadString('INPUT',    SCRIPTING_DOMAIN_SPEC[I].Name, '');
+    PathsScripting[I].WikiTemplate  := ini.ReadString('TEMPLATE', SCRIPTING_DOMAIN_SPEC[I].Name, '');
+    PathsScripting[I].WikiOutput    := ini.ReadString('OUTPUT',   SCRIPTING_DOMAIN_SPEC[I].Name, '');
+    PathsScripting[I].SourceOutput1 := ini.ReadString('CODE',     SCRIPTING_DOMAIN_SPEC[I].Name, '');
+    PathsScripting[I].SourceOutput2 := ini.ReadString('CODE',     SCRIPTING_DOMAIN_SPEC[I].Name + '2', '');
   end;
 
   FreeAndNil(ini);
@@ -55,11 +55,11 @@ begin
 
   for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
   begin
-    ini.WriteString('INPUT',    AREA_INFO[I].Name,       PathsScripting[I].SourceInput);
-    ini.WriteString('TEMPLATE', AREA_INFO[I].Name,       PathsScripting[I].WikiTemplate);
-    ini.WriteString('OUTPUT',   AREA_INFO[I].Name,       PathsScripting[I].WikiOutput);
-    ini.WriteString('CODE',     AREA_INFO[I].Name,       PathsScripting[I].SourceOutput1);
-    ini.WriteString('CODE',     AREA_INFO[I].Name + '2', PathsScripting[I].SourceOutput2);
+    ini.WriteString('INPUT',    SCRIPTING_DOMAIN_SPEC[I].Name,       PathsScripting[I].SourceInput);
+    ini.WriteString('TEMPLATE', SCRIPTING_DOMAIN_SPEC[I].Name,       PathsScripting[I].WikiTemplate);
+    ini.WriteString('OUTPUT',   SCRIPTING_DOMAIN_SPEC[I].Name,       PathsScripting[I].WikiOutput);
+    ini.WriteString('CODE',     SCRIPTING_DOMAIN_SPEC[I].Name,       PathsScripting[I].SourceOutput1);
+    ini.WriteString('CODE',     SCRIPTING_DOMAIN_SPEC[I].Name + '2', PathsScripting[I].SourceOutput2);
   end;
 
   FreeAndNil(ini);
