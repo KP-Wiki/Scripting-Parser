@@ -443,7 +443,7 @@ object fmScriptingParser: TfmScriptingParser
       TabOrder = 2
       OnChange = edtOnTextChange
     end
-    object btnGenerateResWiki: TButton
+    object btnModdingGenerateWiki: TButton
       Left = 888
       Top = 16
       Width = 97
@@ -460,6 +460,7 @@ object fmScriptingParser: TfmScriptingParser
       ShowHint = False
       TabOrder = 3
       WordWrap = True
+      OnClick = btnModdingGenerateWikiClick
     end
   end
 end

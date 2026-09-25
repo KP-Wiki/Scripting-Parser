@@ -3,7 +3,7 @@ interface
 uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, System.SysUtils, Winapi.Windows,
   System.Classes, Vcl.StdCtrls, System.StrUtils, System.Types, System.IniFiles, Vcl.ComCtrls,
-  KM_DocumenterTypes, KM_ScriptingPaths, Vcl.ExtCtrls;
+  KM_DocumenterTypes, KM_DocumenterPaths, Vcl.ExtCtrls;
 
 type
   TfmScriptingParser = class(TForm)
@@ -54,7 +54,7 @@ type
     edResIn: TEdit;
     edResOut: TEdit;
     edResTemplate: TEdit;
-    btnGenerateResWiki: TButton;
+    btnModdingGenerateWiki: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnGenerateWikiClick(Sender: TObject);
     procedure edtOnTextChange(Sender: TObject);
@@ -65,10 +65,11 @@ type
     procedure btnGenerateCodeClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnScriptingLintMessagesClick(Sender: TObject);
+    procedure btnModdingGenerateWikiClick(Sender: TObject);
   private
     fParsingGame: TKMParsingGame;
     fSettingsPath: string;
-    fScriptingPaths: TKMScriptingPaths;
+    fDocumenterPaths: TKMDocumenterPaths;
     fUpdating: Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -78,6 +79,7 @@ type
 
 implementation
 uses
+  KM_DocumenterModding,
   KM_ScriptingParser;
 
 {$R *.dfm}
@@ -86,14 +88,14 @@ uses
 { TfmScriptingParser }
 procedure TfmScriptingParser.FormCreate(Sender: TObject);
 begin
-  fScriptingPaths := TKMScriptingPaths.Create;
+  fDocumenterPaths := TKMDocumenterPaths.Create;
   btnReyKMR.Click;
 end;
 
 
 procedure TfmScriptingParser.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(fScriptingPaths);
+  FreeAndNil(fDocumenterPaths);
 end;
 
 
@@ -105,41 +107,41 @@ end;
 
 procedure TfmScriptingParser.LoadSettings;
 begin
-  fScriptingPaths.LoadFromINI(fSettingsPath);
+  fDocumenterPaths.LoadFromINI(fSettingsPath);
 
   // Blit settings to UI
   fUpdating := True;
   try
     // Scripting
-    edActionsIn.Text       := fScriptingPaths.PathsScripting[paActions].SourceInput;
-    edEventsIn.Text        := fScriptingPaths.PathsScripting[paEvents].SourceInput;
-    edStatesIn.Text        := fScriptingPaths.PathsScripting[paStates].SourceInput;
-    edUtilsIn.Text         := fScriptingPaths.PathsScripting[paUtils].SourceInput;
-    edTypesIn.Text         := fScriptingPaths.PathsScripting[paTypes].SourceInput;
+    edActionsIn.Text       := fDocumenterPaths.Scripting[paActions].SourceInput;
+    edEventsIn.Text        := fDocumenterPaths.Scripting[paEvents].SourceInput;
+    edStatesIn.Text        := fDocumenterPaths.Scripting[paStates].SourceInput;
+    edUtilsIn.Text         := fDocumenterPaths.Scripting[paUtils].SourceInput;
+    edTypesIn.Text         := fDocumenterPaths.Scripting[paTypes].SourceInput;
 
-    edActionsTemplate.Text := fScriptingPaths.PathsScripting[paActions].WikiTemplate;
-    edEventsTemplate.Text  := fScriptingPaths.PathsScripting[paEvents].WikiTemplate;
-    edStatesTemplate.Text  := fScriptingPaths.PathsScripting[paStates].WikiTemplate;
-    edUtilsTemplate.Text   := fScriptingPaths.PathsScripting[paUtils].WikiTemplate;
-    edTypesTemplate.Text   := fScriptingPaths.PathsScripting[paTypes].WikiTemplate;
+    edActionsTemplate.Text := fDocumenterPaths.Scripting[paActions].WikiTemplate;
+    edEventsTemplate.Text  := fDocumenterPaths.Scripting[paEvents].WikiTemplate;
+    edStatesTemplate.Text  := fDocumenterPaths.Scripting[paStates].WikiTemplate;
+    edUtilsTemplate.Text   := fDocumenterPaths.Scripting[paUtils].WikiTemplate;
+    edTypesTemplate.Text   := fDocumenterPaths.Scripting[paTypes].WikiTemplate;
 
-    edActionsOut.Text      := fScriptingPaths.PathsScripting[paActions].WikiOutput;
-    edEventsOut.Text       := fScriptingPaths.PathsScripting[paEvents].WikiOutput;
-    edStatesOut.Text       := fScriptingPaths.PathsScripting[paStates].WikiOutput;
-    edUtilsOut.Text        := fScriptingPaths.PathsScripting[paUtils].WikiOutput;
-    edTypesOut.Text        := fScriptingPaths.PathsScripting[paTypes].WikiOutput;
+    edActionsOut.Text      := fDocumenterPaths.Scripting[paActions].WikiOutput;
+    edEventsOut.Text       := fDocumenterPaths.Scripting[paEvents].WikiOutput;
+    edStatesOut.Text       := fDocumenterPaths.Scripting[paStates].WikiOutput;
+    edUtilsOut.Text        := fDocumenterPaths.Scripting[paUtils].WikiOutput;
+    edTypesOut.Text        := fDocumenterPaths.Scripting[paTypes].WikiOutput;
 
-    edActionsCode.Text     := fScriptingPaths.PathsScripting[paActions].SourceOutput1;
-    edEventsCode.Text      := fScriptingPaths.PathsScripting[paEvents].SourceOutput1;
-    edEventsCode2.Text     := fScriptingPaths.PathsScripting[paEvents].SourceOutput2;
-    edStatesCode.Text      := fScriptingPaths.PathsScripting[paStates].SourceOutput1;
-    edUtilsCode.Text       := fScriptingPaths.PathsScripting[paUtils].SourceOutput1;
-    edTypesCode.Text       := fScriptingPaths.PathsScripting[paTypes].SourceOutput1;
+    edActionsCode.Text     := fDocumenterPaths.Scripting[paActions].SourceOutput1;
+    edEventsCode.Text      := fDocumenterPaths.Scripting[paEvents].SourceOutput1;
+    edEventsCode2.Text     := fDocumenterPaths.Scripting[paEvents].SourceOutput2;
+    edStatesCode.Text      := fDocumenterPaths.Scripting[paStates].SourceOutput1;
+    edUtilsCode.Text       := fDocumenterPaths.Scripting[paUtils].SourceOutput1;
+    edTypesCode.Text       := fDocumenterPaths.Scripting[paTypes].SourceOutput1;
 
     // Modding
-//    edResIn.Text        :=
-//    edResTemplate.Text  :=
-//    edResOut.Text       :=
+    edResIn.Text        := fDocumenterPaths.Modding.SourceInput;
+    edResTemplate.Text  := fDocumenterPaths.Modding.WikiTemplate;
+    edResOut.Text       := fDocumenterPaths.Modding.WikiOutput;
   finally
     fUpdating := False;
   end;
@@ -154,7 +156,7 @@ begin
 
   // It is more KISS to create and use one instance for one job
   var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
-  documenterScripting.LintMessages(fScriptingPaths);
+  documenterScripting.LintMessages(fDocumenterPaths.Scripting);
   documenterScripting.Free;
 end;
 
@@ -167,7 +169,7 @@ begin
 
   // It is more KISS to create and use one instance for one job
   var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
-  documenterScripting.GenerateCode(fScriptingPaths);
+  documenterScripting.GenerateCode(fDocumenterPaths.Scripting);
   documenterScripting.Free;
 end;
 
@@ -180,7 +182,7 @@ begin
 
   // It is more KISS to create and use one instance for one job
   var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
-  documenterScripting.GenerateWiki(fScriptingPaths);
+  documenterScripting.GenerateWiki(fDocumenterPaths.Scripting);
   documenterScripting.Free;
 end;
 
@@ -191,8 +193,19 @@ begin
 
   // It is more KISS to create and use instance for the job
   var documenterScripting := TKMDocumenterScripting.Create(fParsingGame, DoLog);
-  documenterScripting.GenerateXML(fScriptingPaths);
+  documenterScripting.GenerateXML(fDocumenterPaths.Scripting);
   documenterScripting.Free;
+end;
+
+
+procedure TfmScriptingParser.btnModdingGenerateWikiClick(Sender: TObject);
+begin
+  meLog.Clear;
+
+  // It is more KISS to create and use instance for the job
+  var documenterModding := TKMDocumenterModding.Create(fParsingGame, DoLog);
+  documenterModding.GenerateWiki(fDocumenterPaths.Modding);
+  documenterModding.Free;
 end;
 
 
@@ -234,37 +247,37 @@ end;
 procedure TfmScriptingParser.SaveSettings;
 begin
   // Scripting
-  fScriptingPaths.PathsScripting[paActions].SourceInput  := edActionsIn.Text;
-  fScriptingPaths.PathsScripting[paEvents].SourceInput  := edEventsIn.Text;
-  fScriptingPaths.PathsScripting[paStates].SourceInput  := edStatesIn.Text;
-  fScriptingPaths.PathsScripting[paUtils].SourceInput  := edUtilsIn.Text;
-  fScriptingPaths.PathsScripting[paTypes].SourceInput  := edTypesIn.Text;
+  fDocumenterPaths.Scripting[paActions].SourceInput  := edActionsIn.Text;
+  fDocumenterPaths.Scripting[paEvents].SourceInput  := edEventsIn.Text;
+  fDocumenterPaths.Scripting[paStates].SourceInput  := edStatesIn.Text;
+  fDocumenterPaths.Scripting[paUtils].SourceInput  := edUtilsIn.Text;
+  fDocumenterPaths.Scripting[paTypes].SourceInput  := edTypesIn.Text;
 
-  fScriptingPaths.PathsScripting[paActions].WikiTemplate := edActionsTemplate.Text;
-  fScriptingPaths.PathsScripting[paEvents].WikiTemplate := edEventsTemplate.Text;
-  fScriptingPaths.PathsScripting[paStates].WikiTemplate := edStatesTemplate.Text;
-  fScriptingPaths.PathsScripting[paUtils].WikiTemplate := edUtilsTemplate.Text;
-  fScriptingPaths.PathsScripting[paTypes].WikiTemplate := edTypesTemplate.Text;
+  fDocumenterPaths.Scripting[paActions].WikiTemplate := edActionsTemplate.Text;
+  fDocumenterPaths.Scripting[paEvents].WikiTemplate := edEventsTemplate.Text;
+  fDocumenterPaths.Scripting[paStates].WikiTemplate := edStatesTemplate.Text;
+  fDocumenterPaths.Scripting[paUtils].WikiTemplate := edUtilsTemplate.Text;
+  fDocumenterPaths.Scripting[paTypes].WikiTemplate := edTypesTemplate.Text;
 
-  fScriptingPaths.PathsScripting[paActions].WikiOutput := edActionsOut.Text;
-  fScriptingPaths.PathsScripting[paEvents].WikiOutput := edEventsOut.Text;
-  fScriptingPaths.PathsScripting[paStates].WikiOutput := edStatesOut.Text;
-  fScriptingPaths.PathsScripting[paUtils].WikiOutput := edUtilsOut.Text;
-  fScriptingPaths.PathsScripting[paTypes].WikiOutput := edTypesOut.Text;
+  fDocumenterPaths.Scripting[paActions].WikiOutput := edActionsOut.Text;
+  fDocumenterPaths.Scripting[paEvents].WikiOutput := edEventsOut.Text;
+  fDocumenterPaths.Scripting[paStates].WikiOutput := edStatesOut.Text;
+  fDocumenterPaths.Scripting[paUtils].WikiOutput := edUtilsOut.Text;
+  fDocumenterPaths.Scripting[paTypes].WikiOutput := edTypesOut.Text;
 
-  fScriptingPaths.PathsScripting[paActions].SourceOutput1 := edActionsCode.Text;
-  fScriptingPaths.PathsScripting[paEvents].SourceOutput1 := edEventsCode.Text;
-  fScriptingPaths.PathsScripting[paEvents].SourceOutput2 := edEventsCode2.Text;
-  fScriptingPaths.PathsScripting[paStates].SourceOutput1 := edStatesCode.Text;
-  fScriptingPaths.PathsScripting[paUtils].SourceOutput1 := edUtilsCode.Text;
-  fScriptingPaths.PathsScripting[paTypes].SourceOutput1 := edTypesCode.Text;
+  fDocumenterPaths.Scripting[paActions].SourceOutput1 := edActionsCode.Text;
+  fDocumenterPaths.Scripting[paEvents].SourceOutput1 := edEventsCode.Text;
+  fDocumenterPaths.Scripting[paEvents].SourceOutput2 := edEventsCode2.Text;
+  fDocumenterPaths.Scripting[paStates].SourceOutput1 := edStatesCode.Text;
+  fDocumenterPaths.Scripting[paUtils].SourceOutput1 := edUtilsCode.Text;
+  fDocumenterPaths.Scripting[paTypes].SourceOutput1 := edTypesCode.Text;
 
   // Modding
-//    edResIn.Text        :=
-//    edResTemplate.Text  :=
-//    edResOut.Text       :=
+  fDocumenterPaths.Modding.SourceInput := edResIn.Text;
+  fDocumenterPaths.Modding.WikiTemplate := edResTemplate.Text;
+  fDocumenterPaths.Modding.WikiOutput := edResOut.Text;
 
-  fScriptingPaths.SaveToINI(fSettingsPath);
+  fDocumenterPaths.SaveToINI(fSettingsPath);
 end;
 
 

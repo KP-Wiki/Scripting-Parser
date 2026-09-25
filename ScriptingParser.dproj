@@ -77,14 +77,17 @@
         <DCCReference Include="FormScriptingParser.pas">
             <Form>fmScriptingParser</Form>
         </DCCReference>
+        <DCCReference Include="KM_DocumenterModding.pas"/>
+        <DCCReference Include="KM_DocumenterPaths.pas"/>
         <DCCReference Include="KM_DocumenterTypes.pas"/>
+        <DCCReference Include="KM_ModdingType.pas"/>
+        <DCCReference Include="KM_ModdingTypes.pas"/>
         <DCCReference Include="KM_ScriptingCommon.pas"/>
         <DCCReference Include="KM_ScriptingMethod.pas"/>
         <DCCReference Include="KM_ScriptingMethods.pas"/>
         <DCCReference Include="KM_ScriptingMethodConsts.pas"/>
         <DCCReference Include="KM_ScriptingMethodParameters.pas"/>
         <DCCReference Include="KM_ScriptingParser.pas"/>
-        <DCCReference Include="KM_ScriptingPaths.pas"/>
         <DCCReference Include="KM_ScriptingType.pas"/>
         <DCCReference Include="KM_ScriptingTypes.pas"/>
         <DCCReference Include="KM_StringUtils.pas"/>
