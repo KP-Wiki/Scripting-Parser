@@ -39,15 +39,13 @@ uses
 
 { TKMScriptingParser }
 constructor TKMScriptingParser.Create(aParsingGame: TKMParsingGame; aOnLog: TProc<string>);
-var
-  I: TKMParsingArea;
 begin
   inherited Create;
 
   fParsingGame := aParsingGame;
   fOnLog := aOnLog;
 
-  for I := Low(TKMParsingArea) to High(TKMParsingArea) do
+  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
     fMethods[I] := TKMScriptMethods.Create(fParsingGame, I, fOnLog);
 
   fTypes := TKMScriptTypes.Create(fOnLog);
@@ -55,10 +53,8 @@ end;
 
 
 destructor TKMScriptingParser.Destroy;
-var
-  I: TKMParsingArea;
 begin
-  for I := Low(TKMParsingArea) to High(TKMParsingArea) do
+  for var I := Low(TKMParsingArea) to High(TKMParsingArea) do
     FreeAndNil(fMethods[I]);
 
   FreeAndNil(fTypes);
