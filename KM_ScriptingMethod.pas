@@ -344,6 +344,7 @@ function TKMMethodInfo.LintLogMessages(aSourceCode: TStringList; const aLogMessa
 begin
   Result := '';
 
+  // Start with the first LOC of the method
   var idx := fFirstLine;
   var lineTextThis := '';
   var lineTextPrev := '';
@@ -352,15 +353,16 @@ begin
     lineTextPrev := lineTextThis;
     lineTextThis := Trim(aSourceCode[idx]);
 
-    if (Pos(aLogMessageName, lineTextThis) <> 0) then
+    if ContainsText(lineTextThis, aLogMessageName) then
     begin
       //Inc(logCount);
 
       // If there is a LogMessage in this line, it should reference the method it is in
-      if (Pos(fName, lineTextThis) = 0) then
+      if not ContainsText(lineTextThis, fName) then
         Result := Result + IfThen(Result <> '', sLineBreak) + Format('Line %d. "%s" missing in "%s"', [idx, fName, lineTextThis]);
     end;
 
+    // Keep going until we encounter 2 EOLs (next method)
     Inc(idx);
   until lineTextThis + lineTextPrev = '';
 

@@ -309,17 +309,17 @@ end;
 
 procedure TKMScriptMethods.LintLogMessages(const aSourceFile: string; const aLogMessageName: string);
 begin
-  var sl := TStringList.Create;
-  sl.LoadFromFile(aSourceFile);
+  var slSourceCode := TStringList.Create;
+  slSourceCode.LoadFromFile(aSourceFile);
 
   for var I := 0 to fList.Count - 1 do
   begin
-    var res := fList[I].LintLogMessages(sl, aLogMessageName);
+    var res := fList[I].LintLogMessages(slSourceCode, aLogMessageName);
     if res <> '' then
       fOnLog(res);
   end;
 
-  sl.Free;
+  slSourceCode.Free;
 end;
 
 
