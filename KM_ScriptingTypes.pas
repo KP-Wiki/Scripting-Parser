@@ -13,17 +13,15 @@ type
     fOnLog: TProc<string>;
     fList: TObjectList<TKMScriptType>;
     procedure AssignSortOrder;
+    procedure Clear;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
-    function GetCount: Integer;
     procedure LoadFromFile(const aInputFile: string);
     procedure SortByName(aSortBy: TKMSortType);
   public
     constructor Create(aOnLog: TProc<string>);
     destructor Destroy; override;
 
-    procedure Clear;
-    property Count: Integer read GetCount;
     procedure LoadFromFiles(const aSourceMask: string);
     procedure GenerateCode(const aCodeFile: string);
     procedure GenerateWiki(const aTemplateFile, aOutputFile: string);
@@ -37,12 +35,6 @@ uses
 
 
 { TKMScriptTypes }
-procedure TKMScriptTypes.Clear;
-begin
-  fList.Clear;
-end;
-
-
 constructor TKMScriptTypes.Create(aOnLog: TProc<string>);
 begin
   inherited Create;
@@ -66,6 +58,12 @@ begin
   FreeAndNil(fList);
 
   inherited;
+end;
+
+
+procedure TKMScriptTypes.Clear;
+begin
+  fList.Clear;
 end;
 
 
@@ -175,7 +173,7 @@ begin
   for I := Low(s) to High(s) do
     LoadFromFile(s[I]);
 
-  fOnLog(Format('%d %s parsed', [GetCount, AREA_INFO[paTypes].Name]));
+  fOnLog(Format('%d %s parsed', [fList.Count, AREA_INFO[paTypes].Name]));
 end;
 
 
@@ -198,12 +196,6 @@ begin
 
   for I := 0 to fList.Count - 1 do
     Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiLink;
-end;
-
-
-function TKMScriptTypes.GetCount: Integer;
-begin
-  Result := fList.Count;
 end;
 
 
