@@ -9,6 +9,7 @@ uses
 // We kept them here to support pre-XE5 compilation
 //todo: Now we dont support old compilers and they can be removed
 function RightStrAfter(const aStr, aSeparator: string): string; deprecated;
+function LeftStrBefore(const aStr, aSeparator: string): string;
 function StrSubstring(const aStr: string; aFrom: Integer): string; deprecated;
 procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
 procedure FindRegionBounds(aStringList: TStringList; aMarker: string; out aLineFrom, aLineTo, aPadLevel: Integer);
@@ -18,6 +19,14 @@ function ExtractFunctionResultType(aStr: string): string;
 implementation
 uses
   System.SysUtils, System.Types, System.StrUtils;
+
+
+// Copy everything on the left of the separator
+// 123:mystring:3 -> 123
+function LeftStrBefore(const aStr, aSeparator: string): string;
+begin
+  Result := Copy(aStr, 1, Pos(aSeparator, aStr) - 1);
+end;
 
 
 // Copy everything on the right of the separator

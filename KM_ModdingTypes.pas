@@ -68,91 +68,48 @@ end;
 
 // Scans source contents and puts it all in proper formatting for most wikis.
 procedure TKMModdingTypes.LoadFromFileInt(const aInputFile: string);
-var
-  slSource: TStringList;
-  I: Integer;
-  srcLine: string;
-  sl: TStringList;
-  sectionStarted: Boolean;
-  recordStarted: Boolean;
 begin
-  slSource := TStringList.Create;
+  var slSource := TStringList.Create;
   try
     slSource.LoadFromFile(aInputFile);
 
-    // Assemble method sections 1 by 1
-
+    // Look for areas denoted as Modding specifications
     {
-    //* This is an Enum
-    TKMSomeType = (stNone,
-      //
-      stSomething);
-
-    //* This is a Record
-    // ignore this comment
-    TKMSomeType = record
-      A,B: Integer;
-      function Some: Byte;
-    end;
-
-    //* This is an Array of
-    TKMSomeType = array of TKMSomething;
-
-    //* This is a Set of
-    TKMSomeType = set of TKMSomething;
+    //*Area-Modding-Specification*//
+    ...
+    //*Area-Modding-Specification*//
     }
 
     var areaStarted := False;
-    sectionStarted := False;
-    recordStarted := False;
 
-    sl := TStringList.Create;
-    for I := 0 to slSource.Count - 1 do
+    var slArea := TStringList.Create;
+    for var I := 0 to slSource.Count - 1 do
     begin
-      srcLine := Trim(slSource[I]);
+      var srcLine := Trim(slSource[I]);
 
-      // Skip special areas
-      if StartsStr(DOC_TAG_AREA, srcLine) then
-        if not areaStarted then
-          areaStarted := True
-        else
-        begin
-          areaStarted := False;
-          // Skip this closing line too
-          Continue;
-        end;
+      // New area starts
+      if not areaStarted and StartsStr(DOC_TAG_AREA_MODDING_SPECIFICATION, srcLine) then
+      begin
+        areaStarted := True;
+        slArea.Clear;
+        Continue;
+      end;
+
+      // Area ends
+      if areaStarted and StartsStr(DOC_TAG_AREA_MODDING_SPECIFICATION, srcLine) then
+      begin
+        // Send area contents to parser
+        fList.Add(TKMModdingType.Create);
+        fList.Last.LoadFromStringList(slArea);
+
+        areaStarted := False;
+        Continue;
+      end;
 
       if areaStarted then
-        Continue;
-
-      if not sectionStarted and StartsStr(DOC_TAG, srcLine) then
-      begin
-        sectionStarted := True;
-        sl.Clear;
-      end;
-
-      if sectionStarted then
-        if not StartsStr('//', srcLine) or StartsStr(DOC_TAG, srcLine) then
-          sl.Append(srcLine);
-
-      if sectionStarted and not StartsStr('//', srcLine) and (Pos('record', srcLine) > 0) then
-        recordStarted := True;
-
-      if sectionStarted and not recordStarted and (StartsStr('procedure', srcLine) or StartsStr('function', srcLine)) then
-        sectionStarted := False;
-
-      if sectionStarted and recordStarted and (Pos('end;', srcLine) > 0) then
-        recordStarted := False;
-
-      if sectionStarted and not recordStarted and not StartsStr(DOC_TAG, srcLine) and (Pos(';', srcLine) > 0) then
-      begin
-        sectionStarted := False;
-
-        fList.Add(TKMModdingType.Create);
-        fList.Last.LoadFromStringList(sl);
-      end;
+        slArea.Append(srcLine);
     end;
-    sl.Free;
+    slArea.Free;
   finally
     slSource.Free;
   end;
@@ -224,31 +181,6 @@ begin
   SetLength(order, fList.Count);
   for I := 0 to fList.Count - 1 do
     order[I] := -1;
-
-  for I := 0 to fList.Count - 1 do
-  case fList[I].Typ of
-    ttRecord:     begin
-                    for K := 0 to fList[I].Elements.List.Count - 1 do
-                    begin
-                      s := RightStrAfter(fList[I].Elements.List[K].Name, ': ');
-                      id := FindType(s);
-                      if id <> -1 then
-                        use[I].Add(id);
-                    end;
-                  end;
-    ttArray:      begin
-                    s := ReplaceStr(fList[I].Elements.List[0].Name, 'array of ', '');
-                    id := FindType(s);
-                    if id <> -1 then
-                      use[I].Add(id);
-                  end;
-    ttSetOfType:  begin
-                    s := ReplaceStr(fList[I].Elements.List[0].Name, 'set of ', '');
-                    id := FindType(s);
-                    if id <> -1 then
-                      use[I].Add(id);
-                  end;
-  end;
 
   orderLoop := 0;
   repeat

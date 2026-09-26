@@ -54,6 +54,9 @@ const
 
   DOC_TAG_AREA = '//*Area';
 
+  DOC_TAG_AREA_MODDING_SPECIFICATION = '//*Area-Modding-Specification*//';
+  DOC_TAG_MODDING_NAME = '//* Name:';
+
 
 implementation
 
