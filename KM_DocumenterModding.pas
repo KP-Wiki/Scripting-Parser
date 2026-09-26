@@ -49,7 +49,7 @@ procedure TKMDocumenterModding.CopyForReference(const aFilename: string);
 var
   tgtPath: string;
 begin
-  tgtPath := ExtractFilePath(Application.ExeName) + 'kp.modding.new.md';
+  tgtPath := ExtractFilePath(Application.ExeName) + 'kp.Modding.new.md';
   Winapi.Windows.CopyFile(PChar(aFilename), PChar(tgtPath), False);
 end;
 
