@@ -89,7 +89,8 @@ uses
 procedure TfmScriptingParser.FormCreate(Sender: TObject);
 begin
   fDocumenterPaths := TKMDocumenterPaths.Create;
-  btnReyKMR.Click;
+  btnKromKP.Click;
+  btnModdingGenerateWiki.Click;
 end;
 
 

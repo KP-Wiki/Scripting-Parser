@@ -28,7 +28,7 @@ object fmScriptingParser: TfmScriptingParser
     TabOrder = 0
     WordWrap = True
     OnClick = btnReyKMRClick
-    ExplicitLeft = 688
+    ExplicitLeft = 730
   end
   object btnKromKP: TButton
     Left = 916
@@ -40,7 +40,7 @@ object fmScriptingParser: TfmScriptingParser
     TabOrder = 1
     WordWrap = True
     OnClick = btnKromKPClick
-    ExplicitLeft = 864
+    ExplicitLeft = 906
   end
   object gbScripting: TGroupBox
     Left = 8
@@ -371,7 +371,7 @@ object fmScriptingParser: TfmScriptingParser
     TabOrder = 3
     WordWrap = True
     OnClick = btnKromKMRClick
-    ExplicitLeft = 776
+    ExplicitLeft = 818
   end
   object meLog: TMemo
     Left = 8
@@ -380,6 +380,8 @@ object fmScriptingParser: TfmScriptingParser
     Height = 361
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 4
+    ExplicitWidth = 979
+    ExplicitHeight = 343
   end
   object gbModding: TGroupBox
     Left = 8

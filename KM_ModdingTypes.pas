@@ -24,6 +24,7 @@ type
     destructor Destroy; override;
 
     procedure GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
+    procedure LintCode(const aSourceFile: string);
   end;
 
 
@@ -247,6 +248,13 @@ begin
   sl.Free;
 
   fOnLog(Format('Written %d items of %s into Wiki', [fList.Count, SCRIPTING_AREA_SPEC[paTypes].Name]));
+end;
+
+
+procedure TKMModdingTypes.LintCode(const aSourceFile: string);
+begin
+  //todo: Following things could be linted:
+  // - matching names between XML attribute name and field name
 end;
 
 
