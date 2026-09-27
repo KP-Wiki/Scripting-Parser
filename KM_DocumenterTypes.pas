@@ -54,8 +54,17 @@ const
 
   DOC_TAG_AREA = '//*Area';
 
+  // We need to annotate modding regions to avoid clashing with Type declarations
   DOC_TAG_AREA_MODDING_SPECIFICATION = '//*Area-Modding-Specification*//';
-  DOC_TAG_MODDING_NAME = '//* Name:';
+
+  // Modding documentation tags
+  DOC_TAG_MODDING_IS_ROOT = '//* IsRoot:';          //
+  DOC_TAG_MODDING_TYPENAME = '//* TypeName:';       // Type name when it is impractical to parse
+  DOC_TAG_MODDING_CAPTION = '//* Caption:';         // Caption name
+  DOC_TAG_MODDING_DESCRIPTION = '//* Description:'; // Description
+  DOC_TAG_MODDING_XML_LIST_NAME = '//* ListName:';  // XML list object name
+  DOC_TAG_MODDING_XML_NODE_NAME = '//* NodeName:';  // XML item in a list name
+  DOC_TAG_MODDING_REFERENCE = '//* Reference:';     // Reference to another type
 
 
 implementation

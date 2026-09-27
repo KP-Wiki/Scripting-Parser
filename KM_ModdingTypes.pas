@@ -13,8 +13,8 @@ type
     fOnLog: TProc<string>;
     fList: TObjectList<TKMModdingType>;
     procedure LoadFromFile(const aSourceMask: string);
-    procedure AssignSortOrder;
     procedure Clear;
+    procedure ConnectCrossReferences;
     function ExportWikiBody: string;
     function ExportWikiLinks: string;
     procedure LoadFromFileInt(const aInputFile: string);
@@ -45,10 +45,11 @@ begin
     TComparer<TKMModdingType>.Construct(
       function (const A, B: TKMModdingType): Integer
       begin
-        Result := CompareValue(A.SortPriority, B.SortPriority);
+        Result := CompareValue(Ord(A.IsRoot), Ord(B.IsRoot));
+
         if Result = 0 then
           // Case-sensitive compare, since we use CamelCase and it looks nicer that way
-          Result := CompareText(A.Name, B.Name);
+          Result := CompareText(A.Caption, B.Caption);
       end));
 end;
 
@@ -64,6 +65,19 @@ end;
 procedure TKMModdingTypes.Clear;
 begin
   fList.Clear;
+end;
+
+
+procedure TKMModdingTypes.ConnectCrossReferences;
+begin
+  // Let the fields know about each other if they need references
+  // O(n^2) is definitely stupid, but it is KISS
+  for var I := 0 to fList.Count - 1 do
+  for var K := 0 to fList.Count - 1 do
+  if I <> K then
+    fList[I].CrossLinkWith(fList[K]);
+    
+  //todo: Verify no everything got cross-referenced, no stray types/references
 end;
 
 
@@ -130,92 +144,32 @@ begin
   for I := Low(s) to High(s) do
     LoadFromFileInt(s[I]);
 
+  ConnectCrossReferences;
+
   fOnLog(Format('%d %s parsed', [fList.Count, SCRIPTING_AREA_SPEC[paTypes].Name]));
 end;
 
 
 function TKMModdingTypes.ExportWikiBody: string;
-var
-  I: Integer;
 begin
   Result := '';
 
-  for I := 0 to fList.Count - 1 do
+  for var I := 0 to fList.Count - 1 do
     Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody;
 end;
 
 
 function TKMModdingTypes.ExportWikiLinks: string;
-var
-  I: Integer;
 begin
   Result := '';
 
-  for I := 0 to fList.Count - 1 do
+  for var I := 0 to fList.Count - 1 do
     Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiLink;
-end;
-
-
-procedure TKMModdingTypes.AssignSortOrder;
-  function FindType(aName: string): Integer;
-  var
-    I: Integer;
-  begin
-    Result := -1;
-    for I := 0 to fList.Count - 1 do
-      if fList[I].Name = aName then
-        Exit(I);
-  end;
-var
-  I, K: Integer;
-  use: array of TList<Integer>;
-  order: array of Integer;
-  id: Integer;
-  s: string;
-  orderLoop: Integer;
-  needsAnotherLoop: Boolean;
-begin
-  SetLength(use, fList.Count);
-  for I := 0 to fList.Count - 1 do
-    use[I] := TList<Integer>.Create;
-
-  SetLength(order, fList.Count);
-  for I := 0 to fList.Count - 1 do
-    order[I] := -1;
-
-  orderLoop := 0;
-  repeat
-    // Demark items without dependencies
-    for I := 0 to fList.Count - 1 do
-      if (order[I] = -1) and (use[I].Count = 0) then
-        order[I] := orderLoop;
-
-    // Trim demarked items
-    for I := 0 to fList.Count - 1 do
-    for K := use[I].Count - 1 downto 0 do
-      if order[use[I][K]] = 0 then
-        use[I].Delete(K);
-
-    // Check if all items are demarked
-    needsAnotherLoop := False;
-    for I := 0 to fList.Count - 1 do
-      if (order[I] = -1) then
-        needsAnotherLoop := True;
-    Inc(orderLoop);
-  until not needsAnotherLoop or (orderLoop = 9);
-
-  for I := 0 to fList.Count - 1 do
-    fList[I].SortPriority := order[I];
 end;
 
 
 procedure TKMModdingTypes.SortByName(aSortBy: TKMSortType);
 begin
-  case aSortBy of
-    stByAlphabet:   ; // Already sorted by default
-    stByDependancy: AssignSortOrder;
-  end;
-
   fList.Sort;
 end;
 

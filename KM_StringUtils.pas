@@ -10,9 +10,13 @@ uses
 //todo: Now we dont support old compilers and they can be removed
 function RightStrAfter(const aStr, aSeparator: string): string; deprecated;
 function LeftStrBefore(const aStr, aSeparator: string): string;
+
+function FirstStrBetween(const aStr, aFrom, aTo: string): string;
+
 function StrSubstring(const aStr: string; aFrom: Integer): string; deprecated;
 procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
 procedure FindRegionBounds(aStringList: TStringList; aMarker: string; out aLineFrom, aLineTo, aPadLevel: Integer);
+function FindLastSubStr(const aStr, aSubString: string): Integer;
 
 function ExtractFunctionResultType(aStr: string): string;
 
@@ -34,6 +38,12 @@ end;
 function RightStrAfter(const aStr, aSeparator: string): string;
 begin
   Result := Copy(aStr, Pos(aSeparator, aStr) + Length(aSeparator), MaxInt);
+end;
+
+
+function FirstStrBetween(const aStr, aFrom, aTo: string): string;
+begin
+  Result := LeftStrBefore(RightStrAfter(aStr, aFrom), aTo);
 end;
 
 
@@ -91,6 +101,22 @@ begin
   var posSemicolon := Pos(';', aStr, posColon);
   var tail := Copy(aStr, posColon + 1, posSemicolon - posColon - 1);
   Result := Trim(tail);
+end;
+
+
+// Find position of last occurrence of aSubString in a aAstr
+function FindLastSubStr(const aStr, aSubString: string): Integer;
+begin
+  Result := 1;
+  for var I := 0 to 99 do
+  begin
+    var nextPos := Pos(aSubString, aStr, Result + 1);
+
+    if nextPos > Result then
+      Result := nextPos
+    else
+      Exit;
+  end;
 end;
 
 
