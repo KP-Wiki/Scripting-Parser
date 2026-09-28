@@ -23,6 +23,7 @@ type
     constructor Create(const aDeclaration, aDescription, aReference: string);
     procedure CrossLinkWith(aType: TKMModdingType);
     function GetXmlExample: string;
+    function IsObject: Boolean;
   end;
 
   // Single type info
@@ -47,6 +48,7 @@ type
 
     procedure LoadFromStringList(aSource: TStringList);
     procedure CrossLinkWith(aType: TKMModdingType);
+    procedure SortFieldsByType;
 
     function ExportWikiBody: string;
     function ExportWikiLink: string;
@@ -55,6 +57,11 @@ type
     function IsRoot: Boolean;
     function IsList: Boolean;
     function IsAttribute: Boolean;
+  end;
+
+  TKMModdingTypeFactory = class
+  public
+    class function NewTypeFromStringList(aSource: TStringList): TKMModdingType;
   end;
 
 
@@ -148,6 +155,12 @@ begin
 end;
 
 
+function TKMModdingTypeField.IsObject: Boolean;
+begin
+  Result := (ReferenceType <> nil) and not ReferenceType.IsAttribute;
+end;
+
+
 { TKMModdingType }
 constructor TKMModdingType.Create;
 begin
@@ -167,40 +180,6 @@ end;
 
 procedure TKMModdingType.LoadFromStringList(aSource: TStringList);
 begin
-  // Typical modding type looks like:
-  {
-  //* Caption: Terrain decal
-  //* Commentary on what this type is and etc.
-
-  //* Unique identifier of the decal.
-  EngName := aNode.Attributes['EngName'].AsString;
-
-  //* Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all.
-  AllowedHumiditySet := NameToSurfaceHumiditySet(aNode.Attributes['AllowedHumiditySet'].AsString(''));
-
-  //* Wherever roads and houses can be built on top of this decal.
-  IsBuildable := aNode.Attributes['IsBuildable'].AsBoolean;
-
-  //* Color of the decal on the minimap. Use 0 for none.
-  MinimapColor := TKMColor4f.NewRGBA(aNode.Attributes['MinimapColor'].AsCardinal(0));
-
-  //* Amount of stone this ore decal contains. Up to 255. Use on your own risk.
-  if aNode.HasAttribute('StoneDeposit') then StoneDeposit := aNode.Attributes['StoneDeposit'].AsInteger;
-
-  //* Height of the model for HitTest. Can be set slightly lower than the actual model for better match.
-  if Selectable then ModelHeight := aNode.Attributes['ModelHeight'].AsFloat(0.0);
-
-  // Defaults
-  HUDAvatarSetup.CameraDistance := 3.8;
-  HUDAvatarSetup.CameraHeight := 1.4;
-  HUDAvatarSetup.CameraTargetHeight := 0.5;
-  HUDAvatarSetup.ModelHeading := 145;
-
-  //* HUD avatar setup. Used in MapEd palettes too.
-  if aNode.HasAttribute('AvatarSetup') then
-    HUDAvatarSetup := TKMHUDAvatarSetup.NewFromArray6(aNode.Attributes['AvatarSetup'].AsArrayFloat(6));
-  }
-
   var descAccumulator := '';
   var fieldReference := '';
 
@@ -211,57 +190,13 @@ begin
     if srcLine = '' then
       Continue;
 
-    // Name of the type
-    if StartsStr('procedure ', srcLine) then
-    begin
-      fTypeName := FirstStrBetween(srcLine, 'procedure ', '.');
-      Continue;
-    end;
-
-    if StartsStr(DOC_TAG_MODDING_IS_ROOT, srcLine) then
-    begin
-      fIsRoot := True;
-      Continue;
-    end;
-
-    if StartsStr(DOC_TAG_MODDING_TYPENAME, srcLine) then
-    begin
-      fTypeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPENAME));
-      Continue;
-    end;
-
-    if StartsStr(DOC_TAG_MODDING_CAPTION, srcLine) then
-    begin
-      fCaption := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_CAPTION));
-      Continue;
-    end;
-
-    if StartsStr(DOC_TAG_MODDING_DESCRIPTION, srcLine) then
-    begin
-      //fDescription := fDescription + IfThen(fDescription <> '', '<br/>') + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
-      fDescription := fDescription + IfThen(fDescription <> '', '  ' + sLineBreak) + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
-      Continue;
-    end;
-
-    if StartsStr(DOC_TAG_MODDING_XML_LIST_NAME, srcLine) then
-    begin
-      fXmlListName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_XML_LIST_NAME));
-      Continue;
-    end;
-
-    if StartsStr(DOC_TAG_MODDING_XML_NODE_NAME, srcLine) then
-    begin
-      fXmlNodeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_XML_NODE_NAME));
-      Continue;
-    end;
-
     // Reference means we need to lookup some other type description instead for the type
     if StartsStr(DOC_TAG_MODDING_REFERENCE, srcLine) then
     begin
       fieldReference := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_REFERENCE));
       Continue;
     end;
-
+    
     // Accumulate description until we need it
     if StartsStr(DOC_TAG, srcLine) then
     begin
@@ -286,6 +221,26 @@ begin
       fieldReference := '';
     end;
   end;
+end;
+
+
+procedure TKMModdingType.SortFieldsByType;
+begin
+  // Special sorting that will preserve relative item positions
+  var sortedFields := TList<TKMModdingTypeField>.Create;
+
+  for var I := 0 to fFields.Count - 1 do
+    if not fFields[I].IsObject then
+      sortedFields.Add(fFields[I]);
+
+  for var I := 0 to fFields.Count - 1 do
+    if fFields[I].IsObject then
+      sortedFields.Add(fFields[I]);
+
+  fFields.Clear;
+  fFields.AddRange(sortedFields);
+
+  sortedFields.Free;
 end;
 
 
@@ -465,6 +420,78 @@ begin
   for var I := 0 to fFields.Count - 1 do
   if (fFields[I].ReferenceType <> nil) and not fFields[I].ReferenceType.IsAttribute then
     Exit(True);
+end;
+
+
+{ TKMModdingTypeFactory }
+class function TKMModdingTypeFactory.NewTypeFromStringList(aSource: TStringList): TKMModdingType;
+begin
+  Result := TKMModdingType.Create;
+
+  for var I := 0 to aSource.Count - 1 do
+  begin
+    var srcLine := Trim(aSource[I]);
+
+    // Skip empty lines
+    if srcLine = '' then
+      Continue;
+
+    // Name of the type
+    if StartsStr(DOC_TAG_MODDING_TYPENAME, srcLine) then
+    begin
+      Result.fTypeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPENAME));
+      Continue;
+    end;
+
+    if StartsStr('procedure ', srcLine) then
+    begin
+      Result.fTypeName := FirstStrBetween(srcLine, 'procedure ', '.');
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_IS_ROOT, srcLine) then
+    begin
+      Result.fIsRoot := True;
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_CAPTION, srcLine) then
+    begin
+      Result.fCaption := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_CAPTION));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_DESCRIPTION, srcLine) then
+    begin
+      Result.fDescription := Result.fDescription + IfThen(Result.fDescription <> '', '  ' + sLineBreak) + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_XML_LIST_NAME, srcLine) then
+    begin
+      Result.fXmlListName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_XML_LIST_NAME));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_XML_NODE_NAME, srcLine) then
+    begin
+      Result.fXmlNodeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_XML_NODE_NAME));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG, srcLine) then
+    begin
+      // Delete parsed data
+      var firstNonHeaderLine := I;
+      for var K := firstNonHeaderLine - 1 downto 0 do
+        aSource.Delete(K);
+
+      Exit;
+    end;
+  end;
+
+  // We did not exit earlier
+  aSource.Clear;
 end;
 
 
