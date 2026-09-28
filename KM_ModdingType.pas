@@ -21,7 +21,7 @@ type
     ReferenceType: TKMModdingType; // Reference to sub-type
 
     constructor Create(const aDeclaration, aDescription, aReference: string);
-    procedure AppendXmlExample(const aPad: string; var aStr: string);
+    function GetXmlExample: string;
   end;
 
   // Single type info
@@ -134,22 +134,9 @@ begin
 end;
 
 
-procedure TKMModdingTypeField.AppendXmlExample(const aPad: string; var aStr: string);
+function TKMModdingTypeField.GetXmlExample: string;
 begin
-  var nameValue := Name + '="value"';
-
-  var lastEol := FindLastSubStr(aStr, sLineBreak);
-  var lengthSinceEol := Length(aStr) - lastEol;
-
-  if lengthSinceEol + Length(nameValue) <= 112 then
-  begin
-    // Kepp appending
-    aStr := aStr + ' ' + Name + '="value"';
-  end else
-  begin
-    // Start new line
-    aStr := aStr + sLineBreak + aPad + Name + '="value"';
-  end;
+  Result := Name + '="value"';
 end;
 
 
@@ -365,7 +352,19 @@ begin
   var attributeString := usePad + '<' + fXmlNodeName;
   for var I := 0 to fFields.Count - 1 do
     if (fFields[I].ReferenceType = nil) or fFields[I].ReferenceType.IsAttribute then
-      fFields[I].AppendXmlExample(usePad + '  ', attributeString);
+    begin
+      var lastEol := FindLastSubStr(attributeString, sLineBreak);
+      var lengthSinceEol := Length(attributeString) - lastEol;
+      var nameValue := fFields[I].GetXmlExample;
+
+      // Append or start new line
+      if lengthSinceEol + Length(nameValue) <= 112 then
+        nameValue := ' ' + nameValue
+      else
+        nameValue := sLineBreak + usePad + nameValue;
+
+      attributeString := attributeString + nameValue;
+    end;
 
   if HasSubObjects then
   begin

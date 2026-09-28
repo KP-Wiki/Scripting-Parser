@@ -30,9 +30,9 @@ XML layout example:
 <Root>
   <Objects>
     <object EngName="value" CanPlaceInMapEd="value" Placement="value" Multiple="value" GrowTarget="value"
-      GrowTime="value" Sway="value" ScaleVariation="value" Foliage="value" FoliageScale="value"
-      TileBlock="value" VertBlock="value" Removable="value" Selectable="value" ColorMinimap="value"
-      AllowedHumiditySet="value" Flags="value">
+    GrowTime="value" Sway="value" ScaleVariation="value" Foliage="value" FoliageScale="value" TileBlock="value"
+    VertBlock="value" Removable="value" Selectable="value" ColorMinimap="value" AllowedHumiditySet="value"
+    Flags="value">
       <HUD AvatarSetup="value"/>
       <Anims>
         <anim StateFrom="value" StateTo="value" AnimFile="value" Duration="value" EngName="value"/>
@@ -80,8 +80,8 @@ XML layout example:
 <Root>
   <Decals>
     <decal EngName="value" AllowedHumiditySet="value" IsPassable="value" IsBuildable="value" MinimapColor="value"
-      ReplaceTile="value" GoldDeposit="value" IronDeposit="value" StoneDeposit="value" Selectable="value"
-      ModelHeight="value" AvatarSetup="value">
+    ReplaceTile="value" GoldDeposit="value" IronDeposit="value" StoneDeposit="value" Selectable="value"
+    ModelHeight="value" AvatarSetup="value">
       </decal>
     ...
   </Decals>
