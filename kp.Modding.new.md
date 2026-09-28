@@ -101,23 +101,25 @@ XML layout example:
 | StoneDeposit | Integer | `"0"` | Amount of stone this ore decal contains. Up to 255. Use on your own risk. |
 | Selectable | Boolean | `"False"` | Can be select to see its info in the HUD. |
 | ModelHeight | Float | `"0.0"` | Height of the model for HitTest. Can be set slightly lower than the actual model for better match.<br/>Not needed if the object is not selectable. |
-| AvatarSetup | <a href="#TKMHUDAvatarSetup">TKMHUDAvatarSetup</a> <sub>[attribute]</sub> | `".."` | HUD avatar setup of the decal.<br/>Default values are "3.8;1.4;0.5;0;0;145" |
+| AvatarSetup | <a href="#TKMHUDAvatarSetup">TKMHUDAvatarSetup</a> <sub>[attribute]</sub> | **Required** | HUD avatar setup of the decal.<br/>Default values are "3.8;1.4;0.5;0;0;145" |
 ### <a id="TKMHUDAvatarSetup">HUD Avatar setup</a>
 HUD setup specifies how the object is going to be shown on the avatar when selected.  
 Relevant even if the object itself is not selectable - it could be used in MapEd palettes.  
-Defined by 6 floating-point numbers:  
-1 - camera distance from the object;  
-2 - camera height above the ground;  
-3 - camera target height on the object;  
-4 - object offset X;  
-5 - object offset Y;  
-6 - object heading angle in Euler degrees (0 .. 360).  
-  
-XML layout example:  
-```  
-"1;2;3;4;5;6"  
+Defined by 6 floating-point numbers:
+
+XML layout example:
+```xml
+"0.000;0.000;0.000;0.000;0.000;0.000"
 ```
 
+| Attribute name | Type | Required / Default | Description |
+| -------------- |:----:|:------------------:| ----------- |
+|  |  Single | **Required** | camera distance from the object |
+|  |  Single | **Required** | camera height above the ground |
+|  |  Single | **Required** | camera target height on the object |
+|  |  Single | **Required** | object offset X |
+|  |  Single | **Required** | object offset Y |
+|  |  Single | **Required** | object heading angle in Euler degrees (0 .. 360) |
 
 ### <a id="TKMMapObjectAnimationSpec">List of map object animations</a>
 List of animations between states. To make an idle animation for some state, set both states to one value.

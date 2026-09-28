@@ -114,7 +114,7 @@ begin
       if areaStarted and StartsStr(DOC_TAG_AREA_MODDING_SPECIFICATION, srcLine) then
       begin
         // Parse header
-        var newType := TKMModdingTypeFactory.NewTypeFromStringList(slArea);
+        var newType := TKMModdingFactory.NewTypeFromStringList(slArea);
 
         // Parse the rest
         newType.LoadFromStringList(slArea);

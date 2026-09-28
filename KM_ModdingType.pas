@@ -8,8 +8,8 @@ type
 
   TKMModdingType = class;
 
-  // Single type field
-  TKMModdingTypeField = class
+  // Single field of a type
+  TKMModdingField = class
   public
     FieldName: string;
     FieldType: string;
@@ -17,15 +17,26 @@ type
     Default: string;
     Description: string; // Description of the field
 
+    constructor Create(const aDeclaration, aDescription: string);
+    procedure CrossLinkWith(aType: TKMModdingType); virtual;
+    function GetXmlExample: string; virtual;
+    function GetTableType: string; virtual;
+    function IsObject: Boolean; virtual;
+  end;
+
+  TKMModdingField_Object = class(TKMModdingField)
+  public
     ReferenceStr: string; // Reference to sub-type
     ReferenceType: TKMModdingType; // Reference to sub-type
 
     constructor Create(const aDeclaration, aDescription, aReferenceStr: string);
-    procedure CrossLinkWith(aType: TKMModdingType);
-    function GetXmlExample: string;
-    function IsObject: Boolean;
+    procedure CrossLinkWith(aType: TKMModdingType); override;
+    function GetXmlExample: string; override;
+    function GetTableType: string; override;
+    function IsObject: Boolean; override;
   end;
 
+//todo: Enums, Enum sets
   // Single type info
   // E.g. Map Objects or Terrain Decals
   // Documenter > Scripting > Type
@@ -33,11 +44,12 @@ type
   private
     fIsRoot: Boolean;
     fTypeName: string;
+    fTypeType: string;
     fCaption: string;
     fDescription: string;
     fXmlListName: string;
     fXmlNodeName: string;
-    fFields: TList<TKMModdingTypeField>;
+    fFields: TList<TKMModdingField>;
     function ExportWikiBody_Header: string;
     function ExportWikiBody_XmlExample(const aPad: string): string;
     function ExportWikiBody_Fields: string;
@@ -56,10 +68,9 @@ type
     property Caption: string read fCaption;
     function IsRoot: Boolean;
     function IsList: Boolean;
-    function IsAttribute: Boolean;
   end;
 
-  TKMModdingTypeFactory = class
+  TKMModdingFactory = class
   public
     class function NewTypeFromStringList(aSource: TStringList): TKMModdingType;
   end;
@@ -72,8 +83,8 @@ uses
   KM_DocumenterTypes;
 
 
-{ TKMModdingTypeField }
-constructor TKMModdingTypeField.Create(const aDeclaration, aDescription, aReferenceStr: string);
+{ TKMModdingField }
+constructor TKMModdingField.Create(const aDeclaration, aDescription: string);
 begin
   inherited Create;
 
@@ -86,54 +97,49 @@ begin
   // Extract the name used in the XML
   FieldName := Trim(LeftStrBefore(RightStrAfter(aDeclaration, #39), #39));
   Description := aDescription;
-  ReferenceStr := aReferenceStr;
 
-  if ReferenceStr = '' then
+  // Extract type from how it is accessed
+  // String
+  // Cardinal(0))
+  // String)
+  // String(''))
+  var typeStr := '';
+  if ContainsText(aDeclaration, '.As') then
+    typeStr := FirstStrBetween(aDeclaration, '.As', ';')
+  else
+    typeStr := FirstStrBetween(aDeclaration, ':', ';');
+
+  if ContainsText(typeStr, '(') then
   begin
-    // Extract type from how it is accessed
-    // String
-    // Cardinal(0))
-    // String)
-    // String(''))
-    var typeStr := FirstStrBetween(aDeclaration, '.As', ';');
-
-    if ContainsText(typeStr, '(') then
-    begin
-      // There is a default value
-      FieldType := LeftStrBefore(typeStr, '(');
-      Default := LeftStrBefore(RightStrAfter(typeStr, '('), ')');
-    end else
-    begin
-      // This must be a Required field
-      IsRequired := True;
-
-      // Trim last bracket if this field undergoes some extra conversion
-      if ContainsText(typeStr, ')') then
-        FieldType := LeftStrBefore(typeStr, ')')
-      else
-        FieldType := typeStr;
-    end;
-
-    // Some strings are actually enums
-    if FieldType = 'String' then
-    begin
-      var typeSpec := Pos('.As', aDeclaration);
-
-      var firstBracketSet := Pos('Set(', aDeclaration);
-      if (firstBracketSet > 0) and (firstBracketSet < typeSpec) then
-        FieldType := 'Enum set'
-      else
-      begin
-        var firstBracket := Pos('(', aDeclaration);
-        if (firstBracket > 0) and (firstBracket < typeSpec) then
-          FieldType := 'Enum';
-      end;
-    end;
+    // There is a default value
+    FieldType := LeftStrBefore(typeStr, '(');
+    Default := LeftStrBefore(RightStrAfter(typeStr, '('), ')');
   end else
   begin
-    // Reference
-    FieldType := Format('<a href="#%s">%s</a>', [ReferenceStr, ReferenceStr]);
-    Default := '..';
+    // This must be a Required field
+    IsRequired := True;
+
+    // Trim last bracket if this field undergoes some extra conversion
+    if ContainsText(typeStr, ')') then
+      FieldType := LeftStrBefore(typeStr, ')')
+    else
+      FieldType := typeStr;
+  end;
+
+  // Some strings are actually enums
+  if FieldType = 'String' then
+  begin
+    var typeSpec := Pos('.As', aDeclaration);
+
+    var firstBracketSet := Pos('Set(', aDeclaration);
+    if (firstBracketSet > 0) and (firstBracketSet < typeSpec) then
+      FieldType := 'Enum set'
+    else
+    begin
+      var firstBracket := Pos('(', aDeclaration);
+      if (firstBracket > 0) and (firstBracket < typeSpec) then
+        FieldType := 'Enum';
+    end;
   end;
 
   // Post-process
@@ -142,22 +148,67 @@ begin
 end;
 
 
-procedure TKMModdingTypeField.CrossLinkWith(aType: TKMModdingType);
+procedure TKMModdingField.CrossLinkWith(aType: TKMModdingType);
+begin
+  
+end;
+
+
+function TKMModdingField.GetTableType: string;
+begin
+  Result := FieldType;
+end;
+
+
+function TKMModdingField.GetXmlExample: string;
+begin
+  Result := FieldName + '="value"';
+end;
+
+
+function TKMModdingField.IsObject: Boolean;
+begin
+  Result := False;
+end;
+
+
+{ TKMModdingField_Object }
+constructor TKMModdingField_Object.Create(const aDeclaration, aDescription, aReferenceStr: string);
+begin
+  inherited Create(aDeclaration, aDescription);
+
+  ReferenceStr := aReferenceStr;
+
+  FieldType := Format('<a href="#%s">%s</a>', [ReferenceStr, ReferenceStr]);
+  Default := '..';
+end;
+
+
+procedure TKMModdingField_Object.CrossLinkWith(aType: TKMModdingType);
 begin
   if ReferenceStr = aType.fTypeName then
     ReferenceType := aType;
 end;
 
 
-function TKMModdingTypeField.GetXmlExample: string;
+function TKMModdingField_Object.GetTableType: string;
+begin
+  if ReferenceType.fTypeType = 'SemicolonDelimitedArray' then
+    Result := FieldType + ' <sub>[attribute]</sub>'
+  else
+    Result := FieldType + ' <sub>[object]</sub>'
+end;
+
+
+function TKMModdingField_Object.GetXmlExample: string;
 begin
   Result := FieldName + '="value"';
 end;
 
 
-function TKMModdingTypeField.IsObject: Boolean;
+function TKMModdingField_Object.IsObject: Boolean;
 begin
-  Result := (ReferenceType <> nil) and not ReferenceType.IsAttribute;
+  Result := ReferenceType.fTypeType = '';
 end;
 
 
@@ -166,7 +217,7 @@ constructor TKMModdingType.Create;
 begin
   inherited;
 
-  fFields := TList<TKMModdingTypeField>.Create;
+  fFields := TList<TKMModdingField>.Create;
 end;
 
 
@@ -214,7 +265,13 @@ begin
       var line := srcLine;
       if ContainsText(line, '//') then
         line := Trim(LeftStrBefore(srcLine, '//'));
-      var newField := TKMModdingTypeField.Create(line, descAccumulator, fieldReference);
+
+      var newField: TKMModdingField;
+      if fieldReference = '' then
+        newField := TKMModdingField.Create(line, descAccumulator)
+      else
+        newField := TKMModdingField_Object.Create(line, descAccumulator, fieldReference);
+
       fFields.Add(newField);
 
       descAccumulator := '';
@@ -227,7 +284,7 @@ end;
 procedure TKMModdingType.SortFieldsByType;
 begin
   // Special sorting that will preserve relative item positions
-  var sortedFields := TList<TKMModdingTypeField>.Create;
+  var sortedFields := TList<TKMModdingField>.Create;
 
   for var I := 0 to fFields.Count - 1 do
     if not fFields[I].IsObject then
@@ -296,6 +353,17 @@ function TKMModdingType.ExportWikiBody_XmlExample(const aPad: string): string;
 begin
   if fFields.Count = 0 then Exit('');
 
+  if fTypeType = 'SemicolonDelimitedArray' then
+  begin
+    Result := '';
+    for var I := 0 to fFields.Count - 1 do
+      Result := Result + IfThen(Result <> '', ';') + '0.000';
+
+    Result := '"' + Result + '"' + sLineBreak;
+
+    Exit;
+  end;
+
   var sb := TStringBuilder.Create;
 
   var usePad := aPad;
@@ -310,7 +378,7 @@ begin
   // Attributes
   var attributeString := usePad + '<' + fXmlNodeName;
   for var I := 0 to fFields.Count - 1 do
-    if (fFields[I].ReferenceType = nil) or fFields[I].ReferenceType.IsAttribute then
+    if not fFields[I].IsObject then
     begin
       var lastEol := FindLastSubStr(attributeString, sLineBreak);
       var lengthSinceEol := Length(attributeString) - lastEol;
@@ -331,8 +399,8 @@ begin
 
     // Sub-objects
     for var I := 0 to fFields.Count - 1 do
-      if fFields[I].ReferenceStr <> '' then
-        attributeString := attributeString + fFields[I].ReferenceType.ExportWikiBody_XmlExample(usePad + '  ');
+      if fFields[I].IsObject then
+        attributeString := attributeString + TKMModdingField_Object(fFields[I]).ReferenceType.ExportWikiBody_XmlExample(usePad + '  ');
 
     attributeString := attributeString + usePad + '  </' + fXmlNodeName + '>';
   end else
@@ -371,16 +439,8 @@ begin
     var desc := fFields[I].Description;
 
     var fieldType := '';
-    if fFields[I].ReferenceType <> nil then
-      if fFields[I].ReferenceType.IsAttribute then
-        fieldType := ' <sub>[attribute]</sub>'
-      else
-        fieldType := ' <sub>[object]</sub>'
-    else
-      fieldType := '';
 
-
-    Result := Result + Format(TEMPLATE, [fFields[I].FieldName, fFields[I].FieldType + fieldType, req, desc]) + sLineBreak;
+    Result := Result + Format(TEMPLATE, [fFields[I].FieldName, fFields[I].GetTableType, req, desc]) + sLineBreak;
   end;
 end;
 
@@ -390,12 +450,6 @@ const
   TEMPLATE = '* [%s](#%s)';
 begin
   Result := Format(TEMPLATE, [fCaption, fTypeName]);
-end;
-
-
-function TKMModdingType.IsAttribute: Boolean;
-begin
-  Result := fFields.Count = 0;
 end;
 
 
@@ -418,13 +472,13 @@ begin
   // Check if any of the fields are referencing any objects
   // Some of the refrences could be for attributes, ignore them
   for var I := 0 to fFields.Count - 1 do
-  if (fFields[I].ReferenceType <> nil) and not fFields[I].ReferenceType.IsAttribute then
+  if (fFields[I] is TKMModdingField_Object) and (TKMModdingField_Object(fFields[I]).ReferenceType.fTypeType = '') then
     Exit(True);
 end;
 
 
-{ TKMModdingTypeFactory }
-class function TKMModdingTypeFactory.NewTypeFromStringList(aSource: TStringList): TKMModdingType;
+{ TKMModdingFactory }
+class function TKMModdingFactory.NewTypeFromStringList(aSource: TStringList): TKMModdingType;
 begin
   Result := TKMModdingType.Create;
 
@@ -446,6 +500,12 @@ begin
     if StartsStr('procedure ', srcLine) then
     begin
       Result.fTypeName := FirstStrBetween(srcLine, 'procedure ', '.');
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_TYPETYPE, srcLine) then
+    begin
+      Result.fTypeType := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPETYPE));
       Continue;
     end;
 
@@ -493,6 +553,5 @@ begin
   // We did not exit earlier
   aSource.Clear;
 end;
-
 
 end.

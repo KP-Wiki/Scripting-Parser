@@ -66,6 +66,8 @@ const
   DOC_TAG_MODDING_XML_NODE_NAME = '//* NodeName:';  // XML item in a list name
   DOC_TAG_MODDING_REFERENCE = '//* Reference:';     // Reference to another type
 
+  DOC_TAG_MODDING_TYPETYPE = '//* TypeType:';
+
 
 implementation
 
