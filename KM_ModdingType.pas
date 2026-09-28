@@ -8,11 +8,11 @@ type
 
   TKMModdingType = class;
 
-  // Single type element (
+  // Single type field
   TKMModdingTypeField = class
   public
-    Name: string; // Name of the field
-    Typ: string;
+    FieldName: string;
+    FieldType: string;
     IsRequired: Boolean;
     Default: string;
     Description: string; // Description of the field
@@ -76,7 +76,7 @@ begin
   // AllowedHumiditySet := NameToSurfaceHumiditySet(aNode.Attributes['AllowedHumiditySet'].AsString(''));
 
   // Extract the name used in the XML
-  Name := Trim(LeftStrBefore(RightStrAfter(aDeclaration, #39), #39));
+  FieldName := Trim(LeftStrBefore(RightStrAfter(aDeclaration, #39), #39));
   Description := aDescription;
   Reference := aReference;
 
@@ -92,7 +92,7 @@ begin
     if ContainsText(typeStr, '(') then
     begin
       // There is a default value
-      Typ := LeftStrBefore(typeStr, '(');
+      FieldType := LeftStrBefore(typeStr, '(');
       Default := LeftStrBefore(RightStrAfter(typeStr, '('), ')');
     end else
     begin
@@ -101,30 +101,30 @@ begin
 
       // Trim last bracket if this field undergoes some extra conversion
       if ContainsText(typeStr, ')') then
-        Typ := LeftStrBefore(typeStr, ')')
+        FieldType := LeftStrBefore(typeStr, ')')
       else
-        Typ := typeStr;
+        FieldType := typeStr;
     end;
 
     // Some strings are actually enums
-    if Typ = 'String' then
+    if FieldType = 'String' then
     begin
       var typeSpec := Pos('.As', aDeclaration);
 
       var firstBracketSet := Pos('Set(', aDeclaration);
       if (firstBracketSet > 0) and (firstBracketSet < typeSpec) then
-        Typ := 'Enum set'
+        FieldType := 'Enum set'
       else
       begin
         var firstBracket := Pos('(', aDeclaration);
         if (firstBracket > 0) and (firstBracket < typeSpec) then
-          Typ := 'Enum';
+          FieldType := 'Enum';
       end;
     end;
   end else
   begin
     // Reference
-    Typ := Format('<a href="#%s">%s</a>', [Reference, Reference]);
+    FieldType := Format('<a href="#%s">%s</a>', [Reference, Reference]);
     Default := '..';
   end;
 
@@ -136,7 +136,7 @@ end;
 
 function TKMModdingTypeField.GetXmlExample: string;
 begin
-  Result := Name + '="value"';
+  Result := FieldName + '="value"';
 end;
 
 
@@ -338,9 +338,6 @@ begin
 
   var usePad := aPad;
 
-//  if IsList then
-//    usePad := usePad + '  ';
-
   // Some types are lists
   if IsList then
   begin
@@ -421,7 +418,7 @@ begin
       fieldType := '';
 
 
-    Result := Result + Format(TEMPLATE, [fFields[I].Name, fFields[I].Typ + fieldType, req, desc]) + sLineBreak;
+    Result := Result + Format(TEMPLATE, [fFields[I].FieldName, fFields[I].FieldType + fieldType, req, desc]) + sLineBreak;
   end;
 end;
 
