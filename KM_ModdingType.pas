@@ -17,10 +17,10 @@ type
     Default: string;
     Description: string; // Description of the field
 
-    Reference: string; // Reference to sub-type
+    ReferenceStr: string; // Reference to sub-type
     ReferenceType: TKMModdingType; // Reference to sub-type
 
-    constructor Create(const aDeclaration, aDescription, aReference: string);
+    constructor Create(const aDeclaration, aDescription, aReferenceStr: string);
     procedure CrossLinkWith(aType: TKMModdingType);
     function GetXmlExample: string;
     function IsObject: Boolean;
@@ -73,7 +73,7 @@ uses
 
 
 { TKMModdingTypeField }
-constructor TKMModdingTypeField.Create(const aDeclaration, aDescription, aReference: string);
+constructor TKMModdingTypeField.Create(const aDeclaration, aDescription, aReferenceStr: string);
 begin
   inherited Create;
 
@@ -86,9 +86,9 @@ begin
   // Extract the name used in the XML
   FieldName := Trim(LeftStrBefore(RightStrAfter(aDeclaration, #39), #39));
   Description := aDescription;
-  Reference := aReference;
+  ReferenceStr := aReferenceStr;
 
-  if Reference = '' then
+  if ReferenceStr = '' then
   begin
     // Extract type from how it is accessed
     // String
@@ -132,7 +132,7 @@ begin
   end else
   begin
     // Reference
-    FieldType := Format('<a href="#%s">%s</a>', [Reference, Reference]);
+    FieldType := Format('<a href="#%s">%s</a>', [ReferenceStr, ReferenceStr]);
     Default := '..';
   end;
 
@@ -144,7 +144,7 @@ end;
 
 procedure TKMModdingTypeField.CrossLinkWith(aType: TKMModdingType);
 begin
-  if Reference = aType.fTypeName then
+  if ReferenceStr = aType.fTypeName then
     ReferenceType := aType;
 end;
 
@@ -331,7 +331,7 @@ begin
 
     // Sub-objects
     for var I := 0 to fFields.Count - 1 do
-      if fFields[I].Reference <> '' then
+      if fFields[I].ReferenceStr <> '' then
         attributeString := attributeString + fFields[I].ReferenceType.ExportWikiBody_XmlExample(usePad + '  ');
 
     attributeString := attributeString + usePad + '  </' + fXmlNodeName + '>';
