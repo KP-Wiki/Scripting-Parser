@@ -45,11 +45,8 @@ begin
     TComparer<TKMModdingType>.Construct(
       function (const A, B: TKMModdingType): Integer
       begin
-        Result := CompareValue(Ord(A.IsRoot), Ord(B.IsRoot));
-
-        if Result = 0 then
-          // Case-sensitive compare, since we use CamelCase and it looks nicer that way
-          Result := CompareText(A.Caption, B.Caption);
+        // Case-sensitive compare, since we use CamelCase and it looks nicer that way
+        Result := CompareText(A.Caption, B.Caption);
       end));
 end;
 
@@ -132,17 +129,14 @@ end;
 
 
 procedure TKMModdingTypes.LoadFromFile(const aSourceMask: string);
-var
-  s: TStringDynArray;
-  I: Integer;
 begin
   Clear;
 
   // Get all files matching the mask
-  s := TDirectory.GetFiles(ExtractFilePath(aSourceMask), ExtractFileName(aSourceMask), TSearchOption.soAllDirectories);
+  var sa := TDirectory.GetFiles(ExtractFilePath(aSourceMask), ExtractFileName(aSourceMask), TSearchOption.soAllDirectories);
 
-  for I := Low(s) to High(s) do
-    LoadFromFileInt(s[I]);
+  for var I := Low(sa) to High(sa) do
+    LoadFromFileInt(sa[I]);
 
   ConnectCrossReferences;
 
@@ -155,16 +149,28 @@ begin
   Result := '';
 
   for var I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody;
+    if fList[I].IsRoot then
+      Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody;
+
+  for var I := 0 to fList.Count - 1 do
+    if not fList[I].IsRoot then
+      Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody;
 end;
 
 
 function TKMModdingTypes.ExportWikiLinks: string;
 begin
-  Result := '';
+  Result := '### Root types' + sLineBreak + sLineBreak;
 
   for var I := 0 to fList.Count - 1 do
-    Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiLink;
+    if fList[I].IsRoot then
+      Result := Result + fList[I].ExportWikiLink + sLineBreak;
+
+  Result := Result + sLineBreak + '### Auxiliary types' + sLineBreak + sLineBreak;
+
+  for var I := 0 to fList.Count - 1 do
+    if not fList[I].IsRoot then
+      Result := Result + fList[I].ExportWikiLink + sLineBreak;
 end;
 
 
@@ -175,9 +181,6 @@ end;
 
 
 procedure TKMModdingTypes.GenerateWiki(const aSourceFile, aTemplateFile, aOutputFile: string);
-var
-  sl: TStringList;
-  exportPath: string;
 begin
   // Without template we cant generate output
   if aTemplateFile = '' then Exit;
@@ -186,14 +189,14 @@ begin
 
   SortByName(stByAlphabet);
 
-  sl := TStringList.Create;
+  var sl := TStringList.Create;
 
   sl.LoadFromFile(aTemplateFile);
 
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
-  exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
+  var exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
   if not DirectoryExists(ExtractFileDir(exportPath)) then
     ForceDirectories(ExtractFileDir(exportPath));
 

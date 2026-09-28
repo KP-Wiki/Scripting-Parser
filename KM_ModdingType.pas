@@ -10,27 +10,18 @@ type
 
   // Single type element (
   TKMModdingTypeField = class
-  strict private
-    fName: string; // Name of the field
-    fType: string;
-    fIsRequired: Boolean;
-    fDefault: string;
-    fDescription: string; // Description of the field
-
-    fReference: string; // Reference to sub-type
   public
+    Name: string; // Name of the field
+    Typ: string;
+    IsRequired: Boolean;
+    Default: string;
+    Description: string; // Description of the field
+
+    Reference: string; // Reference to sub-type
     ReferenceType: TKMModdingType; // Reference to sub-type
 
     constructor Create(const aDeclaration, aDescription, aReference: string);
-
-    property Name: string read fName;
-    property Typ: string read fType;
-    property IsRequired: Boolean read fIsRequired;
-    property Default: string read fDefault;
-    property Description: string read fDescription;
-    property Reference: string read fReference;
-
-    procedure AppendExample(const aPad: string; var aStr: string);
+    procedure AppendXmlExample(const aPad: string; var aStr: string);
   end;
 
   // Single type info
@@ -46,7 +37,7 @@ type
     fXmlNodeName: string;
     fFields: TList<TKMModdingTypeField>;
     function ExportWikiBody_Header: string;
-    function ExportWikiBody_Example(const aPad: string): string;
+    function ExportWikiBody_XmlExample(const aPad: string): string;
     function ExportWikiBody_Fields: string;
     function HasSubObjects: Boolean;
   public
@@ -85,44 +76,65 @@ begin
   // AllowedHumiditySet := NameToSurfaceHumiditySet(aNode.Attributes['AllowedHumiditySet'].AsString(''));
 
   // Extract the name used in the XML
-  fName := Trim(LeftStrBefore(RightStrAfter(aDeclaration, #39), #39));
-  fDescription := aDescription;
-  fReference := aReference;
+  Name := Trim(LeftStrBefore(RightStrAfter(aDeclaration, #39), #39));
+  Description := aDescription;
+  Reference := aReference;
 
-  if fReference = '' then
+  if Reference = '' then
   begin
     // Extract type from how it is accessed
     // String
     // Cardinal(0))
     // String)
     // String(''))
-    var typeStr := LeftStrBefore(RightStrAfter(aDeclaration, '.As'), ';');
+    var typeStr := FirstStrBetween(aDeclaration, '.As', ';');
 
     if ContainsText(typeStr, '(') then
     begin
-      fType := LeftStrBefore(typeStr, '(');
-      fDefault := LeftStrBefore(RightStrAfter(typeStr, '('), ')');
+      // There is a default value
+      Typ := LeftStrBefore(typeStr, '(');
+      Default := LeftStrBefore(RightStrAfter(typeStr, '('), ')');
     end else
     begin
-      fIsRequired := True;
+      // This must be a Required field
+      IsRequired := True;
+
+      // Trim last bracket if this field undergoes some extra conversion
       if ContainsText(typeStr, ')') then
-        fType := LeftStrBefore(typeStr, ')')
+        Typ := LeftStrBefore(typeStr, ')')
       else
-        fType := typeStr;
+        Typ := typeStr;
+    end;
+
+    // Some strings are actually enums
+    if Typ = 'String' then
+    begin
+      var typeSpec := Pos('.As', aDeclaration);
+
+      var firstBracketSet := Pos('Set(', aDeclaration);
+      if (firstBracketSet > 0) and (firstBracketSet < typeSpec) then
+        Typ := 'Enum set'
+      else
+      begin
+        var firstBracket := Pos('(', aDeclaration);
+        if (firstBracket > 0) and (firstBracket < typeSpec) then
+          Typ := 'Enum';
+      end;
     end;
   end else
   begin
-    fType := Format('<a href="#%s">%s</a>', [fReference, fReference]);
-    fDefault := '-';
+    // Reference
+    Typ := Format('<a href="#%s">%s</a>', [Reference, Reference]);
+    Default := '..';
   end;
 
   // Post-process
-  if fDefault = #39#39 then
-    fDefault := '';
+  if Default = #39#39 then
+    Default := '';
 end;
 
 
-procedure TKMModdingTypeField.AppendExample(const aPad: string; var aStr: string);
+procedure TKMModdingTypeField.AppendXmlExample(const aPad: string; var aStr: string);
 begin
   var nameValue := Name + '="value"';
 
@@ -136,7 +148,7 @@ begin
   end else
   begin
     // Start new line
-    aStr := aStr + sLineBreak + aPad + fName + '="value"';
+    aStr := aStr + sLineBreak + aPad + Name + '="value"';
   end;
 end;
 
@@ -231,7 +243,8 @@ begin
 
     if StartsStr(DOC_TAG_MODDING_DESCRIPTION, srcLine) then
     begin
-      fDescription := fDescription + IfThen(fDescription <> '', '<br/>') + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
+      //fDescription := fDescription + IfThen(fDescription <> '', '<br/>') + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
+      fDescription := fDescription + IfThen(fDescription <> '', '  ' + sLineBreak) + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
       Continue;
     end;
 
@@ -303,9 +316,9 @@ begin
   end;
 
   if IsRoot then
-    xmlText := xmlText + ExportWikiBody_Example('  ')
+    xmlText := xmlText + ExportWikiBody_XmlExample('  ')
   else
-    xmlText := xmlText + ExportWikiBody_Example('');
+    xmlText := xmlText + ExportWikiBody_XmlExample('');
 
   if IsRoot then
     xmlText := xmlText + '</Root>' + sLineBreak;
@@ -330,7 +343,7 @@ begin
 end;
 
 
-function TKMModdingType.ExportWikiBody_Example(const aPad: string): string;
+function TKMModdingType.ExportWikiBody_XmlExample(const aPad: string): string;
 begin
   if fFields.Count = 0 then Exit('');
 
@@ -352,7 +365,7 @@ begin
   var attributeString := usePad + '<' + fXmlNodeName;
   for var I := 0 to fFields.Count - 1 do
     if (fFields[I].ReferenceType = nil) or fFields[I].ReferenceType.IsAttribute then
-      fFields[I].AppendExample(usePad + '  ', attributeString);
+      fFields[I].AppendXmlExample(usePad + '  ', attributeString);
 
   if HasSubObjects then
   begin
@@ -361,7 +374,7 @@ begin
     // Sub-objects
     for var I := 0 to fFields.Count - 1 do
       if fFields[I].Reference <> '' then
-        attributeString := attributeString + fFields[I].ReferenceType.ExportWikiBody_Example(usePad + '  ');
+        attributeString := attributeString + fFields[I].ReferenceType.ExportWikiBody_XmlExample(usePad + '  ');
 
     attributeString := attributeString + usePad + '  </' + fXmlNodeName + '>';
   end else
@@ -398,8 +411,6 @@ begin
     var req := IfThen(fFields[I].IsRequired, '**Required**', '`"' + fFields[I].Default + '"`');
 
     var desc := fFields[I].Description;
-//    if fFields[I].Reference <> '' then
-//      desc := desc + '<br/>**Reference:** ' + fFields[I].Reference;
 
     var fieldType := '';
     if fFields[I].ReferenceType <> nil then
@@ -418,9 +429,9 @@ end;
 
 function TKMModdingType.ExportWikiLink: string;
 const
-  TEMPLATE = '* <a href="#%s">%s</a>';
+  TEMPLATE = '* [%s](#%s)';
 begin
-  Result := Format(TEMPLATE, [fTypeName, fCaption]);
+  Result := Format(TEMPLATE, [fCaption, fTypeName]);
 end;
 
 
