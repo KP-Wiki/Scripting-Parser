@@ -21,6 +21,7 @@ type
     ReferenceType: TKMModdingType; // Reference to sub-type
 
     constructor Create(const aDeclaration, aDescription, aReference: string);
+    procedure CrossLinkWith(aType: TKMModdingType);
     function GetXmlExample: string;
   end;
 
@@ -131,6 +132,13 @@ begin
   // Post-process
   if Default = #39#39 then
     Default := '';
+end;
+
+
+procedure TKMModdingTypeField.CrossLinkWith(aType: TKMModdingType);
+begin
+  if Reference = aType.fTypeName then
+    ReferenceType := aType;
 end;
 
 
@@ -284,8 +292,7 @@ end;
 procedure TKMModdingType.CrossLinkWith(aType: TKMModdingType);
 begin
   for var I := 0 to fFields.Count - 1 do
-    if fFields[I].Reference = aType.fTypeName then
-      fFields[I].ReferenceType := aType;
+    fFields[I].CrossLinkWith(aType);
 end;
 
 
