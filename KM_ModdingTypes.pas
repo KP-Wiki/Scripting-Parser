@@ -157,11 +157,11 @@ begin
 
   for var I := 0 to fList.Count - 1 do
     if fList[I].IsRoot then
-      Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody;
+      Result := Result + fList[I].ExportWikiBody;
 
   for var I := 0 to fList.Count - 1 do
     if not fList[I].IsRoot then
-      Result := Result + IfThen(I > 0, sLineBreak) + fList[I].ExportWikiBody;
+      Result := Result + fList[I].ExportWikiBody;
 end;
 
 

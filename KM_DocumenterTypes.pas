@@ -62,11 +62,23 @@ const
   DOC_TAG_MODDING_TYPENAME = '//* TypeName:';       // Type name when it is impractical to parse
   DOC_TAG_MODDING_CAPTION = '//* Caption:';         // Caption name
   DOC_TAG_MODDING_DESCRIPTION = '//* Description:'; // Description
-  DOC_TAG_MODDING_XML_LIST_NAME = '//* ListName:';  // XML list object name
-  DOC_TAG_MODDING_XML_NODE_NAME = '//* NodeName:';  // XML item in a list name
   DOC_TAG_MODDING_REFERENCE = '//* Reference:';     // Reference to another type
 
-  DOC_TAG_MODDING_TYPETYPE = '//* TypeType:';
+  DOC_TAG_MODDING_TYPE_SPECIALTY = '//* TypeSpecialty:';
+
+type
+  TKMModdingTypeSpecialty = (
+    mtsNormal,
+    mtsListOfType,
+    mtsSemicolonDelimitedArray
+  );
+
+const
+  MODDING_TYPE_SPECIALTY_NAME: array [TKMModdingTypeSpecialty] of string = (
+    '',
+    'ListOfType',
+    'SemicolonDelimitedArray'
+  );
 
 
 implementation
