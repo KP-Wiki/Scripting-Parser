@@ -90,8 +90,8 @@ procedure TfmScriptingParser.FormCreate(Sender: TObject);
 begin
   fDocumenterPaths := TKMDocumenterPaths.Create;
   btnKromKP.Click;
-  //btnModdingGenerateWiki.Click;
-  //Halt;
+  btnModdingGenerateWiki.Click;
+  Halt;
 end;
 
 
