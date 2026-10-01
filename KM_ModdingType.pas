@@ -7,10 +7,10 @@ uses
 type
   TKMSortType = (stByAlphabet, stByDependancy);
 
-  TKMModdingType = class;
+  TKMModdingNode = class;
 
   // Single field of a type
-  TKMModdingField = class
+  TKMModdingAttribute = class
   public
     FieldName: string;
     FieldType: string;
@@ -18,69 +18,53 @@ type
     Default: string;
     Description: string; // Description of the field
 
-    constructor Create(const aDeclaration, aDescription: string);
-    procedure CrossLinkWith(aType: TKMModdingType); virtual;
-    function GetXmlExample: string; virtual;
-    function GetTableType: string; virtual;
-    function IsReference: Boolean; virtual;
-    function IsSubObject: Boolean; virtual;
+    ReferenceStr: string;
+    Reference: TKMModdingNode;
+
+    constructor Create(const aDeclaration, aDescription, aAttrReference: string);
+    function GetXmlExample: string;
+    function GetTableType: string;
+    function GetTableDescription: string;
   end;
 
-  // Field that is an object (and has a reference to that object type)
-  TKMModdingField_Reference = class(TKMModdingField)
-  public
-    ReferenceStr: string; // Reference to sub-type
-    ReferenceType: TKMModdingType; // Reference to sub-type
-
-    constructor Create(const aDeclaration, aDescription, aReferenceStr: string);
-    procedure CrossLinkWith(aType: TKMModdingType); override;
-    function GetXmlExample: string; override;
-    function GetTableType: string; override;
-    function IsReference: Boolean; override;
-    function IsSubObject: Boolean; override;
-  end;
-
-//todo: Enums, Enum sets
-  // Single type info
-  // E.g. Map Objects or Terrain Decals
-  // Documenter > Scripting > Type
-  TKMModdingType = class
+  TKMModdingNode = class
   private
-    fIsRoot: Boolean;
-    fTypeName: string;
-    fTypeSpecialty: TKMModdingTypeSpecialty;
-    fCaption: string;
-    fDescription: string;
-
-    // Special data for specialities
-    // mtsListOfType
-    fXmlListName: string;
-    fXmlNodeName: string;
-
-    fFields: TList<TKMModdingField>;
     function ExportWikiBody_Header: string;
     function ExportWikiBody_XmlExample(const aPad: string): string;
-    function ExportWikiBody_Fields: string;
-    function HasSubObjects: Boolean;
+    function ExportWikiBody_Table(const aParent: string): string;
   public
+    TypeName: string;   // TKMSomething
+    NodeName: string;   // Decals
+
+    IsRoot: Boolean;
+    Caption: string;
+    TypeSpecialty: TKMModdingTypeSpecialty;
+
+    Description: string;
+    ReferenceStr: string;
+    Reference: TKMModdingNode;
+
+    Attributes: TList<TKMModdingAttribute>;
+    Nodes: TList<TKMModdingNode>;
+
     constructor Create;
+    constructor CreateInit(const aDeclaration, aDescription, aNodeReference: string);
     destructor Destroy; override;
 
     procedure LoadFromStringList(aSource: TStringList);
-    procedure CrossLinkWith(aType: TKMModdingType);
+    procedure CrossLinkWith(aNode: TKMModdingNode);
     procedure SortFieldsByType;
 
+    function ExportListing(const aPad: string): string;
     function ExportWikiBody: string;
     function ExportWikiLink: string;
-
-    property Caption: string read fCaption;
-    function IsRoot: Boolean;
-    function IsList: Boolean;
+    function GetTableType: string;
+    function GetTableDescription: string;
   end;
 
   TKMModdingFactory = class
   public
-    class function NewTypeFromStringList(aSource: TStringList): TKMModdingType;
+    class function NewTypeFromStringList(aSource: TStringList): TKMModdingNode;
   end;
 
 
@@ -90,8 +74,8 @@ uses
   KM_StringUtils;
 
 
-{ TKMModdingField }
-constructor TKMModdingField.Create(const aDeclaration, aDescription: string);
+{ TKMModdingAttribute }
+constructor TKMModdingAttribute.Create(const aDeclaration, aDescription, aAttrReference: string);
 begin
   inherited Create;
 
@@ -102,8 +86,9 @@ begin
   // AllowedHumiditySet := NameToSurfaceHumiditySet(aNode.Attributes['AllowedHumiditySet'].AsString(''));
 
   // Extract the name used in the XML
-  FieldName := Trim(LeftStrBefore(RightStrAfter(aDeclaration, #39), #39));
+  FieldName := Trim(FirstStrBetween(aDeclaration, #39, #39));
   Description := aDescription;
+  ReferenceStr := aAttrReference;
 
   // Extract type from how it is accessed
   // String
@@ -155,103 +140,64 @@ begin
 end;
 
 
-procedure TKMModdingField.CrossLinkWith(aType: TKMModdingType);
-begin
-  //
-end;
-
-
-function TKMModdingField.GetTableType: string;
+function TKMModdingAttribute.GetTableType: string;
 begin
   Result := FieldType;
+  if Reference <> nil then
+    Result := Reference.GetTableType;
 end;
 
 
-function TKMModdingField.GetXmlExample: string;
+function TKMModdingAttribute.GetTableDescription: string;
 begin
-  Result := FieldName + '="value"';
-end;
-
-
-function TKMModdingField.IsReference: Boolean;
-begin
-  Result := False;
-end;
-
-
-function TKMModdingField.IsSubObject: Boolean;
-begin
-  Result := False;
-end;
-
-
-{ TKMModdingField_Reference }
-constructor TKMModdingField_Reference.Create(const aDeclaration, aDescription, aReferenceStr: string);
-begin
-  inherited Create(aDeclaration, aDescription);
-
-  ReferenceStr := aReferenceStr;
-
-  FieldType := Format('<a href="#%s">%s</a>', [ReferenceStr, ReferenceStr]);
-  Default := '..';
-end;
-
-
-procedure TKMModdingField_Reference.CrossLinkWith(aType: TKMModdingType);
-begin
-  if ReferenceStr = aType.fTypeName then
-    ReferenceType := aType;
-end;
-
-
-function TKMModdingField_Reference.GetTableType: string;
-begin
-  if ReferenceType.fTypeSpecialty = mtsSemicolonDelimitedArray then
-    Result := FieldType + ' <sub>[attribute]</sub>'
+  if Reference <> nil then
+    Result := Reference.GetTableDescription + IfThen(Reference.GetTableDescription <> '', '<br>') + Description
   else
-    Result := FieldType + ' <sub>[object]</sub>'
+    Result := Description;
 end;
 
 
-function TKMModdingField_Reference.GetXmlExample: string;
+function TKMModdingAttribute.GetXmlExample: string;
 begin
   Result := FieldName + '="value"';
 end;
 
 
-function TKMModdingField_Reference.IsReference: Boolean;
-begin
-  Result := True;
-end;
-
-
-function TKMModdingField_Reference.IsSubObject: Boolean;
-begin
-  Result := ReferenceType.fTypeSpecialty in [mtsNormal, mtsListOfType];
-end;
-
-
-{ TKMModdingType }
-constructor TKMModdingType.Create;
+{ TKMModdingNode }
+constructor TKMModdingNode.Create;
 begin
   inherited;
 
-  fFields := TList<TKMModdingField>.Create;
+  Attributes := TList<TKMModdingAttribute>.Create;
+  Nodes := TList<TKMModdingNode>.Create;
 end;
 
 
-destructor TKMModdingType.Destroy;
+constructor TKMModdingNode.CreateInit(const aDeclaration, aDescription, aNodeReference: string);
 begin
-  FreeAndNil(fFields);
+  Create;
+
+  NodeName := Trim(FirstStrBetween(aDeclaration, #39, #39));
+  Description := aDescription;
+  ReferenceStr := aNodeReference;
+end;
+
+
+destructor TKMModdingNode.Destroy;
+begin
+  FreeAndNil(Attributes);
+  FreeAndNil(Nodes);
 
   inherited;
 end;
 
 
-procedure TKMModdingType.LoadFromStringList(aSource: TStringList);
+procedure TKMModdingNode.LoadFromStringList(aSource: TStringList);
 begin
   var descAccumulator := '';
-  var fieldReference := '';
+  var nodeReference := '';
+  var attrReference := '';
+  var listReference := False;
 
   for var I := 0 to aSource.Count - 1 do
   begin
@@ -261,16 +207,28 @@ begin
       Continue;
 
     // Reference means we need to lookup some other type description instead for the type
-    if StartsStr(DOC_TAG_MODDING_REFERENCE, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_REFERENCE_NODE, srcLine) then
     begin
-      fieldReference := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_REFERENCE));
+      nodeReference := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_REFERENCE_NODE));
       Continue;
     end;
-    
+
+    if StartsStr(DOC_TAG_MODDING_REFERENCE_ATTR, srcLine) then
+    begin
+      attrReference := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_REFERENCE_ATTR));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_REFERENCE_LIST, srcLine) then
+    begin
+      listReference := True;
+      Continue;
+    end;
+
     // Accumulate description until we need it
     if StartsStr(DOC_TAG, srcLine) then
     begin
-      descAccumulator := descAccumulator + IfThen(descAccumulator <> '', '<br/>') + RightStrAfter(srcLine, DOC_TAG + ' ');
+      descAccumulator := descAccumulator + IfThen(descAccumulator <> '', '<br>') + RightStrAfter(srcLine, DOC_TAG + ' ');
       Continue;
     end;
 
@@ -285,49 +243,97 @@ begin
       if ContainsText(line, '//') then
         line := Trim(LeftStrBefore(srcLine, '//'));
 
-      var newField: TKMModdingField;
-      if fieldReference = '' then
-        newField := TKMModdingField.Create(line, descAccumulator)
-      else
-        newField := TKMModdingField_Reference.Create(line, descAccumulator, fieldReference);
-
-      fFields.Add(newField);
+      if (nodeReference = '') and (attrReference = '') then
+      begin
+        // Attribute
+        var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, '');
+        Attributes.Add(newAttribute);
+      end else
+      if (nodeReference = '') and (attrReference <> '') then
+      begin
+        // Attribute
+        var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, attrReference);
+        Attributes.Add(newAttribute);
+      end else
+      if (nodeReference <> '') and (attrReference = '') then
+      begin
+//        if listReference then
+//        begin
+//          var listNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
+//          Nodes.Add(listNode);
+//
+//          var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
+//          listNode.Nodes.Add(newNode);
+//        end else
+        begin
+          // Node
+          var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
+          Nodes.Add(newNode);
+        end;
+      end;
 
       descAccumulator := '';
-      fieldReference := '';
+      nodeReference := '';
+      attrReference := '';
     end;
   end;
 end;
 
 
-procedure TKMModdingType.SortFieldsByType;
+procedure TKMModdingNode.SortFieldsByType;
 begin
-  // Special sorting that will preserve relative item positions
-  var sortedFields := TList<TKMModdingField>.Create;
-
-  for var I := 0 to fFields.Count - 1 do
-    if not fFields[I].IsSubObject then
-      sortedFields.Add(fFields[I]);
-
-  for var I := 0 to fFields.Count - 1 do
-    if fFields[I].IsSubObject then
-      sortedFields.Add(fFields[I]);
-
-  fFields.Clear;
-  fFields.AddRange(sortedFields);
-
-  sortedFields.Free;
+//  // Special sorting that will preserve relative item positions
+//  var sortedFields := TList<TKMModdingAttribute>.Create;
+//
+//  for var I := 0 to fFields.Count - 1 do
+//    if not fFields[I].IsSubObject then
+//      sortedFields.Add(fFields[I]);
+//
+//  for var I := 0 to fFields.Count - 1 do
+//    if fFields[I].IsSubObject then
+//      sortedFields.Add(fFields[I]);
+//
+//  fFields.Clear;
+//  fFields.AddRange(sortedFields);
+//
+//  sortedFields.Free;
 end;
 
 
-procedure TKMModdingType.CrossLinkWith(aType: TKMModdingType);
+procedure TKMModdingNode.CrossLinkWith(aNode: TKMModdingNode);
 begin
-  for var I := 0 to fFields.Count - 1 do
-    fFields[I].CrossLinkWith(aType);
+  for var I := 0 to Attributes.Count - 1 do
+    if Attributes[I].ReferenceStr = aNode.TypeName then
+      Attributes[I].Reference := aNode;
+
+  for var I := 0 to Nodes.Count - 1 do
+  begin
+    if Nodes[I].ReferenceStr = aNode.TypeName then
+      Nodes[I].Reference := aNode;
+
+    Nodes[I].CrossLinkWith(aNode);
+  end;
 end;
 
 
-function TKMModdingType.ExportWikiBody: string;
+function TKMModdingNode.ExportListing(const aPad: string): string;
+begin
+  Result := aPad + Format('%s:%s -> %s', [NodeName, TypeName, ReferenceStr]) + sLineBreak;
+
+  case TypeSpecialty of
+    mtsNormal:                  for var I := 0 to Attributes.Count - 1 do
+                                  Result := Result + aPad + ' - ' + Attributes[I].FieldName + sLineBreak;
+    mtsSemicolonDelimitedArray: Result := Result + aPad + ' - ' + NodeName + '_array' + IntToStr(Attributes.Count) + sLineBreak;
+  end;
+
+  for var I := 0 to Nodes.Count - 1 do
+    Result := Result + Nodes[I].Reference.ExportListing(aPad + ' ');
+
+  //Result := Result + sLineBreak;
+end;
+
+
+function TKMModdingNode.ExportWikiBody: string;
 begin
   Result := ExportWikiBody_Header + sLineBreak;
 
@@ -340,166 +346,167 @@ begin
     '<Root>' + sLineBreak;
   end;
 
-  if IsRoot then
-    xmlText := xmlText + ExportWikiBody_XmlExample('  ')
-  else
-    xmlText := xmlText + ExportWikiBody_XmlExample('');
+  xmlText := xmlText + ExportWikiBody_XmlExample('  ');
 
   if IsRoot then
     xmlText := xmlText + '</Root>' + sLineBreak;
 
-  if xmlText <> '' then
-    Result := Result +
-      'XML layout example:' + sLineBreak +
-      '```xml' + sLineBreak +
-      xmlText +
-      '```' + sLineBreak;
+  Result := Result +
+    'XML layout example:' + sLineBreak +
+    '```xml' + sLineBreak +
+    xmlText +
+    '```' + sLineBreak;
 
-  if fFields.Count > 0 then
-    Result := Result + ExportWikiBody_Fields + sLineBreak;
+  Result := Result + ExportWikiBody_Table('Root') + sLineBreak;
 end;
 
 
-function TKMModdingType.ExportWikiBody_Header: string;
+function TKMModdingNode.ExportWikiBody_Header: string;
 begin
-  Result := Format('### <a id="%s">%s</a>', [fTypeName, fCaption]) + sLineBreak + sLineBreak +
-            fDescription + sLineBreak;
+  Result := Format('### <a id="%s">%s</a>', [TypeName, Caption]) + sLineBreak + sLineBreak +
+            Description + sLineBreak;
 end;
 
 
-function TKMModdingType.ExportWikiBody_XmlExample(const aPad: string): string;
+function TKMModdingNode.ExportWikiBody_XmlExample(const aPad: string): string;
 begin
-  if fFields.Count = 0 then Exit('');
-
-  if fTypeSpecialty = mtsSemicolonDelimitedArray then
-  begin
-    Result := '';
-    for var I := 0 to fFields.Count - 1 do
-      Result := Result + IfThen(Result <> '', ';') + '0.000';
-
-    Result := '"' + Result + '"' + sLineBreak;
-
-    Exit;
-  end;
-
-  var sb := TStringBuilder.Create;
+  if (Attributes.Count = 0) and (Nodes.Count = 0) then Exit('');
 
   var usePad := aPad;
 
-  // Some types are lists
-  if IsList then
+  // Attributes
+  var attributeString := '';
+  for var I := 0 to Attributes.Count - 1 do
   begin
-    sb.AppendLine(usePad + '<' + fXmlListName + '>');
-    usePad := usePad + '  ';
+    var lastEol := FindLastSubStr(attributeString, sLineBreak);
+    var lengthSinceEol := Length(attributeString) - lastEol;
+    var nameValue := Attributes[I].GetXmlExample;
+
+    // Append or start new line
+    if lengthSinceEol + Length(nameValue) <= 112 then
+      nameValue := ' ' + nameValue
+    else
+      nameValue := sLineBreak + usePad + nameValue;
+
+    attributeString := attributeString + nameValue;
   end;
+
+  var xmlString := '';
+  if (Attributes.Count > 0) then
+    xmlString := usePad + '<' + NodeName + attributeString;
+
+  if (Attributes.Count > 0) and (Nodes.Count > 0) then
+    xmlString := xmlString + '>' + sLineBreak;
+
+  if (Attributes.Count > 0) and (Nodes.Count = 0) then
+    xmlString := xmlString + '/>' + sLineBreak;
+
+  if (Attributes.Count = 0) and (Nodes.Count > 0) then
+    xmlString := xmlString + usePad + '<' + NodeName + '>' + sLineBreak;
+
+  // Sub-objects
+  for var I := 0 to Nodes.Count - 1 do
+  begin
+    xmlString := xmlString + Nodes[I].Reference.ExportWikiBody_XmlExample(usePad + '  ');
+
+//        if Nodes[I].IsList then
+//        begin
+//          sb.AppendLine(aPad + '  ...');
+//          sb.AppendLine(aPad + '  </' + Nodes[I].FieldNameListItem + '>');
+//          sb.AppendLine(aPad + '</' + Nodes[I].FieldName + '>');
+//        end;
+      end;
+
+  if (Nodes.Count > 0) then
+    xmlString := xmlString + usePad + '<' + NodeName + '/>' + sLineBreak;
+
+  // Wrap in a list
+{  if aListName <> '' then
+  begin
+    xmlString :=
+      '<' + aListName + '>' + sLineBreak +
+      StringReplace(xmlString, usePad, usePad + '  ', [rfReplaceAll]) +
+      '</' + aListName + '>' + sLineBreak;
+  end;}
+
+  Result := xmlString;
+
+  //sb.Free;
+end;
+
+
+function TKMModdingNode.ExportWikiBody_Table(const aParent: string): string;
+const
+  TEMPLATE_HEADER      = '| Structure | A/N | Attribute name | Type | Required / Default | Description |';
+  TEMPLATE_HEADER_LINE = '| --------- |:---:|:--------------:|:----:|:------------------:| ----------- |';
+  TEMPLATE = '| %s | %s | %s | %s | %s | %s |';
+begin
+  Result := '';
+
+  if aParent = 'Root' then
+    Result := TEMPLATE_HEADER + sLineBreak +
+              TEMPLATE_HEADER_LINE + sLineBreak;
+
+  // Self
+  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName, TypeName, '', GetTableDescription]) + sLineBreak;
+
+  if Attributes.Count + Nodes.Count = 0 then Exit;
 
   // Attributes
-  var attributeString := usePad + '<' + fXmlNodeName;
-  for var I := 0 to fFields.Count - 1 do
-    if not fFields[I].IsSubObject then
-    begin
-      var lastEol := FindLastSubStr(attributeString, sLineBreak);
-      var lengthSinceEol := Length(attributeString) - lastEol;
-      var nameValue := fFields[I].GetXmlExample;
-
-      // Append or start new line
-      if lengthSinceEol + Length(nameValue) <= 112 then
-        nameValue := ' ' + nameValue
-      else
-        nameValue := sLineBreak + usePad + nameValue;
-
-      attributeString := attributeString + nameValue;
-    end;
-
-  if HasSubObjects then
+  for var I := 0 to Attributes.Count - 1 do
   begin
-    attributeString := attributeString + '>' + sLineBreak;
-
-    // Sub-objects
-    var objectsString := '';
-    for var I := 0 to fFields.Count - 1 do
-      if fFields[I].IsSubObject then
-        objectsString := objectsString + TKMModdingField_Reference(fFields[I]).ReferenceType.ExportWikiBody_XmlExample(usePad + '  ');
-
-    attributeString := attributeString + objectsString + usePad + '  </' + fXmlNodeName + '>';
-  end else
-    if IsRoot then
-      attributeString := attributeString + '>' + sLineBreak + usePad + '  </' + fXmlNodeName + '>'
-    else
-      attributeString := attributeString + '/>';
-
-  sb.AppendLine(attributeString);
-
-  if IsList then
-  begin
-    sb.AppendLine(aPad + '  ...');
-    sb.AppendLine(aPad + '</' + fXmlListName + '>');
+    var req := IfThen(Attributes[I].IsRequired, '**Required**', '`"' + Attributes[I].Default + '"`');
+    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr', Attributes[I].FieldName, Attributes[I].GetTableType, req, Attributes[I].GetTableDescription]) + sLineBreak;
   end;
 
-  Result := sb.ToString;
-
-  sb.Free;
-end;
-
-
-function TKMModdingType.ExportWikiBody_Fields: string;
-const
-  TEMPLATE_HEADER      = '| Attribute name | Type | Required / Default | Description |';
-  TEMPLATE_HEADER_LINE = '| -------------- |:----:|:------------------:| ----------- |';
-  TEMPLATE = '| %s | %s | %s | %s |';
-begin
-  Result := TEMPLATE_HEADER + sLineBreak +
-            TEMPLATE_HEADER_LINE + sLineBreak;
-
-  for var I := 0 to fFields.Count - 1 do
+  // Nodes
+  for var I := 0 to Nodes.Count - 1 do
   begin
-    var req := IfThen(fFields[I].IsRequired, '**Required**', '`"' + fFields[I].Default + '"`');
+    var req := '??';//IfThen(Nodes[I].IsRequired, '**Required**', '`"' + Nodes[I].Default + '"`');
 
-    var desc := fFields[I].Description;
+    var desc := Nodes[I].Description;
 
-    var fieldType := '';
+    //Result := Result + Format(TEMPLATE, [aParent, Nodes[I].NodeName, Nodes[I].TypeName, req, desc]) + sLineBreak;
 
-    Result := Result + Format(TEMPLATE, [fFields[I].FieldName, fFields[I].GetTableType, req, desc]) + sLineBreak;
+    Result := Result + Nodes[I].Reference.ExportWikiBody_Table(aParent + '.' + NodeName);
   end;
 end;
 
 
-function TKMModdingType.ExportWikiLink: string;
+function TKMModdingNode.ExportWikiLink: string;
 const
   TEMPLATE = '* [%s](#%s)';
 begin
-  Result := Format(TEMPLATE, [fCaption, fTypeName]);
+  Result := Format(TEMPLATE, [Caption, TypeName]);
 end;
 
 
-function TKMModdingType.IsList: Boolean;
+function TKMModdingNode.GetTableType: string;
 begin
-  Result := fXmlListName <>'';
+  case TypeSpecialty of
+    mtsNormal:                  Result := '-';
+    mtsSemicolonDelimitedArray: Result := 'String' + IntToStr(Attributes.Count);
+  end;
 end;
 
 
-function TKMModdingType.IsRoot: Boolean;
+function TKMModdingNode.GetTableDescription: string;
 begin
-  Result := fIsRoot;
-end;
-
-
-function TKMModdingType.HasSubObjects: Boolean;
-begin
-  Result := False;
-
-  // Check if any of the fields are referencing any objects
-  // Some of the refrences could be for attributes, ignore them
-  for var I := 0 to fFields.Count - 1 do
-  if fFields[I].IsSubObject then
-    Exit(True);
+  case TypeSpecialty of
+    mtsNormal:                  Result := Description;
+    mtsSemicolonDelimitedArray: begin
+                                  Result := Description;
+                                  for var I := 0 to Attributes.Count - 1 do
+                                    Result := Result + IfThen(Result <> '', '<br>') + ' - ' + Attributes[I].Description;
+                                end;
+  end;
 end;
 
 
 { TKMModdingFactory }
-class function TKMModdingFactory.NewTypeFromStringList(aSource: TStringList): TKMModdingType;
+class function TKMModdingFactory.NewTypeFromStringList(aSource: TStringList): TKMModdingNode;
 begin
-  Result := TKMModdingType.Create;
+  Result := TKMModdingNode.Create;
 
   for var I := 0 to aSource.Count - 1 do
   begin
@@ -509,54 +516,50 @@ begin
     if srcLine = '' then
       Continue;
 
+    if StartsStr(DOC_TAG_MODDING_IS_ROOT, srcLine) then
+    begin
+      Result.IsRoot := True;
+      Continue;
+    end;
+
     // Name of the type
     if StartsStr(DOC_TAG_MODDING_TYPENAME, srcLine) then
     begin
-      Result.fTypeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPENAME));
+      Result.TypeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPENAME));
       Continue;
     end;
 
     if StartsStr('procedure ', srcLine) then
     begin
-      Result.fTypeName := FirstStrBetween(srcLine, 'procedure ', '.');
+      Result.TypeName := FirstStrBetween(srcLine, 'procedure ', '.');
       Continue;
     end;
 
-    if StartsStr(DOC_TAG_MODDING_TYPE_SPECIALTY, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_NODENAME, srcLine) then
     begin
-      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsListOfType]) then
-      begin
-        var rs := Trim(RightStrAfter(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsListOfType]));
-
-        Result.fXmlListName := LeftStrBefore(rs, ':');
-        Result.fXmlNodeName := RightStrAfter(rs, ':');
-
-        Result.fTypeSpecialty := mtsListOfType;
-
-      end else
-      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsSemicolonDelimitedArray]) then
-        Result.fTypeSpecialty := mtsSemicolonDelimitedArray
-      else
-        raise Exception.CreateFmt('Unexpected tag value - "%s"', [srcLine]);
-
-      Continue;
-    end;
-
-    if StartsStr(DOC_TAG_MODDING_IS_ROOT, srcLine) then
-    begin
-      Result.fIsRoot := True;
+      Result.NodeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_NODENAME));
       Continue;
     end;
 
     if StartsStr(DOC_TAG_MODDING_CAPTION, srcLine) then
     begin
-      Result.fCaption := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_CAPTION));
+      Result.Caption := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_CAPTION));
       Continue;
     end;
 
     if StartsStr(DOC_TAG_MODDING_DESCRIPTION, srcLine) then
     begin
-      Result.fDescription := Result.fDescription + IfThen(Result.fDescription <> '', '  ' + sLineBreak) + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
+      Result.Description := Result.Description + IfThen(Result.Description <> '', '<br>') + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_TYPE_SPECIALTY, srcLine) then
+    begin
+      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsSemicolonDelimitedArray]) then
+        Result.TypeSpecialty := mtsSemicolonDelimitedArray
+      else
+        raise Exception.CreateFmt('Unexpected tag value - "%s"', [srcLine]);
+
       Continue;
     end;
 
@@ -567,6 +570,7 @@ begin
       for var K := firstNonHeaderLine - 1 downto 0 do
         aSource.Delete(K);
 
+      Result.LoadFromStringList(aSource);
       Exit;
     end;
   end;
