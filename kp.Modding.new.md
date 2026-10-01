@@ -23,19 +23,22 @@ XML layout example:
   <Objects>
     <object EngName="value" CanPlaceInMapEd="value" Placement="value" Multiple="value" GrowTarget="value" GrowTime="value"
     Sway="value" ScaleVariation="value" Foliage="value" FoliageScale="value" TileBlock="value" VertBlock="value"
-    Removable="value" Selectable="value" ColorMinimap="value" AllowedHumiditySet="value" Flags="value"
-    Anims="value" States="value">
+    Removable="value" Selectable="value" ColorMinimap="value" AllowedHumiditySet="value" Flags="value">
       <HUD AvatarSetup="value"/>
-      <anim StateFrom="value" StateTo="value" AnimFile="value" Duration="value" EngName="value"/>
-      <state TileBlock="value" VertBlock="value" EngName="value"/>
+      <Anims>
+        <anim StateFrom="value" StateTo="value" AnimFile="value" Duration="value" EngName="value"/>
+      <Anims/>
+      <States>
+        <state TileBlock="value" VertBlock="value" EngName="value"/>
+      <States/>
     <object/>
   <Objects/>
 </Root>
 ```
 | Structure | A/N | Attribute name | Type | Required / Default | Description |
 | --------- |:---:|:--------------:|:----:|:------------------:| ----------- |
-| Root | node | Objects | TKMResMapObjects |  | Objects that can be placed on terrain. |
-| Root.Objects | node | object | TKMMapObjectSpec |  | Objects that can be placed on terrain. |
+| Root | node | Objects |  |  | Objects that can be placed on terrain. |
+| Root.Objects | node | object |  |  | Objects that can be placed on terrain. |
 | Root.Objects.object | attr | EngName | String | **Required** | Unique identifier of the map object. |
 | Root.Objects.object | attr | CanPlaceInMapEd | Boolean | `"True"` | Whether the map object can be placed in the Map Editor.<br>Some objects require special handling and should not be placeable under normal circumstances (e.g. grain, orchards, coalpiles). |
 | Root.Objects.object | attr | Placement | Enum | **Required** | Placement of the object - tile or vertice.<br>* `"csTile"`, object will be placed on tiles;<br>* `"csVertice"`, object will be placed on a vertex between tiles. |
@@ -53,20 +56,20 @@ XML layout example:
 | Root.Objects.object | attr | ColorMinimap | Cardinal | **Required** | Color of the object ion the minimap. |
 | Root.Objects.object | attr | AllowedHumiditySet | Enum set | `""` | Terrain humidity suitable for this map object (e.g. ore decals can be placed only on rock). Several values can be listed via a comma. Use `""` for all. |
 | Root.Objects.object | attr | Flags | Enum set | `""` | Set of flags for the object. Multiple values can be listed via a comma:<br>* `"repelTrees"` - woodcutter will not plant new trees around this object;<br>* `"treeSapling"` - object is a tree sapling;<br>* `"treeCuttable"` - object is a cuttable tree;<br>* `"treeStump"`  - object is a stump of a tree. Woodcutter will prefer planting new trees on its place. |
-| Root.Objects.object | attr | Anims | = aNode.Find | `"'Anims'"` | NodeName: Anims |
-| Root.Objects.object | attr | States | = aNode.Find | `"'States'"` | List of states in which this object can be. |
-| Root.Objects.object | node | HUD | TKMMapObjectHUDSpec |  | Settings for map object HUD. |
+| Root.Objects.object | node | HUD |  |  | Settings for map object HUD. |
 | Root.Objects.object.HUD | attr | AvatarSetup | String6 | `"6"` | Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360)<br>Default values are `"6.0;3.0;1.5;0.0;0.0;145.0"`. |
-| Root.Objects.object | node | anim | TKMMapObjectAnimationSpec |  | List of animations between states. To make an idle animation for some state, set both states to one value. |
-| Root.Objects.object.anim | attr | StateFrom | Integer | **Required** | Source state. |
-| Root.Objects.object.anim | attr | StateTo | Integer | **Required** | Destination state. |
-| Root.Objects.object.anim | attr | AnimFile | String | **Required** | Animation file name. |
-| Root.Objects.object.anim | attr | Duration | Integer | **Required** | Duration of the animation. |
-| Root.Objects.object.anim | attr | EngName | String | **Required** | EngName (unused?). |
-| Root.Objects.object | node | state | TKMMapObjectStateSpec |  | List of object states. Maximum of 4 states is allowed. |
-| Root.Objects.object.state | attr | TileBlock | Enum | **Required** | Override value for the matching placement |
-| Root.Objects.object.state | attr | VertBlock | Enum | **Required** | Override value for the matching placement |
-| Root.Objects.object.state | attr | EngName | String | **Required** | Identifier of this state |
+| Root.Objects.object | node | Anims |  |  | List of animations. |
+| Root.Objects.object.Anims | node | anim |  |  | List of animations between states. To make an idle animation for some state, set both states to one value. |
+| Root.Objects.object.Anims.anim | attr | StateFrom | Integer | **Required** | Source state. |
+| Root.Objects.object.Anims.anim | attr | StateTo | Integer | **Required** | Destination state. |
+| Root.Objects.object.Anims.anim | attr | AnimFile | String | **Required** | Animation file name. |
+| Root.Objects.object.Anims.anim | attr | Duration | Integer | **Required** | Duration of the animation. |
+| Root.Objects.object.Anims.anim | attr | EngName | String | **Required** | EngName (unused?). |
+| Root.Objects.object | node | States |  |  | List of states in which this object can be. |
+| Root.Objects.object.States | node | state |  |  | List of object states. Maximum of 4 states is allowed. |
+| Root.Objects.object.States.state | attr | TileBlock | Enum | **Required** | Override value for the matching placement |
+| Root.Objects.object.States.state | attr | VertBlock | Enum | **Required** | Override value for the matching placement |
+| Root.Objects.object.States.state | attr | EngName | String | **Required** | Identifier of this state |
 
 ### <a id="TKMResTerrainDecals">Terrain decals</a>
 
@@ -85,8 +88,8 @@ XML layout example:
 ```
 | Structure | A/N | Attribute name | Type | Required / Default | Description |
 | --------- |:---:|:--------------:|:----:|:------------------:| ----------- |
-| Root | node | Decals | TKMResTerrainDecals |  | Decals that can be placed onto terrain tiles. |
-| Root.Decals | node | decal | TKMDecalSpec |  | Decals that can be placed onto terrain tiles. |
+| Root | node | Decals |  |  | Decals that can be placed onto terrain tiles. |
+| Root.Decals | node | decal |  |  | Decals that can be placed onto terrain tiles. |
 | Root.Decals.decal | attr | EngName | String | **Required** | Unique identifier of the decal. |
 | Root.Decals.decal | attr | AllowedHumiditySet | Enum set | `""` | Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all. |
 | Root.Decals.decal | attr | IsPassable | Boolean | **Required** | Wherever this decal can be walk over by units. |
@@ -138,20 +141,20 @@ XML layout example:
 4.  - ColorMinimap
 4.  - AllowedHumiditySet
 4.  - Flags
-4.  - Anims
-4.  - States
 4.  HUD:TKMMapObjectHUDSpec -> 
 4.   - AvatarSetup
-4.  anim:TKMMapObjectAnimationSpec -> 
-4.   - StateFrom
-4.   - StateTo
-4.   - AnimFile
-4.   - Duration
-4.   - EngName
-4.  state:TKMMapObjectStateSpec -> 
-4.   - TileBlock
-4.   - VertBlock
-4.   - EngName
+4.  Anims:list -> 
+4.   anim:TKMMapObjectAnimationSpec -> 
+4.    - StateFrom
+4.    - StateTo
+4.    - AnimFile
+4.    - Duration
+4.    - EngName
+4.  States:list -> 
+4.   state:TKMMapObjectStateSpec -> 
+4.    - TileBlock
+4.    - VertBlock
+4.    - EngName
 
 5. Objects:TKMResMapObjects -> 
 5.  object:TKMMapObjectSpec -> 
@@ -172,20 +175,20 @@ XML layout example:
 5.   - ColorMinimap
 5.   - AllowedHumiditySet
 5.   - Flags
-5.   - Anims
-5.   - States
 5.   HUD:TKMMapObjectHUDSpec -> 
 5.    - AvatarSetup
-5.   anim:TKMMapObjectAnimationSpec -> 
-5.    - StateFrom
-5.    - StateTo
-5.    - AnimFile
-5.    - Duration
-5.    - EngName
-5.   state:TKMMapObjectStateSpec -> 
-5.    - TileBlock
-5.    - VertBlock
-5.    - EngName
+5.   Anims:list -> 
+5.    anim:TKMMapObjectAnimationSpec -> 
+5.     - StateFrom
+5.     - StateTo
+5.     - AnimFile
+5.     - Duration
+5.     - EngName
+5.   States:list -> 
+5.    state:TKMMapObjectStateSpec -> 
+5.     - TileBlock
+5.     - VertBlock
+5.     - EngName
 
 6. decal:TKMDecalSpec -> 
 6.  - EngName

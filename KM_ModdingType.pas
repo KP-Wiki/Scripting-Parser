@@ -42,13 +42,13 @@ type
 
     Description: string;
     ReferenceStr: string;
-    Reference: TKMModdingNode;
 
     Attributes: TList<TKMModdingAttribute>;
     Nodes: TList<TKMModdingNode>;
 
     constructor Create;
     constructor CreateInit(const aDeclaration, aDescription, aNodeReference: string);
+    constructor CreateList(const aDeclaration, aDescription: string);
     destructor Destroy; override;
 
     procedure LoadFromStringList(aSource: TStringList);
@@ -183,6 +183,16 @@ begin
 end;
 
 
+constructor TKMModdingNode.CreateList(const aDeclaration, aDescription: string);
+begin
+  Create;
+
+  NodeName := Trim(FirstStrBetween(aDeclaration, #39, #39));
+  Description := aDescription;
+  TypeName := 'list';
+end;
+
+
 destructor TKMModdingNode.Destroy;
 begin
   FreeAndNil(Attributes);
@@ -193,11 +203,13 @@ end;
 
 
 procedure TKMModdingNode.LoadFromStringList(aSource: TStringList);
+type
+  TKMItemType = (itUndefined, itListForNextNode, itAttribute, itAttributeRef, itNode, itNodeInList);
 begin
   var descAccumulator := '';
   var nodeReference := '';
   var attrReference := '';
-  var listReference := False;
+  var listForNextNode: TKMModdingNode := nil;
 
   for var I := 0 to aSource.Count - 1 do
   begin
@@ -219,9 +231,9 @@ begin
       Continue;
     end;
 
-    if StartsStr(DOC_TAG_MODDING_REFERENCE_LIST, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_LIST, srcLine) then
     begin
-      listReference := True;
+      listForNextNode := TKMModdingNode(1);
       Continue;
     end;
 
@@ -236,6 +248,7 @@ begin
     if StartsStr('//', srcLine) then
       Continue;
 
+    // Every item must have a description
     // When we have a description, next code line is the type
     if descAccumulator <> '' then
     begin
@@ -243,33 +256,47 @@ begin
       if ContainsText(line, '//') then
         line := Trim(LeftStrBefore(srcLine, '//'));
 
-      if (nodeReference = '') and (attrReference = '') then
-      begin
-        // Attribute
-        var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, '');
-        Attributes.Add(newAttribute);
-      end else
-      if (nodeReference = '') and (attrReference <> '') then
-      begin
-        // Attribute
-        var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, attrReference);
-        Attributes.Add(newAttribute);
-      end else
-      if (nodeReference <> '') and (attrReference = '') then
-      begin
-//        if listReference then
-//        begin
-//          var listNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
-//          Nodes.Add(listNode);
-//
-//          var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
-//          listNode.Nodes.Add(newNode);
-//        end else
-        begin
-          // Node
-          var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
-          Nodes.Add(newNode);
-        end;
+      // Decide the type of the item we have
+      var itemType := itUndefined;
+
+      if listForNextNode = TKMModdingNode(1) then
+        itemType := itListForNextNode
+      else
+      if nodeReference = '' then
+        if attrReference = '' then
+          itemType := itAttribute
+        else
+          itemType := itAttributeRef
+      else
+        if listForNextNode <> nil then
+          itemType := itNodeInList
+        else
+          itemType := itNode;
+
+      case itemType of
+        itAttribute:        begin
+                              var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, '');
+                              Attributes.Add(newAttribute);
+                            end;
+        itAttributeRef:     begin
+                              var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, attrReference);
+                              Attributes.Add(newAttribute);
+                            end;
+        itNode:             begin
+                              var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
+                              Nodes.Add(newNode);
+                            end;
+        itListForNextNode:  begin
+                              listForNextNode := TKMModdingNode.CreateList(line, descAccumulator);
+                              Nodes.Add(listForNextNode);
+                            end;
+        itNodeInList:       begin
+                              var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
+                              listForNextNode.Nodes.Add(newNode);
+                              listForNextNode := nil;
+                            end;
+      else
+        raise Exception.Create('Undefined type');
       end;
 
       descAccumulator := '';
@@ -309,7 +336,7 @@ begin
   for var I := 0 to Nodes.Count - 1 do
   begin
     if Nodes[I].ReferenceStr = aNode.TypeName then
-      Nodes[I].Reference := aNode;
+      Nodes[I] := aNode;
 
     Nodes[I].CrossLinkWith(aNode);
   end;
@@ -327,7 +354,7 @@ begin
   end;
 
   for var I := 0 to Nodes.Count - 1 do
-    Result := Result + Nodes[I].Reference.ExportListing(aPad + ' ');
+    Result := Result + Nodes[I].ExportListing(aPad + ' ');
 
   //Result := Result + sLineBreak;
 end;
@@ -406,28 +433,10 @@ begin
 
   // Sub-objects
   for var I := 0 to Nodes.Count - 1 do
-  begin
-    xmlString := xmlString + Nodes[I].Reference.ExportWikiBody_XmlExample(usePad + '  ');
-
-//        if Nodes[I].IsList then
-//        begin
-//          sb.AppendLine(aPad + '  ...');
-//          sb.AppendLine(aPad + '  </' + Nodes[I].FieldNameListItem + '>');
-//          sb.AppendLine(aPad + '</' + Nodes[I].FieldName + '>');
-//        end;
-      end;
+    xmlString := xmlString + Nodes[I].ExportWikiBody_XmlExample(usePad + '  ');
 
   if (Nodes.Count > 0) then
     xmlString := xmlString + usePad + '<' + NodeName + '/>' + sLineBreak;
-
-  // Wrap in a list
-{  if aListName <> '' then
-  begin
-    xmlString :=
-      '<' + aListName + '>' + sLineBreak +
-      StringReplace(xmlString, usePad, usePad + '  ', [rfReplaceAll]) +
-      '</' + aListName + '>' + sLineBreak;
-  end;}
 
   Result := xmlString;
 
@@ -448,7 +457,7 @@ begin
               TEMPLATE_HEADER_LINE + sLineBreak;
 
   // Self
-  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName, TypeName, '', GetTableDescription]) + sLineBreak;
+  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName, '', '', GetTableDescription]) + sLineBreak;
 
   if Attributes.Count + Nodes.Count = 0 then Exit;
 
@@ -461,15 +470,7 @@ begin
 
   // Nodes
   for var I := 0 to Nodes.Count - 1 do
-  begin
-    var req := '??';//IfThen(Nodes[I].IsRequired, '**Required**', '`"' + Nodes[I].Default + '"`');
-
-    var desc := Nodes[I].Description;
-
-    //Result := Result + Format(TEMPLATE, [aParent, Nodes[I].NodeName, Nodes[I].TypeName, req, desc]) + sLineBreak;
-
-    Result := Result + Nodes[I].Reference.ExportWikiBody_Table(aParent + '.' + NodeName);
-  end;
+    Result := Result + Nodes[I].ExportWikiBody_Table(aParent + '.' + NodeName);
 end;
 
 
