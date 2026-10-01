@@ -59,24 +59,26 @@ const
 
   // Modding documentation tags
   DOC_TAG_MODDING_IS_ROOT = '//* IsRoot:';          //
+
   DOC_TAG_MODDING_TYPENAME = '//* TypeName:';       // Type name when it is impractical to parse
+  DOC_TAG_MODDING_NODENAME = '//* NodeName:';       // Type name when it is impractical to parse
   DOC_TAG_MODDING_CAPTION = '//* Caption:';         // Caption name
   DOC_TAG_MODDING_DESCRIPTION = '//* Description:'; // Description
-  DOC_TAG_MODDING_REFERENCE = '//* Reference:';     // Reference to another type
+  DOC_TAG_MODDING_REFERENCE_NODE = '//* Reference-Node:';     // Reference to another type
+  DOC_TAG_MODDING_REFERENCE_ATTR = '//* Reference-Attr:';     // Reference to another type
+  DOC_TAG_MODDING_REFERENCE_LIST = '//* Reference-List:';     // Reference to another type
 
   DOC_TAG_MODDING_TYPE_SPECIALTY = '//* TypeSpecialty:';
 
 type
   TKMModdingTypeSpecialty = (
     mtsNormal,
-    mtsListOfType,
     mtsSemicolonDelimitedArray
   );
 
 const
   MODDING_TYPE_SPECIALTY_NAME: array [TKMModdingTypeSpecialty] of string = (
     '',
-    'ListOfType',
     'SemicolonDelimitedArray'
   );
 

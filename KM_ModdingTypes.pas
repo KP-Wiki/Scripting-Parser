@@ -11,7 +11,7 @@ type
   TKMModdingTypes = class
   private
     fOnLog: TProc<string>;
-    fList: TObjectList<TKMModdingType>;
+    fList: TObjectList<TKMModdingNode>;
     procedure LoadFromFile(const aSourceMask: string);
     procedure Clear;
     procedure ConnectCrossReferences;
@@ -19,6 +19,7 @@ type
     function ExportWikiLinks: string;
     procedure LoadFromFileInt(const aInputFile: string);
     procedure SortByName(aSortBy: TKMSortType);
+    function ExportListing: string;
   public
     constructor Create(aOnLog: TProc<string>);
     destructor Destroy; override;
@@ -41,9 +42,9 @@ begin
 
   fOnLog := aOnLog;
 
-  fList := TObjectList<TKMModdingType>.Create(
-    TComparer<TKMModdingType>.Construct(
-      function (const A, B: TKMModdingType): Integer
+  fList := TObjectList<TKMModdingNode>.Create(
+    TComparer<TKMModdingNode>.Construct(
+      function (const A, B: TKMModdingNode): Integer
       begin
         // Case-sensitive compare, since we use CamelCase and it looks nicer that way
         Result := CompareText(A.Caption, B.Caption);
@@ -113,11 +114,7 @@ begin
       // Area ends
       if areaStarted and StartsStr(DOC_TAG_AREA_MODDING_SPECIFICATION, srcLine) then
       begin
-        // Parse header
         var newType := TKMModdingFactory.NewTypeFromStringList(slArea);
-
-        // Parse the rest
-        newType.LoadFromStringList(slArea);
 
         fList.Add(newType);
 
@@ -151,16 +148,21 @@ begin
 end;
 
 
+function TKMModdingTypes.ExportListing: string;
+begin
+  Result := '';
+
+  for var I := 0 to fList.Count - 1 do
+    Result := Result + fList[I].ExportListing(IntToStr(I) + '. ') + sLineBreak;
+end;
+
+
 function TKMModdingTypes.ExportWikiBody: string;
 begin
   Result := '';
 
   for var I := 0 to fList.Count - 1 do
     if fList[I].IsRoot then
-      Result := Result + fList[I].ExportWikiBody;
-
-  for var I := 0 to fList.Count - 1 do
-    if not fList[I].IsRoot then
       Result := Result + fList[I].ExportWikiBody;
 end;
 
@@ -171,12 +173,6 @@ begin
 
   for var I := 0 to fList.Count - 1 do
     if fList[I].IsRoot then
-      Result := Result + fList[I].ExportWikiLink + sLineBreak;
-
-  Result := Result + sLineBreak + '### Auxiliary types' + sLineBreak + sLineBreak;
-
-  for var I := 0 to fList.Count - 1 do
-    if not fList[I].IsRoot then
       Result := Result + fList[I].ExportWikiLink + sLineBreak;
 end;
 
@@ -202,6 +198,8 @@ begin
 
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
+
+  sl.Text := sl.Text + sLineBreak + ExportListing;
 
   var exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
   if not DirectoryExists(ExtractFileDir(exportPath)) then
