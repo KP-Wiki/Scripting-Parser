@@ -66,7 +66,7 @@ const
   DOC_TAG_MODDING_DESCRIPTION = '//* Description:'; // Description
   DOC_TAG_MODDING_REFERENCE_NODE = '//* Reference-Node:';     // Reference to another type
   DOC_TAG_MODDING_REFERENCE_ATTR = '//* Reference-Attr:';     // Reference to another type
-  DOC_TAG_MODDING_REFERENCE_LIST = '//* Reference-List:';     // Reference to another type
+  DOC_TAG_MODDING_LIST = '//* ListForNextNode:';     // Reference to another type
 
   DOC_TAG_MODDING_TYPE_SPECIALTY = '//* TypeSpecialty:';
 
