@@ -57,29 +57,31 @@ const
   // We need to annotate modding regions to avoid clashing with Type declarations
   DOC_TAG_AREA_MODDING_SPECIFICATION = '//*Area-Modding-Specification*//';
 
-  // Modding documentation tags
-  DOC_TAG_MODDING_IS_ROOT = '//* IsRoot:';          //
+  // Modding types documentation tags
+  DOC_TAG_MODDING_TYPE_IS_ROOT      = '//* Type-IsRoot:';       // Root type
+  DOC_TAG_MODDING_TYPE_NAME         = '//* Type-Name:';         // Type name when it is impractical to parse
+  DOC_TAG_MODDING_TYPE_NODENAME     = '//* Type-NodeName:';     // Next line will contain xml node name
+  DOC_TAG_MODDING_TYPE_CAPTION      = '//* Type-Caption:';      // Caption name
+  DOC_TAG_MODDING_TYPE_DESCRIPTION  = '//* Type-Description:';  // Description
+  DOC_TAG_MODDING_TYPE_SPECIALTY    = '//* Type-Specialty:';    // Special
 
-  DOC_TAG_MODDING_TYPENAME = '//* TypeName:';       // Type name when it is impractical to parse
-  DOC_TAG_MODDING_NODENAME = '//* NodeName:';       // Type name when it is impractical to parse
-  DOC_TAG_MODDING_CAPTION = '//* Caption:';         // Caption name
-  DOC_TAG_MODDING_DESCRIPTION = '//* Description:'; // Description
   DOC_TAG_MODDING_REFERENCE_NODE = '//* Reference-Node:';     // Reference to another type
   DOC_TAG_MODDING_REFERENCE_ATTR = '//* Reference-Attr:';     // Reference to another type
   DOC_TAG_MODDING_LIST = '//* ListForNextNode:';     // Reference to another type
 
-  DOC_TAG_MODDING_TYPE_SPECIALTY = '//* TypeSpecialty:';
 
 type
   TKMModdingTypeSpecialty = (
     mtsNormal,
-    mtsSemicolonDelimitedArray
+    mtsSemicolonDelimitedArray,
+    mtsList
   );
 
 const
   MODDING_TYPE_SPECIALTY_NAME: array [TKMModdingTypeSpecialty] of string = (
     '',
-    'SemicolonDelimitedArray'
+    'SemicolonDelimitedArray',
+    'List'
   );
 
 

@@ -35,13 +35,14 @@ XML layout example:
         ...
       <States/>
     <object/>
+    ...
   <Objects/>
 </Root>
 ```
 | Structure | A/N | Attribute name | Type | Required / Default | Description |
 | --------- |:---:|:--------------:|:----:|:------------------:| ----------- |
 | Root | node | Objects |  |  | Objects that can be placed on terrain. |
-| Root.Objects | node | object |  |  | Objects that can be placed on terrain. |
+| Root.Objects | node | object |  |  | Object that can be placed on terrain. |
 | Root.Objects.object | attr | EngName | String | **Required** | Unique identifier of the map object. |
 | Root.Objects.object | attr | CanPlaceInMapEd | Boolean | `"True"` | Whether the map object can be placed in the Map Editor.<br>Some objects require special handling and should not be placeable under normal circumstances (e.g. grain, orchards, coalpiles). |
 | Root.Objects.object | attr | Placement | Enum | **Required** | Placement of the object - tile or vertice.<br>* `"csTile"`, object will be placed on tiles;<br>* `"csVertice"`, object will be placed on a vertex between tiles. |
@@ -86,13 +87,14 @@ XML layout example:
     <decal EngName="value" AllowedHumiditySet="value" IsPassable="value" IsBuildable="value"
     MinimapColor="value" ReplaceTile="value" GoldDeposit="value" IronDeposit="value" StoneDeposit="value"
     Selectable="value" ModelHeight="value" AvatarSetup="value"/>
+    ...
   <Decals/>
 </Root>
 ```
 | Structure | A/N | Attribute name | Type | Required / Default | Description |
 | --------- |:---:|:--------------:|:----:|:------------------:| ----------- |
 | Root | node | Decals |  |  | Decals that can be placed onto terrain tiles. |
-| Root.Decals | node | decal |  |  | Decals that can be placed onto terrain tiles. |
+| Root.Decals | node | decal |  |  | Decal that can be placed onto terrain tiles. |
 | Root.Decals.decal | attr | EngName | String | **Required** | Unique identifier of the decal. |
 | Root.Decals.decal | attr | AllowedHumiditySet | Enum set | `""` | Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all. |
 | Root.Decals.decal | attr | IsPassable | Boolean | **Required** | Wherever this decal can be walk over by units. |
@@ -146,14 +148,14 @@ XML layout example:
 4.  - Flags
 4.  HUD:TKMMapObjectHUDSpec -> 
 4.   - AvatarSetup
-4.  Anims:List -> 
+4.  Anims:list -> 
 4.   anim:TKMMapObjectAnimationSpec -> 
 4.    - StateFrom
 4.    - StateTo
 4.    - AnimFile
 4.    - Duration
 4.    - EngName
-4.  States:List -> 
+4.  States:list -> 
 4.   state:TKMMapObjectStateSpec -> 
 4.    - TileBlock
 4.    - VertBlock
@@ -180,14 +182,14 @@ XML layout example:
 5.   - Flags
 5.   HUD:TKMMapObjectHUDSpec -> 
 5.    - AvatarSetup
-5.   Anims:List -> 
+5.   Anims:list -> 
 5.    anim:TKMMapObjectAnimationSpec -> 
 5.     - StateFrom
 5.     - StateTo
 5.     - AnimFile
 5.     - Duration
 5.     - EngName
-5.   States:List -> 
+5.   States:list -> 
 5.    state:TKMMapObjectStateSpec -> 
 5.     - TileBlock
 5.     - VertBlock
