@@ -30,7 +30,7 @@ type
   TKMModdingNode = class
   private
     function ExportWikiBody_Header: string;
-    function ExportWikiBody_Table(const aParent: string): string;
+    function ExportWikiBody_Table(const aParent: string; aIsRequired: Boolean): string;
   public
     TypeName: string;   // TKMSomething
     NodeName: string;   // Decals
@@ -44,6 +44,7 @@ type
 
     Attributes: TList<TKMModdingAttribute>;
     Nodes: TList<TKMModdingNode>;
+    NodeIsRequired: TList<Boolean>;
 
     constructor Create;
     constructor CreateNode(const aDeclaration, aDescription, aNodeReference: string);
@@ -171,6 +172,7 @@ begin
 
   Attributes := TList<TKMModdingAttribute>.Create;
   Nodes := TList<TKMModdingNode>.Create;
+  NodeIsRequired := TList<Boolean>.Create;
 end;
 
 
@@ -199,6 +201,7 @@ destructor TKMModdingNode.Destroy;
 begin
   FreeAndNil(Attributes);
   FreeAndNil(Nodes);
+  FreeAndNil(NodeIsRequired);
 
   inherited;
 end;
@@ -212,6 +215,7 @@ begin
   var nodeReference := '';
   var attrReference := '';
   var listForNextNode: TKMModdingNode := nil;
+  var nodeRequired := False;
 
   for var I := 0 to aSource.Count - 1 do
   begin
@@ -239,6 +243,12 @@ begin
       Continue;
     end;
 
+    if StartsStr(DOC_TAG_MODDING_NODE_IS_REQUIRED, srcLine) then
+    begin
+      nodeRequired := True;
+      Continue;
+    end;
+
     // Accumulate description until we need it
     if StartsStr(DOC_TAG, srcLine) then
     begin
@@ -262,8 +272,7 @@ begin
         line := Trim(LeftStrBefore(srcLine, '//'));
 
       // Decide the type of the item we have
-      var itemType := itUndefined;
-
+      var itemType: TKMItemType;
       if listForNextNode = TKMModdingNode(1) then
         itemType := itListForNextNode
       else
@@ -290,14 +299,17 @@ begin
         itNode:             begin
                               var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
                               Nodes.Add(newNode);
+                              NodeIsRequired.Add(nodeRequired);
                             end;
         itListForNextNode:  begin
                               listForNextNode := TKMModdingNode.CreateList(line, descAccumulator);
                               Nodes.Add(listForNextNode);
+                              NodeIsRequired.Add(nodeRequired);
                             end;
         itNodeInList:       begin
                               var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
                               listForNextNode.Nodes.Add(newNode);
+                              listForNextNode.NodeIsRequired.Add(nodeRequired);
                               listForNextNode := nil;
                             end;
       else
@@ -307,6 +319,7 @@ begin
       descAccumulator := '';
       nodeReference := '';
       attrReference := '';
+      nodeRequired := False;
     end;
   end;
 end;
@@ -393,7 +406,7 @@ begin
     xmlText +
     '```' + sLineBreak;
 
-  Result := Result + ExportWikiBody_Table('Root') + sLineBreak;
+  Result := Result + ExportWikiBody_Table('Root', True) + sLineBreak;
 end;
 
 
@@ -445,11 +458,11 @@ begin
 end;
 
 
-function TKMModdingNode.ExportWikiBody_Table(const aParent: string): string;
+function TKMModdingNode.ExportWikiBody_Table(const aParent: string; aIsRequired: Boolean): string;
 const
-  TEMPLATE_HEADER      = '| Structure | A/N | Attribute name | Type | Required / Default | Description |';
-  TEMPLATE_HEADER_LINE = '| --------- |:---:|:--------------:|:----:|:------------------:| ----------- |';
-  TEMPLATE = '| %s | %s | %s | %s | %s | %s |';
+  TEMPLATE_HEADER      = '| Structure | A/N | Attribute name | Type | Required | Default | Description |';
+  TEMPLATE_HEADER_LINE = '| --------- |:---:|:--------------:|:----:|:--------:|:-------:| ----------- |';
+  TEMPLATE = '| %s | %s | %s | %s | %s | %s | %s |';
 begin
   Result := '';
 
@@ -458,20 +471,22 @@ begin
               TEMPLATE_HEADER_LINE + sLineBreak;
 
   // Self
-  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName, '', '', GetTableDescription]) + sLineBreak;
+  var nodeReq := IfThen(aIsRequired, '**Required**');
+  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName, '', nodeReq, '', GetTableDescription]) + sLineBreak;
 
   if Attributes.Count + Nodes.Count = 0 then Exit;
 
   // Attributes
   for var I := 0 to Attributes.Count - 1 do
   begin
-    var req := IfThen(Attributes[I].IsRequired, '**Required**', '`"' + Attributes[I].Default + '"`');
-    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr', Attributes[I].FieldName, Attributes[I].GetTableType, req, Attributes[I].GetTableDescription]) + sLineBreak;
+    var req := IfThen(Attributes[I].IsRequired, '**Required**');
+    var def := IfThen(not Attributes[I].IsRequired, '`"' + Attributes[I].Default + '"`');
+    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr', Attributes[I].FieldName, Attributes[I].GetTableType, req, def, Attributes[I].GetTableDescription]) + sLineBreak;
   end;
 
   // Nodes
   for var I := 0 to Nodes.Count - 1 do
-    Result := Result + Nodes[I].ExportWikiBody_Table(aParent + '.' + NodeName);
+    Result := Result + Nodes[I].ExportWikiBody_Table(aParent + '.' + NodeName, NodeIsRequired[I]);
 end;
 
 
