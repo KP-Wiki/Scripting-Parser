@@ -28,8 +28,6 @@ type
   end;
 
   TKMModdingNode = class
-  private const
-    TYPE_LIST_WITHOUT_NAME = 'List';
   private
     function ExportWikiBody_Header: string;
     function ExportWikiBody_Table(const aParent: string): string;
@@ -55,8 +53,6 @@ type
     procedure LoadFromStringList(aSource: TStringList);
     procedure CrossLinkWith(aNode: TKMModdingNode);
     procedure SortFieldsByType;
-
-    function IsList: Boolean;
 
     function ExportListing(const aPad: string): string;
     function ExportWikiBody: string;
@@ -194,7 +190,8 @@ begin
 
   NodeName := Trim(FirstStrBetween(aDeclaration, #39, #39));
   Description := aDescription;
-  TypeName := TYPE_LIST_WITHOUT_NAME;
+  TypeName := 'list';
+  TypeSpecialty := mtsList;
 end;
 
 
@@ -255,8 +252,11 @@ begin
 
     // Every item must have a description
     // When we have a description, next code line is the type
-    if descAccumulator <> '' then
+    if (nodeReference <> '') or (descAccumulator <> '') then
     begin
+      if (nodeReference <> '') and (descAccumulator <> '') then
+        raise Exception.Create('Node reference will overwrite any existing description.');
+
       var line := srcLine;
       if ContainsText(line, '//') then
         line := Trim(LeftStrBefore(srcLine, '//'));
@@ -433,7 +433,7 @@ begin
     for var I := 0 to Nodes.Count - 1 do
       nodesString := nodesString + Nodes[I].GetXmlExample;
 
-    if IsList then
+    if TypeSpecialty = mtsList then
       nodesString := nodesString + '...' + sLineBreak;
 
     nodesString := ParagraphPad(nodesString, '  ');
@@ -492,16 +492,11 @@ begin
 end;
 
 
-function TKMModdingNode.IsList: Boolean;
-begin
-  Result := TypeName = TYPE_LIST_WITHOUT_NAME;
-end;
-
-
 function TKMModdingNode.GetTableDescription: string;
 begin
   case TypeSpecialty of
-    mtsNormal:                  Result := Description;
+    mtsNormal,
+    mtsList:                    Result := Description;
     mtsSemicolonDelimitedArray: begin
                                   Result := Description;
                                   for var I := 0 to Attributes.Count - 1 do
@@ -524,16 +519,16 @@ begin
     if srcLine = '' then
       Continue;
 
-    if StartsStr(DOC_TAG_MODDING_IS_ROOT, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_TYPE_IS_ROOT, srcLine) then
     begin
       Result.IsRoot := True;
       Continue;
     end;
 
     // Name of the type
-    if StartsStr(DOC_TAG_MODDING_TYPENAME, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_TYPE_NAME, srcLine) then
     begin
-      Result.TypeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPENAME));
+      Result.TypeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPE_NAME));
       Continue;
     end;
 
@@ -543,21 +538,21 @@ begin
       Continue;
     end;
 
-    if StartsStr(DOC_TAG_MODDING_NODENAME, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_TYPE_NODENAME, srcLine) then
     begin
-      Result.NodeName := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_NODENAME));
+      Result.NodeName := FirstStrBetween(aSource[I+1], #39, #39);
       Continue;
     end;
 
-    if StartsStr(DOC_TAG_MODDING_CAPTION, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_TYPE_CAPTION, srcLine) then
     begin
-      Result.Caption := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_CAPTION));
+      Result.Caption := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPE_CAPTION));
       Continue;
     end;
 
-    if StartsStr(DOC_TAG_MODDING_DESCRIPTION, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_TYPE_DESCRIPTION, srcLine) then
     begin
-      Result.Description := Result.Description + IfThen(Result.Description <> '', '<br>') + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_DESCRIPTION));
+      Result.Description := Result.Description + IfThen(Result.Description <> '', '<br>') + Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_TYPE_DESCRIPTION));
       Continue;
     end;
 
@@ -566,11 +561,15 @@ begin
       if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsSemicolonDelimitedArray]) then
         Result.TypeSpecialty := mtsSemicolonDelimitedArray
       else
+      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsList]) then
+        Result.TypeSpecialty := mtsList
+      else
         raise Exception.CreateFmt('Unexpected tag value - "%s"', [srcLine]);
 
       Continue;
     end;
 
+    // Now begin attributes and nodes
     if StartsStr(DOC_TAG, srcLine) then
     begin
       // Delete parsed data
@@ -578,6 +577,7 @@ begin
       for var K := firstNonHeaderLine - 1 downto 0 do
         aSource.Delete(K);
 
+      // There is only one type
       Result.LoadFromStringList(aSource);
       Exit;
     end;
