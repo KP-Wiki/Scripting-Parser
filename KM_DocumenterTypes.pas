@@ -65,8 +65,9 @@ const
   DOC_TAG_MODDING_TYPE_DESCRIPTION  = '//* Type-Description:';  // Description
   DOC_TAG_MODDING_TYPE_SPECIALTY    = '//* Type-Specialty:';    // Special
 
-  DOC_TAG_MODDING_REFERENCE_NODE = '//* Reference-Node:';     // Reference to another type
-  DOC_TAG_MODDING_REFERENCE_ATTR = '//* Reference-Attr:';     // Reference to another type
+  DOC_TAG_MODDING_NODE_IS_REQUIRED  = '//* Node-IsRequired:';   // Node is required
+  DOC_TAG_MODDING_REFERENCE_NODE    = '//* Reference-Node:';    // Reference to another type
+  DOC_TAG_MODDING_REFERENCE_ATTR    = '//* Reference-Attr:';    // Reference to another type
   DOC_TAG_MODDING_LIST = '//* ListForNextNode:';     // Reference to another type
 
 

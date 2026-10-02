@@ -39,41 +39,41 @@ XML layout example:
   <Objects/>
 </Root>
 ```
-| Structure | A/N | Attribute name | Type | Required / Default | Description |
-| --------- |:---:|:--------------:|:----:|:------------------:| ----------- |
-| Root | node | Objects |  |  | Objects that can be placed on terrain. |
-| Root.Objects | node | object |  |  | Object that can be placed on terrain. |
-| Root.Objects.object | attr | EngName | String | **Required** | Unique identifier of the map object. |
-| Root.Objects.object | attr | CanPlaceInMapEd | Boolean | `"True"` | Whether the map object can be placed in the Map Editor.<br>Some objects require special handling and should not be placeable under normal circumstances (e.g. grain, orchards, coalpiles). |
-| Root.Objects.object | attr | Placement | Enum | **Required** | Placement of the object - tile or vertice.<br>* `"csTile"`, object will be placed on tiles;<br>* `"csVertice"`, object will be placed on a vertex between tiles. |
-| Root.Objects.object | attr | Multiple | Integer | `"1"` | How many instances of the object are placed at once (1, 2, 36). |
-| Root.Objects.object | attr | GrowTarget | String | `""` | What will this object grow into (EngName). Used for trees. |
-| Root.Objects.object | attr | GrowTime | Integer | `"0"` | Time, in game ticks, required for the object to grow. |
-| Root.Objects.object | attr | Sway | Float | `"0.0"` | How much does the object sway in the wind (0.0 .. 1.0). |
-| Root.Objects.object | attr | ScaleVariation | Float | `"0.0"` | Amount of random scale variation applied to object instances. |
-| Root.Objects.object | attr | Foliage | Boolean | `"False"` | Is this object a foliage model (trees, bushes). |
-| Root.Objects.object | attr | FoliageScale | Float | `"1.0"` | Foliage scale. |
-| Root.Objects.object | attr | TileBlock | Enum | **Required** | When object Placement is "csTile" this is a type of tile blocking this object does:<br>* `"none"` - nothing is blocked (default state);<br>* `"houses"` - house-building is blocked;<br>* `"roads"` - road-building is blocked;<br>* `"everything"` - everything (walking) is blocked. |
-| Root.Objects.object | attr | VertBlock | Enum | **Required** | When object Placement is "csVertice" this is a type of vertex blocking this object does:<br>* `"none"` - blocks nothing (default state);<br>* `"walkFightBuild"` - blocks walking/fighting/building over the vertex (e.g. trees).<br>* `"roadsFields"` - blocks roads/fields as well (e.g. big columns). |
-| Root.Objects.object | attr | Removable | Enum | `""` | How hard is it to remove this object from terrain.<br>One of the following values:<br>* `"easy"` - object can be removed without a problem in process of building on top of it;<br>* `"hard"` - object can be removed by a Builder on request;<br>* `"nonRemovable"` - object is not removable at all. |
-| Root.Objects.object | attr | Selectable | Boolean | `"False"` | Whether object selectable. |
-| Root.Objects.object | attr | ColorMinimap | Cardinal | **Required** | Color of the object ion the minimap. |
-| Root.Objects.object | attr | AllowedHumiditySet | Enum set | `""` | Terrain humidity suitable for this map object (e.g. ore decals can be placed only on rock). Several values can be listed via a comma. Use `""` for all. |
-| Root.Objects.object | attr | Flags | Enum set | `""` | Set of flags for the object. Multiple values can be listed via a comma:<br>* `"repelTrees"` - woodcutter will not plant new trees around this object;<br>* `"treeSapling"` - object is a tree sapling;<br>* `"treeCuttable"` - object is a cuttable tree;<br>* `"treeStump"`  - object is a stump of a tree. Woodcutter will prefer planting new trees on its place. |
-| Root.Objects.object | node | HUD |  |  | Settings for map object HUD. |
-| Root.Objects.object.HUD | attr | AvatarSetup | String6 | `"6"` | Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360)<br>Default values are `"6.0;3.0;1.5;0.0;0.0;145.0"`. |
-| Root.Objects.object | node | Anims |  |  | List of animations. |
-| Root.Objects.object.Anims | node | anim |  |  | List of animations between states. To make an idle animation for some state, set both states to one value. |
-| Root.Objects.object.Anims.anim | attr | StateFrom | Integer | **Required** | Source state. |
-| Root.Objects.object.Anims.anim | attr | StateTo | Integer | **Required** | Destination state. |
-| Root.Objects.object.Anims.anim | attr | AnimFile | String | **Required** | Animation file name. |
-| Root.Objects.object.Anims.anim | attr | Duration | Integer | **Required** | Duration of the animation. |
-| Root.Objects.object.Anims.anim | attr | EngName | String | **Required** | EngName (unused?). |
-| Root.Objects.object | node | States |  |  | List of states in which this object can be. |
-| Root.Objects.object.States | node | state |  |  | List of object states. Maximum of 4 states is allowed. |
-| Root.Objects.object.States.state | attr | TileBlock | Enum | **Required** | Override value for the matching placement |
-| Root.Objects.object.States.state | attr | VertBlock | Enum | **Required** | Override value for the matching placement |
-| Root.Objects.object.States.state | attr | EngName | String | **Required** | Identifier of this state |
+| Structure | A/N | Attribute name | Type | Required | Default | Description |
+| --------- |:---:|:--------------:|:----:|:--------:|:-------:| ----------- |
+| Root | node | Objects |  | **Required** |  | Objects that can be placed on terrain. |
+| Root.Objects | node | object |  | **Required** |  | Object that can be placed on terrain. |
+| Root.Objects.object | attr | EngName | String | **Required** |  | Unique identifier of the map object. |
+| Root.Objects.object | attr | CanPlaceInMapEd | Boolean |  | `"True"` | Whether the map object can be placed in the Map Editor.<br>Some objects require special handling and should not be placeable under normal circumstances (e.g. grain, orchards, coalpiles). |
+| Root.Objects.object | attr | Placement | Enum | **Required** |  | Placement of the object - tile or vertice.<br>* `"csTile"`, object will be placed on tiles;<br>* `"csVertice"`, object will be placed on a vertex between tiles. |
+| Root.Objects.object | attr | Multiple | Integer |  | `"1"` | How many instances of the object are placed at once (1, 2, 36). |
+| Root.Objects.object | attr | GrowTarget | String |  | `""` | What will this object grow into (EngName). Used for trees. |
+| Root.Objects.object | attr | GrowTime | Integer |  | `"0"` | Time, in game ticks, required for the object to grow. |
+| Root.Objects.object | attr | Sway | Float |  | `"0.0"` | How much does the object sway in the wind (0.0 .. 1.0). |
+| Root.Objects.object | attr | ScaleVariation | Float |  | `"0.0"` | Amount of random scale variation applied to object instances. |
+| Root.Objects.object | attr | Foliage | Boolean |  | `"False"` | Is this object a foliage model (trees, bushes). |
+| Root.Objects.object | attr | FoliageScale | Float |  | `"1.0"` | Foliage scale. |
+| Root.Objects.object | attr | TileBlock | Enum | **Required** |  | When object Placement is "csTile" this is a type of tile blocking this object does:<br>* `"none"` - nothing is blocked (default state);<br>* `"houses"` - house-building is blocked;<br>* `"roads"` - road-building is blocked;<br>* `"everything"` - everything (walking) is blocked. |
+| Root.Objects.object | attr | VertBlock | Enum | **Required** |  | When object Placement is "csVertice" this is a type of vertex blocking this object does:<br>* `"none"` - blocks nothing (default state);<br>* `"walkFightBuild"` - blocks walking/fighting/building over the vertex (e.g. trees).<br>* `"roadsFields"` - blocks roads/fields as well (e.g. big columns). |
+| Root.Objects.object | attr | Removable | Enum |  | `""` | How hard is it to remove this object from terrain.<br>One of the following values:<br>* `"easy"` - object can be removed without a problem in process of building on top of it;<br>* `"hard"` - object can be removed by a Builder on request;<br>* `"nonRemovable"` - object is not removable at all. |
+| Root.Objects.object | attr | Selectable | Boolean |  | `"False"` | Whether object selectable. |
+| Root.Objects.object | attr | ColorMinimap | Cardinal | **Required** |  | Color of the object ion the minimap. |
+| Root.Objects.object | attr | AllowedHumiditySet | Enum set |  | `""` | Terrain humidity suitable for this map object (e.g. ore decals can be placed only on rock). Several values can be listed via a comma. Use `""` for all. |
+| Root.Objects.object | attr | Flags | Enum set |  | `""` | Set of flags for the object. Multiple values can be listed via a comma:<br>* `"repelTrees"` - woodcutter will not plant new trees around this object;<br>* `"treeSapling"` - object is a tree sapling;<br>* `"treeCuttable"` - object is a cuttable tree;<br>* `"treeStump"`  - object is a stump of a tree. Woodcutter will prefer planting new trees on its place. |
+| Root.Objects.object | node | HUD |  |  |  | Settings for map object HUD. |
+| Root.Objects.object.HUD | attr | AvatarSetup | String6 |  | `"6"` | Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360)<br>Default values are `"6.0;3.0;1.5;0.0;0.0;145.0"`. |
+| Root.Objects.object | node | Anims |  |  |  | List of animations. |
+| Root.Objects.object.Anims | node | anim |  |  |  | List of animations between states. To make an idle animation for some state, set both states to one value. |
+| Root.Objects.object.Anims.anim | attr | StateFrom | Integer | **Required** |  | Source state. |
+| Root.Objects.object.Anims.anim | attr | StateTo | Integer | **Required** |  | Destination state. |
+| Root.Objects.object.Anims.anim | attr | AnimFile | String | **Required** |  | Animation file name. |
+| Root.Objects.object.Anims.anim | attr | Duration | Integer | **Required** |  | Duration of the animation. |
+| Root.Objects.object.Anims.anim | attr | EngName | String | **Required** |  | EngName (unused?). |
+| Root.Objects.object | node | States |  |  |  | List of states in which this object can be. |
+| Root.Objects.object.States | node | state |  |  |  | List of object states. Maximum of 4 states is allowed. |
+| Root.Objects.object.States.state | attr | TileBlock | Enum | **Required** |  | Override value for the matching placement |
+| Root.Objects.object.States.state | attr | VertBlock | Enum | **Required** |  | Override value for the matching placement |
+| Root.Objects.object.States.state | attr | EngName | String | **Required** |  | Identifier of this state |
 
 ### <a id="TKMResTerrainDecals">Terrain decals</a>
 
@@ -91,22 +91,22 @@ XML layout example:
   <Decals/>
 </Root>
 ```
-| Structure | A/N | Attribute name | Type | Required / Default | Description |
-| --------- |:---:|:--------------:|:----:|:------------------:| ----------- |
-| Root | node | Decals |  |  | Decals that can be placed onto terrain tiles. |
-| Root.Decals | node | decal |  |  | Decal that can be placed onto terrain tiles. |
-| Root.Decals.decal | attr | EngName | String | **Required** | Unique identifier of the decal. |
-| Root.Decals.decal | attr | AllowedHumiditySet | Enum set | `""` | Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all. |
-| Root.Decals.decal | attr | IsPassable | Boolean | **Required** | Wherever this decal can be walk over by units. |
-| Root.Decals.decal | attr | IsBuildable | Boolean | **Required** | Wherever roads and houses can be built on top of this decal. |
-| Root.Decals.decal | attr | MinimapColor | Cardinal | `"0"` | Color of the decal on the minimap. Use 0 for none. |
-| Root.Decals.decal | attr | ReplaceTile | Boolean | `"False"` | Whether the decal replaces the underlying terrain tile. |
-| Root.Decals.decal | attr | GoldDeposit | Integer | `"0"` | Amount of gold this ore decal contains. Up to 255. Use on your own risk. |
-| Root.Decals.decal | attr | IronDeposit | Integer | `"0"` | Amount of iron this ore decal contains. Up to 255. Use on your own risk. |
-| Root.Decals.decal | attr | StoneDeposit | Integer | `"0"` | Amount of stone this ore decal contains. Up to 255. Use on your own risk. |
-| Root.Decals.decal | attr | Selectable | Boolean | `"False"` | Can be select to see its info in the HUD. |
-| Root.Decals.decal | attr | ModelHeight | Float | `"0.0"` | Height of the model for HitTest. Can be set slightly lower than the actual model for better match.<br>Not needed if the object is not selectable. |
-| Root.Decals.decal | attr | AvatarSetup | String6 | **Required** | Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360)<br>Default values are "3.8;1.4;0.5;0;0;145" |
+| Structure | A/N | Attribute name | Type | Required | Default | Description |
+| --------- |:---:|:--------------:|:----:|:--------:|:-------:| ----------- |
+| Root | node | Decals |  | **Required** |  | Decals that can be placed onto terrain tiles. |
+| Root.Decals | node | decal |  | **Required** |  | Decal that can be placed onto terrain tiles. |
+| Root.Decals.decal | attr | EngName | String | **Required** |  | Unique identifier of the decal. |
+| Root.Decals.decal | attr | AllowedHumiditySet | Enum set |  | `""` | Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all. |
+| Root.Decals.decal | attr | IsPassable | Boolean | **Required** |  | Wherever this decal can be walk over by units. |
+| Root.Decals.decal | attr | IsBuildable | Boolean | **Required** |  | Wherever roads and houses can be built on top of this decal. |
+| Root.Decals.decal | attr | MinimapColor | Cardinal |  | `"0"` | Color of the decal on the minimap. Use 0 for none. |
+| Root.Decals.decal | attr | ReplaceTile | Boolean |  | `"False"` | Whether the decal replaces the underlying terrain tile. |
+| Root.Decals.decal | attr | GoldDeposit | Integer |  | `"0"` | Amount of gold this ore decal contains. Up to 255. Use on your own risk. |
+| Root.Decals.decal | attr | IronDeposit | Integer |  | `"0"` | Amount of iron this ore decal contains. Up to 255. Use on your own risk. |
+| Root.Decals.decal | attr | StoneDeposit | Integer |  | `"0"` | Amount of stone this ore decal contains. Up to 255. Use on your own risk. |
+| Root.Decals.decal | attr | Selectable | Boolean |  | `"False"` | Can be select to see its info in the HUD. |
+| Root.Decals.decal | attr | ModelHeight | Float |  | `"0.0"` | Height of the model for HitTest. Can be set slightly lower than the actual model for better match.<br>Not needed if the object is not selectable. |
+| Root.Decals.decal | attr | AvatarSetup | String6 | **Required** |  | Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360)<br>Default values are "3.8;1.4;0.5;0;0;145" |
 
 
 
