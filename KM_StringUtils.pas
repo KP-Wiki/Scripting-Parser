@@ -20,6 +20,9 @@ function FindLastSubStr(const aStr, aSubString: string): Integer;
 
 function ExtractFunctionResultType(aStr: string): string;
 
+function ParagraphWordWrap(const aStr: string; aMaxLength: Integer = 120): string;
+function ParagraphPad(const aStr, aPad: string): string;
+
 implementation
 uses
   System.SysUtils, System.Types, System.StrUtils;
@@ -116,6 +119,81 @@ begin
       Result := nextPos
     else
       Exit;
+  end;
+end;
+
+
+function ParagraphWordWrap(const aStr: string; aMaxLength: Integer = 120): string;
+
+  function WrapLine(const aLine: string): string;
+  begin
+    Result := '';
+
+    // Get indentation of the original line
+    var indentLen := 0;
+    while (indentLen < Length(aLine)) and (aLine[indentLen + 1] in [' ', #9]) do
+      Inc(indentLen);
+
+    var indent := Copy(aLine, 1, indentLen);
+    var startPos := 1;
+
+    while Length(aLine) - startPos + 1 > aMaxLength do
+    begin
+      // Continuation lines already contain the indentation,
+      // so account for it when calculating the available width
+      var wedgePos := startPos + aMaxLength - Length(indent) - 1;
+
+      // The first line already contains its indentation
+      if startPos = 1 then
+        wedgePos := startPos + aMaxLength - 1;
+
+      // Find the last space within the allowed line length
+      var spacePos := wedgePos;
+      while (spacePos >= startPos) and (aLine[spacePos] <> ' ') do
+        Dec(spacePos);
+
+      // No space found: force a break at the maximum length
+      if spacePos < startPos then
+        spacePos := wedgePos + 1;
+
+      Result := Result + Copy(aLine, startPos, spacePos - startPos) + sLineBreak + indent;
+
+      // Skip the space used for wrapping
+      if (spacePos <= Length(aLine)) and (aLine[spacePos] = ' ') then
+        startPos := spacePos + 1
+      else
+        startPos := spacePos;
+    end;
+
+    Result := Result + Copy(aLine, startPos, MaxInt);
+  end;
+begin
+  // Preserve existing line breaks and wrap each line separately
+  var lines := aStr.Split([sLineBreak]);
+
+  Result := '';
+
+  for var I := 0 to High(lines) do
+  begin
+    if I > 0 then
+      Result := Result + sLineBreak;
+
+    Result := Result + WrapLine(lines[I]);
+  end;
+end;
+
+
+function ParagraphPad(const aStr, aPad: string): string;
+begin
+  // Preserve existing line breaks and pad each line separately
+  var lines := aStr.Split([sLineBreak]);
+
+  for var I := 0 to High(lines) do
+  begin
+    if I > 0 then
+      Result := Result + sLineBreak;
+
+    Result := Result + IfThen(lines[I] <> '', aPad) + lines[I];
   end;
 end;
 

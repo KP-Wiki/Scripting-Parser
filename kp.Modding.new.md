@@ -21,15 +21,18 @@ XML layout example:
 <?xml version="1.0" encoding="UTF-8"?>
 <Root>
   <Objects>
-    <object EngName="value" CanPlaceInMapEd="value" Placement="value" Multiple="value" GrowTarget="value" GrowTime="value"
-    Sway="value" ScaleVariation="value" Foliage="value" FoliageScale="value" TileBlock="value" VertBlock="value"
-    Removable="value" Selectable="value" ColorMinimap="value" AllowedHumiditySet="value" Flags="value">
+    <object EngName="value" CanPlaceInMapEd="value" Placement="value" Multiple="value" GrowTarget="value"
+    GrowTime="value" Sway="value" ScaleVariation="value" Foliage="value" FoliageScale="value" TileBlock="value"
+    VertBlock="value" Removable="value" Selectable="value" ColorMinimap="value" AllowedHumiditySet="value"
+    Flags="value">
       <HUD AvatarSetup="value"/>
       <Anims>
         <anim StateFrom="value" StateTo="value" AnimFile="value" Duration="value" EngName="value"/>
+        ...
       <Anims/>
       <States>
         <state TileBlock="value" VertBlock="value" EngName="value"/>
+        ...
       <States/>
     <object/>
   <Objects/>
@@ -80,9 +83,9 @@ XML layout example:
 <?xml version="1.0" encoding="UTF-8"?>
 <Root>
   <Decals>
-    <decal EngName="value" AllowedHumiditySet="value" IsPassable="value" IsBuildable="value" MinimapColor="value"
-    ReplaceTile="value" GoldDeposit="value" IronDeposit="value" StoneDeposit="value" Selectable="value"
-    ModelHeight="value" AvatarSetup="value"/>
+    <decal EngName="value" AllowedHumiditySet="value" IsPassable="value" IsBuildable="value"
+    MinimapColor="value" ReplaceTile="value" GoldDeposit="value" IronDeposit="value" StoneDeposit="value"
+    Selectable="value" ModelHeight="value" AvatarSetup="value"/>
   <Decals/>
 </Root>
 ```
@@ -143,14 +146,14 @@ XML layout example:
 4.  - Flags
 4.  HUD:TKMMapObjectHUDSpec -> 
 4.   - AvatarSetup
-4.  Anims:list -> 
+4.  Anims:List -> 
 4.   anim:TKMMapObjectAnimationSpec -> 
 4.    - StateFrom
 4.    - StateTo
 4.    - AnimFile
 4.    - Duration
 4.    - EngName
-4.  States:list -> 
+4.  States:List -> 
 4.   state:TKMMapObjectStateSpec -> 
 4.    - TileBlock
 4.    - VertBlock
@@ -177,14 +180,14 @@ XML layout example:
 5.   - Flags
 5.   HUD:TKMMapObjectHUDSpec -> 
 5.    - AvatarSetup
-5.   Anims:list -> 
+5.   Anims:List -> 
 5.    anim:TKMMapObjectAnimationSpec -> 
 5.     - StateFrom
 5.     - StateTo
 5.     - AnimFile
 5.     - Duration
 5.     - EngName
-5.   States:list -> 
+5.   States:List -> 
 5.    state:TKMMapObjectStateSpec -> 
 5.     - TileBlock
 5.     - VertBlock
