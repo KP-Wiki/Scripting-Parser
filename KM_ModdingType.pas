@@ -28,9 +28,10 @@ type
   end;
 
   TKMModdingNode = class
+  private const
+    TYPE_LIST_WITHOUT_NAME = 'List';
   private
     function ExportWikiBody_Header: string;
-    function ExportWikiBody_XmlExample(const aPad: string): string;
     function ExportWikiBody_Table(const aParent: string): string;
   public
     TypeName: string;   // TKMSomething
@@ -47,7 +48,7 @@ type
     Nodes: TList<TKMModdingNode>;
 
     constructor Create;
-    constructor CreateInit(const aDeclaration, aDescription, aNodeReference: string);
+    constructor CreateNode(const aDeclaration, aDescription, aNodeReference: string);
     constructor CreateList(const aDeclaration, aDescription: string);
     destructor Destroy; override;
 
@@ -55,9 +56,13 @@ type
     procedure CrossLinkWith(aNode: TKMModdingNode);
     procedure SortFieldsByType;
 
+    function IsList: Boolean;
+
     function ExportListing(const aPad: string): string;
     function ExportWikiBody: string;
     function ExportWikiLink: string;
+
+    function GetXmlExample: string;
     function GetTableType: string;
     function GetTableDescription: string;
   end;
@@ -173,7 +178,7 @@ begin
 end;
 
 
-constructor TKMModdingNode.CreateInit(const aDeclaration, aDescription, aNodeReference: string);
+constructor TKMModdingNode.CreateNode(const aDeclaration, aDescription, aNodeReference: string);
 begin
   Create;
 
@@ -189,7 +194,7 @@ begin
 
   NodeName := Trim(FirstStrBetween(aDeclaration, #39, #39));
   Description := aDescription;
-  TypeName := 'list';
+  TypeName := TYPE_LIST_WITHOUT_NAME;
 end;
 
 
@@ -283,7 +288,7 @@ begin
                               Attributes.Add(newAttribute);
                             end;
         itNode:             begin
-                              var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
+                              var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
                               Nodes.Add(newNode);
                             end;
         itListForNextNode:  begin
@@ -291,7 +296,7 @@ begin
                               Nodes.Add(listForNextNode);
                             end;
         itNodeInList:       begin
-                              var newNode := TKMModdingNode.CreateInit(line, descAccumulator, nodeReference);
+                              var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
                               listForNextNode.Nodes.Add(newNode);
                               listForNextNode := nil;
                             end;
@@ -355,8 +360,6 @@ begin
 
   for var I := 0 to Nodes.Count - 1 do
     Result := Result + Nodes[I].ExportListing(aPad + ' ');
-
-  //Result := Result + sLineBreak;
 end;
 
 
@@ -373,10 +376,16 @@ begin
     '<Root>' + sLineBreak;
   end;
 
-  xmlText := xmlText + ExportWikiBody_XmlExample('  ');
+  var xmlBody := GetXmlExample;
+
+  xmlBody := ParagraphPad(xmlBody, '  ');
+
+  xmlText := xmlText + xmlBody;
 
   if IsRoot then
     xmlText := xmlText + '</Root>' + sLineBreak;
+
+  xmlText := ParagraphWordWrap(xmlText, 112);
 
   Result := Result +
     'XML layout example:' + sLineBreak +
@@ -395,52 +404,44 @@ begin
 end;
 
 
-function TKMModdingNode.ExportWikiBody_XmlExample(const aPad: string): string;
+function TKMModdingNode.GetXmlExample: string;
 begin
   if (Attributes.Count = 0) and (Nodes.Count = 0) then Exit('');
-
-  var usePad := aPad;
 
   // Attributes
   var attributeString := '';
   for var I := 0 to Attributes.Count - 1 do
-  begin
-    var lastEol := FindLastSubStr(attributeString, sLineBreak);
-    var lengthSinceEol := Length(attributeString) - lastEol;
-    var nameValue := Attributes[I].GetXmlExample;
-
-    // Append or start new line
-    if lengthSinceEol + Length(nameValue) <= 112 then
-      nameValue := ' ' + nameValue
-    else
-      nameValue := sLineBreak + usePad + nameValue;
-
-    attributeString := attributeString + nameValue;
-  end;
+    attributeString := attributeString + IfThen(attributeString > '', ' ') + Attributes[I].GetXmlExample;
 
   var xmlString := '';
-  if (Attributes.Count > 0) then
-    xmlString := usePad + '<' + NodeName + attributeString;
+  if Attributes.Count > 0 then
+  begin
+    xmlString := '<' + NodeName + ' ' + attributeString;
 
-  if (Attributes.Count > 0) and (Nodes.Count > 0) then
-    xmlString := xmlString + '>' + sLineBreak;
-
-  if (Attributes.Count > 0) and (Nodes.Count = 0) then
-    xmlString := xmlString + '/>' + sLineBreak;
-
-  if (Attributes.Count = 0) and (Nodes.Count > 0) then
-    xmlString := xmlString + usePad + '<' + NodeName + '>' + sLineBreak;
+    if Nodes.Count > 0 then
+      xmlString := xmlString + '>' + sLineBreak
+    else
+      xmlString := xmlString + '/>' + sLineBreak;
+  end else
+    xmlString := xmlString + '<' + NodeName + '>' + sLineBreak;
 
   // Sub-objects
-  for var I := 0 to Nodes.Count - 1 do
-    xmlString := xmlString + Nodes[I].ExportWikiBody_XmlExample(usePad + '  ');
+  if Nodes.Count > 0 then
+  begin
+    var nodesString := '';
 
-  if (Nodes.Count > 0) then
-    xmlString := xmlString + usePad + '<' + NodeName + '/>' + sLineBreak;
+    for var I := 0 to Nodes.Count - 1 do
+      nodesString := nodesString + Nodes[I].GetXmlExample;
+
+    if IsList then
+      nodesString := nodesString + '...' + sLineBreak;
+
+    nodesString := ParagraphPad(nodesString, '  ');
+
+    xmlString := xmlString + nodesString + '<' + NodeName + '/>' + sLineBreak;
+  end;
 
   Result := xmlString;
-
-  //sb.Free;
 end;
 
 
@@ -488,6 +489,12 @@ begin
     mtsNormal:                  Result := '-';
     mtsSemicolonDelimitedArray: Result := 'String' + IntToStr(Attributes.Count);
   end;
+end;
+
+
+function TKMModdingNode.IsList: Boolean;
+begin
+  Result := TypeName = TYPE_LIST_WITHOUT_NAME;
 end;
 
 
