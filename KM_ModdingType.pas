@@ -153,7 +153,7 @@ end;
 function TKMModdingAttribute.GetTableDescription: string;
 begin
   if Reference <> nil then
-    Result := Reference.GetTableDescription + IfThen(Reference.GetTableDescription <> '', '<br>') + Description
+    Result := Description + '<br>' + Reference.GetTableDescription
   else
     Result := Description;
 end;
@@ -369,6 +369,7 @@ begin
     mtsNormal:                  for var I := 0 to Attributes.Count - 1 do
                                   Result := Result + aPad + ' - ' + Attributes[I].FieldName + sLineBreak;
     mtsSemicolonDelimitedArray: Result := Result + aPad + ' - ' + NodeName + '_array' + IntToStr(Attributes.Count) + sLineBreak;
+    mtsEnumSet:                 Result := Result + aPad + ' - ' + NodeName + '_enumset' + IntToStr(Attributes.Count) + sLineBreak;
   end;
 
   for var I := 0 to Nodes.Count - 1 do
@@ -406,7 +407,7 @@ begin
     xmlText +
     '```' + sLineBreak;
 
-  Result := Result + ExportWikiBody_Table('Root', True) + sLineBreak;
+  Result := Result + ExportWikiBody_Table('', True) + sLineBreak;
 end;
 
 
@@ -451,7 +452,7 @@ begin
 
     nodesString := ParagraphPad(nodesString, '  ');
 
-    xmlString := xmlString + nodesString + '<' + NodeName + '/>' + sLineBreak;
+    xmlString := xmlString + nodesString + '</' + NodeName + '>' + sLineBreak;
   end;
 
   Result := xmlString;
@@ -460,33 +461,37 @@ end;
 
 function TKMModdingNode.ExportWikiBody_Table(const aParent: string; aIsRequired: Boolean): string;
 const
-  TEMPLATE_HEADER      = '| Structure | A/N | Attribute name | Type | Required | Default | Description |';
-  TEMPLATE_HEADER_LINE = '| --------- |:---:|:--------------:|:----:|:--------:|:-------:| ----------- |';
-  TEMPLATE = '| %s | %s | %s | %s | %s | %s | %s |';
+  TEMPLATE_HEADER      = '| Structure | A/N | Attribute name | Type | Default | Description |';
+  TEMPLATE_HEADER_LINE = '| --------- |:---:|:--------------:|:----:|:-------:| ----------- |';
+  TEMPLATE = '| %s | %s | %s | %s | %s | %s |';
 begin
   Result := '';
 
-  if aParent = 'Root' then
+  if aParent = '' then
     Result := TEMPLATE_HEADER + sLineBreak +
               TEMPLATE_HEADER_LINE + sLineBreak;
 
   // Self
-  var nodeReq := IfThen(aIsRequired, '**Required**');
-  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName, '', nodeReq, '', GetTableDescription]) + sLineBreak;
+  var nodeReq := IfThen(aIsRequired, '*');
+  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName + ' ' + nodeReq, '', '', GetTableDescription]) + sLineBreak;
 
   if Attributes.Count + Nodes.Count = 0 then Exit;
 
   // Attributes
   for var I := 0 to Attributes.Count - 1 do
   begin
-    var req := IfThen(Attributes[I].IsRequired, '**Required**');
+    var attrReq := IfThen(Attributes[I].IsRequired, '*');
     var def := IfThen(not Attributes[I].IsRequired, '`"' + Attributes[I].Default + '"`');
-    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr', Attributes[I].FieldName, Attributes[I].GetTableType, req, def, Attributes[I].GetTableDescription]) + sLineBreak;
+    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr', Attributes[I].FieldName + ' ' + attrReq, Attributes[I].GetTableType, def, Attributes[I].GetTableDescription]) + sLineBreak;
   end;
 
   // Nodes
+  var struct := aParent + IfThen(aParent <> '', '.') + NodeName;
   for var I := 0 to Nodes.Count - 1 do
-    Result := Result + Nodes[I].ExportWikiBody_Table(aParent + '.' + NodeName, NodeIsRequired[I]);
+    Result := Result + Nodes[I].ExportWikiBody_Table(struct, NodeIsRequired[I]);
+
+  if aParent = '' then
+    Result := Result + sLineBreak + '\* - _Required_' + sLineBreak;
 end;
 
 
@@ -503,6 +508,7 @@ begin
   case TypeSpecialty of
     mtsNormal:                  Result := '-';
     mtsSemicolonDelimitedArray: Result := 'String' + IntToStr(Attributes.Count);
+    mtsEnumSet:                 Result := 'String (set of enum)';
   end;
 end;
 
@@ -516,6 +522,11 @@ begin
                                   Result := Description;
                                   for var I := 0 to Attributes.Count - 1 do
                                     Result := Result + IfThen(Result <> '', '<br>') + ' - ' + Attributes[I].Description;
+                                end;
+    mtsEnumSet:                 begin
+                                  Result := Description;
+                                  for var I := 0 to Attributes.Count - 1 do
+                                    Result := Result + IfThen(Result <> '', '<br>') + ' * `"' + Attributes[I].FieldName + '"` - ' + Attributes[I].Description;
                                 end;
   end;
 end;
@@ -578,6 +589,9 @@ begin
       else
       if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsList]) then
         Result.TypeSpecialty := mtsList
+      else
+      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsEnumSet]) then
+        Result.TypeSpecialty := mtsEnumSet
       else
         raise Exception.CreateFmt('Unexpected tag value - "%s"', [srcLine]);
 

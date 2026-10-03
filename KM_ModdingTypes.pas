@@ -163,7 +163,7 @@ begin
 
   for var I := 0 to fList.Count - 1 do
     if fList[I].IsRoot then
-      Result := Result + fList[I].ExportWikiBody;
+      Result := Result + fList[I].ExportWikiBody + sLineBreak + '---' + sLineBreak;
 end;
 
 
@@ -199,7 +199,7 @@ begin
   sl.Text := StringReplace(sl.Text, '{LINKS}', ExportWikiLinks, []);
   sl.Text := StringReplace(sl.Text, '{BODY}', ExportWikiBody, []);
 
-  sl.Text := sl.Text + sLineBreak + ExportListing;
+  //sl.Text := sl.Text + sLineBreak + ExportListing;
 
   var exportPath := ExpandFileName(ExtractFilePath(ParamStr(0)) + aOutputFile);
   if not DirectoryExists(ExtractFileDir(exportPath)) then
