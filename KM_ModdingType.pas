@@ -438,19 +438,17 @@ begin
   xmlBody := ParagraphWordWrap(xmlBody, 112);
 
   if aFull then
-    Result :=
-      '<details>' + sLineBreak +
-      '<summary>Full XML layout example:</summary>' + sLineBreak + sLineBreak +
+    Result := '<details>' + sLineBreak +
+      '<summary>Full XML structure:</summary>' + sLineBreak + sLineBreak +
       '```xml' + sLineBreak +
       xmlBody +
       '```' + sLineBreak +
       '</details>' + sLineBreak
   else
-    Result :=
-      'Minimal XML layout example:' + sLineBreak +
-      '```xml' + sLineBreak +
-      xmlBody +
-      '```' + sLineBreak;
+    Result := 'Minimal XML structure:' + sLineBreak +
+    '```xml' + sLineBreak +
+    xmlBody +
+    '```' + sLineBreak;
 end;
 
 
