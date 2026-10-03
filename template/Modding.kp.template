@@ -6,20 +6,22 @@ Description of moddable types used in Knights Province.
 
 ### Conventions 
 
-* [Cardinality](#Cardinality)
+* [Count (cardinality)](#Cardinality)
 * [Types](#Types)
 
 {LINKS}
 
 ---
 
-### <a id="Cardinality">Cardinality</a>
+### <a id="Count (cardinality)">Cardinality</a>
 
-| Cardinality | Meaning |
-|---|---|
+Count (aka cardinality) means how many times an attribute or a node needs or must be present.
+
+| Count<br>(cardinality) | Meaning |
+|:----------------------:|---------|
 | `1` | Required in the XML. If missing, loading fails. |
-| `0..1` | Optional. If omitted and a Default is listed, the engine uses that default value. |
-| `0..4` | Optional; may appear up to 4 times. |
+| `0..1` | Optional. If omitted, the engine uses that default value. |
+| `0..x` | Optional; may appear up to x times. |
 | `0..N` | Optional; may appear any number of times. |
 | `1..N` | Required; must appear at least once. |
 
@@ -27,7 +29,7 @@ Description of moddable types used in Knights Province.
 ### <a id="Types">Types</a>
 
 | Type | Meaning |
-|---|---|
+|:----:|---------|
 | `Boolean` | Must be `True` or `False`. |
 | `Cardinal` | Hexadecimal color value written as `$AABBGGRR`. E.g. `$FF0080FF` will be orange. |
 | `Float` | Floating-point value. Make sure to use `.` for delimiter of the fractional part. Delimiter is optional. E.g. `5.0` or `11`. |

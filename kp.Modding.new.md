@@ -6,7 +6,7 @@ Description of moddable types used in Knights Province.
 
 ### Conventions 
 
-* [Cardinality](#Cardinality)
+* [Count (cardinality)](#Cardinality)
 * [Types](#Types)
 
 ### Root types
@@ -17,13 +17,15 @@ Description of moddable types used in Knights Province.
 
 ---
 
-### <a id="Cardinality">Cardinality</a>
+### <a id="Count (cardinality)">Cardinality</a>
 
-| Cardinality | Meaning |
-|---|---|
+Count (aka cardinality) means how many times an attribute or a node needs or must be present.
+
+| Count<br>(cardinality) | Meaning |
+|:----------------------:|---------|
 | `1` | Required in the XML. If missing, loading fails. |
-| `0..1` | Optional. If omitted and a Default is listed, the engine uses that default value. |
-| `0..4` | Optional; may appear up to 4 times. |
+| `0..1` | Optional. If omitted, the engine uses that default value. |
+| `0..x` | Optional; may appear up to x times. |
 | `0..N` | Optional; may appear any number of times. |
 | `1..N` | Required; must appear at least once. |
 
@@ -31,7 +33,7 @@ Description of moddable types used in Knights Province.
 ### <a id="Types">Types</a>
 
 | Type | Meaning |
-|---|---|
+|:----:|---------|
 | `Boolean` | Must be `True` or `False`. |
 | `Cardinal` | Hexadecimal color value written as `$AABBGGRR`. E.g. `$FF0080FF` will be orange. |
 | `Float` | Floating-point value. Make sure to use `.` for delimiter of the fractional part. Delimiter is optional. E.g. `5.0` or `11`. |
@@ -86,7 +88,7 @@ Minimal XML structure:
 ```
 </details>
 
-| Parent | Cardinality | Name | Type | Default | Description |
+| Parent | Count | Name | Type | Default | Description |
 | ------ |:-----------:|:----:|:----:|:-------:| ----------- |
 |  | 1 | Objects | Node |  | Objects that can be placed on terrain. |
 | Objects | 1..N | object | Node |  | Object that can be placed on terrain. |
@@ -108,7 +110,7 @@ Minimal XML structure:
 | Objects.object | 0..1 | AllowedHumiditySet | String<br>(enum set) | `""` | Terrain humidity suitable for this map object (e.g. ore decals can be placed only on rock). Several values can be listed via a comma. Use `""` for all.<br>Terrain surface humidity ranges from dry rock to wet snow.<br>Comma-separated set of allowed terrain humidity values. An empty value means all humidity types are allowed.<br> - `"none"` - None (not used)<br> - `"rock"` - Rocky terrain<br> - `"sand"` - Sandy terrain<br> - `"savanna"` - Savanna terrain<br> - `"grass"` - Grassy terrain<br> - `"dirt"` - Dirty terrain<br> - `"swamp"` - Swampy terrain<br> - `"snow"` - Snowy terrain |
 | Objects.object | 0..1 | Flags | String<br>(enum set) | `""` | Set of flags for the object. Multiple values can be listed via a comma:<br> - `"repelTrees"` - Woodcutter will not plant new trees around this object.<br> - `"treeSapling"` - Object is a tree sapling.<br> - `"treeCuttable"` - Object is a cuttable tree<br> - `"treeStump"` - Object is a stump of a tree. Woodcutter will prefer planting new trees on its place. |
 | Objects.object | 1 | HUD | Node |  | Settings for map object HUD. |
-| Objects.object.HUD | 0..1 | AvatarSetup | String6 | `"6.00;3.00;1.50;0.00;0.00;145.00"` | <br>Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360) |
+| Objects.object.HUD | 0..1 | AvatarSetup | String6 | `"6.0;3.0;1.5;0;0;145"` | <br>Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360) |
 | Objects.object | 0..1 | Anims | Node |  | List of animations. |
 | Objects.object.Anims | 0..N | anim | Node |  | Animation between states. To make an idle animation for some state, set both states to one value. |
 | Objects.object.Anims.anim | 1 | StateFrom | Integer |  | Source state. |
@@ -155,7 +157,7 @@ Minimal XML structure:
 ```
 </details>
 
-| Parent | Cardinality | Name | Type | Default | Description |
+| Parent | Count | Name | Type | Default | Description |
 | ------ |:-----------:|:----:|:----:|:-------:| ----------- |
 |  | 1 | Decals | Node |  | Decals that can be placed onto terrain tiles. |
 | Decals | 1..N | decal | Node |  | Decal that can be placed onto terrain tiles. |
@@ -170,7 +172,7 @@ Minimal XML structure:
 | Decals.decal | 0..1 | StoneDeposit | Integer | `"0"` | Amount of stone this ore decal contains. Valid range is 0..255. |
 | Decals.decal | 0..1 | Selectable | Boolean | `"False"` | Whether the decal can be selected to show its information in the HUD. |
 | Decals.decal | 0..1 | ModelHeight | Float | `"0.0"` | Height of the model for HitTest. Can be set slightly lower than the actual model for better match.<br>Not needed if the object is not selectable. |
-| Decals.decal | 0..1 | AvatarSetup | String6 | `"3.80;1.40;0.50;0.00;0.00;145.00"` | <br>Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360) |
+| Decals.decal | 0..1 | AvatarSetup | String6 | `"3.8;1.4;0.5;0;0;145"` | <br>Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360) |
 
 
 ---

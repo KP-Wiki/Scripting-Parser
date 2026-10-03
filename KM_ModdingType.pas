@@ -497,7 +497,7 @@ end;
 
 function TKMModdingNode.ExportWikiBody_Table(const aParent, aCardinality: string): string;
 const
-  TEMPLATE_HEADER = '| Parent | Cardinality | Name | Type | Default | Description |';
+  TEMPLATE_HEADER = '| Parent | Count | Name | Type | Default | Description |';
   TEMPLATE_HEADER_LINE = '| ------ |:-----------:|:----:|:----:|:-------:| ----------- |';
   TEMPLATE = '| %s | %s | %s | %s | %s | %s |';
 begin
