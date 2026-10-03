@@ -497,9 +497,9 @@ end;
 
 function TKMModdingNode.ExportWikiBody_Table(const aParent, aCardinality: string): string;
 const
-  TEMPLATE_HEADER      = '| Parent | Kind | Cardinality | Attribute name | Type | Default | Description |';
-  TEMPLATE_HEADER_LINE = '| ------ |:----:|:-----------:|:--------------:|:----:|:-------:| ----------- |';
-  TEMPLATE = '| %s | %s | %s | %s | %s | %s | %s |';
+  TEMPLATE_HEADER = '| Parent | Cardinality | Name | Type | Default | Description |';
+  TEMPLATE_HEADER_LINE = '| ------ |:-----------:|:----:|:----:|:-------:| ----------- |';
+  TEMPLATE = '| %s | %s | %s | %s | %s | %s |';
 begin
   Result := '';
 
@@ -508,7 +508,7 @@ begin
               TEMPLATE_HEADER_LINE + sLineBreak;
 
   // Self
-  Result := Result + Format(TEMPLATE, [aParent, 'node', aCardinality, NodeName, '', '', GetTableDescription]) + sLineBreak;
+  Result := Result + Format(TEMPLATE, [aParent, aCardinality, NodeName, 'Node', '', GetTableDescription]) + sLineBreak;
 
   if Attributes.Count + Nodes.Count = 0 then Exit;
 
@@ -517,7 +517,7 @@ begin
   begin
     var attrCardinality := Attributes[I].Cardinality;
     var attrDefault := IfThen(Attributes[I].Default <> '', '`' + Attributes[I].Default + '`');
-    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr.', attrCardinality, Attributes[I].FieldName, Attributes[I].GetTableType, attrDefault, Attributes[I].GetTableDescription]) + sLineBreak;
+    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, attrCardinality, Attributes[I].FieldName, Attributes[I].GetTableType, attrDefault, Attributes[I].GetTableDescription]) + sLineBreak;
   end;
 
   // Nodes
