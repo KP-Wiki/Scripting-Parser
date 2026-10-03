@@ -75,14 +75,16 @@ type
   TKMModdingTypeSpecialty = (
     mtsNormal,
     mtsSemicolonDelimitedArray,
-    mtsList
+    mtsList,
+    mtsEnumSet
   );
 
 const
   MODDING_TYPE_SPECIALTY_NAME: array [TKMModdingTypeSpecialty] of string = (
     '',
     'SemicolonDelimitedArray',
-    'List'
+    'List',
+    'EnumSet'
   );
 
 
