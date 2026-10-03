@@ -78,7 +78,7 @@ Minimal XML structure:
         ...
       </Anims>
       <States>
-        <state TileBlock="value" VertBlock="value" EngName="value"/>
+        <state Id="value" EngName="value" TileBlock="value" VertBlock="value"/>
         ...
       </States>
     </object>
@@ -120,9 +120,10 @@ Minimal XML structure:
 | Objects.object.Anims.anim | 1 | EngName | String |  | EngName (unused?). |
 | Objects.object | 0..1 | States | Node |  | List of states in which this object can be. Maximum of 4 states is allowed. |
 | Objects.object.States | 0..4 | state | Node |  | Map object state properties. |
+| Objects.object.States.state | 1 | Id | Integer |  | Id of this state. Must match state index. |
+| Objects.object.States.state | 1 | EngName | String |  | Identifier of this state |
 | Objects.object.States.state | 1 | TileBlock | String<br>(enum) |  | Override value for the matching placement<br> - `"none"` - nothing is blocked (default state);<br> - `"houses"` - house-building is blocked;<br> - `"roads"` - road-building is blocked;<br> - `"everything"` - everything (walking) is blocked. |
 | Objects.object.States.state | 1 | VertBlock | String<br>(enum) |  | Override value for the matching placement<br> - `"none"` - blocks nothing (default state);<br> - `"walkFightBuild"` - blocks walking/fighting/building over the vertex (e.g. trees).<br> - `"roadsFields"` - blocks roads/fields as well (e.g. big columns). |
-| Objects.object.States.state | 1 | EngName | String |  | Identifier of this state |
 
 
 ---
