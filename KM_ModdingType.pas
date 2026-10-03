@@ -33,8 +33,8 @@ type
     function ExportWikiBody_Table(const aParent, aCardinality: string): string;
     function ExportWikiBody_XmlExample(aFull: Boolean): string;
   public
-    TypeName: string;   // TKMSomething
-    NodeName: string;   // Decals
+    TypeName: string; // TKMSomething
+    NodeName: string; // Decals
 
     IsRoot: Boolean;
     Caption: string;
@@ -248,7 +248,7 @@ begin
       Continue;
     end;
 
-    if StartsStr(DOC_TAG_MODDING_LIST, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_LIST_FOR_NEXT_NODE, srcLine) then
     begin
       listForNextNode := TKMModdingNode(1);
       Continue;
@@ -306,35 +306,35 @@ begin
           itemType := itAttributeRef
       else
         if listForNextNode <> nil then
-          itemType := itNodeInList
-        else
-          itemType := itNode;
+        itemType := itNodeInList
+      else
+        itemType := itNode;
 
       case itemType of
         itAttribute:        begin
                               var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, '', newAttrCardinality, newAttrDefault);
-                              Attributes.Add(newAttribute);
-                            end;
+            Attributes.Add(newAttribute);
+          end;
         itAttributeRef:     begin
                               var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, attrReference, newAttrCardinality, newAttrDefault);
-                              Attributes.Add(newAttribute);
-                            end;
+            Attributes.Add(newAttribute);
+          end;
         itNode:             begin
                               var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
-                              Nodes.Add(newNode);
-                              NodeCardinality.Add(newNodeCardinality);
-                            end;
+            Nodes.Add(newNode);
+            NodeCardinality.Add(newNodeCardinality);
+          end;
         itListForNextNode:  begin
-                              listForNextNode := TKMModdingNode.CreateList(line, descAccumulator);
-                              Nodes.Add(listForNextNode);
-                              NodeCardinality.Add(newNodeCardinality);
-                            end;
+            listForNextNode := TKMModdingNode.CreateList(line, descAccumulator);
+            Nodes.Add(listForNextNode);
+            NodeCardinality.Add(newNodeCardinality);
+          end;
         itNodeInList:       begin
                               var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
-                              listForNextNode.Nodes.Add(newNode);
-                              listForNextNode.NodeCardinality.Add(newNodeCardinality);
-                              listForNextNode := nil;
-                            end;
+            listForNextNode.Nodes.Add(newNode);
+            listForNextNode.NodeCardinality.Add(newNodeCardinality);
+            listForNextNode := nil;
+          end;
       else
         raise Exception.Create('Undefined type');
       end;
@@ -352,21 +352,21 @@ end;
 
 procedure TKMModdingNode.SortFieldsByType;
 begin
-//  // Special sorting that will preserve relative item positions
-//  var sortedFields := TList<TKMModdingAttribute>.Create;
-//
-//  for var I := 0 to fFields.Count - 1 do
-//    if not fFields[I].IsSubObject then
-//      sortedFields.Add(fFields[I]);
-//
-//  for var I := 0 to fFields.Count - 1 do
-//    if fFields[I].IsSubObject then
-//      sortedFields.Add(fFields[I]);
-//
-//  fFields.Clear;
-//  fFields.AddRange(sortedFields);
-//
-//  sortedFields.Free;
+  // // Special sorting that will preserve relative item positions
+  // var sortedFields := TList<TKMModdingAttribute>.Create;
+  //
+  // for var I := 0 to fFields.Count - 1 do
+  // if not fFields[I].IsSubObject then
+  // sortedFields.Add(fFields[I]);
+  //
+  // for var I := 0 to fFields.Count - 1 do
+  // if fFields[I].IsSubObject then
+  // sortedFields.Add(fFields[I]);
+  //
+  // fFields.Clear;
+  // fFields.AddRange(sortedFields);
+  //
+  // sortedFields.Free;
 end;
 
 
@@ -392,9 +392,10 @@ begin
 
   case TypeSpecialty of
     mtsNormal:                  for var I := 0 to Attributes.Count - 1 do
-                                  Result := Result + aPad + ' - ' + Attributes[I].FieldName + sLineBreak;
-    mtsSemicolonDelimitedArray: Result := Result + aPad + ' - ' + NodeName + '_array' + IntToStr(Attributes.Count) + sLineBreak;
-    mtsEnumSet:                 Result := Result + aPad + ' - ' + NodeName + '_enumset' + IntToStr(Attributes.Count) + sLineBreak;
+        Result := Result + aPad + ' - ' + Attributes[I].FieldName + sLineBreak;
+    mtsSemicolonDelimitedArray:      Result := Result + aPad + ' - ' + NodeName + '_array' +        IntToStr(Attributes.Count) + sLineBreak;
+    mtsEnum:      Result := Result + aPad + ' - ' + NodeName + '_enum' + sLineBreak;
+    mtsEnumSet:      Result := Result + aPad + ' - ' + NodeName + '_enumset' + sLineBreak;
   end;
 
   for var I := 0 to Nodes.Count - 1 do
@@ -426,7 +427,7 @@ begin
   begin
     // Root includes xml header for clarity
     xmlBody := xmlBody + '<?xml version="1.0" encoding="UTF-8"?>' + sLineBreak +
-                               '<Root>' + sLineBreak;
+      '<Root>' + sLineBreak;
   end;
 
   xmlBody := xmlBody + ParagraphPad(GetXmlExample(aFull), '  ');
@@ -460,7 +461,7 @@ begin
   // Attributes
   var attributeString := '';
   for var I := 0 to Attributes.Count - 1 do
-  if aFull or not ContainsStr(Attributes[I].Cardinality, '0') then
+    if aFull or not ContainsStr(Attributes[I].Cardinality, '0') then
     attributeString := attributeString + IfThen(attributeString > '', ' ') + Attributes[I].GetXmlExample;
 
   var xmlString := '';
@@ -481,8 +482,8 @@ begin
     var nodesString := '';
 
     for var I := 0 to Nodes.Count - 1 do
-    if aFull or not ContainsStr(NodeCardinality[I], '0') then
-      nodesString := nodesString + Nodes[I].GetXmlExample(aFull);
+      if aFull or not ContainsStr(NodeCardinality[I], '0') then
+        nodesString := nodesString + Nodes[I].GetXmlExample(aFull);
 
     if TypeSpecialty = mtsList then
       nodesString := nodesString + '...' + sLineBreak;
@@ -550,7 +551,8 @@ begin
   case TypeSpecialty of
     mtsNormal:                  Result := '-';
     mtsSemicolonDelimitedArray: Result := 'String' + IntToStr(Attributes.Count);
-    mtsEnumSet:                 Result := 'String (set of enum)';
+    mtsEnum:                    Result := 'String<br>(enum)';
+    mtsEnumSet:                 Result := 'String<br>(enum set)';
   end;
 end;
 
@@ -559,16 +561,21 @@ function TKMModdingNode.GetTableDescription: string;
 begin
   case TypeSpecialty of
     mtsNormal,
-    mtsList:                    Result := Description;
+    mtsList:         Result := Description;
     mtsSemicolonDelimitedArray: begin
                                   Result := Description;
                                   for var I := 0 to Attributes.Count - 1 do
                                     Result := Result + IfThen(Result <> '', '<br>') + ' - ' + Attributes[I].Description;
                                 end;
+    mtsEnum:                    begin
+                                  Result := Description;
+                                  for var I := 0 to Attributes.Count - 1 do
+                                    Result := Result + IfThen(Result <> '', '<br>') + ' - `"' + Attributes[I].FieldName + '"` - ' + Attributes[I].Description;
+                                end;
     mtsEnumSet:                 begin
                                   Result := Description;
                                   for var I := 0 to Attributes.Count - 1 do
-                                    Result := Result + IfThen(Result <> '', '<br>') + ' * `"' + Attributes[I].FieldName + '"` - ' + Attributes[I].Description;
+                                    Result := Result + IfThen(Result <> '', '<br>') + ' - `"' + Attributes[I].FieldName + '"` - ' + Attributes[I].Description;
                                 end;
   end;
 end;
@@ -608,7 +615,7 @@ begin
 
     if StartsStr(DOC_TAG_MODDING_TYPE_NODENAME, srcLine) then
     begin
-      Result.NodeName := FirstStrBetween(aSource[I+1], #39, #39);
+      Result.NodeName := FirstStrBetween(aSource[I + 1], #39, #39);
       Continue;
     end;
 
@@ -631,6 +638,9 @@ begin
       else
       if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsList]) then
         Result.TypeSpecialty := mtsList
+      else
+      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsEnum]) then
+        Result.TypeSpecialty := mtsEnum
       else
       if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsEnumSet]) then
         Result.TypeSpecialty := mtsEnumSet

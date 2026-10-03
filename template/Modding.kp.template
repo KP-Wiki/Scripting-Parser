@@ -30,10 +30,11 @@ Description of moddable types used in Knights Province.
 |---|---|
 | `Boolean` | Must be `True` or `False`. |
 | `Cardinal` | Hexadecimal color value written as `$AABBGGRR`. E.g. `$FF0080FF` will be orange. |
-| `Integer` | Numeric value. E.g. `3` or `217`. |
 | `Float` | Floating-point value. Make sure to use `.` for delimiter of the fractional part. Delimiter is optional. E.g. `5.0` or `11`. |
-| `Enum` | String value that must match one of the provided values. |
-| `Enum set` | Comma delimited string values that must match one of the provided values. E.g. `sand,rock,snow`.|
+| `Integer` | Numeric value. E.g. `3` or `217`. |
+| `String` | Text string, usually without spaces. E.g. `stone` or `palm_tree`. |
+| `String (enum)` | String value that must match one of the provided values. |
+| `String (enum set)` | Comma delimited string values that must match one of the provided values. E.g. `sand,rock,snow`.|
 
 ---
 
