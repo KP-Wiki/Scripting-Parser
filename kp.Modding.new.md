@@ -46,7 +46,7 @@ Description of moddable types used in Knights Province.
 
 Objects that can be placed on terrain.
 
-Minimal XML layout example:
+Minimal XML structure:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Root>
@@ -60,7 +60,7 @@ Minimal XML layout example:
 ```
 
 <details>
-<summary>Full XML layout example:</summary>
+<summary>Full XML structure:</summary>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -128,7 +128,7 @@ Minimal XML layout example:
 
 Decals that can be placed onto terrain tiles.
 
-Minimal XML layout example:
+Minimal XML structure:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Root>
@@ -140,7 +140,7 @@ Minimal XML layout example:
 ```
 
 <details>
-<summary>Full XML layout example:</summary>
+<summary>Full XML structure:</summary>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
