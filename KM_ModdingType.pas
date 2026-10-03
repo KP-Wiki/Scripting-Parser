@@ -14,14 +14,14 @@ type
   public
     FieldName: string;
     FieldType: string;
-    IsRequired: Boolean;
+    Cardinality: string;
     Default: string;
     Description: string; // Description of the field
 
     ReferenceStr: string;
     Reference: TKMModdingNode;
 
-    constructor Create(const aDeclaration, aDescription, aAttrReference: string);
+    constructor Create(const aDeclaration, aDescription, aAttrReference, aAttrCardinality, aAttrDefault: string);
     function GetXmlExample: string;
     function GetTableType: string;
     function GetTableDescription: string;
@@ -30,7 +30,7 @@ type
   TKMModdingNode = class
   private
     function ExportWikiBody_Header: string;
-    function ExportWikiBody_Table(const aParent: string; aIsRequired: Boolean): string;
+    function ExportWikiBody_Table(const aParent, aCardinality: string): string;
   public
     TypeName: string;   // TKMSomething
     NodeName: string;   // Decals
@@ -40,11 +40,12 @@ type
     TypeSpecialty: TKMModdingTypeSpecialty;
 
     Description: string;
+    Cardinality: string;
     ReferenceStr: string;
 
     Attributes: TList<TKMModdingAttribute>;
     Nodes: TList<TKMModdingNode>;
-    NodeIsRequired: TList<Boolean>;
+    NodeCardinality: TList<string>;
 
     constructor Create;
     constructor CreateNode(const aDeclaration, aDescription, aNodeReference: string);
@@ -59,7 +60,8 @@ type
     function ExportWikiBody: string;
     function ExportWikiLink: string;
 
-    function GetXmlExample: string;
+    function GetXmlExample(aFull: Boolean): string;
+    function GetTableCardinality: string;
     function GetTableType: string;
     function GetTableDescription: string;
   end;
@@ -77,7 +79,7 @@ uses
 
 
 { TKMModdingAttribute }
-constructor TKMModdingAttribute.Create(const aDeclaration, aDescription, aAttrReference: string);
+constructor TKMModdingAttribute.Create(const aDeclaration, aDescription, aAttrReference, aAttrCardinality, aAttrDefault: string);
 begin
   inherited Create;
 
@@ -91,6 +93,7 @@ begin
   FieldName := Trim(FirstStrBetween(aDeclaration, #39, #39));
   Description := aDescription;
   ReferenceStr := aAttrReference;
+  Cardinality := '0..1';
 
   // Extract type from how it is accessed
   // String
@@ -107,11 +110,12 @@ begin
   begin
     // There is a default value
     FieldType := LeftStrBefore(typeStr, '(');
-    Default := LeftStrBefore(RightStrAfter(typeStr, '('), ')');
+    Default := '"' + ReplaceStr(FirstStrBetween(typeStr, '(', ')'), #39#39, '') + '"';
   end else
   begin
     // This must be a Required field
-    IsRequired := True;
+    if aAttrCardinality = '' then
+      Cardinality := '1';
 
     // Trim last bracket if this field undergoes some extra conversion
     if ContainsText(typeStr, ')') then
@@ -136,9 +140,11 @@ begin
     end;
   end;
 
-  // Post-process
-  if Default = #39#39 then
-    Default := '';
+  if aAttrCardinality <> '' then
+    Cardinality := aAttrCardinality;
+
+  if aAttrDefault <> '' then
+    Default := '"' + aAttrDefault + '"';
 end;
 
 
@@ -172,7 +178,7 @@ begin
 
   Attributes := TList<TKMModdingAttribute>.Create;
   Nodes := TList<TKMModdingNode>.Create;
-  NodeIsRequired := TList<Boolean>.Create;
+  NodeCardinality := TList<string>.Create;
 end;
 
 
@@ -183,6 +189,7 @@ begin
   NodeName := Trim(FirstStrBetween(aDeclaration, #39, #39));
   Description := aDescription;
   ReferenceStr := aNodeReference;
+  Cardinality := 'Node';
 end;
 
 
@@ -194,6 +201,7 @@ begin
   Description := aDescription;
   TypeName := 'list';
   TypeSpecialty := mtsList;
+  Cardinality := 'List';
 end;
 
 
@@ -201,7 +209,7 @@ destructor TKMModdingNode.Destroy;
 begin
   FreeAndNil(Attributes);
   FreeAndNil(Nodes);
-  FreeAndNil(NodeIsRequired);
+  FreeAndNil(NodeCardinality);
 
   inherited;
 end;
@@ -215,7 +223,9 @@ begin
   var nodeReference := '';
   var attrReference := '';
   var listForNextNode: TKMModdingNode := nil;
-  var nodeRequired := False;
+  var newAttrDefault := '';
+  var newAttrCardinality := '';
+  var newNodeCardinality := '';
 
   for var I := 0 to aSource.Count - 1 do
   begin
@@ -243,9 +253,21 @@ begin
       Continue;
     end;
 
-    if StartsStr(DOC_TAG_MODDING_NODE_IS_REQUIRED, srcLine) then
+    if StartsStr(DOC_TAG_MODDING_ATTR_DEFAULT, srcLine) then
     begin
-      nodeRequired := True;
+      newAttrDefault := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_ATTR_DEFAULT));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_ATTR_CARDINALITY, srcLine) then
+    begin
+      newAttrCardinality := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_ATTR_CARDINALITY));
+      Continue;
+    end;
+
+    if StartsStr(DOC_TAG_MODDING_NODE_CARDINALITY, srcLine) then
+    begin
+      newNodeCardinality := Trim(RightStrAfter(srcLine, DOC_TAG_MODDING_NODE_CARDINALITY));
       Continue;
     end;
 
@@ -262,7 +284,7 @@ begin
 
     // Every item must have a description
     // When we have a description, next code line is the type
-    if (nodeReference <> '') or (descAccumulator <> '') then
+    if (nodeReference <> '') or (attrReference <> '') or (descAccumulator <> '') then
     begin
       if (nodeReference <> '') and (descAccumulator <> '') then
         raise Exception.Create('Node reference will overwrite any existing description.');
@@ -289,27 +311,27 @@ begin
 
       case itemType of
         itAttribute:        begin
-                              var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, '');
+                              var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, '', newAttrCardinality, newAttrDefault);
                               Attributes.Add(newAttribute);
                             end;
         itAttributeRef:     begin
-                              var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, attrReference);
+                              var newAttribute := TKMModdingAttribute.Create(line, descAccumulator, attrReference, newAttrCardinality, newAttrDefault);
                               Attributes.Add(newAttribute);
                             end;
         itNode:             begin
                               var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
                               Nodes.Add(newNode);
-                              NodeIsRequired.Add(nodeRequired);
+                              NodeCardinality.Add(newNodeCardinality);
                             end;
         itListForNextNode:  begin
                               listForNextNode := TKMModdingNode.CreateList(line, descAccumulator);
                               Nodes.Add(listForNextNode);
-                              NodeIsRequired.Add(nodeRequired);
+                              NodeCardinality.Add(newNodeCardinality);
                             end;
         itNodeInList:       begin
                               var newNode := TKMModdingNode.CreateNode(line, descAccumulator, nodeReference);
                               listForNextNode.Nodes.Add(newNode);
-                              listForNextNode.NodeIsRequired.Add(nodeRequired);
+                              listForNextNode.NodeCardinality.Add(newNodeCardinality);
                               listForNextNode := nil;
                             end;
       else
@@ -319,7 +341,9 @@ begin
       descAccumulator := '';
       nodeReference := '';
       attrReference := '';
-      nodeRequired := False;
+      newAttrDefault := '';
+      newAttrCardinality := '';
+      newNodeCardinality := '';
     end;
   end;
 end;
@@ -381,33 +405,26 @@ function TKMModdingNode.ExportWikiBody: string;
 begin
   Result := ExportWikiBody_Header + sLineBreak;
 
-  var xmlText := '';
+  var xmlExample := 'XML layout example:' + sLineBreak +
+                    '```xml' + sLineBreak;
 
   if IsRoot then
   begin
     // Root includes xml header for clarity
-    xmlText := xmlText + '<?xml version="1.0" encoding="UTF-8"?>' + sLineBreak +
-    '<Root>' + sLineBreak;
+    xmlExample := xmlExample + '<?xml version="1.0" encoding="UTF-8"?>' + sLineBreak +
+                               '<Root>' + sLineBreak;
   end;
 
-  var xmlBody := GetXmlExample;
-
-  xmlBody := ParagraphPad(xmlBody, '  ');
-
-  xmlText := xmlText + xmlBody;
+  xmlExample := xmlExample + ParagraphPad(GetXmlExample(False), '  ');
 
   if IsRoot then
-    xmlText := xmlText + '</Root>' + sLineBreak;
+    xmlExample := xmlExample + '</Root>' + sLineBreak;
 
-  xmlText := ParagraphWordWrap(xmlText, 112);
+  xmlExample := ParagraphWordWrap(xmlExample, 112);
 
-  Result := Result +
-    'XML layout example:' + sLineBreak +
-    '```xml' + sLineBreak +
-    xmlText +
-    '```' + sLineBreak;
+  xmlExample := xmlExample + '```' + sLineBreak;
 
-  Result := Result + ExportWikiBody_Table('', True) + sLineBreak;
+  Result := xmlExample + ExportWikiBody_Table('', '1') + sLineBreak;
 end;
 
 
@@ -418,7 +435,7 @@ begin
 end;
 
 
-function TKMModdingNode.GetXmlExample: string;
+function TKMModdingNode.GetXmlExample(aFull: Boolean): string;
 begin
   if (Attributes.Count = 0) and (Nodes.Count = 0) then Exit('');
 
@@ -445,7 +462,7 @@ begin
     var nodesString := '';
 
     for var I := 0 to Nodes.Count - 1 do
-      nodesString := nodesString + Nodes[I].GetXmlExample;
+      nodesString := nodesString + Nodes[I].GetXmlExample(aFull);
 
     if TypeSpecialty = mtsList then
       nodesString := nodesString + '...' + sLineBreak;
@@ -459,11 +476,11 @@ begin
 end;
 
 
-function TKMModdingNode.ExportWikiBody_Table(const aParent: string; aIsRequired: Boolean): string;
+function TKMModdingNode.ExportWikiBody_Table(const aParent, aCardinality: string): string;
 const
-  TEMPLATE_HEADER      = '| Structure | A/N | Attribute name | Type | Default | Description |';
-  TEMPLATE_HEADER_LINE = '| --------- |:---:|:--------------:|:----:|:-------:| ----------- |';
-  TEMPLATE = '| %s | %s | %s | %s | %s | %s |';
+  TEMPLATE_HEADER      = '| Parent | Kind | Cardinality | Attribute name | Type | Default | Description |';
+  TEMPLATE_HEADER_LINE = '| ------ |:----:|:-----------:|:--------------:|:----:|:-------:| ----------- |';
+  TEMPLATE = '| %s | %s | %s | %s | %s | %s | %s |';
 begin
   Result := '';
 
@@ -472,26 +489,22 @@ begin
               TEMPLATE_HEADER_LINE + sLineBreak;
 
   // Self
-  var nodeReq := IfThen(aIsRequired, '*');
-  Result := Result + Format(TEMPLATE, [aParent, 'node', NodeName + ' ' + nodeReq, '', '', GetTableDescription]) + sLineBreak;
+  Result := Result + Format(TEMPLATE, [aParent, 'node', aCardinality, NodeName, '', '', GetTableDescription]) + sLineBreak;
 
   if Attributes.Count + Nodes.Count = 0 then Exit;
 
   // Attributes
   for var I := 0 to Attributes.Count - 1 do
   begin
-    var attrReq := IfThen(Attributes[I].IsRequired, '*');
-    var def := IfThen(not Attributes[I].IsRequired, '`"' + Attributes[I].Default + '"`');
-    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr', Attributes[I].FieldName + ' ' + attrReq, Attributes[I].GetTableType, def, Attributes[I].GetTableDescription]) + sLineBreak;
+    var attrCardinality := Attributes[I].Cardinality;
+    var attrDefault := IfThen(Attributes[I].Default <> '', '`' + Attributes[I].Default + '`');
+    Result := Result + Format(TEMPLATE, [aParent + '.' + NodeName, 'attr.', attrCardinality, Attributes[I].FieldName, Attributes[I].GetTableType, attrDefault, Attributes[I].GetTableDescription]) + sLineBreak;
   end;
 
   // Nodes
   var struct := aParent + IfThen(aParent <> '', '.') + NodeName;
   for var I := 0 to Nodes.Count - 1 do
-    Result := Result + Nodes[I].ExportWikiBody_Table(struct, NodeIsRequired[I]);
-
-  if aParent = '' then
-    Result := Result + sLineBreak + '\* - _Required_' + sLineBreak;
+    Result := Result + Nodes[I].ExportWikiBody_Table(struct, NodeCardinality[I]);
 end;
 
 
@@ -500,6 +513,15 @@ const
   TEMPLATE = '* [%s](#%s)';
 begin
   Result := Format(TEMPLATE, [Caption, TypeName]);
+end;
+
+
+function TKMModdingNode.GetTableCardinality: string;
+begin
+  if IsRoot then
+    Result := '1'
+  else
+    Result := '-?-';
 end;
 
 
