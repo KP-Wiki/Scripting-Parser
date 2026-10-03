@@ -4,8 +4,37 @@ Description of moddable types used in Knights Province.
 
 ***
 
+### Conventions 
+
+* [Cardinality](#Cardinality)
+* [Types](#Types)
+
 {LINKS}
 
------
+---
+
+### <a id="Cardinality">Cardinality</a>
+
+| Cardinality | Meaning |
+|---|---|
+| `1` | Required in the XML. If missing, loading fails. |
+| `0..1` | Optional. If omitted and a Default is listed, the engine uses that default value. |
+| `0..4` | Optional; may appear up to 4 times. |
+| `0..N` | Optional; may appear any number of times. |
+| `1..N` | Required; must appear at least once. |
+
+
+### <a id="Types">Types</a>
+
+| Type | Meaning |
+|---|---|
+| `Boolean` | Must be `True` or `False`. |
+| `Cardinal` | Hexadecimal color value written as `$AABBGGRR`. E.g. `$FF0080FF` will be orange. |
+| `Integer` | Numeric value. E.g. `3` or `217`. |
+| `Float` | Floating-point value. Make sure to use `.` for delimiter of the fractional part. Delimiter is optional. E.g. `5.0` or `11`. |
+| `Enum` | String value that must match one of the provided values. |
+| `Enum set` | Comma delimited string values that must match one of the provided values. E.g. `sand,rock,snow`.|
+
+---
 
 {BODY}
