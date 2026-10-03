@@ -639,11 +639,11 @@ begin
       if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsList]) then
         Result.TypeSpecialty := mtsList
       else
-      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsEnum]) then
-        Result.TypeSpecialty := mtsEnum
-      else
       if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsEnumSet]) then
         Result.TypeSpecialty := mtsEnumSet
+      else
+      if ContainsText(srcLine, MODDING_TYPE_SPECIALTY_NAME[mtsEnum]) then
+        Result.TypeSpecialty := mtsEnum
       else
         raise Exception.CreateFmt('Unexpected tag value - "%s"', [srcLine]);
 
