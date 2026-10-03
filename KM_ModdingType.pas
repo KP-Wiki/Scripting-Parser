@@ -31,6 +31,7 @@ type
   private
     function ExportWikiBody_Header: string;
     function ExportWikiBody_Table(const aParent, aCardinality: string): string;
+    function ExportWikiBody_XmlExample(aFull: Boolean): string;
   public
     TypeName: string;   // TKMSomething
     NodeName: string;   // Decals
@@ -403,28 +404,11 @@ end;
 
 function TKMModdingNode.ExportWikiBody: string;
 begin
-  Result := ExportWikiBody_Header + sLineBreak;
-
-  var xmlExample := 'XML layout example:' + sLineBreak +
-                    '```xml' + sLineBreak;
-
-  if IsRoot then
-  begin
-    // Root includes xml header for clarity
-    xmlExample := xmlExample + '<?xml version="1.0" encoding="UTF-8"?>' + sLineBreak +
-                               '<Root>' + sLineBreak;
-  end;
-
-  xmlExample := xmlExample + ParagraphPad(GetXmlExample(False), '  ');
-
-  if IsRoot then
-    xmlExample := xmlExample + '</Root>' + sLineBreak;
-
-  xmlExample := ParagraphWordWrap(xmlExample, 112);
-
-  xmlExample := xmlExample + '```' + sLineBreak;
-
-  Result := xmlExample + ExportWikiBody_Table('', '1') + sLineBreak;
+  Result :=
+    ExportWikiBody_Header + sLineBreak +
+    ExportWikiBody_XmlExample(False) + sLineBreak +
+    ExportWikiBody_XmlExample(True) + sLineBreak +
+    ExportWikiBody_Table('', '1') + sLineBreak;
 end;
 
 
@@ -435,6 +419,40 @@ begin
 end;
 
 
+function TKMModdingNode.ExportWikiBody_XmlExample(aFull: Boolean): string;
+begin
+  var xmlBody := '';
+  if IsRoot then
+  begin
+    // Root includes xml header for clarity
+    xmlBody := xmlBody + '<?xml version="1.0" encoding="UTF-8"?>' + sLineBreak +
+                               '<Root>' + sLineBreak;
+  end;
+
+  xmlBody := xmlBody + ParagraphPad(GetXmlExample(aFull), '  ');
+
+  if IsRoot then
+    xmlBody := xmlBody + '</Root>' + sLineBreak;
+
+  xmlBody := ParagraphWordWrap(xmlBody, 112);
+
+  if aFull then
+    Result :=
+      '<details>' + sLineBreak +
+      '<summary>Full XML layout example:</summary>' + sLineBreak + sLineBreak +
+      '```xml' + sLineBreak +
+      xmlBody +
+      '```' + sLineBreak +
+      '</details>' + sLineBreak
+  else
+    Result :=
+      'Minimal XML layout example:' + sLineBreak +
+      '```xml' + sLineBreak +
+      xmlBody +
+      '```' + sLineBreak;
+end;
+
+
 function TKMModdingNode.GetXmlExample(aFull: Boolean): string;
 begin
   if (Attributes.Count = 0) and (Nodes.Count = 0) then Exit('');
@@ -442,6 +460,7 @@ begin
   // Attributes
   var attributeString := '';
   for var I := 0 to Attributes.Count - 1 do
+  if aFull or not ContainsStr(Attributes[I].Cardinality, '0') then
     attributeString := attributeString + IfThen(attributeString > '', ' ') + Attributes[I].GetXmlExample;
 
   var xmlString := '';
@@ -462,6 +481,7 @@ begin
     var nodesString := '';
 
     for var I := 0 to Nodes.Count - 1 do
+    if aFull or not ContainsStr(NodeCardinality[I], '0') then
       nodesString := nodesString + Nodes[I].GetXmlExample(aFull);
 
     if TypeSpecialty = mtsList then

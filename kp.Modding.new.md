@@ -41,7 +41,26 @@ Description of moddable types used in Knights Province.
 
 ---
 
-XML layout example:
+### <a id="TKMResMapObjects">Map objects</a>
+
+Objects that can be placed on terrain.
+
+Minimal XML layout example:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <Objects>
+    <object EngName="value" Placement="value" TileBlock="value" VertBlock="value" ColorMinimap="value">
+      <HUD />
+    </object>
+    ...
+  </Objects>
+</Root>
+```
+
+<details>
+<summary>Full XML layout example:</summary>
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Root>
@@ -64,6 +83,8 @@ XML layout example:
   </Objects>
 </Root>
 ```
+</details>
+
 | Parent | Kind | Cardinality | Attribute name | Type | Default | Description |
 | ------ |:----:|:-----------:|:--------------:|:----:|:-------:| ----------- |
 |  | node | 1 | Objects |  |  | Objects that can be placed on terrain. |
@@ -102,7 +123,24 @@ XML layout example:
 
 
 ---
-XML layout example:
+### <a id="TKMResTerrainDecals">Terrain decals</a>
+
+Decals that can be placed onto terrain tiles.
+
+Minimal XML layout example:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <Decals>
+    <decal EngName="value" IsPassable="value" IsBuildable="value"/>
+    ...
+  </Decals>
+</Root>
+```
+
+<details>
+<summary>Full XML layout example:</summary>
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Root>
@@ -114,6 +152,8 @@ XML layout example:
   </Decals>
 </Root>
 ```
+</details>
+
 | Parent | Kind | Cardinality | Attribute name | Type | Default | Description |
 | ------ |:----:|:-----------:|:--------------:|:----:|:-------:| ----------- |
 |  | node | 1 | Decals |  |  | Decals that can be placed onto terrain tiles. |
@@ -122,7 +162,7 @@ XML layout example:
 | Decals.decal | attr. | 0..1 | AllowedHumiditySet | String (set of enum) | `""` | Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all.<br>Terrain surface humidity ranges from dry rock to wet snow.<br>Comma-separated set of allowed terrain humidity values. An empty value means all humidity types are allowed.<br> * `"none"` - None (not used)<br> * `"rock"` - Rocky terrain<br> * `"sand"` - Sandy terrain<br> * `"savanna"` - Savanna terrain<br> * `"grass"` - Grassy terrain<br> * `"dirt"` - Dirty terrain<br> * `"swamp"` - Swampy terrain<br> * `"snow"` - Snowy terrain |
 | Decals.decal | attr. | 1 | IsPassable | Boolean |  | Whether this decal can be walked over by units. |
 | Decals.decal | attr. | 1 | IsBuildable | Boolean |  | Whether roads and houses can be built on top of this decal. |
-| Decals.decal | attr. | 0..1 | MinimapColor | Cardinal | `"0"` | Color of the decal on the minimap. |
+| Decals.decal | attr. | 0..1 | MinimapColor | Cardinal | `"$00000000"` | Color of the decal on the minimap. |
 | Decals.decal | attr. | 0..1 | ReplaceTile | Boolean | `"False"` | Whether the decal replaces the underlying terrain tile. |
 | Decals.decal | attr. | 0..1 | GoldDeposit | Integer | `"0"` | Amount of gold this ore decal contains. Valid range is 0..255. |
 | Decals.decal | attr. | 0..1 | IronDeposit | Integer | `"0"` | Amount of iron this ore decal contains. Valid range is 0..255. |
