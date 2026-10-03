@@ -34,10 +34,11 @@ Description of moddable types used in Knights Province.
 |---|---|
 | `Boolean` | Must be `True` or `False`. |
 | `Cardinal` | Hexadecimal color value written as `$AABBGGRR`. E.g. `$FF0080FF` will be orange. |
-| `Integer` | Numeric value. E.g. `3` or `217`. |
 | `Float` | Floating-point value. Make sure to use `.` for delimiter of the fractional part. Delimiter is optional. E.g. `5.0` or `11`. |
-| `Enum` | String value that must match one of the provided values. |
-| `Enum set` | Comma delimited string values that must match one of the provided values. E.g. `sand,rock,snow`.|
+| `Integer` | Numeric value. E.g. `3` or `217`. |
+| `String` | Text string, usually without spaces. E.g. `stone` or `palm_tree`. |
+| `String (enum)` | String value that must match one of the provided values. |
+| `String (enum set)` | Comma delimited string values that must match one of the provided values. E.g. `sand,rock,snow`.|
 
 ---
 
@@ -91,7 +92,7 @@ Minimal XML layout example:
 | Objects | node | 1..N | object |  |  | Object that can be placed on terrain. |
 | Objects.object | attr. | 1 | EngName | String |  | Unique identifier of the map object. |
 | Objects.object | attr. | 0..1 | CanPlaceInMapEd | Boolean | `"True"` | Whether the map object can be placed in the Map Editor.<br>Some objects require special handling and should not be placeable under normal circumstances (e.g. grain, orchards, coalpiles). |
-| Objects.object | attr. | 1 | Placement | Enum |  | Placement of the object - tile or vertice.<br>* `"csTile"`, object will be placed on tiles;<br>* `"csVertice"`, object will be placed on a vertex between tiles. |
+| Objects.object | attr. | 1 | Placement | String<br>(enum) |  | Placement of the object - tile or vertice.<br>Coordinate system:<br> - `"csTile"` - object will be placed on tiles;<br> - `"csVertice"` - object will be placed on a vertex between tiles. |
 | Objects.object | attr. | 0..1 | Multiple | Integer | `"1"` | How many instances of the object are placed at once (1, 2, 36). |
 | Objects.object | attr. | 0..1 | GrowTarget | String | `""` | What will this object grow into (EngName). Used for trees. Leave empty or omit if not needed. |
 | Objects.object | attr. | 0..1 | GrowTime | Integer | `"0"` | Time, in game ticks, required for the object to grow. |
@@ -99,13 +100,13 @@ Minimal XML layout example:
 | Objects.object | attr. | 0..1 | ScaleVariation | Float | `"0.0"` | Amount of random scale variation applied to object instances. |
 | Objects.object | attr. | 0..1 | Foliage | Boolean | `"False"` | Is this object a foliage model (trees, bushes). |
 | Objects.object | attr. | 0..1 | FoliageScale | Float | `"1.0"` | Foliage scale. |
-| Objects.object | attr. | 1 | TileBlock | Enum |  | When object Placement is "csTile" this is a type of tile blocking this object does:<br>* `"none"` - nothing is blocked (default state);<br>* `"houses"` - house-building is blocked;<br>* `"roads"` - road-building is blocked;<br>* `"everything"` - everything (walking) is blocked. |
-| Objects.object | attr. | 1 | VertBlock | Enum |  | When object Placement is "csVertice" this is a type of vertex blocking this object does:<br>* `"none"` - blocks nothing (default state);<br>* `"walkFightBuild"` - blocks walking/fighting/building over the vertex (e.g. trees).<br>* `"roadsFields"` - blocks roads/fields as well (e.g. big columns). |
-| Objects.object | attr. | 0..1 | Removable | Enum | `""` | How hard is it to remove this object from terrain.<br>One of the following values:<br>* `"easy"` - object can be removed without a problem in process of building on top of it;<br>* `"hard"` - object can be removed by a Builder on request;<br>* `"nonRemovable"` - object is not removable at all. |
+| Objects.object | attr. | 1 | TileBlock | String<br>(enum) |  | When object Placement is "csTile" this is a type of tile blocking this object does:<br> - `"none"` - nothing is blocked (default state);<br> - `"houses"` - house-building is blocked;<br> - `"roads"` - road-building is blocked;<br> - `"everything"` - everything (walking) is blocked. |
+| Objects.object | attr. | 1 | VertBlock | String<br>(enum) |  | When object Placement is "csVertice" this is a type of vertex blocking this object does:<br> - `"none"` - blocks nothing (default state);<br> - `"walkFightBuild"` - blocks walking/fighting/building over the vertex (e.g. trees).<br> - `"roadsFields"` - blocks roads/fields as well (e.g. big columns). |
+| Objects.object | attr. | 0..1 | Removable | String<br>(enum) | `""` | How hard is it to remove this object from terrain.<br> - `"easy"` - can be removed without a problem in process of building on top of it;<br> - `"hard"` - can be removed by a Builder on request;<br> - `"nonremovable"` - not removable at all. |
 | Objects.object | attr. | 0..1 | Selectable | Boolean | `"False"` | Whether object is selectable. |
 | Objects.object | attr. | 1 | ColorMinimap | Cardinal |  | Color of the object on the minimap. |
-| Objects.object | attr. | 0..1 | AllowedHumiditySet | String (set of enum) | `""` | Terrain humidity suitable for this map object (e.g. ore decals can be placed only on rock). Several values can be listed via a comma. Use `""` for all.<br>Terrain surface humidity ranges from dry rock to wet snow.<br>Comma-separated set of allowed terrain humidity values. An empty value means all humidity types are allowed.<br> * `"none"` - None (not used)<br> * `"rock"` - Rocky terrain<br> * `"sand"` - Sandy terrain<br> * `"savanna"` - Savanna terrain<br> * `"grass"` - Grassy terrain<br> * `"dirt"` - Dirty terrain<br> * `"swamp"` - Swampy terrain<br> * `"snow"` - Snowy terrain |
-| Objects.object | attr. | 0..1 | Flags | Enum set | `""` | Set of flags for the object. Multiple values can be listed via a comma:<br>* `"repelTrees"` - woodcutter will not plant new trees around this object;<br>* `"treeSapling"` - object is a tree sapling;<br>* `"treeCuttable"` - object is a cuttable tree;<br>* `"treeStump"`  - object is a stump of a tree. Woodcutter will prefer planting new trees on its place. |
+| Objects.object | attr. | 0..1 | AllowedHumiditySet | String<br>(enum) | `""` | Terrain humidity suitable for this map object (e.g. ore decals can be placed only on rock). Several values can be listed via a comma. Use `""` for all.<br>Terrain surface humidity ranges from dry rock to wet snow.<br>Comma-separated set of allowed terrain humidity values. An empty value means all humidity types are allowed.<br> - `"none"` - None (not used)<br> - `"rock"` - Rocky terrain<br> - `"sand"` - Sandy terrain<br> - `"savanna"` - Savanna terrain<br> - `"grass"` - Grassy terrain<br> - `"dirt"` - Dirty terrain<br> - `"swamp"` - Swampy terrain<br> - `"snow"` - Snowy terrain |
+| Objects.object | attr. | 0..1 | Flags | String<br>(enum) | `""` | Set of flags for the object. Multiple values can be listed via a comma:<br> - `"repelTrees"` - Woodcutter will not plant new trees around this object.<br> - `"treeSapling"` - Object is a tree sapling.<br> - `"treeCuttable"` - Object is a cuttable tree<br> - `"treeStump"` - Object is a stump of a tree. Woodcutter will prefer planting new trees on its place. |
 | Objects.object | node | 1 | HUD |  |  | Settings for map object HUD. |
 | Objects.object.HUD | attr. | 0..1 | AvatarSetup | String6 | `"6.00;3.00;1.50;0.00;0.00;145.00"` | <br>Specifies how the object is going to be shown on the avatar when selected.<br>Relevant even if the object itself is not selectable - it could be used in MapEd palettes.<br>Defined by 6 floating-point numbers:<br> - camera distance from the object<br> - camera height above the ground<br> - camera target height on the object<br> - object offset X<br> - object offset Y<br> - object heading angle in Euler degrees (0 .. 360) |
 | Objects.object | node | 0..1 | Anims |  |  | List of animations. |
@@ -117,8 +118,8 @@ Minimal XML layout example:
 | Objects.object.Anims.anim | attr. | 1 | EngName | String |  | EngName (unused?). |
 | Objects.object | node | 0..1 | States |  |  | List of states in which this object can be. Maximum of 4 states is allowed. |
 | Objects.object.States | node | 0..4 | state |  |  | Map object state properties. |
-| Objects.object.States.state | attr. | 1 | TileBlock | Enum |  | Override value for the matching placement |
-| Objects.object.States.state | attr. | 1 | VertBlock | Enum |  | Override value for the matching placement |
+| Objects.object.States.state | attr. | 1 | TileBlock | String<br>(enum) |  | Override value for the matching placement<br> - `"none"` - nothing is blocked (default state);<br> - `"houses"` - house-building is blocked;<br> - `"roads"` - road-building is blocked;<br> - `"everything"` - everything (walking) is blocked. |
+| Objects.object.States.state | attr. | 1 | VertBlock | String<br>(enum) |  | Override value for the matching placement<br> - `"none"` - blocks nothing (default state);<br> - `"walkFightBuild"` - blocks walking/fighting/building over the vertex (e.g. trees).<br> - `"roadsFields"` - blocks roads/fields as well (e.g. big columns). |
 | Objects.object.States.state | attr. | 1 | EngName | String |  | Identifier of this state |
 
 
@@ -159,7 +160,7 @@ Minimal XML layout example:
 |  | node | 1 | Decals |  |  | Decals that can be placed onto terrain tiles. |
 | Decals | node | 1..N | decal |  |  | Decal that can be placed onto terrain tiles. |
 | Decals.decal | attr. | 1 | EngName | String |  | Unique identifier of the decal. |
-| Decals.decal | attr. | 0..1 | AllowedHumiditySet | String (set of enum) | `""` | Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all.<br>Terrain surface humidity ranges from dry rock to wet snow.<br>Comma-separated set of allowed terrain humidity values. An empty value means all humidity types are allowed.<br> * `"none"` - None (not used)<br> * `"rock"` - Rocky terrain<br> * `"sand"` - Sandy terrain<br> * `"savanna"` - Savanna terrain<br> * `"grass"` - Grassy terrain<br> * `"dirt"` - Dirty terrain<br> * `"swamp"` - Swampy terrain<br> * `"snow"` - Snowy terrain |
+| Decals.decal | attr. | 0..1 | AllowedHumiditySet | String<br>(enum) | `""` | Terrain humidity suitable for this decal (e.g. ore decals can be placed only on rock). Use "" for all.<br>Terrain surface humidity ranges from dry rock to wet snow.<br>Comma-separated set of allowed terrain humidity values. An empty value means all humidity types are allowed.<br> - `"none"` - None (not used)<br> - `"rock"` - Rocky terrain<br> - `"sand"` - Sandy terrain<br> - `"savanna"` - Savanna terrain<br> - `"grass"` - Grassy terrain<br> - `"dirt"` - Dirty terrain<br> - `"swamp"` - Swampy terrain<br> - `"snow"` - Snowy terrain |
 | Decals.decal | attr. | 1 | IsPassable | Boolean |  | Whether this decal can be walked over by units. |
 | Decals.decal | attr. | 1 | IsBuildable | Boolean |  | Whether roads and houses can be built on top of this decal. |
 | Decals.decal | attr. | 0..1 | MinimapColor | Cardinal | `"$00000000"` | Color of the decal on the minimap. |

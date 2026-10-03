@@ -57,7 +57,7 @@ const
   // We need to annotate modding regions to avoid clashing with Type declarations
   DOC_TAG_AREA_MODDING_SPECIFICATION = '//*Area-Modding-Specification*//';
 
-  // Modding types documentation tags
+  // Modding types
   DOC_TAG_MODDING_TYPE_IS_ROOT      = '//* Type-IsRoot:';       // Root type
   DOC_TAG_MODDING_TYPE_NAME         = '//* Type-Name:';         // Type name when it is impractical to parse
   DOC_TAG_MODDING_TYPE_NODENAME     = '//* Type-NodeName:';     // Next line will contain xml node name
@@ -65,12 +65,13 @@ const
   DOC_TAG_MODDING_TYPE_DESCRIPTION  = '//* Type-Description:';  // Description
   DOC_TAG_MODDING_TYPE_SPECIALTY    = '//* Type-Specialty:';    // Special
 
-  DOC_TAG_MODDING_ATTR_DEFAULT      = '//* Attr-Default:';  //
-  DOC_TAG_MODDING_ATTR_CARDINALITY  = '//* Attr-Cardinality:';  // Attribute is required
-  DOC_TAG_MODDING_NODE_CARDINALITY  = '//* Node-Cardinality:';  // Node is required
-  DOC_TAG_MODDING_REFERENCE_NODE    = '//* Reference-Node:';    // Reference to another type
-  DOC_TAG_MODDING_REFERENCE_ATTR    = '//* Reference-Attr:';    // Reference to another type
-  DOC_TAG_MODDING_LIST = '//* ListForNextNode:';     // Reference to another type
+  // Modding attributes and nodes
+  DOC_TAG_MODDING_ATTR_DEFAULT        = '//* Attr-Default:';      // Default value for the attribute
+  DOC_TAG_MODDING_ATTR_CARDINALITY    = '//* Attr-Cardinality:';  // Attribute cardinality
+  DOC_TAG_MODDING_NODE_CARDINALITY    = '//* Node-Cardinality:';  // Node cardinality
+  DOC_TAG_MODDING_REFERENCE_NODE      = '//* Reference-Node:';    // Reference to another type
+  DOC_TAG_MODDING_REFERENCE_ATTR      = '//* Reference-Attr:';    // Reference to another type
+  DOC_TAG_MODDING_LIST_FOR_NEXT_NODE  = '//* ListForNextNode:';     // Reference to another type
 
 
 type
@@ -78,6 +79,7 @@ type
     mtsNormal,
     mtsSemicolonDelimitedArray,
     mtsList,
+    mtsEnum,
     mtsEnumSet
   );
 
@@ -86,6 +88,7 @@ const
     '',
     'SemicolonDelimitedArray',
     'List',
+    'Enum',
     'EnumSet'
   );
 
