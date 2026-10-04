@@ -179,7 +179,7 @@ begin
   for I := 0 to aDescriptions.Count - 1 do
     if StartsStr(aName + ':', aDescriptions[I]) then
     begin
-      Result := StrSubstring(aDescriptions[I], Pos(':', aDescriptions[I]) + 1);
+      Result := Trim(RightStrAfter(aDescriptions[I], ':'));
       aDescriptions.Delete(I);
       Exit;
     end;

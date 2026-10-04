@@ -210,7 +210,7 @@ end;
 
 procedure TKMModdingTypes.LintCode(const aSourceFile: string);
 begin
-  //todo: Following things could be linted:
+  // Following things could be linted:
   // - matching names between XML attribute name and field name
 end;
 

@@ -7,13 +7,11 @@ uses
 // These function were replacements for string functions introduced after XE2 (XE5 probably)
 // Names are the same as in new Delphi versions, but with 'Str' prefix
 // We kept them here to support pre-XE5 compilation
-//todo: Now we dont support old compilers and they can be removed
-function RightStrAfter(const aStr, aSeparator: string): string; deprecated;
+function RightStrAfter(const aStr, aSeparator: string): string;
 function LeftStrBefore(const aStr, aSeparator: string): string;
 
 function FirstStrBetween(const aStr, aFrom, aTo: string): string;
 
-function StrSubstring(const aStr: string; aFrom: Integer): string; deprecated;
 procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
 procedure FindRegionBounds(aStringList: TStringList; aMarker: string; out aLineFrom, aLineTo, aPadLevel: Integer);
 function FindLastSubStr(const aStr, aSubString: string): Integer;
@@ -47,12 +45,6 @@ end;
 function FirstStrBetween(const aStr, aFrom, aTo: string): string;
 begin
   Result := LeftStrBefore(RightStrAfter(aStr, aFrom), aTo);
-end;
-
-
-function StrSubstring(const aStr: string; aFrom: Integer): string;
-begin
-  Result := Copy(aStr, aFrom + 1, Length(aStr));
 end;
 
 
