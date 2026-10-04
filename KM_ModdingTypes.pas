@@ -74,11 +74,6 @@ begin
   for var K := 0 to fList.Count - 1 do
   if I <> K then
     fList[I].CrossLinkWith(fList[K]);
-
-  for var I := 0 to fList.Count - 1 do
-    fList[I].SortFieldsByType;
-
-  //todo: Verify no everything got cross-referenced, no stray types/references
 end;
 
 

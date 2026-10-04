@@ -55,7 +55,6 @@ type
 
     procedure LoadFromStringList(aSource: TStringList);
     procedure CrossLinkWith(aNode: TKMModdingNode);
-    procedure SortFieldsByType;
 
     function ExportListing(const aPad: string): string;
     function ExportWikiBody: string;
@@ -347,26 +346,6 @@ begin
       newNodeCardinality := '';
     end;
   end;
-end;
-
-
-procedure TKMModdingNode.SortFieldsByType;
-begin
-  // // Special sorting that will preserve relative item positions
-  // var sortedFields := TList<TKMModdingAttribute>.Create;
-  //
-  // for var I := 0 to fFields.Count - 1 do
-  // if not fFields[I].IsSubObject then
-  // sortedFields.Add(fFields[I]);
-  //
-  // for var I := 0 to fFields.Count - 1 do
-  // if fFields[I].IsSubObject then
-  // sortedFields.Add(fFields[I]);
-  //
-  // fFields.Clear;
-  // fFields.AddRange(sortedFields);
-  //
-  // sortedFields.Free;
 end;
 
 
