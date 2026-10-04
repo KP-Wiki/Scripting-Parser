@@ -55,7 +55,7 @@ const
   DOC_TAG_AREA = '//*Area';
 
   // We need to annotate modding regions to avoid clashing with Type declarations
-  DOC_TAG_AREA_MODDING_SPECIFICATION = '//*Area-Modding-Specification*//';
+  DOC_TAG_AREA_MODDING_DEFINITION = '//*Area-Modding-Definition*//';
 
   // Modding types
   DOC_TAG_MODDING_TYPE_IS_ROOT      = '//* Type-IsRoot:';       // Root type

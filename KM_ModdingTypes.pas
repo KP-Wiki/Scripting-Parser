@@ -86,9 +86,9 @@ begin
 
     // Look for areas denoted as Modding specifications
     {
-    //*Area-Modding-Specification*//
+    //*Area-Modding-Definition*//
     ...
-    //*Area-Modding-Specification*//
+    //*Area-Modding-Definition*//
     }
 
     var areaStarted := False;
@@ -99,7 +99,7 @@ begin
       var srcLine := Trim(slSource[I]);
 
       // New area starts
-      if not areaStarted and StartsStr(DOC_TAG_AREA_MODDING_SPECIFICATION, srcLine) then
+      if not areaStarted and StartsStr(DOC_TAG_AREA_MODDING_DEFINITION, srcLine) then
       begin
         areaStarted := True;
         slArea.Clear;
@@ -107,7 +107,7 @@ begin
       end;
 
       // Area ends
-      if areaStarted and StartsStr(DOC_TAG_AREA_MODDING_SPECIFICATION, srcLine) then
+      if areaStarted and StartsStr(DOC_TAG_AREA_MODDING_DEFINITION, srcLine) then
       begin
         var newType := TKMModdingFactory.NewTypeFromStringList(slArea);
 
