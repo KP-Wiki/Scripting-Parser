@@ -144,28 +144,27 @@ end;
 // Take a string of arguments and split it into list of tokens
 procedure TKMScriptingMethodParameters.SplitIntoTokens(const aArguments: string; aTokenList: TStringList);
 var
-  I: Integer;
   args: string;
 begin
   args := ReplaceStr(aArguments, ',', ' , ');
   args := ReplaceStr(args, ':', ' : ');
   args := ReplaceStr(args, ';', ' ; ');
-  StrSplit(args, ' ', aTokenList);
+  var sa := SplitString(args, ' ');
 
   // Assemble the "[array] + [of] + [something]"
   // Do it first, cos we can have [array of const]
-  for I := aTokenList.Count - 1 downto 0 do
-    if SameText(aTokenList[I], 'array') then
+  for var I := High(sa) downto 0 do
+    if SameText(sa[I], 'array') then
     begin
-      aTokenList[I] := aTokenList[I] + ' ' + aTokenList[I + 1] + ' ' + aTokenList[I + 2];
-      aTokenList.Delete(I + 2);
-      aTokenList.Delete(I + 1);
+      sa[I] := sa[I] + ' ' + sa[I + 1] + ' ' + sa[I + 2];
+      sa[I + 2] := '';
+      sa[I + 1] := '';
     end;
 
-  // Remove single 'const' modifiers
-  for I := aTokenList.Count - 1 downto 0 do
-  if SameText(aTokenList[I], 'const') then
-    aTokenList.Delete(I);
+  // Skip single 'const' modifiers
+  for var I := 0 to High(sa) do
+  if (sa[I] <> '') and not SameText(sa[I], 'const') then
+    aTokenList.Add(sa[I]);
 end;
 
 

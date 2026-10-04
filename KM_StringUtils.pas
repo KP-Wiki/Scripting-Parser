@@ -12,7 +12,6 @@ function LeftStrBefore(const aStr, aSeparator: string): string;
 
 function FirstStrBetween(const aStr, aFrom, aTo: string): string;
 
-procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
 procedure FindRegionBounds(aStringList: TStringList; aMarker: string; out aLineFrom, aLineTo, aPadLevel: Integer);
 
 function ExtractFunctionResultType(aStr: string): string;
@@ -44,18 +43,6 @@ end;
 function FirstStrBetween(const aStr, aFrom, aTo: string): string;
 begin
   Result := LeftStrBefore(RightStrAfter(aStr, aFrom), aTo);
-end;
-
-
-procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList);
-var
-  StrArray: TStringDynArray;
-  I: Integer;
-begin
-  StrArray := SplitString(aStr, aDelimiters);
-  for I := Low(StrArray) to High(StrArray) do
-  if StrArray[I] <> '' then
-    aStrings.Add(StrArray[I]);
 end;
 
 
