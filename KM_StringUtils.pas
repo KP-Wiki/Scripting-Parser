@@ -14,7 +14,6 @@ function FirstStrBetween(const aStr, aFrom, aTo: string): string;
 
 procedure StrSplit(const aStr, aDelimiters: string; aStrings: TStringList); deprecated;
 procedure FindRegionBounds(aStringList: TStringList; aMarker: string; out aLineFrom, aLineTo, aPadLevel: Integer);
-function FindLastSubStr(const aStr, aSubString: string): Integer;
 
 function ExtractFunctionResultType(aStr: string): string;
 
@@ -96,22 +95,6 @@ begin
   var posSemicolon := Pos(';', aStr, posColon);
   var tail := Copy(aStr, posColon + 1, posSemicolon - posColon - 1);
   Result := Trim(tail);
-end;
-
-
-// Find position of last occurrence of aSubString in a aAstr
-function FindLastSubStr(const aStr, aSubString: string): Integer;
-begin
-  Result := 1;
-  for var I := 0 to 99 do
-  begin
-    var nextPos := Pos(aSubString, aStr, Result + 1);
-
-    if nextPos > Result then
-      Result := nextPos
-    else
-      Exit;
-  end;
 end;
 
 
